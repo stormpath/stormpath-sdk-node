@@ -2,7 +2,7 @@
 
 Official Node.js SDK for the Stormpath User Management REST API
 
-## WORK IN PROGRESS - DO NOT ATTEMPT TO USE THIS MODULE ##
+## WORK IN PROGRESS: DO NOT ATTEMPT TO USE THIS MODULE ##
 
 ## Getting Started
 Install the module with: `npm install stormpath`
