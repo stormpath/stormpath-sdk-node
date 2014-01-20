@@ -3,7 +3,7 @@
 'use strict';
 
 var apiKeys = require('../lib/apikey'),
-//  propsParser = require('properties-parser'),
+  propsParser = require('properties-parser'),
   chai = require('chai'),
   should = chai.should();
 
@@ -13,8 +13,8 @@ require('mocha-sinon');
 var ApiKey = apiKeys.ApiKey,
   loadApiKey = apiKeys.loadApiKey;
 
-//var home = process.env[(process.platform === 'win32' ? 'USERPROFILE' : 'HOME')];
-//var apiKeyFilePath = home + '/.stormpath/apiKey.properties';
+var home = process.env[(process.platform === 'win32' ? 'USERPROFILE' : 'HOME')];
+var apiKeyFilePath = home + '/.stormpath/apiKey.properties2';
 
 describe('ApiKey', function () {
   it('should have id and secret properties', function () {
