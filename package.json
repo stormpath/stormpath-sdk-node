@@ -35,6 +35,8 @@
     "test": "grunt"
   },
   "dependencies": {
+    "underscore": "~1.5.2",
+    "underscore.string": "~2.3.3",
     "properties-parser": "~0.1.1",
     "request": "~2.33.0"
   },
