@@ -9,8 +9,10 @@ var sinon = require("sinon");
 var assert = require('chai').assert;
 var expect = require("chai").expect;
 var should = require("chai").should();
+var moment = require('moment');
 var AssertionError = require("chai").AssertionError;
 var sinonChai = require("sinon-chai");
+
 var Stormpath = require('../lib');
 chai.use(sinonChai);
 
@@ -21,5 +23,6 @@ module.exports = {
   assert: assert,
   config: process.env,
   should: should,
+  moment: moment,
   Stormpath: Stormpath
 };
