@@ -9,6 +9,41 @@ describe('Authorization module', function () {
   var Auth = require('../lib/auth');
   var utils = require('../lib/utils');
   var apiKey = {id: 'stormpath_apiKey_id', secret: 'stormpath_apiKey_secret'};
+
+  describe('constructor', function(){
+    function createAuth(options){
+      return  function(){
+        return new Auth(options);
+      };
+    }
+    describe('if apiKey not provided', function(){
+      it('should throw api key is required exception', function(){
+        createAuth().should.throw(/apiKey is required/);
+      });
+    });
+
+    describe('if apiKey.id not provided', function(){
+      it('should throw apiKey.id is required', function(){
+        createAuth({apiKey:{}}).should.throw(/apiKey.id is required/);
+      });
+    });
+    describe('if apiKey.secret not provided', function(){
+      it('should throw apiKey.secret is required', function(){
+        createAuth({apiKey:{id:1}}).should.throw(/apiKey.secret is required/);
+      });
+    });
+    describe('if provided auth method not supported', function(){
+      function callToAuthSignWithUnsupportedAuthMethod(){
+        var auth = new Auth({apiKey:{id:1, secret:2}, authMethod:'boom!'});
+        return auth.sign({});
+      }
+      it('should throw unsupported auth method', function(){
+        callToAuthSignWithUnsupportedAuthMethod
+          .should.throw(/Unsupported auth method/);
+      });
+    });
+  });
+
   describe('Basic auth', function () {
     var auth = new Auth({apiKey: apiKey, authMethod: 'basic'});
     it('should sign request with base64 signature', function () {
