@@ -55,6 +55,20 @@ describe('Cache module',function(){
       });
     });
 
+    describe('constructor params validation', function(){
+      function createCacheEntry(createdAt, lastAccessedAt){
+        return function(){
+          return new CacheEntry({},createdAt, lastAccessedAt);
+        };
+      }
+      it('should throw "expecting date in timestamp format"', function(){
+        createCacheEntry('boom!')
+          .should.throw(/expecting date in timestamp format/i);
+        createCacheEntry(1, 'boom!')
+          .should.throw(/expecting date in timestamp format/i);
+      });
+    });
+
     describe('call to touch method', function(){
       var cacheEntry = createVoidCacheEntry();
       it('should change lastAccessedTime to current for cache entry', function(){

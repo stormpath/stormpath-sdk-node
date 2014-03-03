@@ -9,6 +9,12 @@ var MemoryStore = require('../lib/cache/MemoryStore');
 
 describe('Cache module', function () {
   describe('Cache class', function () {
+    describe('call to constructor', function(){
+      it('should return an instance of Cache', function(){
+        Cache().should.be.an.instanceof(Cache);
+      });
+    });
+
     describe('By default', function () {
       var cache;
       before(function () {
