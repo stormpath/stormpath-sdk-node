@@ -2,7 +2,9 @@ var common = require('./common');
 var sinon = common.sinon;
 var should = common.should;
 
+/* jshint -W079 */
 var Buffer = require('buffer').Buffer;
+/* jshint +W079 */
 
 describe('Authorization module', function () {
   'use strict';

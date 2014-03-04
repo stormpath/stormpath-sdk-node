@@ -45,7 +45,8 @@ describe('data store module', function () {
         }
 
         it('should throw "config argument is required"', function () {
-          createDataStoreWithoutConfig.should.throw(/config argument is required/i);
+          createDataStoreWithoutConfig.should
+            .throw(/config argument is required/i);
         });
       });
 
@@ -122,6 +123,7 @@ describe('data store module', function () {
       });
 
       it('should store root entity', function () {
+        /* jshint -W030 */
         accountsCachePutSpy.should.have.been.calledOnce;
         accountsCachePutSpy.should.have.been.calledWith(data.href, {
           'href': 'http://example.com/accounts/FOO',
@@ -130,7 +132,7 @@ describe('data store module', function () {
             'href': 'http://example.com/accounts/FOO/groups',
             'items': [
               {'href': 'http://example.com/groups/G1'},
-              {'href': 'http://example.com/groups/G2'},
+              {'href': 'http://example.com/groups/G2'}
             ]
           },
           'directory': {
@@ -195,6 +197,7 @@ describe('data store module', function () {
         it('should return entry from cache', function () {
           ds.getResource(href, cbSpy);
 
+          /* jshint -W030 */
           cacheGetSpy.should.have.been.calledOnce;
           cacheGetSpy.should.have.been.calledWith(href);
 
@@ -233,6 +236,7 @@ describe('data store module', function () {
           sandbox.restore();
         });
         it('request executor should be called once', function () {
+          /* jshint -W030 */
           cacheGetSpy.should.have.been.calledOnce;
           cacheGetSpy.should.have.been.calledWith(href);
 
@@ -241,6 +245,7 @@ describe('data store module', function () {
           cbSpy.should.have.been.calledOnce;
         });
         it('and result should be stored in cache', function () {
+          /* jshint -W030 */
           cachePutSpy.should.have.been.calledOnce;
           cachePutSpy.should.have.been.calledWith(href, data);
         });
@@ -250,7 +255,7 @@ describe('data store module', function () {
         var href = '/directory/2' + random();
         var data = {'data': random()};
         var cbSpy = sinon.spy();
-        var sandbox, cacheGetSpy, cachePutSpy, reqExecStub;
+        var sandbox, reqExecStub;
         before(function () {
           sandbox = sinon.sandbox.create();
           reqExecStub = sandbox.stub(ds.requestExecutor, 'execute', function (req, cb) {
@@ -264,6 +269,7 @@ describe('data store module', function () {
           sandbox.restore();
         });
         it('request executor should be called once', function () {
+          /* jshint -W030 */
           reqExecStub.should.have.been.called;
 
           cbSpy.should.have.been.calledOnce;
@@ -347,6 +353,7 @@ describe('data store module', function () {
           sandbox.restore();
         });
         it('should not hang if response undefined', function () {
+          /* jshint -W030 */
           cbSpy.should.have.been.calledOnce;
           cbSpy.should.have.been.calledWith(null);
         });
@@ -416,8 +423,8 @@ describe('data store module', function () {
 
       describe('after resource creation', function () {
         it('resource should be stored in cache by href in response', function () {
+          /* jshint -W030 */
           cachePutSpy.should.have.been.calledOnce;
-          //cachePutSpy.should.have.been.calledWith(response.href, response, true, utils.noop);
         });
       });
     });
@@ -470,6 +477,7 @@ describe('data store module', function () {
 
       describe('after resource update', function () {
         it('should be stored in cache', function () {
+          /* jshint -W030 */
           cachePutSpy.should.have.been.calledOnce;
           cachePutSpy.should.have.been.calledWith(response.href, response, false, utils.noop);
         });
@@ -511,6 +519,7 @@ describe('data store module', function () {
       });
 
       it('should remove entry from cache', function () {
+        /* jshint -W030 */
         cacheDeleteSpy.should.have.been.calledOnce;
         cacheDeleteSpy.should.have.been.calledWith(href, utils.noop);
       });

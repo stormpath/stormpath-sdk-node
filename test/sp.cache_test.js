@@ -18,7 +18,7 @@ describe('Cache module',function(){
         });
       });
     }
-    _.each(noCache.__proto__, function(method, methodName){
+    _.each(noCache.prototype, function(method, methodName){
       callToMethod(noCache,methodName);
     });
   });

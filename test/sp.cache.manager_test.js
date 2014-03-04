@@ -1,5 +1,4 @@
 var common = require('./common');
-var sinon = common.sinon;
 var should = common.should;
 
 var CacheManager = require('../lib/cache/manager');
@@ -10,9 +9,11 @@ describe('Cache module',function(){
     describe('By default', function(){
       var manager = new CacheManager();
       it('caches should be empty', function(){
+        /* jshint -W030 */
         manager.caches.should.be.empty;
       });
       it('stats should be empty', function(){
+        /* jshint -W030 */
         manager.stats.should.be.empty;
       });
     });
