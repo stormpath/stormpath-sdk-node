@@ -6,7 +6,7 @@ var utils = require('../lib/utils');
 
 var DataStore = require('../lib/datastore');
 var RequestExecutor = require('../lib/reqexec');
-var MemoryStore = require('../lib/cache/MemoryStore');
+var MemoryStore = require('../lib/cache/memoryStore');
 var InstanceResource = require('../lib/resource').InstanceResource;
 
 function random() {
