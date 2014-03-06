@@ -7,7 +7,7 @@ var utils = require('../lib/utils');
 var DataStore = require('../lib/ds/DataStore');
 var RequestExecutor = require('../lib/ds/RequestExecutor');
 var MemoryStore = require('../lib/cache/MemoryStore');
-var InstanceResource = require('../lib/resources/InstanceResource');
+var InstanceResource = require('../lib/resource/InstanceResource');
 
 function random() {
   return Math.floor(Math.random() * Date.now());
