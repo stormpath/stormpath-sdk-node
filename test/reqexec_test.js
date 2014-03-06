@@ -2,7 +2,7 @@
 /*jshint unused: false*/
 'use strict';
 
-var RequestExecutor = require('../lib/RequestExecutor'),
+var RequestExecutor = require('../lib/ds/RequestExecutor'),
   authc = require('../lib/authc');
   //chai = require('chai'),
   //should = chai.should();

@@ -4,10 +4,10 @@ var sinon = common.sinon;
 var should = common.should;
 var utils = require('../lib/utils');
 
-var DataStore = require('../lib/DataStore');
-var RequestExecutor = require('../lib/RequestExecutor');
+var DataStore = require('../lib/ds/DataStore');
+var RequestExecutor = require('../lib/ds/RequestExecutor');
 var MemoryStore = require('../lib/cache/MemoryStore');
-var InstanceResource = require('../lib/resource').InstanceResource;
+var InstanceResource = require('../lib/resources/InstanceResource');
 
 function random() {
   return Math.floor(Math.random() * Date.now());
