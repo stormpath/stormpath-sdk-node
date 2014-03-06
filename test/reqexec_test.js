@@ -3,7 +3,7 @@
 'use strict';
 
 var RequestExecutor = require('../lib/RequestExecutor'),
-  loadApiKey = require('../lib/apikey').loadApiKey;
+  authc = require('../lib/authc');
   //chai = require('chai'),
   //should = chai.should();
 
