@@ -3,7 +3,7 @@ var sinon = common.sinon;
 var should = common.should;
 var moment = common.moment;
 
-var CacheEntry = require('../lib/cache/entry');
+var CacheEntry = require('../lib/cache/CacheEntry');
 
 function createVoidCacheEntry(){
   var entry = {};

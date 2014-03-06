@@ -2,7 +2,7 @@ var common = require('./common');
 var sinon = common.sinon;
 var should = common.should;
 
-var CacheManager = require('../lib/cache/manager');
+var CacheManager = require('../lib/cache/CacheManager');
 
 describe('Cache module',function(){
 

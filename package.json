@@ -39,7 +39,8 @@
     "underscore.string": "~2.3.3",
     "properties-parser": "~0.1.1",
     "request": "~2.33.0",
-    "moment": "~2.5.1"
+    "moment": "~2.5.1",
+    "node-uuid": "~1.4.0"
   },
   "devDependencies": {
     "grunt": "~0.4.2",

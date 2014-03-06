@@ -1,7 +1,7 @@
 var common = require('./common');
 var should = common.should;
 
-var CacheStats = require('../lib/cache/stats');
+var CacheStats = require('../lib/cache/CacheStats');
 
 describe('Cache module',function(){
 

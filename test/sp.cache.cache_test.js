@@ -2,10 +2,10 @@ var common = require('./common');
 var sinon = common.sinon;
 var should = common.should;
 
-var Cache = require('../lib/cache/cache');
-var CacheStats = require('../lib/cache/stats');
-var CacheEntry = require('../lib/cache/entry');
-var MemoryStore = require('../lib/cache/memoryStore');
+var Cache = require('../lib/cache/Cache');
+var CacheStats = require('../lib/cache/CacheStats');
+var CacheEntry = require('../lib/cache/CacheEntry');
+var MemoryStore = require('../lib/cache/MemoryStore');
 
 describe('Cache module', function () {
   describe('Cache class', function () {

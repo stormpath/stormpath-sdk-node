@@ -4,9 +4,9 @@ var sinon = common.sinon;
 var should = common.should;
 var utils = require('../lib/utils');
 
-var DataStore = require('../lib/datastore');
-var RequestExecutor = require('../lib/reqexec');
-var MemoryStore = require('../lib/cache/memoryStore');
+var DataStore = require('../lib/DataStore');
+var RequestExecutor = require('../lib/RequestExecutor');
+var MemoryStore = require('../lib/cache/MemoryStore');
 var InstanceResource = require('../lib/resource').InstanceResource;
 
 function random() {

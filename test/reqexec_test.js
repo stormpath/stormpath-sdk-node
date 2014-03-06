@@ -2,7 +2,7 @@
 /*jshint unused: false*/
 'use strict';
 
-var RequestExecutor = require('../lib/reqexec'),
+var RequestExecutor = require('../lib/RequestExecutor'),
   loadApiKey = require('../lib/apikey').loadApiKey;
   //chai = require('chai'),
   //should = chai.should();
