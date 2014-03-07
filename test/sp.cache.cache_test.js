@@ -4,7 +4,6 @@ var should = common.should;
 
 var Cache = require('../lib/cache/Cache');
 var CacheStats = require('../lib/cache/CacheStats');
-var CacheEntry = require('../lib/cache/CacheEntry');
 var MemoryStore = require('../lib/cache/MemoryStore');
 
 describe('Cache module', function () {
