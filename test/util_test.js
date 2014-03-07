@@ -2,7 +2,7 @@
 /*jshint unused: false*/
 'use strict';
 
-var util = require('../lib/util'),
+var utils = require('../lib/utils'),
   chai = require('chai'),
   should = chai.should();
 
@@ -17,19 +17,19 @@ describe('util', function () {
     var B = function B() {
       A.super_.apply(this, arguments);
     };
-    util.inherits(B, A);
+    utils.inherits(B, A);
 
-    util.isAssignableFrom(Object, A).should.equal(true);
+    utils.isAssignableFrom(Object, A).should.equal(true);
 
-    util.isAssignableFrom(Object, B).should.equal(true);
+    utils.isAssignableFrom(Object, B).should.equal(true);
 
-    util.isAssignableFrom(A, B).should.equal(true);
+    utils.isAssignableFrom(A, B).should.equal(true);
 
-    util.isAssignableFrom(B, A).should.equal(false);
+    utils.isAssignableFrom(B, A).should.equal(false);
 
-    util.isAssignableFrom(B, Object).should.equal(false);
+    utils.isAssignableFrom(B, Object).should.equal(false);
 
-    util.isAssignableFrom(A, Object).should.equal(false);
+    utils.isAssignableFrom(A, Object).should.equal(false);
 
   });
 });

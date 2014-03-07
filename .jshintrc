@@ -11,5 +11,13 @@
   "boss": true,
   "eqnull": true,
   "node": true,
-  "globals": {"describe": false, "it": false}
+  "globals": {
+    /* MOCHA */
+    "describe": false,
+    "it": false,
+    "before": false,
+    "beforeEach": false,
+    "after": false,
+    "afterEach": false
+  }
 }
