@@ -18,6 +18,20 @@ _(Coming soon)_
 ## Examples
 _(Coming soon)_
 
+## Running Tests
+
+To run the test suite, run following command within repo to install development dependencies:
+
+    $ npm install
+
+Then run the tests:
+
+    $ npm test
+
+To view coverage report:
+
+    $ npm run-script coverage
+
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
 
