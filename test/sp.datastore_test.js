@@ -61,7 +61,7 @@ describe('data store module', function () {
           apiKey: {id: 1, secret: 2}});
         _.each(CACHE_REGIONS, function (region) {
           it('should create cache instance for ' + region, function () {
-            should.exist(ds.cacheManager.getCache(region));
+            should.exist(ds.cacheHandler.cacheManager.getCache(region));
           });
         });
 
@@ -108,9 +108,9 @@ describe('data store module', function () {
 
       before(function () {
         sandbox = sinon.sandbox.create();
-        accountsCachePutSpy = sandbox.spy(ds.cacheManager.getCache('accounts'), 'put');
-        groupsCachePutSpy = sandbox.spy(ds.cacheManager.getCache('groups'), 'put');
-        directoryCachePutSpy = sandbox.spy(ds.cacheManager.getCache('directories'), 'put');
+        accountsCachePutSpy = sandbox.spy(ds.cacheHandler.cacheManager.getCache('accounts'), 'put');
+        groupsCachePutSpy = sandbox.spy(ds.cacheHandler.cacheManager.getCache('groups'), 'put');
+        directoryCachePutSpy = sandbox.spy(ds.cacheHandler.cacheManager.getCache('directories'), 'put');
         reqExecSpy = sandbox.stub(ds.requestExecutor, 'execute', function (req, cb) {
           cb(null, data);
         });
@@ -186,7 +186,7 @@ describe('data store module', function () {
         before(function (done) {
           sandbox = sinon.sandbox.create();
           reqExecSpy = sandbox.spy(ds.requestExecutor, 'execute');
-          var cache = ds.cacheManager.getCache(region);
+          var cache = ds.cacheHandler.cacheManager.getCache(region);
           cacheGetSpy = sandbox.spy(cache, 'get');
           cache.put(href, data, true, done);
         });
@@ -222,7 +222,7 @@ describe('data store module', function () {
         var sandbox, cacheGetSpy, cachePutSpy, reqExecStub;
         before(function () {
           sandbox = sinon.sandbox.create();
-          var cache = ds.cacheManager.getCache(region);
+          var cache = ds.cacheHandler.cacheManager.getCache(region);
           cacheGetSpy = sandbox.spy(cache, 'get');
           cachePutSpy = sandbox.spy(cache, 'put');
           reqExecStub = sandbox.stub(ds.requestExecutor, 'execute', function (req, cb) {
@@ -384,7 +384,7 @@ describe('data store module', function () {
       var sandbox, cachePutSpy, reqExecStub, requestSpy;
       before(function () {
         sandbox = sinon.sandbox.create();
-        var cache = ds.cacheManager.getCache(region);
+        var cache = ds.cacheHandler.cacheManager.getCache(region);
         cachePutSpy = sandbox.spy(cache, 'put');
         reqExecStub = sandbox.stub(ds.requestExecutor, 'execute', function (req, cb) {
           requestSpy = req;
@@ -449,7 +449,7 @@ describe('data store module', function () {
       var sandbox, cachePutSpy, reqExecStub, requestSpy;
       before(function () {
         sandbox = sinon.sandbox.create();
-        var cache = ds.cacheManager.getCache(region);
+        var cache = ds.cacheHandler.cacheManager.getCache(region);
         cachePutSpy = sandbox.spy(cache, 'put');
         reqExecStub = sandbox.stub(ds.requestExecutor, 'execute', function (req, cb) {
           requestSpy = req;
@@ -504,7 +504,7 @@ describe('data store module', function () {
       var sandbox, cacheDeleteSpy, reqExecStub, requestSpy;
       before(function () {
         sandbox = sinon.sandbox.create();
-        var cache = ds.cacheManager.getCache(region);
+        var cache = ds.cacheHandler.cacheManager.getCache(region);
         cacheDeleteSpy = sandbox.spy(cache, 'delete');
         reqExecStub = sandbox.stub(ds.requestExecutor, 'execute', function (req, cb) {
           requestSpy = req;
