@@ -10,39 +10,74 @@ var client = null; //available after the ApiKey is loaded from disk (api key is 
 stormpath.loadApiKey(apiKeyFilePath, function (err, apiKey) {
   if (err) throw err;
 
-  client = stormpath.createClient({apiKey: apiKey});
+  client = new stormpath.Client({apiKey: apiKey});
   client.getCurrentTenant(function (err, tenant) {
     if (err) throw err;
-
     onTenantReady(tenant);
   });
 });
 
 function onTenantReady(tenant) {
   listAppsAndDirs(tenant);
+  listAppsAndDirs(client);
   doAppCrud(client);
+  doDirCrud(client);
 }
 
-function listAppsAndDirs(tenant) {
+function listAppsAndDirs(clientOrTenant) {
 
-  tenant.get('applications', function onApps(err, apps) {
+  clientOrTenant.getApplications(function (err, apps) {
     if (err) throw err;
 
-    apps.each(function eachApp(err, app, offset) {
+    apps.each(function (err, app, offset) {
       if (err) throw err;
 
       console.log(offset + ": ");
       console.log(app);
+
+      app.getAccounts(function (err, accts) {
+        if (err) throw err;
+
+        accts.each(function (err, acct, offset) {
+          console.log(acct);
+        });
+      });
+
+      app.getGroups(function (err, groups) {
+        if (err) throw err;
+
+        groups.each(function (err, group, offset) {
+          console.log(group);
+        });
+      });
+
     });
   });
 
-  tenant.get('directories', function onTenantDirectories(err, dirs) {
+  clientOrTenant.getDirectories(function (err, dirs) {
     if (err) throw err;
 
-    dirs.each(function eachDir(err, dir) {
+    dirs.each(function (err, dir, offset) {
       if (err) throw err;
 
       console.log(dir);
+
+      dir.getAccounts(function (err, accts) {
+        if (err) throw err;
+
+        accts.each(function (err, acct, offset) {
+          console.log(acct);
+        });
+      });
+
+      dir.getGroups(function (err, groups) {
+        if (err) throw err;
+
+        groups.each(function (err, group, offset) {
+          console.log(group);
+        });
+      });
+
     });
   });
 }
@@ -59,7 +94,7 @@ function doAppCrud(client) {
       console.log(app);
 
       //Read:
-      client.getResource(app.href, function onReadApp(err, app2) {
+      client.getResource(app.href, require('./lib/resource/Application'), function onReadApp(err, app2) {
         if (err) throw err;
 
         console.log(app2);
@@ -85,6 +120,46 @@ function doAppCrud(client) {
     });
 
   });
+}
+
+function doDirCrud(client) {
+
+  client.getCurrentTenant(function (err, tenant) {
+    if (err) throw err;
+
+    //Create:
+    tenant.createDirectory({name: 'Testing NodeJS SDK. Delete me!'}, function (err, dir) {
+      if (err) throw err;
+
+      console.log(dir);
+
+      //Read:
+      client.getResource(dir.href, require('./lib/resource/Directory'), function (err, dir2) {
+        if (err) throw err;
+
+        console.log(dir2);
+
+        //Update:
+        dir2.name = 'Testing NodeJS SDK. Delete me really!';
+        dir2.save(function (err, dir3) {
+          if(err) throw err;
+          console.log(dir3);
+
+          //Delete:
+          dir3.delete(function (err) {
+            if (err) throw err;
+            console.log("Dir deleted!");
+
+          });
+
+        });
+
+      });
+
+    });
+
+  });
+
 }
 
 

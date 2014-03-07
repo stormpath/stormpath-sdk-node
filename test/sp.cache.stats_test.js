@@ -1,4 +1,4 @@
-var CacheStats = require('../lib/cache/stats');
+var CacheStats = require('../lib/cache/CacheStats');
 
 describe('Cache module',function(){
 

@@ -4,9 +4,9 @@ var should = common.should;
 
 describe('Cache module',function(){
 
-  describe('NoCache cache stub', function(){
-    var NoCache = require('../lib/cache/noCache');
-    var noCache = new NoCache();
+  describe('DisabledCache cache stub', function(){
+    var DisabledCache = require('../lib/cache/DisabledCache');
+    var disabledCache = new DisabledCache();
     function callToMethod(cache, methodName){
       describe('call to',function(){
         it(methodName+ ' method should return null, null', function(done){
@@ -18,8 +18,8 @@ describe('Cache module',function(){
         });
       });
     }
-    _.each(noCache.prototype, function(method, methodName){
-      callToMethod(noCache,methodName);
+    _.each(disabledCache.__proto__, function(method, methodName){
+      callToMethod(disabledCache,methodName);
     });
   });
 

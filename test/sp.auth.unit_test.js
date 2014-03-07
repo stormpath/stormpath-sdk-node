@@ -8,7 +8,7 @@ var Buffer = require('buffer').Buffer;
 
 describe('Authorization module', function () {
   'use strict';
-  var Auth = require('../lib/auth');
+  var Auth = require('../lib/authc');
   var utils = require('../lib/utils');
   var apiKey = {id: 'stormpath_apiKey_id', secret: 'stormpath_apiKey_secret'};
 
