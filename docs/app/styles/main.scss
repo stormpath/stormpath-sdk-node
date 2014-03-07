@@ -2,6 +2,9 @@ $icon-font-path: "/bower_components/sass-bootstrap/fonts/";
 
 @import 'sass-bootstrap/lib/bootstrap';
 
+/* For angular-bootstrap-ui: */
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+
 .browsehappy {
     margin: 0.2em 0;
     background: #ccc;
