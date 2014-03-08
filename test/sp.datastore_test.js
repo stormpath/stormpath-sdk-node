@@ -13,8 +13,8 @@ function random() {
   return Math.floor(Math.random() * Date.now());
 }
 
-describe('data store module', function () {
-  describe('data store class', function () {
+describe('ds:', function () {
+  describe('DataStore:', function () {
 
     describe('constructor', function () {
       describe('if request executor not provided in config', function () {
@@ -360,7 +360,7 @@ describe('data store module', function () {
       });
     });
 
-    describe('create resource', function () {
+    describe('createResource:', function () {
       var region = 'tenants';
       var ds = new DataStore({
         cacheOptions: {
