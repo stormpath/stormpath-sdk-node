@@ -4,14 +4,15 @@ var should = common.should;
 
 var Cache = require('../lib/cache/Cache');
 var CacheStats = require('../lib/cache/CacheStats');
-var CacheEntry = require('../lib/cache/CacheEntry');
 var MemoryStore = require('../lib/cache/MemoryStore');
 
 describe('Cache module', function () {
   describe('Cache class', function () {
     describe('call to constructor', function(){
       it('should return an instance of Cache', function(){
+        /* jshint -W064 */
         Cache().should.be.an.instanceof(Cache);
+        /* jshint +W064 */
       });
     });
 
@@ -119,6 +120,7 @@ describe('Cache module', function () {
           cache.stats.misses.should.be.equal(missCounter + 1);
         });
         it('should delete entry from cache', function () {
+          /* jshint -W030 */
           storeDeleteSpy.should.have.been.calledOnce;
           storeDeleteSpy.should.have.been.calledWith(key);
         });
@@ -161,6 +163,7 @@ describe('Cache module', function () {
           });
         });
         it('should update stats', function(){
+          /* jshint -W030 */
           statsPutSpy.should.have.been.calledOnce;
         });
       });
@@ -182,9 +185,11 @@ describe('Cache module', function () {
         sandbox.restore();
       });
       it('should update stats', function(){
+        /* jshint -W030 */
         statsDeleteSpy.should.have.been.calledOnce;
       });
       it('should remove entry from cache', function(){
+        /* jshint -W030 */
         storeDeleteSpy.should.have.been.calledOnce;
         storeDeleteSpy.should.have.been.calledWith(key,cb);
       });
@@ -205,9 +210,11 @@ describe('Cache module', function () {
         sandbox.restore();
       });
       it('should reset stats', function(){
+        /* jshint -W030 */
         statsClearSpy.should.have.been.calledOnce;
       });
       it('should remove all entries from cache', function(){
+        /* jshint -W030 */
         storeClearSpy.should.have.been.calledOnce;
         storeClearSpy.should.have.been.calledWith(cb);
       });
@@ -227,6 +234,7 @@ describe('Cache module', function () {
         sandbox.restore();
       });
       it('should return size of cache', function(){
+        /* jshint -W030 */
         storeSizeSpy.should.have.been.calledOnce;
         storeSizeSpy.should.have.been.calledWith(cb);
       });

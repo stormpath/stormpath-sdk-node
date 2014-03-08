@@ -85,7 +85,7 @@ describe('Cache module',function(){
         var cacheEntry = createVoidCacheEntry();
         it('should not be expired', function(){
           var notExpired = cacheEntry.isExpired(300,300);
-
+          /* jshint -W030 */
           notExpired.should.not.be.true;
         });
       });
@@ -95,7 +95,7 @@ describe('Cache module',function(){
         cacheEntry.lastAccessedAt -= 500*1000;
         it('should be expired', function(){
           var expired = cacheEntry.isExpired(300,300);
-
+          /* jshint -W030 */
           expired.should.be.true;
         });
       });
@@ -105,7 +105,7 @@ describe('Cache module',function(){
         cacheEntry.createdAt -= 500*1000;
         it('should be expired', function(){
           var expired = cacheEntry.isExpired(300,300);
-
+          /* jshint -W030 */
           expired.should.be.true;
         });
       });
