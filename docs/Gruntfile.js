@@ -54,6 +54,12 @@ module.exports = function (grunt) {
           '.tmp/styles/{,*/}*.css',
           '<%= yeoman.app %>/images/{,*/}*.{png,jpg,jpeg,gif,webp,svg}'
         ]
+      },
+      markdown: {
+        files: [
+          '<%= yeoman.app %>/**/*.md'
+        ],
+        tasks: ['markdown:all']
       }
     },
 
@@ -349,6 +355,18 @@ module.exports = function (grunt) {
         configFile: 'karma.conf.js',
         singleRun: true
       }
+    },
+    markdown: {
+      all: {
+        files: [
+          {
+            expand: true,
+            src: '<%= yeoman.app %>/views/**/*.md',
+            dest: '',
+            ext: '.html'
+          }
+        ]
+      }
     }
   });
 
@@ -384,6 +402,7 @@ module.exports = function (grunt) {
   grunt.registerTask('build', [
     'clean:dist',
     'bower-install',
+    'markdown:all',
     'useminPrepare',
     'concurrent:dist',
     'autoprefixer',
@@ -397,6 +416,8 @@ module.exports = function (grunt) {
     'usemin',
     'htmlmin'
   ]);
+
+  grunt.loadNpmTasks('grunt-markdown');
 
   grunt.registerTask('default', [
     'newer:jshint',
