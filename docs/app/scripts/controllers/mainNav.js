@@ -31,7 +31,10 @@ function item(name, href, anchors) {
 
 function items() {
   return [
-    item('Overview', '/'),
+    item('Overview', '/home', [
+      anchor('Install', 'install'),
+      anchor('Quickstart', 'quickstart')
+    ]),
     item('Client', null, [
       anchor('Overview', 'top'),
       anchor('Client', 'ctor'),
@@ -66,7 +69,7 @@ function items() {
 
 
 angular.module('docsApp')
-  .controller('MainNavController', function ($scope,$location) {
+  .controller('MainNavController', function ($scope,$location, $anchorScroll) {
 
     $scope.oneAtATime = true;
 
@@ -74,6 +77,8 @@ angular.module('docsApp')
 
     $scope.changeView = function (path) {
       $location.path(path);
+      $location.hash('top');
+      $anchorScroll();
     };
 
     $scope.$on('$viewContentLoaded', function() {

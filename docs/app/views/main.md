@@ -1,3 +1,4 @@
+<a name="top"></a>
 # Stormpath Node.js API
 
 This is the API documentation of the Stormpath SDK Node.js module/package.
@@ -6,11 +7,11 @@ This is the API documentation of the Stormpath SDK Node.js module/package.
 
 It provides applications safe user account and group/role management, authentication, best-practices password security, access control, automated security workflows like user registration, account email verification and password resets, social login with services like Facebook and Google Apps, secure sync for on-premise LDAP and Active Directory accounts, custom user and group data, and much more.
 
-## Install
+## <a name="install"></a>Install
 
     npm install stormpath
 
-## Quickstart
+## <a name="quickstart"></a>Quickstart
 
 This quickstart assumes you have [signed up for Stormpath](http://docs.stormpath.com/rest/quickstart/#sign-up-for-stormpath), [downloaded your API Key file](http://docs.stormpath.com/rest/quickstart/#get-an-api-key), and saved it to `$HOME/.stormpath/apiKey.properties`
 

@@ -10,7 +10,11 @@ angular.module('docsApp', [
   .config(function ($routeProvider, $locationProvider) {
     $locationProvider.html5Mode(true); //make our app's content SEO friendly!
     $routeProvider
-      .when('/', {
+      /*.when('/', {
+        templateUrl: 'views/main.html',
+        controller: 'MainCtrl'
+      })*/
+      .when('/home', {
         templateUrl: 'views/main.html',
         controller: 'MainCtrl'
       })
@@ -55,6 +59,6 @@ angular.module('docsApp', [
         controller: 'MainCtrl'
       })
       .otherwise({
-        redirectTo: '/'
+        redirectTo: '/home'
       });
   });
