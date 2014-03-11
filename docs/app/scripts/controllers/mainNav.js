@@ -1,10 +1,18 @@
 'use strict';
 
-function newItem(name) {
-  return {
+function newItem(name, href, children) {
+  var item = {
     name: name,
     href: '/' + name.toLowerCase()
   };
+
+  if (href) {
+    item.href = href;
+  }
+
+  item.children = children ? children : null;
+
+  return item;
 }
 
 angular.module('docsApp')
@@ -15,7 +23,17 @@ angular.module('docsApp')
     $scope.items = [
       newItem('Overview'),
       //newItem('stormpath'),
-      newItem('Client'),
+      newItem('Client', null, [
+        newItem('Client', '/client#ctor'),
+        newItem('createApplication', '/client#createApplication'),
+        newItem('createDirectory', '/client#createDirectory'),
+        newItem('getAccount', '/client#getAccount'),
+        newItem('getApplications', '/client#getApplications'),
+        newItem('getDirectories', '/client#getDirectories'),
+        newItem('getDirectory', '/client#getDirectory'),
+        newItem('getGroup', '/client#getGroup'),
+        newItem('getGroupMembership', '/client#getGroupMembership')
+      ]),
 
       newItem('authc/ApiKey'),
 

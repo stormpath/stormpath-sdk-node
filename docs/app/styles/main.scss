@@ -121,6 +121,10 @@ padding: 5px 30px 5px 30px;
     }
 }
 
+.sidebar li {
+    list-style-type: none;
+}
+
 /* Sidebar navigation */
 .nav-sidebar {
     //margin-right: -21px; /* 20px padding + 1px border */
@@ -180,4 +184,25 @@ padding: 5px 30px 5px 30px;
 
 .container {
     padding-bottom: 20px;
+}
+
+.container h3 {
+    font-family: Consolas, Monaco, 'Andale Mono', monospace;
+}
+
+.member {
+    color: #ffffff;
+    background-color: #3a87ad;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    padding: 2px 4px;
+    font-size: 11.844px;
+    font-weight: bold;
+    line-height: 14px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }

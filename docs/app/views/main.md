@@ -84,7 +84,9 @@ client.getGroupMembership('https://api.stormpath.com/v1/groupMemberships/2ObFs1E
 `callback` accepts two arguments: an `Error` object, followed by the resource returned, for example:
 
 ```javascript
-client.getApplication(appHref, function (err, application) {...});
+client.getApplication(appHref, function (err, application) {
+  console.log(application);
+});
 ```
 
 ### Create an Application
@@ -94,7 +96,7 @@ Registering your Application with Stormpath is as easy as creating a new `Applic
 ```javascript
 var app = {
   name: 'My Awesome Application!',
-  description: 'No, Srsly. It's Awesome.'
+  description: 'No, Srsly. It''s Awesome.'
 };
 
 client.createApplication(app, {createDirectory:true}, function onAppCreated(err, createdApp) {
@@ -112,7 +114,7 @@ Application later, for example:
 ```javascript
 var app = {
   name: 'My Awesome Application!',
-  description: 'No, Srsly. It's Awesome.'
+  description: 'No, Srsly. It''s Awesome.'
 };
 
 client.createApplication(app, function onAppCreated(err, createdApp) {
@@ -221,3 +223,4 @@ group.addAccount(accountOrAccountHref, onMembershipCreated(err, membership) {
   console.log(membership);
 });
 ```
+
