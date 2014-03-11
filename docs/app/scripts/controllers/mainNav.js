@@ -1,67 +1,76 @@
 'use strict';
 
-function newItem(name, href, children) {
+function anchor(name, aName) {
+  return {
+    name: name, //display name in the nav menu list
+    aName: (aName ? aName : name) //anchor 'name' attribute
+  };
+}
+
+function item(name, href, anchors) {
   var item = {
     name: name,
-    href: '/' + name.toLowerCase()
+    href: (href ? href : ('/' + name.toLowerCase()))
   };
 
-  if (href) {
-    item.href = href;
+  if (anchors) {
+    var children = [];
+    for(var i =0; i < anchors.length; i++) {
+      var anchor = anchors[i];
+      var child = {
+        name: anchor.name,
+        href: item.href + '#' + anchor.aName
+      };
+      children.push(child);
+    }
+    item.children = children;
   }
-
-  item.children = children ? children : null;
 
   return item;
 }
+
+function items() {
+  return [
+    item('Overview', '/'),
+    item('Client', null, [
+      anchor('Overview', 'top'),
+      anchor('Client', 'ctor'),
+      anchor('createApplication'),
+      anchor('createDirectory'),
+      anchor('getAccount'),
+      anchor('getApplication'),
+      anchor('getApplications'),
+      anchor('getCurrentTenant'),
+      anchor('getDirectories'),
+      anchor('getDirectory'),
+      anchor('getGroup'),
+      anchor('getGroupMembership')
+    ]),
+
+    item('ApiKey', '/apiKey', [
+      anchor('ApiKey', 'ctor')
+    ]),
+
+    item('Account'),
+    item('Application'),
+    item('CollectionResource', '/collectionResource'),
+    item('Directory'),
+    item('Group'),
+    item('GroupMembership', '/groupMembership'),
+    item('InstanceResource', '/instanceResource'),
+    item('Resource'),
+    item('ResourceError'),
+    item('Tenant')
+  ];
+}
+
 
 angular.module('docsApp')
   .controller('MainNavController', function ($scope,$location) {
 
     $scope.oneAtATime = true;
 
-    $scope.items = [
-      newItem('Overview'),
-      //newItem('stormpath'),
-      newItem('Client', null, [
-        newItem('Client', '/client#ctor'),
-        newItem('createApplication', '/client#createApplication'),
-        newItem('createDirectory', '/client#createDirectory'),
-        newItem('getAccount', '/client#getAccount'),
-        newItem('getApplications', '/client#getApplications'),
-        newItem('getDirectories', '/client#getDirectories'),
-        newItem('getDirectory', '/client#getDirectory'),
-        newItem('getGroup', '/client#getGroup'),
-        newItem('getGroupMembership', '/client#getGroupMembership')
-      ]),
-
-      newItem('authc/ApiKey'),
-
-      newItem('cache/Cache'),
-      newItem('cache/CacheEntry'),
-      newItem('cache/CacheManager'),
-      newItem('cache/CacheStats'),
-      newItem('cache/DisabledCache'),
-      newItem('cache/MemoryStore'),
-      newItem('cache/RedisStore'),
-
-      newItem('ds/DataStore'),
-      newItem('ds/RequestExecutor'),
-
-      newItem('error/ResourceError'),
-
-      newItem('resource/Account'),
-      newItem('resource/Application'),
-      newItem('resource/CollectionResource'),
-      newItem('resource/Directory'),
-      newItem('resource/DirectoryChildResource'),
-      newItem('resource/Group'),
-      newItem('resource/GroupMembership'),
-      newItem('resource/InstanceResource'),
-      newItem('resource/Resource'),
-      newItem('resource/ResourceFactory'),
-      newItem('resource/Tenant')
-    ];
+    $scope.items = items();
 
     $scope.changeView = function (path) {
       $location.path(path);

@@ -123,6 +123,7 @@ padding: 5px 30px 5px 30px;
 
 .sidebar li {
     list-style-type: none;
+    padding-bottom: 7px;
 }
 
 /* Sidebar navigation */
@@ -188,6 +189,13 @@ padding: 5px 30px 5px 30px;
 
 .container h3 {
     font-family: Consolas, Monaco, 'Andale Mono', monospace;
+}
+
+.container a[name]:not([href]){
+    display: block;
+    position: relative;
+    top: -96px;
+    visibility: hidden;
 }
 
 .member {
