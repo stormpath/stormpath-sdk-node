@@ -311,13 +311,15 @@ module.exports = function (grunt) {
     // Run some tasks in parallel to speed up the build process
     concurrent: {
       server: [
-        'compass:server'
+        'compass:server',
+        'markdown:all'
       ],
       test: [
         'compass'
       ],
       dist: [
         'compass:dist',
+        'markdown:all',
         'imagemin',
         'svgmin'
       ]
@@ -365,7 +367,14 @@ module.exports = function (grunt) {
             dest: '',
             ext: '.html'
           }
-        ]
+        ],
+        options: {
+          template: 'markdownTemplate.html'
+          /*markdownOptions: {
+            gfm: true,
+            highlight: 'auto'
+          }*/
+        }
       }
     }
   });
@@ -402,7 +411,7 @@ module.exports = function (grunt) {
   grunt.registerTask('build', [
     'clean:dist',
     'bower-install',
-    'markdown:all',
+    //'markdown:all',
     'useminPrepare',
     'concurrent:dist',
     'autoprefixer',

@@ -94,7 +94,7 @@ function doAppCrud(client) {
       console.log(app);
 
       //Read:
-      client.getResource(app.href, require('./lib/resource/Application'), function onReadApp(err, app2) {
+      client.getApplication(app.href, function onReadApp(err, app2) {
         if (err) throw err;
 
         console.log(app2);
@@ -134,7 +134,7 @@ function doDirCrud(client) {
       console.log(dir);
 
       //Read:
-      client.getResource(dir.href, require('./lib/resource/Directory'), function (err, dir2) {
+      client.getDirectory(dir.href, function (err, dir2) {
         if (err) throw err;
 
         console.log(dir2);

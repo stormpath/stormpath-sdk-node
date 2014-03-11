@@ -3,6 +3,12 @@ body {
     padding-top: 76px;
 }
 
+pre code {
+    display: inherit;
+    background-color: transparent;
+    padding: 0;
+}
+
 /* For angular-bootstrap-ui: */
 .nav, .pagination, .carousel, .panel-title a {
     cursor: pointer;
@@ -170,4 +176,8 @@ padding: 5px 30px 5px 30px;
 .placeholder img {
     display: inline-block;
     border-radius: 50%;
+}
+
+.container {
+    padding-bottom: 20px;
 }

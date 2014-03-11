@@ -47,5 +47,9 @@ angular.module('docsApp')
 
     $scope.changeView = function (path) {
       $location.path(path);
-    }
+    };
+
+    $scope.$on('$viewContentLoaded', function() {
+      Prism.highlightAll();
+    });
   });
