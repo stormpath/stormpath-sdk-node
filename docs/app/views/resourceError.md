@@ -1,0 +1,3 @@
+## ResourceError
+
+Document me!

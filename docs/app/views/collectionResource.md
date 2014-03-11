@@ -1,0 +1,3 @@
+## CollectionResource
+
+Document me!

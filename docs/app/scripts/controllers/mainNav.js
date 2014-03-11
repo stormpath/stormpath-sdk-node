@@ -8,7 +8,7 @@ function anchor(name, aName) {
 }
 
 function item(name, href, anchors) {
-  var item = {
+  var anItem = {
     name: name,
     href: (href ? href : ('/' + name.toLowerCase()))
   };
@@ -19,14 +19,14 @@ function item(name, href, anchors) {
       var anchor = anchors[i];
       var child = {
         name: anchor.name,
-        href: item.href + '#' + anchor.aName
+        href: anItem.href + '#' + anchor.aName
       };
       children.push(child);
     }
-    item.children = children;
+    anItem.children = children;
   }
 
-  return item;
+  return anItem;
 }
 
 function items() {
@@ -57,9 +57,9 @@ function items() {
     item('Directory'),
     item('Group'),
     item('GroupMembership', '/groupMembership'),
-    item('InstanceResource', '/instanceResource'),
-    item('Resource'),
-    item('ResourceError'),
+    //item('InstanceResource', '/instanceResource'),
+    //item('Resource'),
+    item('ResourceError', 'resourceError'),
     item('Tenant')
   ];
 }
@@ -77,6 +77,7 @@ angular.module('docsApp')
     };
 
     $scope.$on('$viewContentLoaded', function() {
+      /*global Prism:true*/
       Prism.highlightAll();
     });
   });
