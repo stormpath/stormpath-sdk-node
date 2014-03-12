@@ -2,7 +2,7 @@
 
 A `Client` instance is your starting point for all interactions with the Stormpath REST API - once you have a `Client` instance, you can do everything else.
 
-You can create (and customize) the Stormpath client in a number of ways, but at a bare minimum you need to specify your [Stormpath API Key](http://docs.stormpath.com/rest/quickstart/#get-an-api-ke):
+You can create (and customize) the Stormpath client in a number of ways, but at a bare minimum you need to specify your [Stormpath API Key](http://docs.stormpath.com/rest/quickstart/#get-an-api-key):
 
 You can do this easily in one of two ways:
 

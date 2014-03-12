@@ -83,5 +83,8 @@ angular.module('docsApp')
     $scope.$on('$viewContentLoaded', function() {
       /*global Prism:true*/
       Prism.highlightAll();
+
+      //apply table styles
+      angular.element(document.getElementsByTagName('table')).addClass('table table-striped table-hover table-curved');
     });
   });
