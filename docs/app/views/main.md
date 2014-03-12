@@ -224,3 +224,19 @@ group.addAccount(accountOrAccountHref, onMembershipCreated(err, membership) {
 });
 ```
 
+### Retrieve an Account's Groups
+
+It is often useful to obtain an Account's Groups so you can perform access control - for example, see if an account is in the 'Administrators' group before allowing them to see certain data:
+
+```javascript
+account.getGroups(function onGroups(err, groups) {
+  if (err) throw err;
+
+  groups.each(function(err, group) {
+    if (group.name === 'Administrators') {
+      console.log('We have an administrator!');
+    }
+  });
+
+});
+```
