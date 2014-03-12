@@ -56,7 +56,10 @@ function items() {
 
     item('Account'),
     item('Application'),
-    item('CollectionResource', '/collectionResource'),
+    item('CollectionResource', '/collectionResource', [
+      anchor('Overview', 'top'),
+      anchor('each')
+    ]),
     item('Directory'),
     item('Group'),
     item('GroupMembership', '/groupMembership'),
