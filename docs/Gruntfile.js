@@ -15,6 +15,8 @@ module.exports = function (grunt) {
   // Time how long tasks take. Can help when optimizing build times
   require('time-grunt')(grunt);
 
+  var rewriteRulesSnippet = require('grunt-connect-rewrite/lib/utils').rewriteRequest;
+
   // Define the configuration for all the tasks
   grunt.initConfig({
 
@@ -71,13 +73,37 @@ module.exports = function (grunt) {
         hostname: 'localhost',
         livereload: 35729
       },
+      rules: [
+        {from:'^/[^.]+$', to:'/index.html'}
+      ],
       livereload: {
         options: {
           open: true,
           base: [
             '.tmp',
             '<%= yeoman.app %>'
-          ]
+          ],
+          middleware: function (connect, options){
+            var middlewares = [];
+
+            // RewriteRules support
+            middlewares.push(rewriteRulesSnippet);
+
+            if (!Array.isArray(options.base)) {
+                options.base = [options.base];
+            }
+
+            var directory = options.directory || options.base[options.base.length - 1];
+            options.base.forEach(function (base) {
+                // Serve static files.
+                middlewares.push(connect.static(base));
+            });
+
+            // Make directory browse-able.
+            middlewares.push(connect.directory(directory));
+
+            return middlewares;
+          }
         }
       },
       test: {
@@ -390,6 +416,7 @@ module.exports = function (grunt) {
       'bower-install',
       'concurrent:server',
       'autoprefixer',
+      'configureRewriteRules',
       'connect:livereload',
       'watch'
     ]);
@@ -427,6 +454,8 @@ module.exports = function (grunt) {
   ]);
 
   grunt.loadNpmTasks('grunt-markdown');
+  grunt.loadNpmTasks('grunt-contrib-connect');
+  grunt.loadNpmTasks('grunt-connect-rewrite');
 
   grunt.registerTask('default', [
     'newer:jshint',
