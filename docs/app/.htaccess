@@ -38,6 +38,19 @@
     </IfModule>
 </IfModule>
 
+######
+# ------------------------------------------------------------------------------
+# | Re-writes for push state work-around - Thanks to http://bit.ly/1iaPoaT     |
+# ------------------------------------------------------------------------------
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteBase /
+  RewriteRule ^index\.html$ - [L]
+  RewriteCond %{REQUEST_FILENAME} !-f
+  RewriteCond %{REQUEST_FILENAME} !-d
+  RewriteRule . /nodejs/api/index.html [L]
+</IfModule>
+
 # ------------------------------------------------------------------------------
 # | Web fonts access                                                           |
 # ------------------------------------------------------------------------------
