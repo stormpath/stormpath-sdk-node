@@ -1,6 +1,4 @@
-# stormpath [![Build Status](https://secure.travis-ci.org/stormpath/stormpath-sdk-node.png?branch=master)](http://travis-ci.org/stormpath/stormpath-sdk-node)
-
-# Official Stormpath SDK for Node.js.
+# Official Stormpath SDK for Node.js [![Build Status](https://secure.travis-ci.org/stormpath/stormpath-sdk-node.png?branch=master)](http://travis-ci.org/stormpath/stormpath-sdk-node)
 
 Copyright &copy; 2014 Stormpath, Inc. and contributors.
 
