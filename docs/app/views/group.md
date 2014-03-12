@@ -98,7 +98,7 @@ As you can see, the [Collection](collectionResource) provided to the `callback` 
 If you don't want all accounts, and only want specific ones, you can search for them by specifying the _options_ argument with [group account](http://docs.stormpath.com/rest/product-guide/#group-accounts) search query parameters:
 
 ```javascript
-directory.getAccounts({username: '*foo*'}, function(err, accounts) {
+group.getAccounts({username: '*foo*'}, function(err, accounts) {
     if (err) throw err;
 
     accounts.each(function(err, account) {
@@ -106,7 +106,7 @@ directory.getAccounts({username: '*foo*'}, function(err, accounts) {
     });
 });
 ```
-The above code example would only print out directory accounts with the text fragment `foo` in the username.  See the Stormpath REST API Guide's [group account documentation](http://docs.stormpath.com/rest/product-guide/#group-accounts) for other supported query parameters, such as reference expansion.
+The above code example would only print out group accounts with the text fragment `foo` in the username.  See the Stormpath REST API Guide's [group account documentation](http://docs.stormpath.com/rest/product-guide/#group-accounts) for other supported query parameters, such as reference expansion.
 
 #### Parameters
 

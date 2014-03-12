@@ -58,7 +58,14 @@ function items() {
       anchor('toString')
     ]),
 
-    item('Account'),
+    item('Account', null, [
+      anchor('Overview', 'top'),
+      anchor('addToGroup'),
+      anchor('getGroups'),
+      anchor('getGroupMemberships'),
+      anchor('getDirectory'),
+      anchor('getTenant')
+    ]),
 
     item('Application', null, [
       anchor('Overview', 'top'),
@@ -104,7 +111,9 @@ function items() {
     //item('InstanceResource', '/instanceResource'),
     //item('Resource'),
 
-    item('ResourceError', 'resourceError'),
+    item('ResourceError', 'resourceError', [
+      anchor('Overview', 'top')
+    ]),
 
     item('Tenant', null, [
       anchor('Overview', 'top'),
