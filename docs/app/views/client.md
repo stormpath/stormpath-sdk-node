@@ -480,7 +480,7 @@ client.getDirectories(function(err, directories) {
 ```
 As you can see, the [Collection](collectionResource) provided to the `callback` has an `each` function that accepts its own callback.  The collection will iterate over all of the directories in the collection, and invoke the callback for each one.  The `offset` parameter indicates the index of the directory in the returned collection.  The `offset` parameter is optional - it may be omitted from the callback definition.
 
-If you don't want all direcotries, and only want specific ones, you can search for them by specifying the _options_ argument with [directory search](http://docs.stormpath.com/rest/product-guide/#tenant-directories-search) query parameters:
+If you don't want all directories, and only want specific ones, you can search for them by specifying the _options_ argument with [directory search](http://docs.stormpath.com/rest/product-guide/#tenant-directories-search) query parameters:
 
 ```javascript
 client.getDirectories({name: '*foo*'}, function(err, directories) {

@@ -66,7 +66,14 @@ function items() {
     //item('InstanceResource', '/instanceResource'),
     //item('Resource'),
     item('ResourceError', 'resourceError'),
-    item('Tenant')
+    item('Tenant', null, [
+      anchor('Overview', 'top'),
+      anchor('createApplication'),
+      anchor('createDirectory'),
+      anchor('getApplications'),
+      anchor('getDirectories'),
+      anchor('verifyAccountEmail')
+    ])
   ];
 }
 
