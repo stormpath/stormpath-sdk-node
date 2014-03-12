@@ -1,6 +1,6 @@
 ## Application
 
-An `Application` in Stormpath represents any real world piece of software that communicates with Stormpath to offload its user management and authentication needs. The application can be anything that can make a REST API call – a web application that you are writing, a web server like Apache or Nginx, a Linux operating system, etc – basically anything that a user can login to. A [tenant](tenant) administrator can register one or more applications with Stormpath.
+An `Application` in Stormpath represents any real world piece of software that communicates with Stormpath to offload its user management and authentication needs - like a Node.js application.
 
 You control who may login to an application by assigning (or ‘mapping’) one or more [Directories](directory) or [Groups](group) (generically both called _account stores_) to an application. The Accounts in these associated directories or groups (again, _account stores_) collectively form the application’s user base. These accounts are considered the application’s users and they can login to the application. Therefore, you can control user population that may login to an application by managing which account stores are assigned to the application.
 
@@ -205,6 +205,142 @@ application.createAccount(group, {expand:'directory'}, function onAccountCreated
 #### Returns
 
 void; the created [Group](group) returned from the server will be provided to the `callback` as the callback's second parameter.
+
+---
+
+<a name="getAccounts"></a>
+### <span class="member">method</span> getAccounts(*[options,]* callback)
+
+Retrieves a [collection](collectionResource) of the application's accessible [Account](account)s and provides the collection to the specified `callback`.
+
+If no options are specified, all of the application's accounts are retrieved.  If options (query parameters) are specified for a search, only those accounts matching the search will be retrieved.  If the search does not return any results, the collection will be empty.
+
+#### Usage
+
+If you want to retrieve _all_ of the application's accounts:
+
+```javascript
+application.getAccounts(function(err, accounts) {
+    if (err) throw err;
+
+    accounts.each(function(err, account, offset) {
+      console.log('Offset ' + offset + ', account: ' + account);
+    });
+});
+```
+As you can see, the [Collection](collectionResource) provided to the `callback` has an `each` function that accepts its own callback.  The collection will iterate over all of the accounts in the collection, and invoke the callback for each one.  The `offset` parameter indicates the index of the account in the returned collection.  The `offset` parameter is optional - it may be omitted from the callback definition.
+
+If you don't want all accounts, and only want specific ones, you can search for them by specifying the _options_ argument with [application account search](http://docs.stormpath.com/rest/product-guide/#application-accounts-search) query parameters:
+
+```javascript
+application.getAccounts({username: '*foo*'}, function(err, accounts) {
+    if (err) throw err;
+
+    accounts.each(function(err, account) {
+      console.log(account);
+    });
+});
+```
+The above code example would only print out accounts with the text fragment `foo` in the username.  See the Stormpath REST API Guide's [application account search documentation](http://docs.stormpath.com/rest/product-guide/#application-accounts-search) for other supported query parameters, such as reference expansion.
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>*`options`*</td>
+      <td>`object`</td>
+      <td>*optional*</td>
+      <td>Name/value pairs to use as query parameters, for example, for [application account search](http://docs.stormpath.com/rest/product-guide/#application-accounts-search) or reference expansion.</td>
+    </tr>
+    <tr>
+    <td>`callback`</td>
+      <td>function</td>
+      <td>required</td>
+      <td>The callback to execute upon resource retrieval. The 1st parameter is an `Error` object.  The 2nd parameter is a [collection](collectionResource) containing zero or more [Account](account) resources.</td>
+    </tr>
+  </tbody>
+</table>
+
+#### Returns
+
+void; the retrieved collection of `Account`s will be provided to the `callback` as the callback's second parameter.
+
+---
+
+<a name="getGroups"></a>
+### <span class="member">method</span> getGroups(*[options,]* callback)
+
+Retrieves a [collection](collectionResource) of the application's accessible [Group](group)s and provides the collection to the specified `callback`.
+
+If no options are specified, all of the application's groups are retrieved.  If options (query parameters) are specified for a search, only those groups matching the search will be retrieved.  If the search does not return any results, the collection will be empty.
+
+#### Usage
+
+If you want to retrieve _all_ of the application's groups:
+
+```javascript
+application.getGroups(function(err, groups) {
+    if (err) throw err;
+
+    groups.each(function(err, group, offset) {
+      console.log('Offset ' + offset + ', group: ' + group);
+    });
+});
+```
+As you can see, the [collection](collectionResource) provided to the `callback` has an `each` function that accepts its own callback.  The collection will iterate over all of the groups in the collection, and invoke the callback for each one.  The `offset` parameter indicates the index of the group in the returned collection.  The `offset` parameter is optional - it may be omitted from the callback definition.
+
+If you don't want all groups, and only want specific ones, you can search for them by specifying the _options_ argument with [application group search](http://docs.stormpath.com/rest/product-guide/#application-groups-search) query parameters:
+
+```javascript
+application.getGroups({name: '*bar*'}, function(err, groups) {
+    if (err) throw err;
+
+    groups.each(function(err, group) {
+      console.log(group);
+    });
+});
+```
+The above code example would only print out groups with the text fragment `foo` in their name.  See the Stormpath REST API Guide's [application group search documentation](http://docs.stormpath.com/rest/product-guide/#application-groups-search) for other supported query parameters, such as reference expansion.
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>*`options`*</td>
+      <td>`object`</td>
+      <td>*optional*</td>
+      <td>Name/value pairs to use as query parameters, for example, for [application group search](http://docs.stormpath.com/rest/product-guide/#application-groups-search) or reference expansion.</td>
+    </tr>
+    <tr>
+    <td>`callback`</td>
+      <td>function</td>
+      <td>required</td>
+      <td>The callback to execute upon resource retrieval. The 1st parameter is an `Error` object.  The 2nd parameter is a [collection](collectionResource) containing zero or more [Group](group) resources.</td>
+    </tr>
+  </tbody>
+</table>
+
+#### Returns
+
+void; the retrieved collection of `Group`s will be provided to the `callback` as the callback's second parameter.
 
 ---
 

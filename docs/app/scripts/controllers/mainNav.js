@@ -74,7 +74,13 @@ function items() {
       anchor('each')
     ]),
 
-    item('Directory'),
+    item('Directory', null, [
+      anchor('createAccount'),
+      anchor('createGroup'),
+      anchor('getAccounts'),
+      anchor('getGroups'),
+      anchor('getTenant')
+    ]),
 
     item('Group'),
 
