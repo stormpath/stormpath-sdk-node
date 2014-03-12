@@ -95,7 +95,11 @@ function items() {
       anchor('getTenant')
     ]),
 
-    item('GroupMembership', '/groupMembership'),
+    item('GroupMembership', '/groupMembership', [
+      anchor('Overview', 'top'),
+      anchor('getAccount'),
+      anchor('getGroup')
+    ]),
 
     //item('InstanceResource', '/instanceResource'),
     //item('Resource'),
