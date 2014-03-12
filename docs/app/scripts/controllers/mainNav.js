@@ -53,12 +53,15 @@ function items() {
     ]),
 
     item('ApiKey', '/apiKey', [
-      anchor('ApiKey', 'ctor')
+      anchor('Overview', 'top'),
+      anchor('ApiKey', 'ctor'),
+      anchor('toString')
     ]),
 
     item('Account'),
 
     item('Application', null, [
+      anchor('Overview', 'top'),
       anchor('authenticateAccount'),
       anchor('createAccount'),
       anchor('createGroup'),
@@ -75,6 +78,7 @@ function items() {
     ]),
 
     item('Directory', null, [
+      anchor('Overview', 'top'),
       anchor('createAccount'),
       anchor('createGroup'),
       anchor('getAccounts'),

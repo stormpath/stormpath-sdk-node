@@ -163,9 +163,9 @@ application.createGroup(group, onGroupCreation(err, createdGroup) {
 You can also specify options to control things like reference expansion:
 
 ```javascript
-application.createAccount(group, {expand:'directory'}, function onAccountCreated(err, createdAccount) {
+application.createGroup(group, {expand:'directory'}, function onAccountCreated(err, createdGroup) {
   if (err) throw err;
-  console.log(createdAccount);
+  console.log(createdGroup);
 });
 ```
 
