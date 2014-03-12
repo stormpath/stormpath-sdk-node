@@ -2,7 +2,7 @@
   "name": "stormpath",
   "version": "0.0.0",
   "main": "lib/stormpath.js",
-  "description": "Official Node.js SDK for the Stormpath User Management REST API",
+  "description": "Official Stormpath SDK for Node.js",
   "keywords": [
     "stormpath",
     "api",
@@ -11,13 +11,17 @@
     "client",
     "user",
     "user management",
+    "user login"
     "identity",
     "identity management",
     "account",
+    "account login",
     "login",
     "authentication",
     "authorization",
-    "access control"
+    "access control",
+    "password",
+    "password hash"
   ],
   "license": "Apache-2.0",
   "homepage": "https://github.com/stormpath/stormpath-sdk-node",
