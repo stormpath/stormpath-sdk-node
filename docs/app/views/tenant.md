@@ -6,6 +6,8 @@ It might help to think of a `Tenant` as a Stormpath customer. As a Stormpath Ten
 
 In the Stormpath SDK specifically, your `Tenant` resource can be thought of as your global starting point. You can access everything in your tenant space by accessing your tenant instance first and then interacting with its other linked resources (applications collection, directories collection, etc).
 
+**Since**: 0.1
+
 ---
 
 <a name="createApplication"></a>

@@ -70,6 +70,8 @@ If you do not prefer automatic pagination, you can just ignore this feature: don
 
 Once you exhaust an `items` array, you will then be required request the collection's `href` and [pagination query parameters](http://docs.stormpath.com/rest/product-guide/#pagination) to obtain further pages of data.
 
+**Since**: 0.1
+
 ---
 
 <a name="each"></a>

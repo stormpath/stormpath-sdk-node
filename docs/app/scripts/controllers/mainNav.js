@@ -31,10 +31,12 @@ function item(name, href, anchors) {
 
 function items() {
   return [
+
     item('Overview', '/home', [
       anchor('Install', 'install'),
       anchor('Quickstart', 'quickstart')
     ]),
+
     item('Client', null, [
       anchor('Overview', 'top'),
       anchor('Client', 'ctor'),
@@ -55,17 +57,34 @@ function items() {
     ]),
 
     item('Account'),
-    item('Application'),
+
+    item('Application', null, [
+      anchor('authenticateAccount'),
+      anchor('createAccount'),
+      anchor('createGroup'),
+      anchor('getAccounts'),
+      anchor('getGroups'),
+      anchor('getTenant'),
+      anchor('sendPasswordResetEmail'),
+      anchor('verifyPasswordResetToken')
+    ]),
+
     item('CollectionResource', '/collectionResource', [
       anchor('Overview', 'top'),
       anchor('each')
     ]),
+
     item('Directory'),
+
     item('Group'),
+
     item('GroupMembership', '/groupMembership'),
+
     //item('InstanceResource', '/instanceResource'),
     //item('Resource'),
+
     item('ResourceError', 'resourceError'),
+
     item('Tenant', null, [
       anchor('Overview', 'top'),
       anchor('createApplication'),
