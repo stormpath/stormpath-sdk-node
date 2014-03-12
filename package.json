@@ -32,13 +32,16 @@
     "url": "https://github.com/stormpath/stormpath"
   },
   "scripts": {
-    "test": "grunt"
+    "test": "grunt",
+    "coverage": "node ./node_modules/istanbul/lib/cli cover ./node_modules/mocha/bin/_mocha -- -R spec"
   },
   "dependencies": {
     "underscore": "~1.5.2",
     "underscore.string": "~2.3.3",
     "properties-parser": "~0.1.1",
-    "request": "~2.33.0"
+    "request": "~2.33.0",
+    "moment": "~2.5.1",
+    "node-uuid": "~1.4.0"
   },
   "devDependencies": {
     "grunt": "~0.4.2",
@@ -54,6 +57,9 @@
     "grunt-mocha-test": "~0.8.2",
     "sinon": "~1.7.3",
     "mocha-sinon": "~1.1.0",
-    "sinon-chai": "~2.4.0"
+    "sinon-chai": "~2.4.0",
+    "istanbul": "~0.2.4",
+    "lodash": "~2.4.1",
+    "nock": "~0.27.2"
   }
 }

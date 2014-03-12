@@ -2,7 +2,7 @@
 /*jshint unused: false*/
 'use strict';
 
-var apiKeys = require('../lib/apikey'),
+var authc = require('../lib/authc'),
   propsParser = require('properties-parser'),
   chai = require('chai'),
   should = chai.should();
@@ -10,15 +10,12 @@ var apiKeys = require('../lib/apikey'),
 chai.use(require('sinon-chai'));
 require('mocha-sinon');
 
-var ApiKey = apiKeys.ApiKey,
-  loadApiKey = apiKeys.loadApiKey;
-
 var home = process.env[(process.platform === 'win32' ? 'USERPROFILE' : 'HOME')];
 var apiKeyFilePath = home + '/.stormpath/apiKey.properties2';
 
 describe('ApiKey', function () {
   it('should have id and secret properties', function () {
-    var apiKey = new ApiKey('foo', 'bar');
+    var apiKey = new authc.ApiKey('foo', 'bar');
     apiKey.id.should.equal('foo');
     apiKey.secret.should.equal('bar');
   });

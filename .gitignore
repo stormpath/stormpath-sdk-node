@@ -1,5 +1,7 @@
 /node_modules/
+/coverage
 npm-debug.log
 *.ipr
 *.iws
 *.iml
+.idea

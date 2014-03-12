@@ -1,0 +1,216 @@
+/* Move down content because we have a fixed navbar that is 50px tall */
+body {
+    padding-top: 76px;
+}
+
+pre code {
+    display: inherit;
+    background-color: transparent;
+    padding: 0;
+}
+
+/* For angular-bootstrap-ui: */
+.nav, .pagination, .carousel, .panel-title a {
+    cursor: pointer;
+}
+
+.navbar {
+    height: 76px;
+    padding-top: 14px;
+    font-size: 16px;
+}
+
+.navbar-inverse .navbar-nav>li>a:hover, .navbar-inverse .navbar-nav>li>a:focus {
+    color: #267ffc;
+}
+
+.navbar-inverse .navbar-nav > li > a {
+    color: white;
+}
+.navbar-brand {
+    padding: 5px 0 0 13px;
+}
+
+.vertical-divider {
+    height: 27px;
+    width: 1px;
+    margin: 13px 6px 0 6px;
+    background-color: #535353;
+}
+
+.cta-button {
+    border: 0;
+    color: #ffffff;
+    letter-spacing: 0.05em;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    -ms-border-radius: 3px;
+    -o-border-radius: 3px;
+    border-radius: 3px;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(5%, #2ac017), color-stop(100%, #2caa1b));
+    background-image: -webkit-linear-gradient(#2ac017 5%, #2caa1b 100%);
+    background-image: -moz-linear-gradient(#2ac017 5%, #2caa1b 100%);
+    background-image: -o-linear-gradient(#2ac017 5%, #2caa1b 100%);
+    background-image: linear-gradient(#2ac017 5%, #2caa1b 100%);
+    -webkit-box-shadow: 0px 1px 0px 0px #6ee45e inset;
+    -moz-box-shadow: 0px 1px 0px 0px #6ee45e inset;
+    box-shadow: 0px 1px 0px 0px #6ee45e inset
+}
+
+.cta-button:hover, .cta-button:focus, .cta-button:active {
+    color: #ffffff;
+    background-image: -webkit-gradient(linear, 50% 0%, 50% 100%, color-stop(5%, #33cc00), color-stop(100%, #30bf00));
+    background-image: -webkit-linear-gradient(#33cc00 5%, #30bf00 100%);
+    background-image: -moz-linear-gradient(#33cc00 5%, #30bf00 100%);
+    background-image: -o-linear-gradient(#33cc00 5%, #30bf00 100%);
+    background-image: linear-gradient(#33cc00 5%, #30bf00 100%)
+}
+
+#signUpButton {
+    margin: 12px 15px 0 15px;
+    padding: 5px 30px 5px 30px;
+}
+
+#signUpButton:hover {
+    color: white;
+}
+
+/*
+margin: 12px 15px 0 15px;
+padding: 5px 30px 5px 30px;
+*/
+
+.browsehappy {
+    margin: 0.2em 0;
+    background: #ccc;
+    color: #000;
+    padding: 0.2em 0;
+}
+
+/*
+ * Global add-ons
+ */
+
+.sub-header {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #eee;
+}
+
+/*
+ * Sidebar
+ */
+
+/* Hide for mobile, show later */
+.sidebar {
+    display: none;
+}
+
+@media (min-width: 768px) {
+    .sidebar {
+        position: fixed;
+        top: 76px;
+        bottom: 0;
+        left: 0;
+        z-index: 1000;
+        display: block;
+        padding: 20px;
+        overflow-x: hidden;
+        overflow-y: auto; /* Scrollable contents if viewport is shorter than content. */
+        background-color: #f5f5f5;
+        border-right: 1px solid #eee;
+    }
+}
+
+.sidebar li {
+    list-style-type: none;
+    padding-bottom: 7px;
+}
+
+/* Sidebar navigation */
+.nav-sidebar {
+    //margin-right: -21px; /* 20px padding + 1px border */
+    margin-bottom: 20px;
+    margin-left: -20px;
+}
+
+.nav-sidebar > li > a {
+    padding-right: 20px;
+    padding-left: 20px;
+}
+
+.nav-sidebar > .active > a {
+    color: #fff;
+    background-color: #428bca;
+}
+
+/*
+ * Main content
+ */
+
+.main {
+    padding-top: 20px;
+}
+
+/*@media (min-width: 768px) {
+    .main {
+        padding-right: 40px;
+        padding-left: 40px;
+    }
+}*/
+
+.main .page-header {
+    margin-top: 0;
+}
+
+/*
+ * Placeholder dashboard ideas
+ */
+.placeholders {
+    margin-bottom: 30px;
+    text-align: center;
+}
+
+.placeholders h4 {
+    margin-bottom: 0;
+}
+
+.placeholder {
+    margin-bottom: 20px;
+}
+
+.placeholder img {
+    display: inline-block;
+    border-radius: 50%;
+}
+
+.container {
+    padding-bottom: 20px;
+}
+
+.container h3 {
+    font-family: Consolas, Monaco, 'Andale Mono', monospace;
+}
+
+.container a[name]:not([href]){
+    display: block;
+    position: relative;
+    top: -96px;
+    visibility: hidden;
+}
+
+.member {
+    color: #ffffff;
+    background-color: #3a87ad;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    padding: 2px 4px;
+    font-size: 11.844px;
+    font-weight: bold;
+    line-height: 14px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
