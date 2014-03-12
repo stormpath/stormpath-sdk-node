@@ -10,7 +10,7 @@ function anchor(name, aName) {
 function item(name, href, anchors) {
   var anItem = {
     name: name,
-    href: (href ? href : ('/' + name.toLowerCase()))
+    href: (href ? href : name.toLowerCase())
   };
 
   if (anchors) {
@@ -32,7 +32,7 @@ function item(name, href, anchors) {
 function items() {
   return [
 
-    item('Overview', '/home', [
+    item('Overview', 'home', [
       anchor('Install', 'install'),
       anchor('Quickstart', 'quickstart')
     ]),
@@ -52,7 +52,7 @@ function items() {
       anchor('getGroupMembership')
     ]),
 
-    item('ApiKey', '/apiKey', [
+    item('ApiKey', 'apiKey', [
       anchor('Overview', 'top'),
       anchor('ApiKey', 'ctor'),
       anchor('toString')
@@ -79,7 +79,7 @@ function items() {
       anchor('verifyPasswordResetToken')
     ]),
 
-    item('CollectionResource', '/collectionResource', [
+    item('CollectionResource', 'collectionResource', [
       anchor('Overview', 'top'),
       anchor('each')
     ]),
@@ -102,13 +102,13 @@ function items() {
       anchor('getTenant')
     ]),
 
-    item('GroupMembership', '/groupMembership', [
+    item('GroupMembership', 'groupMembership', [
       anchor('Overview', 'top'),
       anchor('getAccount'),
       anchor('getGroup')
     ]),
 
-    //item('InstanceResource', '/instanceResource'),
+    //item('InstanceResource', 'instanceResource'),
     //item('Resource'),
 
     item('ResourceError', 'resourceError', [
