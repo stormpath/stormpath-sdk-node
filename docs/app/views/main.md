@@ -1,4 +1,3 @@
-<a name="top"></a>
 # Stormpath Node.js API
 
 This is the API documentation of the Stormpath SDK Node.js module/package.

@@ -69,7 +69,7 @@ function items() {
 
 
 angular.module('docsApp')
-  .controller('MainNavController', function ($scope,$location, $anchorScroll) {
+  .controller('MainNavController', function ($scope,$location, $window) {
 
     $scope.oneAtATime = true;
 
@@ -77,8 +77,7 @@ angular.module('docsApp')
 
     $scope.changeView = function (path) {
       $location.path(path);
-      $location.hash('top');
-      $anchorScroll();
+      $window.scrollTo(0,0);
     };
 
     $scope.$on('$viewContentLoaded', function() {

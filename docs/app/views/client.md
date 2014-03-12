@@ -1,4 +1,3 @@
-<a name="top"></a>
 ## Client
 
 A `Client` instance is your starting point for all interactions with the Stormpath REST API - once you have a `Client` instance, you can do everything else.
