@@ -86,7 +86,14 @@ function items() {
       anchor('getTenant')
     ]),
 
-    item('Group'),
+    item('Group', null, [
+      anchor('Overview', 'top'),
+      anchor('addAccount'),
+      anchor('getAccounts'),
+      anchor('getAccountMemberships'),
+      anchor('getDirectory'),
+      anchor('getTenant')
+    ]),
 
     item('GroupMembership', '/groupMembership'),
 
