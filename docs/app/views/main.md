@@ -55,7 +55,7 @@ client.getApplications(function(err, apps) {
   if (err) throw err;
 
   apps.each(function(err, app, offset) { //offset is an optional argument
-    console.log(offset + ": " + app;
+    console.log(offset + ": " + app);
   });
 });
 
