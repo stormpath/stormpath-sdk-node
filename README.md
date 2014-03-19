@@ -18,6 +18,10 @@ The Quickstart is on the front page of the [Stormpath Node.js API Documentation]
 
 ## Change Log
 
+### 0.1.2
+
+Fixed Readme to reflect 0.1.1 changes (this release does not affect code at all).
+
 ### 0.1.1
 
 Minor bugfix [point release](https://github.com/stormpath/stormpath-sdk-node/issues?milestone=1&state=closed) that fixes a [bug](https://github.com/stormpath/stormpath-sdk-node/issues/11) where authentication fails when caching is enabled.
