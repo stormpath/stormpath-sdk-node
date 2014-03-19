@@ -13,7 +13,7 @@ Even the Stormpath Admin Console and API is represented as an `Application` (nam
 <a name="authenticateAccount"></a>
 ### <span class="member">method</span> authenticateAccount(authenticationRequest, callback)
 
-Performs an authentication attempt for an application account via the supplied `authenticationRequest` argument, providing the authentication result to the specified `callback`.
+Performs an authentication attempt for an application account via the supplied `authenticationRequest` argument, providing the returned [AuthenticationResult](authenticationResult) to the specified `callback`.
 
 #### Usage
 
@@ -29,7 +29,10 @@ application.authenticateAccount(authcRequest, function onAuthcResult(err, result
   if (err) throw err;
 
   //if successful, the result will have an account field with the successfully authenticated account:
-  console.log(result.account);
+  result.getAccount(function(err, account) {
+      if (err) throw err;
+      console.log(account);
+  });
 };
 ```
 
@@ -55,14 +58,14 @@ application.authenticateAccount(authcRequest, function onAuthcResult(err, result
       <td>`callback`</td>
       <td>function</td>
       <td>required</td>
-      <td>The callback to execute upon server response. The 1st parameter is an [error](resourceError).  The 2nd parameter is an `object` result that contains the successfully authenticated account available via the `account` field, for example, `result.account`.</td>
+      <td>The callback to execute upon server response. The 1st parameter is an [error](resourceError).  The 2nd parameter is an [AuthenticationResult](authenticationResult) instance that contains the successfully authenticated account available via its `getAccount` method, for example, `result.getAccount(function(err, account){...});`.</td>
     </tr>
   </tbody>
 </table>
 
 #### Returns
 
-void; If the authentication fails, the callback's first parameter (`err`) will report the failure.  If the authentication succeeds, the success result will will be provided to the `callback` as the callback's second parameter.  The successfully authenticated account may be obtained via the result object's `account` field, for example `result.account`.
+void; If the authentication fails, the callback's first parameter (`err`) will report the failure.  If the authentication succeeds, the success [AuthenticationResult](authenticationResult) will will be provided to the `callback` as the callback's second parameter.  The successfully authenticated account may be obtained via the result's `getAccount` method, for example, `result.getAccount(function(err, account){...});`.
 
 ---
 
