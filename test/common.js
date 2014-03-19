@@ -18,6 +18,7 @@ module.exports = {
   chai: chai,
   sinon: sinon,
   assert: assert,
+  expect: chai.expect,
   config: process.env,
   should: should,
   moment: moment,
