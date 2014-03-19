@@ -64,10 +64,6 @@ function createAccount() {
     givenName: 'Jean-Luc',
     surname: 'Picard',
     username: unique('jlpicard'),
-
-    //Change the email value below to be your REAL email address if you want to see the
-    //password reset email workflow later
-
     email: accountEmail,
     password: 'Changeme1!'
   };
@@ -87,6 +83,7 @@ function createAccount() {
 function updateAccount() {
 
   account.middleName = 'Make it so.';
+
   return account.save(function(err, savedAccount) {
     if (err) throw err;
     account = savedAccount;
