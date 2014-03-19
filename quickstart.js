@@ -9,7 +9,7 @@
 // Enjoy!
 // ==================================================
 
-var stormpath = require('./lib/stormpath');
+var stormpath = require('stormpath');
 
 var homeDir = process.env[(process.platform === 'win32' ? 'USERPROFILE' : 'HOME')];
 var apiKeyFilePath = homeDir + '/.stormpath/apiKey.properties';
