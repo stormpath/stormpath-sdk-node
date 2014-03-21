@@ -1,8 +1,6 @@
 /* jshint -W030 */
 'use strict';
 
-var common = require('./common');
-
 var ApiKey = require('../lib/authc/ApiKey');
 
 describe('authc', function () {
