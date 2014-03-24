@@ -6,7 +6,7 @@ var homeDir = process.env[(process.platform === 'win32' ? 'USERPROFILE' : 'HOME'
 var apiKeyFilePath = homeDir + '/.stormpath/apiKey.properties';
 var client = null;
 
-var itemsPerPage = 25;
+var itemsPerPage = 100;
 
 stormpath.loadApiKey(apiKeyFilePath, function (err, apiKey) {
   if (err) {
@@ -35,7 +35,7 @@ function listAppsAndDirs(clientOrTenant) {
 
     var start = Date.now();
     var counter = 0;var hundred = Date.now();
-    apps.each(function iterator(app, offset) {
+    apps.each(function iterator(app, offset, cb) {
       if (err) {
         throw err;
       }
@@ -45,6 +45,7 @@ function listAppsAndDirs(clientOrTenant) {
         console.log('items total: ' + counter);
         hundred = Date.now();
       }
+      cb();
     }, function onAllItems(err) {
       if (err){
         console.error(err);
