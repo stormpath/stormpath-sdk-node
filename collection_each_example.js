@@ -35,7 +35,7 @@ function listAppsAndDirs(clientOrTenant) {
 
     var start = Date.now();
     var counter = 0;var hundred = Date.now();
-    apps.each(function iterator(app, offset, cb) {
+    apps.each(function iterator(app, cb) {
       if (err) {
         throw err;
       }
