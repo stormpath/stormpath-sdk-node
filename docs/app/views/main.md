@@ -161,7 +161,7 @@ You can authenticate an account during login:
 ```javascript
 var authcRequest = {
   username: 'jlpicard', //username can be an email address too
-  password 'Changeme1!'
+  password: 'Changeme1!'
 };
 
 createdApp.authenticateAccount(authcRequest, function onAuthcResult(err, result) {
