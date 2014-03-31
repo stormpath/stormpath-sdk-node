@@ -34,6 +34,10 @@ angular.module('docsApp', [
         templateUrl: 'views/application.html',
         controller: 'MainCtrl'
       })
+      .when('/authenticationResult', {
+        templateUrl: 'views/authenticationResult.html',
+        controller: 'MainCtrl'
+      })
       .when('/collectionResource', {
         templateUrl: 'views/collectionResource.html',
         controller: 'MainCtrl'

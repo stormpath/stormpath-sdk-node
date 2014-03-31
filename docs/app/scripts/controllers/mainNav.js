@@ -79,6 +79,11 @@ function items() {
       anchor('verifyPasswordResetToken')
     ]),
 
+    item('AuthenticationResult', 'authenticationResult', [
+      anchor('Overview', 'top'),
+      anchor('getAccount')
+    ]),
+
     item('CollectionResource', 'collectionResource', [
       anchor('Overview', 'top'),
       anchor('each')
