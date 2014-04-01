@@ -1,6 +1,6 @@
 'use strict';
 
-var stormpath = require('stormpath');
+var stormpath = require('./lib');
 
 var homeDir = process.env[(process.platform === 'win32' ? 'USERPROFILE' : 'HOME')];
 var apiKeyFilePath = homeDir + '/.stormpath/apiKey.properties';
@@ -26,7 +26,11 @@ function onTenantReady(tenant) {
 
 function listAppsAndDirs(clientOrTenant) {
 
-  clientOrTenant.getApplications(function (err, apps) {
+  clientOrTenant.getApplications()
+    .search('Stormpath')
+    .orderBy({name: 1})
+    .expand({accounts: {offset: 0, limit: 60}, groups: true})
+    .exec(function (err, apps) {
     if (err) throw err;
 
     apps.each(function (err, app, offset) {
