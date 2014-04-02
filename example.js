@@ -44,6 +44,21 @@ function listAppsAndDirs(clientOrTenant) {
 
         accts.each(function (err, acct, offset) {
           console.log(acct);
+          acct.customData.boom = 'test';
+
+          acct.customData.save(function(err, customData){
+            if (err) throw err;
+            console.log(customData);
+            if (customData.boom !== 'test'){
+              throw new Error('custom data should have field "boom" with value "test" ');
+            }
+            customData.deleteField('boom', function(){
+              if (err) throw err;
+              if (!!customData.boom){
+                throw new Error('custom data should not have field "boom"');
+              }
+            });
+          });
         });
       });
 
