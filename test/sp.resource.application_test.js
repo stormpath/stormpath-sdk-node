@@ -6,6 +6,7 @@ var Account = require('../lib/resource/Account');
 var Group = require('../lib/resource/Group');
 var Tenant = require('../lib/resource/Tenant');
 var Application = require('../lib/resource/Application');
+var AuthenticationResult = require('../lib/resource/AuthenticationResult');
 var DataStore = require('../lib/ds/DataStore');
 
 describe('Resources: ', function () {
@@ -34,7 +35,8 @@ describe('Resources: ', function () {
           app = {loginAttempts: {href: 'boom!'}};
           application = new Application(app, dataStore);
           createResourceStub = sandbox
-            .stub(dataStore, 'createResource', function (href, options, attempt, cb) {
+            .stub(dataStore, 'createResource', function () {
+              var cb = Array.prototype.slice.call(arguments).pop();
               cb();
             });
           cbSpy = sandbox.spy();
@@ -66,10 +68,12 @@ describe('Resources: ', function () {
 
           // call without optional param
           createResourceStub.should.have.been
-            .calledWith(app.loginAttempts.href, {expand: 'account'}, expectedLoginAttempt1, cbSpy);
+            .calledWith(app.loginAttempts.href, {expand: 'account'}, expectedLoginAttempt1,
+              AuthenticationResult, cbSpy);
           // call with optional param
           createResourceStub.should.have.been
-            .calledWith(app.loginAttempts.href, {expand: 'account'}, expectedLoginAttempt2, cbSpy);
+            .calledWith(app.loginAttempts.href, {expand: 'account'}, expectedLoginAttempt2,
+              AuthenticationResult, cbSpy);
         });
       });
     });

@@ -96,7 +96,7 @@ Registering your Application with Stormpath is as easy as creating a new `Applic
 ```javascript
 var app = {
   name: 'My Awesome Application!',
-  description: 'No, Srsly. It''s Awesome.'
+  description: 'No, Srsly. It\'s Awesome.'
 };
 
 client.createApplication(app, {createDirectory:true}, function onAppCreated(err, createdApp) {
@@ -114,7 +114,7 @@ Application later, for example:
 ```javascript
 var app = {
   name: 'My Awesome Application!',
-  description: 'No, Srsly. It''s Awesome.'
+  description: 'No, Srsly. It\'s Awesome.'
 };
 
 client.createApplication(app, function onAppCreated(err, createdApp) {
@@ -161,14 +161,17 @@ You can authenticate an account during login:
 ```javascript
 var authcRequest = {
   username: 'jlpicard', //username can be an email address too
-  password 'Changeme1!'
+  password: 'Changeme1!'
 };
 
 createdApp.authenticateAccount(authcRequest, function onAuthcResult(err, result) {
   if (err) throw err;
 
-  //if successful, the result will have an account field of the successfully authenticated account:
-  console.log(result.account);
+  //if successful, you can obtain the account by calling result.getAccount:
+  return result.getAccount(function(err2, account) { //this is cached and will execute immediately (no server request):
+    if(err) throw err;
+    console.log(account);
+  });
 };
 ```
 
@@ -181,7 +184,6 @@ var emailOrUsername = 'jlpicard'; //or we could have entered 'jlpicard@starfleet
 
 createdApp.sendPasswordResetEmail(emailOrUsername, function onEmailSent(err, token) {
   if (err) throw err;
-
   console.log(token);
 });
 ```
