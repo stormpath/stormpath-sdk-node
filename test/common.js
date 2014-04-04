@@ -13,6 +13,10 @@ var sinonChai = require("sinon-chai");
 var Stormpath = require('../lib');
 chai.use(sinonChai);
 
+function random(){
+  return '' + Math.random()*Date.now();
+}
+
 module.exports = {
   _: _,
   chai: chai,
@@ -22,5 +26,6 @@ module.exports = {
   config: process.env,
   should: should,
   moment: moment,
-  Stormpath: Stormpath
+  Stormpath: Stormpath,
+  random: random
 };
