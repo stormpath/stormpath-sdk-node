@@ -9,6 +9,14 @@ module.exports = function (grunt) {
 
   // Project configuration.
   grunt.initConfig({
+    mochaTest: {
+      test: {
+        src: ['test/**/*_test.js']
+      },
+      live: {
+        src: ['test/**/*_live.js']
+      }
+    },
     mocha_istanbul: {
       coverage: {
         src: 'test', // the folder, not the files,
@@ -53,8 +61,11 @@ module.exports = function (grunt) {
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-watch');
   grunt.loadNpmTasks('grunt-mocha-istanbul');
+  grunt.loadNpmTasks('grunt-mocha-test');
 
   // Default task.
+  grunt.registerTask('test', ['mochaTest:test']);
+  grunt.registerTask('live', ['mochaTest:live']);
   grunt.registerTask('coverage', ['mocha_istanbul:coverage']);
   grunt.registerTask('default', ['jshint', 'coverage']);
 };
