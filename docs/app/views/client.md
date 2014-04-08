@@ -75,6 +75,12 @@ var client = new stormpath.Client(options);
       <td>required</td>
       <td>Options object that must have at least an <code>apiKey</code> field.</td>
     </tr>
+    <tr>
+      <td><code>options.cacheOptions</code></td>
+      <td><code>object</code></td>
+      <td>optional</td>
+      <td>View [Caching](caching) for details</td>
+    </tr>
   </tbody>
 </table>
 
