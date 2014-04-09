@@ -73,9 +73,9 @@ describe('ds:', function () {
       });
       it('should return resource error in case of incorrect request', function (done) {
         var cbSpy;
-        var uri = '/v1/test';
+        var uri = 'https://api.stormpath.com/v1/test';
         var res = {test: 'boom'};
-        nock(uri).get('/').reply(400, res);
+        nock(uri).get('/v1/test').reply(400, res);
         function cb(err, body) {
           err.should.be.an.instanceof(ResourceError);
           expect(body).to.be.null;
@@ -84,7 +84,7 @@ describe('ds:', function () {
         }
         cbSpy = sinon.spy(cb);
 
-        reqExec.execute({uri: '/test', method:'GET', body:{}}, cbSpy);
+        reqExec.execute({uri: uri, method:'GET'}, cbSpy);
       });
     });
 
