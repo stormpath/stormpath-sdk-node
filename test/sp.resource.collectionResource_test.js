@@ -10,6 +10,7 @@ var CollectionResource = require('../lib/resource/CollectionResource');
 var DataStore = require('../lib/ds/DataStore');
 
 describe('Resources: ', function () {
+  "use strict";
   var apiKey = {id: 1, secret: 2};
   describe('CollectionResource class', function () {
     describe('constructor: ', function () {
@@ -121,38 +122,44 @@ describe('Resources: ', function () {
     });
 
     describe('call to each method', function () {
+      function iterator(){Array.prototype.slice.call(arguments).pop()();}
+
       describe('with no items', function () {
-        var cr, cbSpy;
+        var cr, iteratorSpy, cbSpy;
         before(function () {
           cr = new CollectionResource();
+          iteratorSpy = sinon.spy(iterator);
           cbSpy = sinon.spy();
 
-          cr.each(cbSpy);
+          cr.each(iteratorSpy, cbSpy);
         });
 
         it('should not call callback', function () {
           /* jshint -W030 */
-          cbSpy.should.not.have.been.called;
+          iteratorSpy.should.not.have.been.called;
+          cbSpy.should.have.been.calledOnce;
         });
       });
 
       describe('with empty items', function () {
-        var cr, cbSpy;
+        var cr, iteratorSpy, cbSpy;
         before(function () {
           cr = new CollectionResource({});
+          iteratorSpy = sinon.spy();
           cbSpy = sinon.spy();
 
-          cr.each(cbSpy);
+          cr.each(iteratorSpy, cbSpy);
         });
 
         it('should not call callback', function(){
           /* jshint -W030 */
-          cbSpy.should.not.have.been.called;
+          iteratorSpy.should.not.have.been.called;
+          cbSpy.should.have.been.calledOnce;
         });
       });
 
       describe('with items list', function () {
-        var cr, cbSpy;
+        var cr, sandbox, iteratorSpy, cbSpy, getResourceStub;
         var ds = new DataStore({apiKey: apiKey});
         var data = {
           offset: 0,
@@ -162,28 +169,39 @@ describe('Resources: ', function () {
         ]};
 
         before(function () {
-          cr = new CollectionResource(data, null, Tenant, null);
-          cbSpy = sinon.spy();
+          cr = new CollectionResource(data, null, Tenant, ds);
+          sandbox = sinon.sandbox.create();
+          iteratorSpy = sandbox.spy(iterator);
+          cbSpy = sandbox.spy();
+          getResourceStub = sandbox.stub(ds, 'getResource',
+            function onGetResource(href, nextQuery, ctor, cb){
+              cb(null, {});
+            });
+          cr.each(iteratorSpy, cbSpy);
+        });
 
-          cr.each(cbSpy);
+        after(function(){
+          sandbox.restore();
         });
 
         it('should call callback for each item', function(){
           /* jshint -W030 */
-          cbSpy.should.have.been.calledTwice;
+          iteratorSpy.should.have.been.calledTwice;
+          cbSpy.should.have.been.calledOnce;
         });
 
         it('should increase offset counter', function(){
           _.each(data.items, function(item, index){
-            var spyCall = cbSpy.getCall(index);
-            spyCall.should.have.been.calledWith(null, item, index);
+            var spyCall = iteratorSpy.getCall(index);
+            spyCall.args[spyCall.args.length -1].should.be.a('function');
+            spyCall.should.have.been.calledWith(item);
           });
         });
       });
 
       describe('when all items in current page are processed', function () {
         var sandbox;
-        var cr, cbSpy, getResourceStub;
+        var cr, iteratorSpy, getResourceStub;
         var ds = new DataStore({apiKey: apiKey});
         var query = {q: 'boom!'};
         var data = {
@@ -199,7 +217,7 @@ describe('Resources: ', function () {
         var nextQuery = {
           q: query.q,
           offset: 2,
-          limit: 2
+          limit: 100
         };
         var data2 = {
           query: query,
@@ -210,28 +228,29 @@ describe('Resources: ', function () {
             new Tenant({href:''}, ds)
           ]};
 
-        before(function () {
+        before(function (done) {
           sandbox = sinon.sandbox.create();
 
           getResourceStub = sandbox.stub(ds, 'getResource',
             function onGetResource(href, nextQuery, ctor, cb){
-              if (nextQuery.offset === 4){
+              if (nextQuery.offset > 3){
                 return cb(null, {});
               }
-              cb(null, data2);
+              cb(null, new CollectionResource(data2, query, Tenant, ds));
           });
 
           cr = new CollectionResource(data, query, Tenant, ds);
-          cbSpy = sinon.spy();
+          iteratorSpy = sandbox.spy(iterator);
 
-          cr.each(cbSpy);
+          cr.each(iteratorSpy, done);
         });
 
         after(function(){
           sandbox.restore();
         });
+
         it('should request next page', function(){
-          cbSpy.callCount.should.be.equal(4);
+          iteratorSpy.callCount.should.be.equal(4);
           /* jshint -W030 */
           getResourceStub.should.have.been.calledTwice;
           /* jshint +W030 */
