@@ -233,8 +233,8 @@ describe('Resources: ', function () {
 
           getResourceStub = sandbox.stub(ds, 'getResource',
             function onGetResource(href, nextQuery, ctor, cb){
-              if (nextQuery.offset > 3){
-                return cb(null, {});
+              if (nextQuery.offset > 2){
+                return cb(null, null);
               }
               cb(null, new CollectionResource(data2, query, Tenant, ds));
           });
