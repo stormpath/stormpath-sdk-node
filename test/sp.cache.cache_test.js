@@ -7,8 +7,8 @@ var Cache = require('../lib/cache/Cache');
 var CacheStats = require('../lib/cache/CacheStats');
 
 var MemoryStore = require('../lib/cache/MemoryStore');
-var MemcachedStore = require('../lib/cache/MemcachedStore');
-var RedisStore = require('../lib/cache/RedisStore');
+//var MemcachedStore = require('../lib/cache/MemcachedStore');
+//var RedisStore = require('../lib/cache/RedisStore');
 
 describe('Cache module', function () {
   "use strict";
@@ -251,35 +251,35 @@ describe('Cache module', function () {
   describe('MemoryStore store', function(){
     testStore(new Cache(MemoryStore));
   });
-  describe('Redis store', function(){
-    var cache = new Cache(RedisStore);
-    var ms = new MemoryStore();
-    cache.store.redis = {
-      get: ms.get,
-      set: ms.set,
-      expire: function(){},
-      del: ms.delete,
-      flushdb: ms.clear,
-      dbsize: ms.size
-    };
-    testStore(cache);
-  });
-  describe('Memcached store', function(){
-    var cache = new Cache(MemcachedStore);
-    var ms = new MemoryStore();
-    cache.store.redis = {
-      get: ms.get,
-      set: ms.set,
-      expire: function(){},
-      del: ms.delete,
-      flush: ms.clear,
-      stats: function(cb){
-        ms.size(function(err, size){
-          cb(null, [{curr_items:size}]);
-        });
-      }
-    };
-    testStore(new Cache(MemcachedStore));
-  });
+//  describe('Redis store', function(){
+//    var cache = new Cache(RedisStore);
+//    var ms = new MemoryStore();
+//    cache.store.redis = {
+//      get: ms.get,
+//      set: ms.set,
+//      expire: function(){},
+//      del: ms.delete,
+//      flushdb: ms.clear,
+//      dbsize: ms.size
+//    };
+//    testStore(cache);
+//  });
+//  describe('Memcached store', function(){
+//    var cache = new Cache(MemcachedStore);
+//    var ms = new MemoryStore();
+//    cache.store.redis = {
+//      get: ms.get,
+//      set: ms.set,
+//      expire: function(){},
+//      del: ms.delete,
+//      flush: ms.clear,
+//      stats: function(cb){
+//        ms.size(function(err, size){
+//          cb(null, [{curr_items:size}]);
+//        });
+//      }
+//    };
+//    testStore(new Cache(MemcachedStore));
+//  });
 
 });
