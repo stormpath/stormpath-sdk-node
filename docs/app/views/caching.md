@@ -1,9 +1,9 @@
-## CACHING
+## Caching
 
-The caching mechanism enables us to store the state of an already accessed resource in a cache store.
- If we accessed the resource again and the data inside the cache hasn’t yet expired,
-  we would get the resource directly from the cache store.
-  By doing so, we can reduce network traffic and still have access to some
+The caching mechanism enables you to store the state of an already accessed resource in a cache store.
+ If you accessed the resource again and the data inside the cache hasn’t yet expired,
+  you would get the resource directly from the cache store.
+  By doing so, you can reduce network traffic and still have access to some
   of the resources even if there is a connectivity problem with `Stormpath`.
   Be aware, however, that when using a persistent cache store like `Redis`,
   if the data changes quickly on `Stormpath` and the `TTL` and `TTI` are set to a large value,
@@ -45,6 +45,8 @@ The caching mechanism enables us to store the state of an already accessed resou
 
     var client = new stormpath.Client({apiKey: apiKey, cacheOptions: cacheOptions});
     ```
+
+**Since**: 0.1.2
 
 #### Cache options parameters
 
