@@ -19,7 +19,7 @@ The caching mechanism enables you to store the state of an already accessed reso
     var apiKey = new stormpath.ApiKey(process.env['STORMPATH_API_KEY_ID'], process.env['STORMPATH_API_KEY_SECRET']);
 
     var cacheOptions = {
-      store: MemoryStore,
+      store: "memory",
       connection: {},
       options: {},
       ttl: 300,
@@ -34,10 +34,11 @@ The caching mechanism enables you to store the state of an already accessed reso
             port: 6739,
           },
           options: {
+            // redis client options
           }
         },
-        directories {
-          store: MemoryStore,
+        directories: {
+          store: "memory",
           ttl: 60,
         }
       }
@@ -103,7 +104,7 @@ The caching mechanism enables you to store the state of an already accessed reso
     </tr>
     <tr>
       <td><code>regions</code></td>
-      <td><code>number</code></td>
+      <td><code>object</code></td>
       <td>optional</td>
       <td>Each resource “region” can have a separate cache implementation.
         E.g. [Application](application) resources are stored in [Redis](redis)
@@ -167,7 +168,7 @@ Memcached provider.
       store: 'memcached',
       connection: '192.168.0.102:11212',
       options: {
-        poolSize: 10
+        poolSize: 10    // memcached option
       },
       ttl: 300,
       tti: 300,
@@ -199,65 +200,28 @@ Memcached provider.
       <td><code>store</code></td>
       <td><code>string|function</code></td>
       <td>optional, <code>global</code></td>
-      <td> To enable `Memcached` should be equal to `memcached`
-        or `MemcachedStore`
+      <td> Should be equal to string `'memcached'`
+        or reference to `MemcachedStore` constructor function.
       </td>
     </tr>
     <tr>
       <td><code>connection</code></td>
-      <td><code>string</code>, <code>array</code>,
-        <code>object</code></td>
+      <td>
+        <code>object</code>,<code>string</code>,<code>array</code>
+      </td>
       <td>optional, <code>global</code></td>
       <td>
-        Server locations.
-        The server locations is designed to work with different formats.
-        These formats are all internally parsed to the correct format so
-        our consistent hashing scheme can work with it.
-        </br>You can either use:
-        <ul>
-          <li><code>String</code>, this only works if you have are running a single server instance of Memcached. It's as easy a suppling a string in the following format: hostname:port. For example 192.168.0.102:11212 This would tell the client to connect to host 192.168.0.102 on port number 11212.</li>
-          <li><code>Array</code>, if you are running a single server you would only have to supply one item in the array. The array format is particularly useful if you are running a cluster of Memcached servers. This will allow you to spread the keys and load between the different servers. Giving you higher availability for when one of your Memcached servers goes down.</li>
-          <li><code>Object</code>, when you are running a cluster of Memcached servers it could happen to not all server can allocate the same amount of memory. You might have a Memcached server with 128mb, 512, 128mb. If you would the array structure all servers would have the same weight in the consistent hashing scheme. Spreading the keys 33/33/33 over the servers. But as server 2 has more memory available you might want to give it more weight so more keys get stored on that server. When you are using a object, the key should represent the server location syntax and the value the weight of the server. By default all servers have a weight of 1. `{ '192.168.0.102:11212': 1, '192.168.0.103:11212': 2, '192.168.0.104:11212': 1 }` would generate a 25/50/25 distribution of the keys.</li>
-        </ul>
+        Passed to <code>new Memcached(<strong>connection</strong>, options);</code>
       </td>
     </tr>
     <tr>
       <td><code>options</code></td>
       <td><code>object</code></td>
       <td>optional, <code>global</code></td>
-      <td>There 2 kinds of options that can be configured.
-        A global configuration that will be inherited by all
-        Memcached servers instances and a client specific configuration
-        that can be used to overwrite the globals. The options should be
-        formatted in an JavaScript object.
-        They both use the same object structure:
-        <ul>
-            <li><code>maxKeySize</code>: <em>250</em>, the max size of they key allowed by the Memcached server.</li>
-            <li><code>maxExpiration</code>: <em>2592000</em>, the max expiration of keys by the Memcached server
-            in seconds.</li>
-            <li><code>maxValue</code>: <em>1048576</em>, the max size of a value that is allowed by the
-            Memcached server.</li>
-            <li><code>poolSize</code>: <em>10</em>, the maximum connections we can allocate in our connection pool.</li>
-            <li><code>algorithm</code>: <em>crc32</em>, the hashing algorithm that should be used to generate
-            the hashRing values.</li>
-            <li><code>reconnect</code>: <em>18000000</em>, when the server is marked as dead we will attempt to
-            reconnect every x milliseconds.</li>
-            <li><code>timeout</code>: <em>5000</em>, after x ms the server should send a timeout if we can't
-            connect. This will also be used close the connection if we are idle.</li>
-            <li><code>retries</code>: <em>5</em>, How many times to retry socket allocation for given request</li>
-            <li><code>failures</code>: <em>5</em>, Number of times a server may have issues before marked dead.</li>
-            <li><code>retry</code>: <em>30000</em>, time to wait between failures before putting server back in
-            service.</li>
-            <li><code>remove</code>: <em>false</em>, when the server is marked as dead you can remove it from
-            the pool so all other will receive the keys instead.</li>
-            <li><code>failOverServers</code>: <em>undefined</em>, the ability use these servers as failover when
-            the dead server get's removed from the consistent hashing scheme. This must be
-            an array of servers confirm the server_locations specification.</li>
-            <li><code>keyCompression</code>: <em>true</em>, compress keys using md5 if they exceed the
-            maxKeySize option.</li>
-            <li><code>idle</code>: <em>5000</em>, the idle timeout for the connections.</li>
-        </ul>
-        </td>
+      <td>
+        <p>Passed to <code>new Memcached(connection, <strong>options</strong>);</code></p>
+        <p>See the <a href="https://github.com/3rd-Eden/node-memcached" target="_blank">node-memcached docmenation</a> for complete option list.<p>
+      </td>
     </tr>
     <tr>
       <td><code>ttl</code></td>
@@ -277,7 +241,7 @@ Memcached provider.
     </tr>
     <tr>
       <td><code>regions</code></td>
-      <td><code>number</code></td>
+      <td><code>object</code></td>
       <td>optional</td>
       <td>Each resource “region” can have a separate cache options.
       </td>
@@ -305,7 +269,7 @@ Redis provider.
       store: 'redis',
       connection: { host: '127.0.0.1', port: 6379 },
       options: {
-        poolSize: 10
+        return_buffers: false   //redis option
       },
       ttl: 300,
       tti: 300,
@@ -337,57 +301,27 @@ Redis provider.
       <td><code>store</code></td>
       <td><code>string|function</code></td>
       <td>optional, <code>global</code></td>
-      <td> To enable `Memcached` should be equal to `memcached`
-        or `MemcachedStore`
+      <td> Should be equal to string `'redis'` or reference to `RedisStore` constructor function.
       </td>
     </tr>
     <tr>
       <td><code>connection</code></td>
-      <td><code>string</code>, <code>array</code>,
-        <code>object</code></td>
+      <td>
+        <code>object</code>
+      </td>
       <td>optional, <code>global</code></td>
       <td>
-        A new redis connection,
-        port defaults to 6379 and host defaults to 127.0.0.1. If you have redis-server running on the same computer as node, then the defaults for port and host are probably fine.
+        An object that allows you to specity <code>host</code> or <code>port</code>, as strings, for your redis connection.  This is is passed to <code>redis.createClient(<strong>host</strong>,<strong>port</strong>,options)</code> and will default to 127.0.0.1 and 6379 if not provided.
       </td>
     </tr>
     <tr>
       <td><code>options</code></td>
       <td><code>object</code></td>
       <td>optional, <code>global</code></td>
-      <td>There 2 kinds of options that can be configured.
-        A global configuration that will be inherited by all
-        Memcached servers instances and a client specific configuration
-        that can be used to overwrite the globals. The options should be
-        formatted in an JavaScript object.
-        They both use the same object structure:
-        <ul>
-            <li><code>maxKeySize</code>: <em>250</em>, the max size of they key allowed by the Memcached server.</li>
-            <li><code>maxExpiration</code>: <em>2592000</em>, the max expiration of keys by the Memcached server
-            in seconds.</li>
-            <li><code>maxValue</code>: <em>1048576</em>, the max size of a value that is allowed by the
-            Memcached server.</li>
-            <li><code>poolSize</code>: <em>10</em>, the maximum connections we can allocate in our connection pool.</li>
-            <li><code>algorithm</code>: <em>crc32</em>, the hashing algorithm that should be used to generate
-            the hashRing values.</li>
-            <li><code>reconnect</code>: <em>18000000</em>, when the server is marked as dead we will attempt to
-            reconnect every x milliseconds.</li>
-            <li><code>timeout</code>: <em>5000</em>, after x ms the server should send a timeout if we can't
-            connect. This will also be used close the connection if we are idle.</li>
-            <li><code>retries</code>: <em>5</em>, How many times to retry socket allocation for given request</li>
-            <li><code>failures</code>: <em>5</em>, Number of times a server may have issues before marked dead.</li>
-            <li><code>retry</code>: <em>30000</em>, time to wait between failures before putting server back in
-            service.</li>
-            <li><code>remove</code>: <em>false</em>, when the server is marked as dead you can remove it from
-            the pool so all other will receive the keys instead.</li>
-            <li><code>failOverServers</code>: <em>undefined</em>, the ability use these servers as failover when
-            the dead server get's removed from the consistent hashing scheme. This must be
-            an array of servers confirm the server_locations specification.</li>
-            <li><code>keyCompression</code>: <em>true</em>, compress keys using md5 if they exceed the
-            maxKeySize option.</li>
-            <li><code>idle</code>: <em>5000</em>, the idle timeout for the connections.</li>
-        </ul>
-        </td>
+      <td>
+        <p>Options object that will be passed to <code>redis.createClient(host,port,<strong>options</strong>)</code></p>
+        <p>See the <a href="https://github.com/mranney/node_redis" target="_blank">node-redis docmenation</a> for complete option list.</p>
+      </td>
     </tr>
     <tr>
       <td><code>ttl</code></td>
@@ -407,7 +341,7 @@ Redis provider.
     </tr>
     <tr>
       <td><code>regions</code></td>
-      <td><code>number</code></td>
+      <td><code>object</code></td>
       <td>optional</td>
       <td>Each resource “region” can have a separate cache options.
       </td>
