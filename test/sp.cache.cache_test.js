@@ -1,4 +1,5 @@
 var common = require('./common');
+var _ = common._;
 var sinon = common.sinon;
 var should = common.should;
 var random = common.random;
@@ -7,8 +8,8 @@ var Cache = require('../lib/cache/Cache');
 var CacheStats = require('../lib/cache/CacheStats');
 
 var MemoryStore = require('../lib/cache/MemoryStore');
-//var MemcachedStore = require('../lib/cache/MemcachedStore');
-//var RedisStore = require('../lib/cache/RedisStore');
+var MemcachedStore = require('../lib/cache/MemcachedStore');
+var RedisStore = require('../lib/cache/RedisStore');
 
 describe('Cache module', function () {
   "use strict";
@@ -42,17 +43,19 @@ describe('Cache module', function () {
 
   });
 
-  function testStore(cache) {
-    describe('get entry', function () {
+  function testStore(opt) {
+    var cache;
+    before(function(){
+      cache = opt.cache;
+    });
 
+    describe('get entry', function () {
       describe('if entry exists', function () {
+        var sandbox, entry, hitsCounter;
         var key = 'key' + random();
         var data = 'entry' + random();
-        var entry;
-        var hitsCounter;
         var initialTime = 100500;
         var tickDelta = 150;
-        var sandbox;
         before(function (done) {
           sandbox = sinon.sandbox.create();
           var clock = sandbox.useFakeTimers(initialTime, 'Date');
@@ -245,41 +248,71 @@ describe('Cache module', function () {
   }
 
   describe('Default store', function(){
-    testStore(new Cache());
+    testStore({cache: new Cache()});
   });
 
   describe('MemoryStore store', function(){
-    testStore(new Cache(MemoryStore));
+    testStore({cache: new Cache(MemoryStore)});
   });
-//  describe('Redis store', function(){
-//    var cache = new Cache(RedisStore);
-//    var ms = new MemoryStore();
-//    cache.store.redis = {
-//      get: ms.get,
-//      set: ms.set,
-//      expire: function(){},
-//      del: ms.delete,
-//      flushdb: ms.clear,
-//      dbsize: ms.size
-//    };
-//    testStore(cache);
-//  });
-//  describe('Memcached store', function(){
-//    var cache = new Cache(MemcachedStore);
-//    var ms = new MemoryStore();
-//    cache.store.redis = {
-//      get: ms.get,
-//      set: ms.set,
-//      expire: function(){},
-//      del: ms.delete,
-//      flush: ms.clear,
-//      stats: function(cb){
-//        ms.size(function(err, size){
-//          cb(null, [{curr_items:size}]);
-//        });
-//      }
-//    };
-//    testStore(new Cache(MemcachedStore));
-//  });
+
+  describe('Redis store', function(){
+    var opt = {cache:null}, sandbox;
+    before(function(){
+      sandbox = sinon.sandbox.create();
+      var ms = new MemoryStore();
+      _.extend(ms,{
+        expire: function(){},
+        del: ms.delete,
+        flushdb: ms.clear,
+        dbsize: ms.size
+      });
+
+      sandbox.stub(RedisStore, '_createClient', function(){
+        return ms;
+      });
+
+      opt.cache = new Cache(RedisStore);
+    });
+    after(function(){
+      sandbox.restore();
+    });
+    describe('...', function(){
+      testStore(opt);
+    });
+  });
+
+  describe('Memcached store', function(){
+    var opt = {cache:null}, sandbox;
+    before(function(){
+      sandbox = sinon.sandbox.create();
+      var ms = new MemoryStore();
+      ms._set = ms.set;
+      _.extend(ms,{
+        expire: function(){},
+        del: ms.delete,
+        flush: ms.clear,
+        stats: function(cb){
+          ms.size(function(err, size){
+            cb(null, [{curr_items:size}]);
+          });
+        }
+      });
+
+      sandbox.stub(ms, 'set', function(key,val, ttl, cb){
+        return ms._set(key, val, cb);
+      });
+      sandbox.stub(MemcachedStore, '_createClient', function(){
+        return ms;
+      });
+
+      opt.cache = new Cache(MemcachedStore);
+    });
+    after(function(){
+      sandbox.restore();
+    });
+    describe('...', function(){
+      testStore(opt);
+    });
+  });
 
 });
