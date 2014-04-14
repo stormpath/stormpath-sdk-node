@@ -36,7 +36,8 @@
     "url": "https://github.com/stormpath/stormpath"
   },
   "scripts": {
-    "test": "grunt"
+    "test": "grunt",
+    "coverage": "node ./node_modules/istanbul/lib/cli cover ./node_modules/mocha/bin/_mocha"
   },
   "dependencies": {
     "underscore": "~1.5.2",
