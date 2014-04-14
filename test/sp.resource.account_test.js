@@ -224,6 +224,55 @@ describe('Resources: ', function () {
         // assert
         account.customData.should.be.an.instanceOf(CustomData);
       });
+
+      describe('get custom data', function () {
+        describe('if custom data not set', function () {
+          var account = new Account(dataStore);
+
+          function getCustomDataWithoutHref() {
+            account.getCustomData();
+          }
+
+          it('should throw unhandled exception', function () {
+            getCustomDataWithoutHref.should
+              .throw(/cannot read property 'href' of undefined/i);
+          });
+        });
+
+        describe('if custom data set', function () {
+          var sandbox, account, getResourceStub, cbSpy, opt;
+          before(function () {
+            sandbox = sinon.sandbox.create();
+            opt = {};
+            account = new Account({customData: {href: 'boom!'}}, dataStore);
+            getResourceStub = sandbox.stub(dataStore, 'getResource',
+              function (href, options, ctor, cb) {
+                cb();
+              });
+            cbSpy = sandbox.spy();
+
+            // call without optional param
+            account.getCustomData(cbSpy);
+            // call with optional param
+            account.getCustomData(opt, cbSpy);
+          });
+          after(function () {
+            sandbox.restore();
+          });
+
+          it('should get groups resource', function () {
+            /* jshint -W030 */
+            getResourceStub.should.have.been.calledTwice;
+            cbSpy.should.have.been.calledTwice;
+            /* jshint +W030 */
+
+            // call without optional param
+            getResourceStub.should.have.been.calledWith('boom!', null, CustomData, cbSpy);
+            // call with optional param
+            getResourceStub.should.have.been.calledWith('boom!', opt, CustomData, cbSpy);
+          });
+        });
+      });
     });
   });
 });
