@@ -1,9 +1,9 @@
-var common = require('./common');
+var common = require('../common');
 var should = common.should;
 var random = common.random;
 
-var Cache = require('../lib/cache/Cache');
-var RedisStore = require('../lib/cache/RedisStore');
+var Cache = require('../../lib/cache/Cache');
+var RedisStore = require('../../lib/cache/RedisStore');
 
 describe('Cache module - live', function () {
 
