@@ -2,11 +2,15 @@ var common = require('./common');
 var sinon = common.sinon;
 
 var Group = require('../lib/resource/Group');
-var GroupMembership = require('../lib/resource/GroupMembership');
 var Account = require('../lib/resource/Account');
 var DataStore = require('../lib/ds/DataStore');
+var CustomData = require('../lib/resource/CustomData');
+var instantiate = require('../lib/resource/ResourceFactory').instantiate;
+var GroupMembership = require('../lib/resource/GroupMembership');
+
 
 describe('Resources: ', function () {
+  "use strict";
   describe('Account resource class', function () {
     var dataStore = new DataStore({apiKey: {id: 1, secret: 2}});
 
@@ -198,6 +202,27 @@ describe('Resources: ', function () {
               GroupMembership,
               cbSpy);
         });
+      });
+    });
+
+    describe('custom data', function(){
+      var sandbox, account, accountJSON;
+      before(function () {
+        sandbox = sinon.sandbox.create();
+        // arrange
+        accountJSON = {
+          href: 'account_href',
+          customData: {href: 'custom_data_href'}
+        };
+        // act
+        account = instantiate(Account, accountJSON, dataStore);
+      });
+      after(function () {
+        sandbox.restore();
+      });
+      it('should wrap account field customData in CustomData class', function(){
+        // assert
+        account.customData.should.be.an.instanceOf(CustomData);
       });
     });
   });

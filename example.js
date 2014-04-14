@@ -52,7 +52,7 @@ function listAppsAndDirs(clientOrTenant) {
             if (customData.boom !== 'test'){
               throw new Error('custom data should have field "boom" with value "test" ');
             }
-            customData.deleteField('boom', function(){
+            customData.remove('boom', function(){
               if (err) throw err;
               if (!!customData.boom){
                 throw new Error('custom data should not have field "boom"');
