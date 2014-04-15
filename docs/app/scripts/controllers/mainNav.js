@@ -89,6 +89,15 @@ function items() {
       anchor('each')
     ]),
 
+    item('CustomData', 'customData', [
+      anchor('Overview', 'top'),
+      anchor('Create Custom Data', 'create'),
+      anchor('Retrieve Custom Data', 'get'),
+      anchor('Update Custom Data', 'update'),
+      anchor('Delete Custom Data', 'delete'),
+      anchor('Delete Custom Data Field', 'removeField')
+    ]),
+
     item('Directory', null, [
       anchor('Overview', 'top'),
       anchor('createAccount'),
