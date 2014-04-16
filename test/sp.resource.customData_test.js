@@ -2,36 +2,50 @@
 var common = require('./common');
 var sinon = common.sinon;
 
-var CustomData = require('../lib/resource/CustomData');
+var Group = require('../lib/resource/Group');
+var Account = require('../lib/resource/Account');
 var DataStore = require('../lib/ds/DataStore');
+var instantiate = require('../lib/resource/ResourceFactory').instantiate;
 
 describe('Resources: ', function () {
-  "use strict";
   describe('CustomData resource class', function () {
-    var dataStore = new DataStore({apiKey: {id: 1, secret: 2}});
+    function removeFieldTest(Ctor, href) {
+      describe(Ctor.name + ' remove custom data field', function () {
+        var dataStore;
+        var sandbox, fieldName,
+          dcr, dcrJSON,
+          deleteHref, cbSpy, deleteResourceStub, saveResourceStub;
 
-    function removeFieldTest(href){
-      describe('remove field', function () {
-        var sandbox, fieldName, customData,
-          deleteHref, cbSpy, deleteResourceStub;
-        before(function(){
+        before(function (done) {
           sandbox = sinon.sandbox.create();
           // arrange
-          cbSpy = sandbox.spy();
-          deleteResourceStub = sandbox.stub(dataStore, 'deleteResource',function(uri, cb){
+          dataStore = new DataStore({apiKey: {id: 1, secret: 2}});
+          fieldName = 'field_name_to_remove';
+          dcrJSON = {
+            href: 'some_href',
+            customData: {href: href}
+          };
+          dcrJSON.customData[fieldName] = 'boom!';
+          dcr = instantiate(Ctor, dcrJSON, null, dataStore);
+
+          cbSpy = sandbox.spy(done);
+          deleteResourceStub = sandbox.stub(dcr.customData.dataStore, 'deleteResource', function (uri, cb) {
             deleteHref = uri;
             cb();
           });
-          fieldName = 'field_name_to_remove';
-          customData = new CustomData({href: href}, dataStore);
+
+          saveResourceStub = sandbox.stub(dataStore, 'saveResource', function () {
+            arguments[arguments.length -1]();
+          });
+
+          // act
+          dcr.customData.remove(fieldName);
+          dcr.save(cbSpy);
         });
-        after(function(){
+        after(function () {
           sandbox.restore();
         });
-        it('should make delete request with field name in href',function(){
-          // act
-          customData.remove(fieldName, cbSpy);
-
+        it('should make delete request with field name in href', function () {
           //assert
           deleteResourceStub.should.have.been.calledOnce;
           cbSpy.should.have.been.calledOnce;
@@ -41,7 +55,7 @@ describe('Resources: ', function () {
       });
     }
 
-    removeFieldTest('/custom/data/href');
-    removeFieldTest('/custom/data/href/');
+    removeFieldTest(Account, '/custom/data/href');
+    removeFieldTest(Group, '/custom/data/href/');
   });
 });

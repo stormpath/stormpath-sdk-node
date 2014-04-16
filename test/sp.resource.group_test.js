@@ -220,7 +220,7 @@ describe('Resources: ', function () {
           customData: {href: 'custom_data_href'}
         };
         // act
-        group = instantiate(Account, groupJSON, dataStore);
+        group = instantiate(Account, groupJSON, null, dataStore);
       });
       after(function () {
         sandbox.restore();

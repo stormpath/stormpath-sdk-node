@@ -215,7 +215,7 @@ describe('Resources: ', function () {
           customData: {href: 'custom_data_href'}
         };
         // act
-        account = instantiate(Account, accountJSON, dataStore);
+        account = instantiate(Account, accountJSON, null, dataStore);
       });
       after(function () {
         sandbox.restore();
