@@ -45,7 +45,8 @@
     "properties-parser": "~0.1.1",
     "request": "~2.33.0",
     "moment": "~2.5.1",
-    "node-uuid": "~1.4.0"
+    "node-uuid": "~1.4.0",
+    "async": "~0.7.0"
   },
   "devDependencies": {
     "grunt": "~0.4.2",
