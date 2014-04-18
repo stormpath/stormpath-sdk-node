@@ -91,11 +91,9 @@ function items() {
 
     item('CustomData', 'customData', [
       anchor('Overview', 'top'),
-      anchor('Create Custom Data', 'create'),
-      anchor('Retrieve Custom Data', 'get'),
-      anchor('Update Custom Data', 'update'),
-      anchor('Delete Custom Data', 'delete'),
-      anchor('Delete Custom Data Field', 'removeField')
+      anchor('delete', 'delete'),
+      anchor('remove', 'remove'),
+      anchor('save', 'save')
     ]),
 
     item('Directory', null, [
