@@ -8,6 +8,7 @@ var DataStore = require('../lib/ds/DataStore');
 var instantiate = require('../lib/resource/ResourceFactory').instantiate;
 
 describe('Resources: ', function () {
+  "use strict";
   describe('CustomData resource class', function () {
     function removeFieldTest(Ctor, href) {
       describe(Ctor.name + ' remove custom data field', function () {
@@ -16,7 +17,7 @@ describe('Resources: ', function () {
           dcr, dcrJSON,
           deleteHref, cbSpy, deleteResourceStub, saveResourceStub;
 
-        before(function (done) {
+        before(function () {
           sandbox = sinon.sandbox.create();
           // arrange
           dataStore = new DataStore({apiKey: {id: 1, secret: 2}});
@@ -28,7 +29,7 @@ describe('Resources: ', function () {
           dcrJSON.customData[fieldName] = 'boom!';
           dcr = instantiate(Ctor, dcrJSON, null, dataStore);
 
-          cbSpy = sandbox.spy(done);
+          cbSpy = sandbox.spy();
           deleteResourceStub = sandbox.stub(dcr.customData.dataStore, 'deleteResource', function (uri, cb) {
             deleteHref = uri;
             cb();
@@ -41,14 +42,17 @@ describe('Resources: ', function () {
           // act
           dcr.customData.remove(fieldName);
           dcr.save(cbSpy);
+
+          dcr.customData.remove(fieldName);
+          dcr.customData.save(cbSpy);
         });
         after(function () {
           sandbox.restore();
         });
         it('should make delete request with field name in href', function () {
           //assert
-          deleteResourceStub.should.have.been.calledOnce;
-          cbSpy.should.have.been.calledOnce;
+          deleteResourceStub.should.have.been.calledTwice;
+          cbSpy.should.have.been.calledTwice;
           deleteHref.should.contain(href);
           deleteHref.should.contain(fieldName);
         });
