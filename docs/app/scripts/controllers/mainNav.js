@@ -64,7 +64,8 @@ function items() {
       anchor('getGroups'),
       anchor('getGroupMemberships'),
       anchor('getDirectory'),
-      anchor('getTenant')
+      anchor('getTenant'),
+      anchor('getCustomData')
     ]),
 
     item('Application', null, [
@@ -111,7 +112,8 @@ function items() {
       anchor('getAccounts'),
       anchor('getAccountMemberships'),
       anchor('getDirectory'),
-      anchor('getTenant')
+      anchor('getTenant'),
+      anchor('getCustomData')
     ]),
 
     item('GroupMembership', 'groupMembership', [
