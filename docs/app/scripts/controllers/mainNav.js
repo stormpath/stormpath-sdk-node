@@ -84,13 +84,6 @@ function items() {
       anchor('getAccount')
     ]),
 
-    item('Caching', 'caching', [
-      anchor('Overview', 'top'),
-      anchor('In memory', 'memory'),
-      anchor('Memcached', 'memcached'),
-      anchor('Redis', 'redis'),
-    ]),
-
     item('CollectionResource', 'collectionResource', [
       anchor('Overview', 'top'),
       anchor('each')
