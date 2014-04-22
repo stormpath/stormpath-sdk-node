@@ -38,8 +38,12 @@ angular.module('docsApp', [
         templateUrl: 'views/authenticationResult.html',
         controller: 'MainCtrl'
       })
-      .when('/caching', {
-        templateUrl: 'views/caching.html',
+      .when('/cache', {
+        templateUrl: 'views/cache.html',
+        controller: 'MainCtrl'
+      })
+      .when('/cacheManager', {
+        templateUrl: 'views/cacheManager.html',
         controller: 'MainCtrl'
       })
       .when('/collectionResource', {

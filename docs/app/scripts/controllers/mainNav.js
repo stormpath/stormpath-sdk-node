@@ -84,6 +84,21 @@ function items() {
       anchor('getAccount')
     ]),
 
+    item('Cache', 'cache', [
+      anchor('Overview', 'top'),
+      anchor('get'),
+      anchor('put'),
+      anchor('delete'),
+      anchor('clear'),
+      anchor('size')
+    ]),
+
+    item('Cache manager', 'cacheManager', [
+      anchor('Overview', 'top'),
+      anchor('getCache'),
+      anchor('createCache'),
+    ]),
+
     item('CollectionResource', 'collectionResource', [
       anchor('Overview', 'top'),
       anchor('each')
