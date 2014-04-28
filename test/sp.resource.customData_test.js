@@ -53,8 +53,8 @@ describe('Resources: ', function () {
           //assert
           deleteResourceStub.should.have.been.calledTwice;
           cbSpy.should.have.been.calledTwice;
-          deleteHref.should.contain(href);
-          deleteHref.should.contain(fieldName);
+          deleteHref.href.should.contain(href);
+          deleteHref.href.should.contain(fieldName);
         });
       });
     }
