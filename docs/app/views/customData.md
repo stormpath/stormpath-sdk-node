@@ -23,6 +23,43 @@ application.getAccounts()
 
 ---
 
+<a name="get"></a>
+### <span class="member">method</span> get(callback)
+
+Calling this method retrieves `CustomData` resource.
+
+#### Usage
+
+```javascript
+
+//Account
+account.customData.get(function(err, customData){
+    // customData
+});
+
+//Group
+group.customData.get(function(err, customData){
+    // customData
+});
+
+```
+
+#### Parameters
+
+| Parameter   | Type            | Presence   | Description
+|-------------|---------------- |----------- | -----------
+| *`callback`* | function | *`required`* | The callback to execute upon
+ resource update. Parameters are `Error` and `CustomData` objects.
+
+
+#### Return
+
+void; the callback function if specified will be called with an
+`Error`(if an error occurred) and
+`CustomData`(if request was successful) objects.
+
+---
+
 <a name="delete"></a>
 ### <span class="member">method</span> delete(callback)
 

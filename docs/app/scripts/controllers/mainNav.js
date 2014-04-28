@@ -92,6 +92,7 @@ function items() {
 
     item('CustomData', 'customData', [
       anchor('Overview', 'top'),
+      anchor('get', 'get'),
       anchor('delete', 'delete'),
       anchor('remove', 'remove'),
       anchor('save', 'save')
