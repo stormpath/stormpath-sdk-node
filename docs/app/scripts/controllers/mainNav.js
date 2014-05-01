@@ -64,7 +64,8 @@ function items() {
       anchor('getGroups'),
       anchor('getGroupMemberships'),
       anchor('getDirectory'),
-      anchor('getTenant')
+      anchor('getTenant'),
+      anchor('getCustomData')
     ]),
 
     item('Application', null, [
@@ -89,6 +90,14 @@ function items() {
       anchor('each')
     ]),
 
+    item('CustomData', 'customData', [
+      anchor('Overview', 'top'),
+      anchor('get', 'get'),
+      anchor('delete', 'delete'),
+      anchor('remove', 'remove'),
+      anchor('save', 'save')
+    ]),
+
     item('Directory', null, [
       anchor('Overview', 'top'),
       anchor('createAccount'),
@@ -104,7 +113,8 @@ function items() {
       anchor('getAccounts'),
       anchor('getAccountMemberships'),
       anchor('getDirectory'),
-      anchor('getTenant')
+      anchor('getTenant'),
+      anchor('getCustomData')
     ]),
 
     item('GroupMembership', 'groupMembership', [

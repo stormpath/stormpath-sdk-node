@@ -11,6 +11,13 @@ It should be noted that the words ‘User’ and ‘Account’ usually mean the 
 
 Therefore an Account can be called a ‘User’ of an application if/when it can login to the application.
 
+An `Account` resource have predefined fields that are useful to many `Applications`,
+ but you are likely to have your own custom data that you need to associate
+ with an `account` as well.  You can create your own custom data fields when
+ creating `account` with [application.createAccount](application#createAccount)
+ or [directory.createAccount](directory#createAccount). A `customData` can be
+ updated as part of `account` resource or as a separate resource via `getCustomData` method.
+
 **Since**: 0.1
 
 ---
@@ -323,3 +330,58 @@ account.getTenant({expand:'applications'}, function(err, tenant) {
 #### Returns
 
 void; the retrieved `Tenant` resource will be provided to the `callback` as the callback's second parameter.
+
+---
+
+<a name="getCustomData"></a>
+### <span class="member">method</span> getCustomData(*[options,]* callback)
+
+Retrieves the [CustomData](customData) resource of the `Account`'s assigned
+ `CustomData` and provides it to the specified `callback`.
+
+#### Usage
+
+For an `href` that you know represents an account:
+
+```javascript
+account.getCustomData(function(err, customData) {
+    if (err) throw err;
+    console.log(customData);
+});
+```
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em><code>options</code></em></td>
+      <td><code>object</code></td>
+      <td><em>optional</em></td>
+      <td>An object literal of name/value pairs to use as query parameters, for example, [resource expansion](http://docs.stormpath.com/rest/product-guide/#account-retrieve).</td>
+    </tr>
+    <tr>
+      <td><code>callback</code></td>
+      <td>function</td>
+      <td>required</td>
+      <td>The callback to execute upon resource retrieval.
+       The 1st parameter is an `Error` object.
+       The 2nd parameter is the retrieved [CustomData](customData) resource.</td>
+    </tr>
+  </tbody>
+</table>
+
+#### Returns
+
+void; the retrieved `CustomData` resource will be provided to the `callback`
+ as the callback's second parameter.
+
+---

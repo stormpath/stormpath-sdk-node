@@ -42,6 +42,10 @@ angular.module('docsApp', [
         templateUrl: 'views/collectionResource.html',
         controller: 'MainCtrl'
       })
+      .when('/customData', {
+        templateUrl: 'views/customData.html',
+        controller: 'MainCtrl'
+      })
       .when('/directory', {
         templateUrl: 'views/directory.html',
         controller: 'MainCtrl'
