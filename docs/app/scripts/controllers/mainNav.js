@@ -85,7 +85,14 @@ function items() {
       anchor('getGroups'),
       anchor('getTenant'),
       anchor('sendPasswordResetEmail'),
-      anchor('verifyPasswordResetToken')
+      anchor('verifyPasswordResetToken'),
+      anchor('getAccountStoreMappings'),
+      anchor('getDefaultAccountStore'),
+      anchor('setDefaultAccountStore'),
+      anchor('getDefaultGroupStore'),
+      anchor('setDefaultGroupStore'),
+      anchor('createAccountStoreMapping'),
+      anchor('addAccountStore')
     ]),
 
     item('AuthenticationResult', 'authenticationResult', [
