@@ -68,6 +68,14 @@ function items() {
       anchor('getCustomData')
     ]),
 
+    item('AccountStoreMapping', 'accountStoreMapping', [
+      anchor('Overview', 'top'),
+      anchor('getApplication'),
+      anchor('setApplication'),
+      anchor('getAccountStore'),
+      anchor('setAccountStore')
+    ]),
+
     item('Application', null, [
       anchor('Overview', 'top'),
       anchor('authenticateAccount'),
