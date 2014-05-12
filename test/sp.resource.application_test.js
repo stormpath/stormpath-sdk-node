@@ -567,7 +567,7 @@ describe('Resources: ', function () {
       });
 
       it('should update default account store mapping in application and save it', function () {
-        savedApp.defaultAccountStoreMapping.href.should.be.equal(storeObj.href);
+        savedApp.defaultAccountStoreMapping.href.should.be.equal(asm.href);
         cbSpy.should.have.been.calledOnce;
       });
     });
@@ -664,7 +664,7 @@ describe('Resources: ', function () {
       });
 
       it('should update default account store mapping in application and save it', function () {
-        savedApp.defaultGroupStoreMapping.href.should.be.equal(storeObj.href);
+        savedApp.defaultGroupStoreMapping.href.should.be.equal(asm.href);
         cbSpy.should.have.been.calledOnce;
       });
     });

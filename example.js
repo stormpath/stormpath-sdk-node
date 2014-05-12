@@ -182,7 +182,7 @@ function doCustomDataCrud(client) {
       // create user with custom data
       var accQ = {
         email: Math.floor(Math.random() * 1000000) + '@gmail.com',
-        password: '' + Math.floor(Math.random() * 1000000000),
+        password: 'Aa' + Math.floor(Math.random() * 1000000000),
         givenName: 'Testing',
         surname: 'DeleteMe',
         customData: {
