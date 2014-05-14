@@ -65,7 +65,8 @@ function items() {
       anchor('getGroupMemberships'),
       anchor('getDirectory'),
       anchor('getTenant'),
-      anchor('getCustomData')
+      anchor('getCustomData'),
+      anchor('getProviderData')
     ]),
 
     item('Application', null, [
@@ -78,6 +79,7 @@ function items() {
       anchor('getTenant'),
       anchor('sendPasswordResetEmail'),
       anchor('verifyPasswordResetToken')
+      anchor('getAccount')
     ]),
 
     item('AuthenticationResult', 'authenticationResult', [
@@ -104,7 +106,8 @@ function items() {
       anchor('createGroup'),
       anchor('getAccounts'),
       anchor('getGroups'),
-      anchor('getTenant')
+      anchor('getTenant'),
+      anchor('getProvider')
     ]),
 
     item('Group', null, [

@@ -367,3 +367,54 @@ directory.getTenant({expand:'applications'}, function(err, tenant) {
 void; the retrieved `Tenant` resource will be provided to the `callback` as the callback's second parameter.
 
 ---
+
+<a name="getProvider"></a>
+### <span class="member">method</span> getProvider(*[options,]* callback)
+
+Retrieves the directory's `Provider` information  and provides it to the specified `callback`.
+If `provider` not set, `callback` will be called without parameters.
+
+#### Usage
+
+```javascript
+directory.getProvider(function(err, provider) {
+    if (err) throw err;
+    console.log(provider);
+});
+```
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>_`options`_</td>
+      <td>`object`</td>
+      <td>_optional_</td>
+      <td>Name/value pairs to use as query parameters, for example, for [resource expansion](http://docs.stormpath.com/rest/product-guide/#link-expansion).</td>
+    </tr>
+    <tr>
+      <td>`callback`</td>
+      <td>function</td>
+      <td>required</td>
+      <td>The callback to execute upon resource retrieval.
+        The 1st parameter is an `Error` object.
+        The 2nd parameter is the retrieved `Provider` resource.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+#### Returns
+
+void; the retrieved `Provider` resource will be provided to the `callback` as the callback's second parameter.
+
+---
