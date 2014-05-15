@@ -1,5 +1,7 @@
 var common = require('./common');
 var sinon = common.sinon;
+var nock = common.nock;
+var u = common.u;
 
 var utils = require('../lib/utils');
 var Account = require('../lib/resource/Account');
