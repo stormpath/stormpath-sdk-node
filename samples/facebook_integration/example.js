@@ -151,7 +151,7 @@ function getDirectoryProvider(ignore, cb){
 }
 
 function getAccountProviderData(ignore, cb){
-  opts.acc.getProviderData(w(cb, 'Provider data: ', 'providerData'));
+  opts.acc.account.getProviderData(w(cb, 'Provider data: ', 'providerData'));
 }
 
 function deleteApplication(ignore, cb){
