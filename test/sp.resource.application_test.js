@@ -8,12 +8,34 @@ var Tenant = require('../lib/resource/Tenant');
 var Application = require('../lib/resource/Application');
 var AuthenticationResult = require('../lib/resource/AuthenticationResult');
 var DataStore = require('../lib/ds/DataStore');
+var crypto = require('crypto');
 
 describe('Resources: ', function () {
   describe('Application resource', function () {
     var dataStore = new DataStore({apiKey: {id: 1, secret: 2}});
     describe('authenticate account', function () {
       var authRequest = {username: 'test'};
+
+      describe('createSsoUrl', function () {
+        var clientApiKeySecret = '2';
+        var dataStore = new DataStore({apiKey: {id: '1', secret: clientApiKeySecret}});
+        var app = {href:'http://api.stormpath.com/v1/applications/1234'};
+        var application = new Application(app, dataStore);
+
+        var url = application.createSsoUrl({
+          redirect_uri: 'https://stormpath.com'
+        });
+
+        var digest = url.match(/&digest=([^&]+)/);
+        var givenDigest = digest[1];
+        var computedDigest = crypto.createHmac('sha256',clientApiKeySecret)
+            .update(url.replace(digest[0],''))
+            .digest('base64');
+
+        common.assert.equal(givenDigest,computedDigest);
+
+      });
+
       describe('if login attempts not set', function () {
         var application = new Application();
 
@@ -220,7 +242,7 @@ describe('Resources: ', function () {
         });
       });
     });
-    
+
     describe('create account', function () {
       describe('if accounts not set', function () {
         var application = new Application();
@@ -377,7 +399,7 @@ describe('Resources: ', function () {
         });
       });
     });
-    
+
     describe('get tenant', function () {
       describe('if tenants href not set', function () {
         var application = new Application();
