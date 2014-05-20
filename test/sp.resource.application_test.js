@@ -106,7 +106,7 @@ describe('Resources: ', function () {
             test.before();
             var responseJwt = jwt.encode({
               sub: accountHref,
-              nonce: test.jwtRequest.jti,
+              irt_jti: test.jwtRequest.jti,
               state: test.jwtRequest.state
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?id_token=' + responseJwt + '&state=' + test.givenState;
@@ -127,7 +127,7 @@ describe('Resources: ', function () {
           before(function(){
             test.before();
             var responseJwt = jwt.encode({
-              nonce: 'not the nonce that was given'
+              irt_jti: 'not the nonce that was given'
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?id_token=' + responseJwt + '&state=';
             test.parseSsoResponse(responseUri);
@@ -149,7 +149,7 @@ describe('Resources: ', function () {
           before(function(){
             test.before();
             var responseJwt = jwt.encode({
-              nonce: test.jwtRequest.jti
+              irt_jti: test.jwtRequest.jti
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?id_token=' + responseJwt + '&state='  + 'not the state that was given';
             test.parseSsoResponse(responseUri);
@@ -172,7 +172,7 @@ describe('Resources: ', function () {
           before(function(){
             test.before();
             var responseJwt = jwt.encode({
-              nonce: test.givenNonce,
+              irt_jti: test.givenNonce,
               state: test.givenState
             },'not the right key','HS256');
             var responseUri = '/somewhere?id_token=' + responseJwt + '&state=' + test.givenState;
