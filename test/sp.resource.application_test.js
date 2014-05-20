@@ -9,6 +9,9 @@ var Application = require('../lib/resource/Application');
 var AuthenticationResult = require('../lib/resource/AuthenticationResult');
 var DataStore = require('../lib/ds/DataStore');
 var crypto = require('crypto');
+var jwt = require('jwt-simple');
+var uuid = require('node-uuid');
+var url = require('url');
 
 describe('Resources: ', function () {
   describe('Application resource', function () {
@@ -33,6 +36,123 @@ describe('Resources: ', function () {
             .digest('base64');
 
         common.assert.equal(givenDigest,computedDigest);
+
+      });
+
+      function SsoResponseTest(options){
+        var self = this;
+        self.before = function(){
+          self.clientApiKeySecret = uuid();
+          var dataStore = new DataStore({apiKey: {id: uuid(), secret: self.clientApiKeySecret}});
+          var app = {href:'http://api.stormpath.com/v1/applications/'+uuid()};
+          self.application = new Application(app, dataStore);
+          self.getResourceStub = sinon.stub(dataStore,'getResource',function(){
+            var args = Array.prototype.slice.call(arguments);
+            var href = args.shift();
+            var callback = args.pop();
+            callback(null,{href:href});
+          });
+          self.ssoUrl = self.application.createSsoUrl(options);
+          var params = url.parse(self.ssoUrl,true).query;
+          self.givenNonce = params.nonce || '';
+          self.givenState = params.state || '';
+          self.cbSpy = sinon.spy();
+        };
+        self.parseSsoResponse = function(responseUri){
+          self.application.parseSsoResponse(responseUri,self.cbSpy);
+        };
+        self.after = function(){
+          self.getResourceStub.restore();
+        };
+        return self;
+      }
+
+      describe('parseSsoResponse',function(){
+        describe('with a happy roundtrip',function(){
+          var accountHref = uuid();
+          var clientState = uuid();
+          var test = new SsoResponseTest({
+            state: clientState
+          });
+          before(function(){
+            test.before();
+            var responseJwt = jwt.encode({
+              sub: accountHref,
+              nonce: test.givenNonce,
+              state: test.givenState
+            },test.clientApiKeySecret,'HS256');
+            var responseUri = '/somewhere?id_token=' + responseJwt + '&state=' + test.givenState;
+            test.parseSsoResponse(responseUri);
+          });
+          after(function(){
+            test.after();
+          });
+          it('should succeed and fetch the account resource',function(){
+            test.cbSpy.should.have.been.calledWith(null,{href:accountHref});
+          });
+        });
+
+        describe('with an unkown nonce',function(){
+          var test = new SsoResponseTest();
+          before(function(){
+            test.before();
+            var responseJwt = jwt.encode({
+              nonce: 'not the nonce that was given'
+            },test.clientApiKeySecret,'HS256');
+            var responseUri = '/somewhere?id_token=' + responseJwt + '&state=';
+            test.parseSsoResponse(responseUri);
+          });
+          after(function(){
+            test.after();
+          });
+          it('should reject the nonce',function(){
+            common.assert.equal(test.cbSpy.args[0][0].message,'Invalid nonce');
+          });
+        });
+
+        describe('with a modified client state',function(){
+          var clientState = uuid();
+          var test = new SsoResponseTest({
+            state: clientState
+          });
+          before(function(){
+            test.before();
+            var responseJwt = jwt.encode({
+              nonce: test.givenNonce
+            },test.clientApiKeySecret,'HS256');
+            var responseUri = '/somewhere?id_token=' + responseJwt + '&state='  + 'not the state that was given';
+            test.parseSsoResponse(responseUri);
+          });
+          after(function(){
+            test.after();
+          });
+
+          it('should reject the state',function(){
+            common.assert.equal(test.cbSpy.args[0][0].message,'Client state has been modified');
+          });
+        });
+
+        describe('with an invalid signature',function(){
+          var clientState = uuid();
+          var test = new SsoResponseTest({
+            state: clientState
+          });
+          before(function(){
+            test.before();
+            var responseJwt = jwt.encode({
+              nonce: test.givenNonce,
+              state: test.givenState
+            },'not the right key','HS256');
+            var responseUri = '/somewhere?id_token=' + responseJwt + '&state=' + test.givenState;
+            test.parseSsoResponse(responseUri);
+          });
+          after(function(){
+            test.after();
+          });
+          it('should reject the signature',function(){
+            common.assert.equal(test.cbSpy.args[0][0].message,'Signature verification failed');
+          });
+        });
 
       });
 
