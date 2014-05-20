@@ -8,7 +8,6 @@ var Tenant = require('../lib/resource/Tenant');
 var Application = require('../lib/resource/Application');
 var AuthenticationResult = require('../lib/resource/AuthenticationResult');
 var DataStore = require('../lib/ds/DataStore');
-var crypto = require('crypto');
 var jwt = require('jwt-simple');
 var uuid = require('node-uuid');
 var url = require('url');
@@ -20,22 +19,37 @@ describe('Resources: ', function () {
       var authRequest = {username: 'test'};
 
       describe('createSsoUrl', function () {
-        var clientApiKeySecret = '2';
+        var clientApiKeySecret = uuid();
         var dataStore = new DataStore({apiKey: {id: '1', secret: clientApiKeySecret}});
-        var app = {href:'http://api.stormpath.com/v1/applications/1234'};
+        var app = {
+          href:'http://api.stormpath.com/v1/applications/' + uuid()
+        };
         var application = new Application(app, dataStore);
+        var clientState = uuid();
 
-        var url = application.createSsoUrl({
-          redirect_uri: 'https://stormpath.com'
+        var redirectUrl = application.createSsoUrl({
+          cb_uri: 'https://stormpath.com',
+          state: clientState
         });
 
-        var digest = url.match(/&digest=([^&]+)/);
-        var givenDigest = digest[1];
-        var computedDigest = crypto.createHmac('sha256',clientApiKeySecret)
-            .update(url.replace(digest[0],''))
-            .digest('base64');
+        var params = url.parse(redirectUrl,true).query;
+        var path = url.parse(redirectUrl).pathname;
 
-        common.assert.equal(givenDigest,computedDigest);
+        it('should create a request to /sso',function(){
+          common.assert.equal(path,'/sso');
+        });
+
+        it('should create a url with a jwtRequest',function(){
+          common.assert.isNotNull(params.jwtRequest);
+        });
+        it('should create a jwtRequest that is signed with the client secret',
+          function(){
+            common.assert.equal(
+              jwt.decode(params.jwtRequest,clientApiKeySecret).state,
+              clientState
+            );
+          }
+        );
 
       });
 
@@ -43,7 +57,9 @@ describe('Resources: ', function () {
         var self = this;
         self.before = function(){
           self.clientApiKeySecret = uuid();
-          var dataStore = new DataStore({apiKey: {id: uuid(), secret: self.clientApiKeySecret}});
+          var dataStore = new DataStore({
+            apiKey: {id: uuid(), secret: self.clientApiKeySecret}
+          });
           var app = {href:'http://api.stormpath.com/v1/applications/'+uuid()};
           self.application = new Application(app, dataStore);
           self.getResourceStub = sinon.stub(dataStore,'getResource',function(){
@@ -52,10 +68,9 @@ describe('Resources: ', function () {
             var callback = args.pop();
             callback(null,{href:href});
           });
-          self.ssoUrl = self.application.createSsoUrl(options);
-          var params = url.parse(self.ssoUrl,true).query;
-          self.givenNonce = params.nonce || '';
-          self.givenState = params.state || '';
+          self.redirectUrl = self.application.createSsoUrl(options);
+          var params = url.parse(self.redirectUrl,true).query;
+          self.jwtRequest = self.decodeJwtRequest(params.jwtRequest);
           self.cbSpy = sinon.spy();
         };
         self.parseSsoResponse = function(responseUri){
@@ -64,22 +79,35 @@ describe('Resources: ', function () {
         self.after = function(){
           self.getResourceStub.restore();
         };
+        self.decodeJwtRequest = function(jwtRequest){
+          return jwt.decode(decodeURIComponent(jwtRequest),self.clientApiKeySecret);
+        };
         return self;
       }
 
       describe('parseSsoResponse',function(){
+        describe('without a cb_uri',function(){
+          var test = new SsoResponseTest();
+          it('should throw the cb_uri required error',function(){
+            common.assert.throws(test.before,
+              'cb_uri URI must be provided and must be in your SSO whitelist'
+            );
+          });
+        });
+
         describe('with a happy roundtrip',function(){
           var accountHref = uuid();
           var clientState = uuid();
           var test = new SsoResponseTest({
+            cb_uri: '/',
             state: clientState
           });
           before(function(){
             test.before();
             var responseJwt = jwt.encode({
               sub: accountHref,
-              nonce: test.givenNonce,
-              state: test.givenState
+              nonce: test.jwtRequest.jti,
+              state: test.jwtRequest.state
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?id_token=' + responseJwt + '&state=' + test.givenState;
             test.parseSsoResponse(responseUri);
@@ -93,7 +121,9 @@ describe('Resources: ', function () {
         });
 
         describe('with an unkown nonce',function(){
-          var test = new SsoResponseTest();
+          var test = new SsoResponseTest({
+            cb_uri: '/'
+          });
           before(function(){
             test.before();
             var responseJwt = jwt.encode({
@@ -113,12 +143,13 @@ describe('Resources: ', function () {
         describe('with a modified client state',function(){
           var clientState = uuid();
           var test = new SsoResponseTest({
+            cb_uri: '/',
             state: clientState
           });
           before(function(){
             test.before();
             var responseJwt = jwt.encode({
-              nonce: test.givenNonce
+              nonce: test.jwtRequest.jti
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?id_token=' + responseJwt + '&state='  + 'not the state that was given';
             test.parseSsoResponse(responseUri);
@@ -135,6 +166,7 @@ describe('Resources: ', function () {
         describe('with an invalid signature',function(){
           var clientState = uuid();
           var test = new SsoResponseTest({
+            cb_uri: '/',
             state: clientState
           });
           before(function(){
