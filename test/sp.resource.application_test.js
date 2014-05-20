@@ -73,8 +73,8 @@ describe('Resources: ', function () {
           self.jwtRequest = self.decodeJwtRequest(params.jwtRequest);
           self.cbSpy = sinon.spy();
         };
-        self.parseSsoResponse = function(responseUri){
-          self.application.parseSsoResponse(responseUri,self.cbSpy);
+        self.handleSsoResponse = function(responseUri,responseMode){
+          self.application.handleSsoResponse(responseUri,responseMode,self.cbSpy);
         };
         self.after = function(){
           self.getResourceStub.restore();
@@ -85,7 +85,7 @@ describe('Resources: ', function () {
         return self;
       }
 
-      describe('parseSsoResponse',function(){
+      describe('handleSsoResponse',function(){
         describe('without a cb_uri',function(){
           var test = new SsoResponseTest();
           it('should throw the cb_uri required error',function(){
@@ -94,6 +94,7 @@ describe('Resources: ', function () {
             );
           });
         });
+
 
         describe('with a happy roundtrip',function(){
           var accountHref = uuid();
@@ -110,7 +111,7 @@ describe('Resources: ', function () {
               state: test.jwtRequest.state
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
-            test.parseSsoResponse(responseUri);
+            test.handleSsoResponse(responseUri);
           });
           after(function(){
             test.after();
@@ -119,6 +120,59 @@ describe('Resources: ', function () {
             test.cbSpy.should.have.been.calledWith(null,{href:accountHref});
           });
         });
+
+        describe('with a happy roundtrip and jwt reponse mode',function(){
+          var accountHref = uuid();
+          var clientState = uuid();
+          var responseJwt;
+          var test = new SsoResponseTest({
+            cb_uri: '/',
+            state: clientState
+          });
+          before(function(){
+            test.before();
+            responseJwt = jwt.encode({
+              sub: accountHref,
+              irt_jti: test.jwtRequest.jti,
+              state: test.jwtRequest.state
+            },test.clientApiKeySecret,'HS256');
+            var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
+            test.handleSsoResponse(responseUri,'jwt');
+          });
+          after(function(){
+            test.after();
+          });
+          it('should succeed return the jwt payload',function(){
+            test.cbSpy.should.have.been.calledWith(null,jwt.decode(responseJwt,test.clientApiKeySecret));
+          });
+        });
+
+        describe('without an invalid responseMode',function(){
+          var accountHref = uuid();
+          var clientState = uuid();
+          var responseJwt;
+          var test = new SsoResponseTest({
+            cb_uri: '/',
+            state: clientState
+          });
+          before(function(){
+            test.before();
+            responseJwt = jwt.encode({
+              sub: accountHref,
+              irt_jti: test.jwtRequest.jti,
+              state: test.jwtRequest.state
+            },test.clientApiKeySecret,'HS256');
+            var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
+            test.handleSsoResponse(responseUri,'unknown');
+          });
+          after(function(){
+            test.after();
+          });
+          it('should return the response mode error',function(){
+            common.assert.equal(test.cbSpy.args[0][0].message,'Unsupported response mode');
+          });
+        });
+
 
         describe('with an unkown nonce',function(){
           var test = new SsoResponseTest({
@@ -130,7 +184,7 @@ describe('Resources: ', function () {
               irt_jti: 'not the nonce that was given'
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=';
-            test.parseSsoResponse(responseUri);
+            test.handleSsoResponse(responseUri);
           });
           after(function(){
             test.after();
@@ -152,7 +206,7 @@ describe('Resources: ', function () {
               irt_jti: test.jwtRequest.jti
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state='  + 'not the state that was given';
-            test.parseSsoResponse(responseUri);
+            test.handleSsoResponse(responseUri);
           });
           after(function(){
             test.after();
@@ -176,7 +230,7 @@ describe('Resources: ', function () {
               state: test.givenState
             },'not the right key','HS256');
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
-            test.parseSsoResponse(responseUri);
+            test.handleSsoResponse(responseUri);
           });
           after(function(){
             test.after();
