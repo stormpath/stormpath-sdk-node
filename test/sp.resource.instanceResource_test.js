@@ -61,7 +61,7 @@ describe('Resources: ', function () {
         });
       });
 
-      describe('without optional query param', function(){
+      describe.skip('without optional query param', function(){
         var sandbox, error, cb, getResourceSpy;
         before(function(){
           cb = function(err){error = err;};
@@ -83,7 +83,7 @@ describe('Resources: ', function () {
         });
       });
 
-      describe('without optional query param but with ctor', function(){
+      describe.skip('without optional query param but with ctor', function(){
         var sandbox, error, cb, ctor, getResourceSpy;
         before(function(){
           cb = function(err){error = err;};
@@ -106,7 +106,7 @@ describe('Resources: ', function () {
         });
       });
 
-      describe('with optional query param', function(){
+      describe.skip('with optional query param', function(){
         var query = {q:'asd'};
         var sandbox, error, cb, getResourceSpy;
         before(function(){
@@ -125,7 +125,7 @@ describe('Resources: ', function () {
         });
       });
 
-      describe('with optional query and ctor param', function(){
+      describe.skip('with optional query and ctor param', function(){
         var sandbox, error, cb, query, ctor, getResourceSpy;
         before(function(){
           cb = function(err){error = err;};
