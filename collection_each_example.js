@@ -1,5 +1,6 @@
 'use strict';
 
+var _ = require('underscore');
 var async = require('async');
 var stormpath = require('./lib');
 var moment = require('moment');
@@ -19,297 +20,235 @@ stormpath.loadApiKey(apiKeyFilePath, function (err, apiKey) {
     if (err) {
       throw err;
     }
-//    add 200 applications for testing
+    //add 200 applications for testing
 //    for(var i = 0; i < 200; i++){
 //      tenant.createApplication({name: 'Just Testing! Delete me.' + Math.random() },
 //        function(){})
 //    }
 
-    onTenantReady(tenant);
+    tenant.getApplications({limit: itemsPerPage}, function (err, apps) {
+      if (err) {
+        throw err;
+      }
+
+      onAppsReady(apps);
+    });
   });
 });
 
-function onTenantReady(tenant) {
+function onAppsReady(apps) {
+  function s(f) {
+    return function (cb) {
+      console.log('Testing ' + f.name);
+      f(apps, cb);
+    };
+  }
+
   async.series([
-    function(cb){ each(tenant, cb); },
-    function(cb){ map(tenant, cb); },
-    function(cb){ filter(tenant, cb); },
-    function(cb){ reject(tenant, cb); },
-    function(cb){ concat(tenant, cb); },
-  ], function (){
+    s(each),
+    s(map),
+    s(filter),
+    s(reject),
+    s(reduce),
+    s(detect),
+    s(some),
+    s(every),
+    s(sortBy),
+    s(concat)
+  ], function (err) {
+    if(err){
+      console.error(err);
+    }
+
     console.log('all done');
-  } );
-}
-
-function each(clientOrTenant, cb) {
-
-  clientOrTenant.getApplications({limit:itemsPerPage},function (err, apps) {
-    if (err) {
-      throw err;
-    }
-
-    var start = Date.now();
-    var counter = 0;var hundred = Date.now();
-    apps.each(function iterator(app, cb) {
-      if (err) {
-        throw err;
-      }
-      counter++;
-      if (counter % 100 === 0){
-        console.log(counter/100 + ' hundred ' + moment.duration(Date.now() - hundred).asSeconds());
-        console.log('items total: ' + counter);
-        hundred = Date.now();
-      }
-      cb();
-    }, function onAllItems(err) {
-      if (err){
-        console.error(err);
-      }
-      var end = Date.now();
-      console.log('items total: ' + counter);
-      console.log('all: ' + moment.duration(end-start).asSeconds());
-      cb();
-    });
   });
 }
 
-function map(clientOrTenant, cb) {
-  clientOrTenant.getApplications({limit:itemsPerPage},function (err, apps) {
-    if (err) {
-      throw err;
-    }
+function Logger() {
+  var self = this;
+  var start = Date.now();
+  var counter = 0;
+  var hundred = Date.now();
 
-    function iterator(app, cb) {
-      if (err) {
-        throw err;
-      }
+  this.reset = function reset() {
+    start = Date.now();
+    counter = 0;
+    hundred = Date.now();
+  };
+
+  this.i = function wrapIterator(iterator) {
+    return function () {
       counter++;
-      if (counter % 100 === 0){
-        console.log(counter/100 + ' hundred ' + moment.duration(Date.now() - hundred).asSeconds());
+      if (counter % 100 === 0) {
+        console.log(counter / 100 + ' hundred ' + moment.duration(Date.now() - hundred).asSeconds());
         console.log('items total: ' + counter);
         hundred = Date.now();
       }
-      cb(null, app.name);
-    }
+      iterator.apply(this, arguments);
+    };
+  };
 
-    function onAllItems(err, res) {
-      if (err){
-        console.error(err);
+  this.c = function wrapCallback(cb, argsLength) {
+    return function (err, res) {
+      if (argsLength === 1) {
+        res = err; err = null;
       }
+
       var end = Date.now();
       console.log('items total: ' + counter);
-      console.log('all: ' + moment.duration(end-start).asSeconds());
-      console.log('Result length: ' + res.length);
-    }
+      console.log('all: ' + moment.duration(end - start).asSeconds());
+      self.reset();
 
-    var start, counter, hundred;
+      if (res) {
+        console.log('Result ' + (res.length ? 'length: ' + res.length : res));
+      }
 
-    function reset(){
-      start = Date.now();
-      counter = 0;
-      hundred = Date.now();
-    }
+      cb(err, res);
+    };
+  };
+}
 
-    reset();
-    function wrap(func, cb){
-      return function (err, res){
-        func(err, res);
-        reset();
-        cb();
-      };
-    }
+var l = new Logger();
 
-    async.series([
-      function (cb){
-        apps.map(iterator, wrap(onAllItems, cb));
+function each(apps, cb) {
+  l.reset();
+  apps.each(
+    l.i(function iterator(app, cb) {
+      cb();
+    }),
+    l.c(function onAllItems() {
+      cb();
+    }));
+}
+
+function map(apps, cb) {
+  l.reset();
+
+  function iterator(app, cb) {
+    cb(null, app.name);
+  }
+
+  async.series([
+      function (cb) {
+        apps.map(l.i(iterator), l.c(cb));
       },
-      function (cb){
-        apps.mapSeries(iterator, wrap(onAllItems, cb));
+      function (cb) {
+        apps.mapSeries(l.i(iterator), l.c(cb));
       },
-      function (cb){
-        apps.mapLimit(2, iterator, wrap(onAllItems, cb));
+      function (cb) {
+        apps.mapLimit(2, l.i(iterator), l.c(cb));
       }],
-     cb
-    );
-  });
+    cb
+  );
 }
 
-function filter(clientOrTenant, cb) {
-  clientOrTenant.getApplications({limit:itemsPerPage},function (err, apps) {
-    if (err) {
-      throw err;
+function filter(apps, cb) {
+  l.reset();
+  var i = 0;
+  function iterator(app, cb) {
+    cb(i++ % 2 === 0);
+  }
+
+  async.series([
+    function (cb) {
+      apps.filter(l.i(iterator), l.c(cb, 1));
+    },
+    function (cb) {
+      apps.filterSeries(l.i(iterator), l.c(cb, 1));
     }
-
-    function iterator(app, cb) {
-      if (err) {
-        throw err;
-      }
-      counter++;
-      if (counter % 100 === 0){
-        console.log(counter/100 + ' hundred ' + moment.duration(Date.now() - hundred).asSeconds());
-        console.log('items total: ' + counter);
-        hundred = Date.now();
-      }
-      cb(counter % 2 === 0);
-    }
-
-    function onAllItems(err, res) {
-      var end = Date.now();
-      console.log('items total: ' + counter);
-      console.log('all: ' + moment.duration(end-start).asSeconds());
-      console.log('Result length: ' + res.length);
-      //console.log(res);
-    }
-
-    var start, counter, hundred;
-
-    function reset(){
-      start = Date.now();
-      counter = 0;
-      hundred = Date.now();
-    }
-
-    reset();
-
-    function wrap(func, argLength, cb){
-      return function (err, res){
-        if (argLength === 1){
-          res = err;
-          err = null;
-        }
-        func(err, res);
-        reset();
-        cb();
-      };
-    }
-
-    async.series([
-      function (cb){
-        apps.filter(iterator, wrap(onAllItems, 1, cb));
-      },
-      function (cb){
-        apps.filterSeries(iterator, wrap(onAllItems, 1, cb));
-      }
-    ],cb);
-  });
+  ], cb);
 }
 
-function reject(clientOrTenant, cb) {
-  clientOrTenant.getApplications({limit:itemsPerPage},function (err, apps) {
-    if (err) {
-      throw err;
+function reject(apps, cb) {
+  l.reset();
+  var i = 0;
+  function iterator(app, cb) {
+    cb(i++ % 2 === 0);
+  }
+
+  async.series([
+    function (cb) {
+      apps.reject(l.i(iterator), l.c(cb, 1));
+    },
+    function (cb) {
+      apps.rejectSeries(l.i(iterator), l.c(cb, 1));
     }
-
-    function iterator(app, cb) {
-      if (err) {
-        throw err;
-      }
-      counter++;
-      if (counter % 100 === 0){
-        console.log(counter/100 + ' hundred ' + moment.duration(Date.now() - hundred).asSeconds());
-        console.log('items total: ' + counter);
-        hundred = Date.now();
-      }
-      cb(counter % 2 === 0);
-    }
-
-    function onAllItems(err, res) {
-      var end = Date.now();
-      console.log('items total: ' + counter);
-      console.log('all: ' + moment.duration(end-start).asSeconds());
-      console.log('Result length: ' + res.length);
-      //console.log(res);
-    }
-
-    var start, counter, hundred;
-
-    function reset(){
-      start = Date.now();
-      counter = 0;
-      hundred = Date.now();
-    }
-
-    reset();
-
-    function wrap(func, argLength, cb){
-      return function (err, res){
-        if (argLength === 1){
-          res = err;
-          err = null;
-        }
-        func(err, res);
-        reset();
-        cb();
-      };
-    }
-
-    async.series([
-      function (cb){
-        apps.reject(iterator, wrap(onAllItems, 1, cb));
-      },
-      function (cb){
-        apps.rejectSeries(iterator, wrap(onAllItems, 1, cb));
-      }
-    ],cb);
-  });
+  ], cb);
 }
 
-function concat(clientOrTenant, cb) {
-  clientOrTenant.getApplications({limit:itemsPerPage},function (err, apps) {
-    if (err) {
-      throw err;
+function reduce(apps, cb) {
+  l.reset();
+  var i = 0;
+  function iterator(counter, app, cb) {
+    cb(null, i++);
+  }
+
+  async.series([
+    function (cb) {
+      apps.reduce(0, l.i(iterator), l.c(cb));
+    },
+    function (cb) {
+      apps.reduceRight(0, l.i(iterator), l.c(cb));
     }
+  ], cb);
+}
 
-    function iterator(app, cb) {
-      if (err) {
-        throw err;
-      }
-      counter++;
-      if (counter % 100 === 0){
-        console.log(counter/100 + ' hundred ' + moment.duration(Date.now() - hundred).asSeconds());
-        console.log('items total: ' + counter);
-        hundred = Date.now();
-      }
-      cb(null, {app: app.name});
+function detect(apps, cb) {
+  l.reset();
+  var i = 0;
+  function iterator(app, cb) {
+    cb(0 === i++ % 2);
+  }
+
+  async.series([
+    function (cb) {
+      apps.detect(l.i(iterator), l.c(cb, 1));
+    },
+    function (cb) {
+      apps.detectSeries(l.i(iterator), l.c(cb, 1));
     }
+  ], cb);
+}
 
-    function onAllItems(err, res) {
-      var end = Date.now();
-      console.log('items total: ' + counter);
-      console.log('all: ' + moment.duration(end-start).asSeconds());
-      console.log('Result length: ' + res.length);
-      //console.log(res);
+function some(apps, cb) {
+  l.reset();
+  var i = 0;
+  function iterator(app, cb) {
+    cb(0 === i++ % 2);
+  }
+
+  apps.some(l.i(iterator), l.c(cb, 1));
+}
+
+function every(apps, cb) {
+  l.reset();
+  var i = 0;
+  function iterator(app, cb) {
+    cb(0 === i++ % 2);
+  }
+
+  apps.every(l.i(iterator), l.c(cb, 1));
+}
+
+function sortBy(apps, cb) {
+  function iterator(app, cb) {
+    cb(null, app.name);
+  }
+
+  apps.sortBy(l.i(iterator), l.c(cb));
+}
+
+function concat(apps, cb) {
+  function iterator(app, cb) {
+    cb(null, {app: app.name});
+  }
+
+  async.series([
+    function (cb) {
+      apps.concat(l.i(iterator), l.c(cb));
+    },
+    function (cb) {
+      apps.concatSeries(l.i(iterator), l.c(cb));
     }
-
-    var start, counter, hundred;
-
-    function reset(){
-      start = Date.now();
-      counter = 0;
-      hundred = Date.now();
-    }
-
-    reset();
-
-    function wrap(func, argLength, cb){
-      return function (err, res){
-        if (argLength === 1){
-          res = err;
-          err = null;
-        }
-        func(err, res);
-        reset();
-        cb();
-      };
-    }
-
-    async.series([
-      function (cb){
-        apps.concat(iterator, wrap(onAllItems, 2, cb));
-      },
-      function (cb){
-        apps.concatSeries(iterator, wrap(onAllItems, 2, cb));
-      }
-    ],cb);
-  });
+  ], cb);
 }
