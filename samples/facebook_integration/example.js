@@ -4,6 +4,7 @@ var open = require('open');
 var http = require('http');
 var async = require('async');
 var assert = require('assert');
+var request = require('request');
 var stormpath = require('../../lib');
 var querystring = require('querystring');
 
@@ -102,7 +103,6 @@ function getOauthToken(ignore, next){
         var tokens = querystring.parse(req.url.substr(req.url.indexOf('?')+1));
         console.log('Facebook code: ', tokens);
         if (tokens.code){
-          var request = require('request');
           var options = {
             client_id: opts.config.clientId,
             redirect_uri: opts.config.redirectUri,
