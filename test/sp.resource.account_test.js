@@ -1,8 +1,11 @@
 var common = require('./common');
 var sinon = common.sinon;
-
+var uuid = common.uuid;
+var assert = common.assert;
+var nock = common.nock;
 var Group = require('../lib/resource/Group');
 var Account = require('../lib/resource/Account');
+var ApiKey = require('../lib/resource/ApiKey');
 var DataStore = require('../lib/ds/DataStore');
 var CustomData = require('../lib/resource/CustomData');
 var instantiate = require('../lib/resource/ResourceFactory').instantiate;
@@ -272,6 +275,71 @@ describe('Resources: ', function () {
             getResourceStub.should.have.been.calledWith('boom!', opt, CustomData, cbSpy);
           });
         });
+      });
+    });
+
+    describe('createApiKey',function () {
+      var cbSpy = sinon.spy();
+      var cbArgs;
+      before(function(done){
+        var accountHref = 'accounts/'+uuid();
+        var account = new Account({
+          href:accountHref,
+          apiKeys: {
+            href: accountHref + '/apiKeys'
+          }
+        }, dataStore);
+        nock('https://api.stormpath.com')
+          .post('/v1/'+account.apiKeys.href)
+          .reply(201,{
+            href: account.apiKeys.href + '/' + uuid()
+          });
+        account.createApiKey(function() {
+          cbSpy.apply(null,arguments);
+          cbArgs = cbSpy.args[0];
+          done();
+        });
+      });
+      it('should not err',function(){
+        assert.equal(cbArgs[0],null);
+      });
+      it('should return an ApiKey instance',function(){
+        assert.instanceOf(cbArgs[1],ApiKey);
+      });
+    });
+
+    describe('getApiKeys',function () {
+      var cbSpy = sinon.spy();
+      var cbArgs;
+      before(function(done){
+        var accountHref = 'accounts/'+uuid();
+        var account = new Account({
+          href:accountHref,
+          apiKeys: {
+            href: accountHref + '/apiKeys'
+          }
+        }, dataStore);
+        nock('https://api.stormpath.com')
+          .get('/v1/'+account.apiKeys.href)
+          .reply(200,{
+            offset: 0,
+            limit: 25,
+            items: [{
+              href: 'https://api.stormpath.com/v1/apiKeys/' + uuid()
+            }]
+          });
+        account.getApiKeys(function() {
+          cbSpy.apply(null,arguments);
+          cbArgs = cbSpy.args[0];
+          done();
+        });
+      });
+      it('should not err',function(){
+        assert.equal(cbArgs[0],null);
+      });
+      it('should return an array of ApiKey instances',function(){
+        assert.equal(Array.isArray(cbArgs[1].items),true);
+        assert.instanceOf(cbArgs[1].items[0],ApiKey);
       });
     });
   });
