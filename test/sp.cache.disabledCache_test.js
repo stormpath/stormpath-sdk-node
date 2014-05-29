@@ -22,7 +22,4 @@ describe('Cache module',function(){
       callToMethod(disabledCache,methodName);
     });
   });
-
-  // todo: describe when redis store provider will be implemented
-  describe('Redis cache store', function(){});
 });

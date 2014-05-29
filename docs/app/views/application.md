@@ -93,6 +93,31 @@ application.createAccount(account, function onAccountCreated(err, createdAccount
 });
 ```
 
+Whenever you create an `account`, an empty `customData` resource is created
+ for that `account` automatically, but when you need to populate custom data on
+ `account` creation you can embed `customData` directly in `account` resource.
+
+ ```javascript
+ var account = {
+   givenName: 'Jean-Luc',
+   surname: 'Picard',
+   username: 'jlpicard',
+   email: 'jlpicard@starfleet.com',
+   password: 'Changeme1!',
+   customData: {
+     rank: 'Captain',
+     birthDate: '2305-07-13',
+     birthPlace: 'La Barre, France',
+     favoriteDrink: 'Earl Grey tea'
+   }
+ };
+
+ application.createAccount(account, function onAccountCreated(err, createdAccount) {
+   if (err) throw err;
+   console.log(createdAccount);
+ });
+```
+
 You can also specify options to control creation behavior and things like reference expansion:
 
 ```javascript

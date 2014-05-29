@@ -64,7 +64,8 @@ function items() {
       anchor('getGroups'),
       anchor('getGroupMemberships'),
       anchor('getDirectory'),
-      anchor('getTenant')
+      anchor('getTenant'),
+      anchor('getCustomData')
     ]),
 
     item('Application', null, [
@@ -82,6 +83,21 @@ function items() {
     item('AuthenticationResult', 'authenticationResult', [
       anchor('Overview', 'top'),
       anchor('getAccount')
+    ]),
+
+    item('Cache', 'cache', [
+      anchor('Overview', 'top'),
+      anchor('get'),
+      anchor('put'),
+      anchor('delete'),
+      anchor('clear'),
+      anchor('size')
+    ]),
+
+    item('Cache manager', 'cacheManager', [
+      anchor('Overview', 'top'),
+      anchor('getCache'),
+      anchor('createCache'),
     ]),
 
     item('CollectionResource', 'collectionResource', [
@@ -107,6 +123,14 @@ function items() {
       anchor('concatSeries')
     ]),
 
+    item('CustomData', 'customData', [
+      anchor('Overview', 'top'),
+      anchor('get', 'get'),
+      anchor('delete', 'delete'),
+      anchor('remove', 'remove'),
+      anchor('save', 'save')
+    ]),
+
     item('Directory', null, [
       anchor('Overview', 'top'),
       anchor('createAccount'),
@@ -122,7 +146,8 @@ function items() {
       anchor('getAccounts'),
       anchor('getAccountMemberships'),
       anchor('getDirectory'),
-      anchor('getTenant')
+      anchor('getTenant'),
+      anchor('getCustomData')
     ]),
 
     item('GroupMembership', 'groupMembership', [

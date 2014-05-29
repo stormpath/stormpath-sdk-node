@@ -1,5 +1,4 @@
 var common = require('./common');
-var _ = common._;
 var sinon = common.sinon;
 var should = common.should;
 var utils = require('../lib/utils');
@@ -34,8 +33,8 @@ describe('ds:', function () {
 
       describe('if cache options was not provided', function () {
         var ds = new DataStore({apiKey: {id: 1, secret: 2}});
-        it('should not create caches', function () {
-          should.not.exist(ds.caches);
+        it('should not create cache', function () {
+          should.not.exist(ds.cache);
         });
       });
 
@@ -48,23 +47,6 @@ describe('ds:', function () {
           createDataStoreWithoutConfig.should
             .throw(/config argument is required/i);
         });
-      });
-
-      describe('for all provided regions', function () {
-        var CACHE_REGIONS = ['applications', 'directories', 'accounts', 'groups',
-          'groupMemberships', 'tenants', 'accountStoreMappings'];
-        var cacheOptions = {};
-        _.each(CACHE_REGIONS, function (region) {
-          cacheOptions[region] = {};
-        });
-        var ds = new DataStore({cacheOptions: cacheOptions,
-          apiKey: {id: 1, secret: 2}});
-        _.each(CACHE_REGIONS, function (region) {
-          it('should create cache instance for ' + region, function () {
-            should.exist(ds.cacheHandler.cacheManager.getCache(region));
-          });
-        });
-
       });
     });
 
@@ -101,16 +83,11 @@ describe('ds:', function () {
       });
 
       var cbSpy = sinon.spy();
-      var sandbox, reqExecSpy,
-        accountsCachePutSpy,
-        groupsCachePutSpy,
-        directoryCachePutSpy;
+      var sandbox, reqExecSpy, cachePutSpy;
 
       before(function () {
         sandbox = sinon.sandbox.create();
-        accountsCachePutSpy = sandbox.spy(ds.cacheHandler.cacheManager.getCache('accounts'), 'put');
-        groupsCachePutSpy = sandbox.spy(ds.cacheHandler.cacheManager.getCache('groups'), 'put');
-        directoryCachePutSpy = sandbox.spy(ds.cacheHandler.cacheManager.getCache('directories'), 'put');
+        cachePutSpy = sandbox.spy(ds.cacheHandler.cacheManager.getCache(), 'put');
         reqExecSpy = sandbox.stub(ds.requestExecutor, 'execute', function (req, cb) {
           cb(null, data);
         });
@@ -124,8 +101,8 @@ describe('ds:', function () {
 
       it('should store root entity', function () {
         /* jshint -W030 */
-        accountsCachePutSpy.should.have.been.calledOnce;
-        accountsCachePutSpy.should.have.been.calledWith(data.href, {
+        cachePutSpy.callCount.should.be.equal(4);
+        cachePutSpy.should.have.been.calledWith(data.href, {
           'href': 'http://example.com/accounts/FOO',
           'name': 'Foo',
           'groups': {
@@ -139,32 +116,11 @@ describe('ds:', function () {
             'href': 'http://example.com/directories/BAR'
           }}, true);
       });
-      it('should store all nested entities', function () {
-        _.each(data.groups.items, function (group) {
-          groupsCachePutSpy.should.have.been
-            .calledWith(group.href, group, true, utils.noop);
-        });
-
-        directoryCachePutSpy.should.have.been
-          .calledWith(data.directory.href, data.directory, true, utils.noop);
-      });
     });
 
     describe('get resource', function () {
-      var region = 'tenants';
       var ds = new DataStore({
-        cacheOptions: {
-          store: MemoryStore,
-          tenants: {
-            store: MemoryStore,
-            ttl: 60,
-            tti: 60
-          },
-          directories: {
-            ttl: 120,
-            tti: 120
-          }
-        },
+        cacheOptions: { store: 'memory' },
         apiKey: {id: 1, secret: 2}
       });
 
@@ -186,7 +142,7 @@ describe('ds:', function () {
         before(function (done) {
           sandbox = sinon.sandbox.create();
           reqExecSpy = sandbox.spy(ds.requestExecutor, 'execute');
-          var cache = ds.cacheHandler.cacheManager.getCache(region);
+          var cache = ds.cacheHandler.cacheManager.getCache();
           cacheGetSpy = sandbox.spy(cache, 'get');
           cache.put(href, data, true, done);
         });
@@ -222,7 +178,7 @@ describe('ds:', function () {
         var sandbox, cacheGetSpy, cachePutSpy, reqExecStub;
         before(function () {
           sandbox = sinon.sandbox.create();
-          var cache = ds.cacheHandler.cacheManager.getCache(region);
+          var cache = ds.cacheHandler.cacheManager.getCache();
           cacheGetSpy = sandbox.spy(cache, 'get');
           cachePutSpy = sandbox.spy(cache, 'put');
           reqExecStub = sandbox.stub(ds.requestExecutor, 'execute', function (req, cb) {
@@ -251,7 +207,7 @@ describe('ds:', function () {
         });
       });
 
-      describe('if href region not cached', function () {
+      describe('if href not cached', function () {
         var href = '/directory/2' + random();
         var data = {'data': random()};
         var cbSpy = sinon.spy();
@@ -361,7 +317,6 @@ describe('ds:', function () {
     });
 
     describe('createResource:', function () {
-      var region = 'tenants';
       var ds = new DataStore({
         cacheOptions: {
           tenants: {
@@ -384,7 +339,7 @@ describe('ds:', function () {
       var sandbox, cachePutSpy, reqExecStub, requestSpy;
       before(function () {
         sandbox = sinon.sandbox.create();
-        var cache = ds.cacheHandler.cacheManager.getCache(region);
+        var cache = ds.cacheHandler.cacheManager.getCache();
         cachePutSpy = sandbox.spy(cache, 'put');
         reqExecStub = sandbox.stub(ds.requestExecutor, 'execute', function (req, cb) {
           requestSpy = req;
@@ -430,14 +385,11 @@ describe('ds:', function () {
     });
 
     describe('save resource', function () {
-      var region = 'tenants';
       var ds = new DataStore({
         cacheOptions: {
-          tenants: {
-            store: MemoryStore,
-            ttl: 60,
-            tti: 60
-          }
+          store: 'memory',
+          ttl: 60,
+          tti: 60
         },
         apiKey: {id: 1, secret: 2}
       });
@@ -449,7 +401,7 @@ describe('ds:', function () {
       var sandbox, cachePutSpy, reqExecStub, requestSpy;
       before(function () {
         sandbox = sinon.sandbox.create();
-        var cache = ds.cacheHandler.cacheManager.getCache(region);
+        var cache = ds.cacheHandler.cacheManager.getCache();
         cachePutSpy = sandbox.spy(cache, 'put');
         reqExecStub = sandbox.stub(ds.requestExecutor, 'execute', function (req, cb) {
           requestSpy = req;
@@ -485,14 +437,11 @@ describe('ds:', function () {
     });
 
     describe('delete resource', function () {
-      var region = 'tenants';
       var ds = new DataStore({
         cacheOptions: {
-          tenants: {
-            store: MemoryStore,
-            ttl: 60,
-            tti: 60
-          }
+          store: MemoryStore,
+          ttl: 60,
+          tti: 60
         },
         apiKey: {id: 1, secret: 2}
       });
@@ -504,7 +453,7 @@ describe('ds:', function () {
       var sandbox, cacheDeleteSpy, reqExecStub, requestSpy;
       before(function () {
         sandbox = sinon.sandbox.create();
-        var cache = ds.cacheHandler.cacheManager.getCache(region);
+        var cache = ds.cacheHandler.cacheManager.getCache();
         cacheDeleteSpy = sandbox.spy(cache, 'delete');
         reqExecStub = sandbox.stub(ds.requestExecutor, 'execute', function (req, cb) {
           requestSpy = req;
