@@ -532,15 +532,19 @@ describe('Resources: ', function () {
     });
 
     describe('set default account store', function () {
-      var storeObj, store, appObj, app, savedApp, asm, cbSpy;
+      var storeObj, store, appObj, asmObj, app, savedApp, asm, cbSpy;
       before(function (done) {
         // arrange
-        appObj = { href: '/app/test/href', name: 'test app name'};
+        asmObj = { href: '/asm/href', offset: 0, limit: 25, items: [] };
+        appObj = { href: '/app/test/href', name: 'test app name', accountStoreMappings: {href: asmObj.href}};
         storeObj = {href: '/directories/href', name: 'test dir name'};
         app = new Application(appObj, dataStore);
         store = new Directory(storeObj, dataStore);
         cbSpy = sinon.spy();
         nock(u.BASE_URL)
+          .get(u.v1(app.accountStoreMappings.href))
+          .reply(200, asmObj)
+
           .post(u.v1('/accountStoreMappings'))
           .reply(201, function (uri, reqBody) {
             asm = JSON.parse(reqBody);
@@ -629,15 +633,19 @@ describe('Resources: ', function () {
     });
 
     describe('set default group store', function () {
-      var storeObj, store, appObj, app, savedApp, asm, cbSpy;
+      var storeObj, store, appObj, asmObj, app, savedApp, asm, cbSpy;
       before(function (done) {
         // arrange
-        appObj = { href: '/app/test/href', name: 'test app name'};
+        asmObj = { href: '/asm/href', offset: 0, limit: 25, items: [] };
+        appObj = { href: '/app/test/href', name: 'test app name', accountStoreMappings: {href: asmObj.href}};
         storeObj = {href: '/directories/href', name: 'test dir name'};
         app = new Application(appObj, dataStore);
         store = new Directory(storeObj, dataStore);
         cbSpy = sinon.spy();
         nock(u.BASE_URL)
+          .get(u.v1(app.accountStoreMappings.href))
+          .reply(200, asmObj)
+
           .post(u.v1('/accountStoreMappings'))
           .reply(201, function (uri, reqBody) {
             asm = JSON.parse(reqBody);
