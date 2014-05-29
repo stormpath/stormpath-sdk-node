@@ -1,5 +1,7 @@
 var common = require('./common');
 var sinon = common.sinon;
+var nock = common.nock;
+var u = common.u;
 
 var Resource = require('../lib/resource/Resource');
 var InstanceResource = require('../lib/resource/InstanceResource');
@@ -9,7 +11,7 @@ describe('Resources: ', function () {
   describe('InstanceResource class', function(){
 
     var ds = new DataStore({apiKey:{id:1,secret:2}});
-    var app = {href: 'href'};
+    var app = {href: '/href'};
     var instanceResource = new InstanceResource({
       applications: app,
       directory: {}
@@ -61,12 +63,13 @@ describe('Resources: ', function () {
         });
       });
 
-      describe.skip('without optional query param', function(){
+      describe('without optional query param', function(){
         var sandbox, error, cb, getResourceSpy;
         before(function(){
           cb = function(err){error = err;};
           sandbox = sinon.sandbox.create();
           getResourceSpy = sandbox.spy(ds, 'getResource');
+          nock(u.BASE_URL).get(u.v1(app.href)).reply(200, {});
 
           instanceResource.get('applications', cb);
         });
@@ -83,13 +86,14 @@ describe('Resources: ', function () {
         });
       });
 
-      describe.skip('without optional query param but with ctor', function(){
+      describe('without optional query param but with ctor', function(){
         var sandbox, error, cb, ctor, getResourceSpy;
         before(function(){
           cb = function(err){error = err;};
           ctor = Resource;
           sandbox = sinon.sandbox.create();
           getResourceSpy = sandbox.spy(ds, 'getResource');
+          nock(u.BASE_URL).get(u.v1(app.href)).reply(200, app);
 
           instanceResource.get('applications', ctor, cb);
         });
@@ -106,13 +110,14 @@ describe('Resources: ', function () {
         });
       });
 
-      describe.skip('with optional query param', function(){
+      describe('with optional query param', function(){
         var query = {q:'asd'};
         var sandbox, error, cb, getResourceSpy;
         before(function(){
           cb = function(err){error = err;};
           sandbox = sinon.sandbox.create();
           getResourceSpy = sandbox.spy(ds, 'getResource');
+          nock(u.BASE_URL).get(u.v1(app.href) + '?q='+query.q).reply(200, app);
 
           instanceResource.get('applications', query, cb);
         });
@@ -125,7 +130,7 @@ describe('Resources: ', function () {
         });
       });
 
-      describe.skip('with optional query and ctor param', function(){
+      describe('with optional query and ctor param', function(){
         var sandbox, error, cb, query, ctor, getResourceSpy;
         before(function(){
           cb = function(err){error = err;};
@@ -133,6 +138,7 @@ describe('Resources: ', function () {
           query = {q:'boom!'};
           sandbox = sinon.sandbox.create();
           getResourceSpy = sandbox.spy(ds, 'getResource');
+          nock(u.BASE_URL).get(u.v1(app.href) + '?q='+query.q).reply(200, app);
 
           instanceResource.get('applications', query, ctor, cb);
         });
