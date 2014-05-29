@@ -1,27 +1,29 @@
-var common = require('./common');
+var common = require('../common');
 var should = common.should;
+var random = common.random;
 
-var MemoryStore = require('../lib/cache/MemoryStore');
+var Cache = require('../../lib/cache/Cache');
+var RedisStore = require('../../lib/cache/RedisStore');
 
-describe('Cache module', function () {
+describe('Cache module - live', function () {
 
-  describe('In memory cache store', function () {
-    var memoryStore = new MemoryStore();
+  describe('Redis cache store', function () {
+    var redisStore = new Cache(RedisStore);
 
     describe('set entry', function () {
-      var key = 'key' + Date.now();
-      var val = 'val' + Date.now();
+      var key = 'key' + random();
+      var val = 'val' + random();
       var entry;
       before(function (done) {
-        memoryStore.set(key, val, function () {
-          memoryStore.get(key, function (err, ent) {
+        redisStore.put(key, val, function () {
+          redisStore.get(key, function (err, ent) {
             entry = ent;
             done();
           });
         });
       });
       after(function (done) {
-        memoryStore.delete(key, done);
+        redisStore.delete(key, done);
       });
       it('should store value', function () {
         should.exist(entry);
@@ -32,17 +34,17 @@ describe('Cache module', function () {
     });
 
     describe('get entry', function () {
-      var key = 'key' + Date.now();
-      var val = 'val' + Date.now();
+      var key = 'key' + random();
+      var val = 'val' + random();
       before(function (done) {
-        memoryStore.set(key, val, done);
+        redisStore.put(key, val, done);
       });
       after(function (done) {
-        memoryStore.delete(key, done);
+        redisStore.delete(key, done);
       });
 
       it('should return entry if found', function (done) {
-        memoryStore.get(key, function (err, entry) {
+        redisStore.get(key, function (err, entry) {
           should.not.exist(err);
           should.exist(entry);
           entry.should.be.equal(val);
@@ -50,7 +52,7 @@ describe('Cache module', function () {
         });
       });
       it('should return null if not found', function (done) {
-        memoryStore.get(Date.now(), function (err, entry) {
+        redisStore.get(random(), function (err, entry) {
           should.not.exist(err);
           should.not.exist(entry);
           done();
@@ -59,14 +61,14 @@ describe('Cache module', function () {
     });
 
     describe('delete entry', function () {
-      var key = 'key' + Date.now();
-      var val = 'val' + Date.now();
+      var key = 'key' + random();
+      var val = 'val' + random();
       before(function (done) {
-        memoryStore.set(key, val, done);
+        redisStore.put(key, val, done);
       });
       it('should remove entry from store', function (done) {
-        memoryStore.delete(key, function () {
-          memoryStore.get(key, function (err, entry) {
+        redisStore.delete(key, function () {
+          redisStore.get(key, function (err, entry) {
             should.not.exist(entry);
             done();
           });
@@ -75,14 +77,14 @@ describe('Cache module', function () {
     });
 
     describe('clear cache', function () {
-      var key = 'key' + Date.now();
-      var val = 'val' + Date.now();
+      var key = 'key' + random();
+      var val = 'val' + random();
       before(function (done) {
-        memoryStore.set(key, val, done);
+        redisStore.put(key, val, done);
       });
       it('should remove all entries from store', function (done) {
-        memoryStore.clear(function () {
-          memoryStore.get(key, function (err, entry) {
+        redisStore.clear(function () {
+          redisStore.get(key, function (err, entry) {
             should.not.exist(entry);
             done();
           });
@@ -91,19 +93,20 @@ describe('Cache module', function () {
     });
 
     describe('cache size', function () {
-      var key = 'key' + Date.now();
-      var val = 'val' + Date.now();
+      var key = 'key' + random();
+      var val = 'val' + random();
       before(function (done) {
-        memoryStore.clear(function(){
-          memoryStore.set(key, val, done);
+        redisStore.clear(function(){
+          redisStore.put(key, val, done);
         });
       });
       it('should return store size', function (done) {
-        memoryStore.size(function (err, size) {
+        redisStore.size(function (err, size) {
           size.should.be.equal(1);
           done();
         });
       });
     });
+
   });
 });

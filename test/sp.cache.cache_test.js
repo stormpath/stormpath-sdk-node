@@ -1,15 +1,21 @@
 var common = require('./common');
+var _ = common._;
 var sinon = common.sinon;
 var should = common.should;
+var random = common.random;
 
 var Cache = require('../lib/cache/Cache');
 var CacheStats = require('../lib/cache/CacheStats');
+
 var MemoryStore = require('../lib/cache/MemoryStore');
+var MemcachedStore = require('../lib/cache/MemcachedStore');
+var RedisStore = require('../lib/cache/RedisStore');
 
 describe('Cache module', function () {
+  "use strict";
   describe('Cache class', function () {
-    describe('call to constructor', function(){
-      it('should return an instance of Cache', function(){
+    describe('call to constructor', function () {
+      it('should return an instance of Cache', function () {
         /* jshint -W064 */
         Cache().should.be.an.instanceof(Cache);
         /* jshint +W064 */
@@ -35,20 +41,21 @@ describe('Cache module', function () {
       });
     });
 
-    describe('get entry', function () {
-      var cache;
-      before(function () {
-        cache = new Cache();
-      });
+  });
 
+  function testStore(opt) {
+    var cache;
+    before(function(){
+      cache = opt.cache;
+    });
+
+    describe('get entry', function () {
       describe('if entry exists', function () {
-        var key = 'key';
-        var data = 'entry';
-        var entry;
-        var hitsCounter;
+        var sandbox, entry, hitsCounter;
+        var key = 'key' + random();
+        var data = 'entry' + random();
         var initialTime = 100500;
         var tickDelta = 150;
-        var sandbox;
         before(function (done) {
           sandbox = sinon.sandbox.create();
           var clock = sandbox.useFakeTimers(initialTime, 'Date');
@@ -82,7 +89,7 @@ describe('Cache module', function () {
 
       describe('if entry does not exist', function () {
         it('should return null', function (done) {
-          cache.get(Date.now(), function (err, entry) {
+          cache.get(random(), function (err, entry) {
             should.not.exist(err);
             should.not.exist(entry);
             done();
@@ -91,8 +98,8 @@ describe('Cache module', function () {
       });
 
       describe('if entry expired', function () {
-        var key = 'key2';
-        var data = 'entry2';
+        var key = 'key' +  random();
+        var data = 'entry' + random();
         var entry;
         var missCounter;
         var initialTime = 100500;
@@ -124,8 +131,8 @@ describe('Cache module', function () {
           storeDeleteSpy.should.have.been.calledOnce;
           storeDeleteSpy.should.have.been.calledWith(key);
         });
-        it('should return null', function(done){
-          cache.get(key, function(err, ent){
+        it('should return null', function (done) {
+          cache.get(key, function (err, ent) {
             should.not.exist(err);
             should.not.exist(ent);
             done();
@@ -135,9 +142,8 @@ describe('Cache module', function () {
     });
 
     describe('put entry', function () {
-      var cache = new Cache();
-      var key = 'key_' + Date.now();
-      var data = 'data_' + Date.now();
+      var key = 'key' + random();
+      var data = 'data' + random();
       var sandbox;
       var statsPutSpy;
       before(function (done) {
@@ -155,14 +161,14 @@ describe('Cache module', function () {
       });
 
       describe('if we put an entry', function () {
-        it('should be accessible from cache', function(done){
-          cache.get(key, function(err, entry){
+        it('should be accessible from cache', function (done) {
+          cache.get(key, function (err, entry) {
             should.exist(entry);
             entry.should.be.equal(data);
             done();
           });
         });
-        it('should update stats', function(){
+        it('should update stats', function () {
           /* jshint -W030 */
           statsPutSpy.should.have.been.calledOnce;
         });
@@ -170,50 +176,49 @@ describe('Cache module', function () {
     });
 
     describe('delete entry', function () {
-      var cache = new Cache();
-      var key = 'key' + Date.now();
-      var cb = function(){};
+      var key = 'key' + random();
+      var cb = function () {
+      };
       var sandbox, statsDeleteSpy, storeDeleteSpy;
-      before(function(){
+      before(function () {
         sandbox = sinon.sandbox.create();
         statsDeleteSpy = sandbox.spy(cache.stats, 'delete');
         storeDeleteSpy = sandbox.spy(cache.store, 'delete');
 
-        cache.delete(key,cb);
+        cache.delete(key, cb);
       });
-      after(function(){
+      after(function () {
         sandbox.restore();
       });
-      it('should update stats', function(){
+      it('should update stats', function () {
         /* jshint -W030 */
         statsDeleteSpy.should.have.been.calledOnce;
       });
-      it('should remove entry from cache', function(){
+      it('should remove entry from cache', function () {
         /* jshint -W030 */
         storeDeleteSpy.should.have.been.calledOnce;
-        storeDeleteSpy.should.have.been.calledWith(key,cb);
+        storeDeleteSpy.should.have.been.calledWith(key, cb);
       });
     });
 
     describe('clear cache', function () {
-      var cache = new Cache();
-      var cb = function(){};
+      var cb = function () {};
       var sandbox, statsClearSpy, storeClearSpy;
-      before(function(){
+      before(function () {
         sandbox = sinon.sandbox.create();
         statsClearSpy = sandbox.spy(cache.stats, 'clear');
         storeClearSpy = sandbox.spy(cache.store, 'clear');
 
         cache.clear(cb);
       });
-      after(function(){
+      after(function () {
         sandbox.restore();
       });
-      it('should reset stats', function(){
+      it('should reset stats', function () {
         /* jshint -W030 */
         statsClearSpy.should.have.been.calledOnce;
       });
-      it('should remove all entries from cache', function(){
+      it('should remove all entries from cache', function () {
         /* jshint -W030 */
         storeClearSpy.should.have.been.calledOnce;
         storeClearSpy.should.have.been.calledWith(cb);
@@ -221,23 +226,93 @@ describe('Cache module', function () {
     });
 
     describe('cache size', function () {
-      var cache = new Cache();
-      var cb = function(){};
+      var cb = function () {
+      };
       var sandbox, storeSizeSpy;
-      before(function(){
+      before(function () {
         sandbox = sinon.sandbox.create();
         storeSizeSpy = sandbox.spy(cache.store, 'size');
 
         cache.size(cb);
       });
-      after(function(){
+      after(function () {
         sandbox.restore();
       });
-      it('should return size of cache', function(){
+      it('should return size of cache', function () {
         /* jshint -W030 */
         storeSizeSpy.should.have.been.calledOnce;
         storeSizeSpy.should.have.been.calledWith(cb);
       });
     });
+
+  }
+
+  describe('Default store', function(){
+    testStore({cache: new Cache()});
   });
+
+  describe('MemoryStore store', function(){
+    testStore({cache: new Cache(MemoryStore)});
+  });
+
+  describe('Redis store', function(){
+    var opt = {cache:null}, sandbox;
+    before(function(){
+      sandbox = sinon.sandbox.create();
+      var ms = new MemoryStore();
+      _.extend(ms,{
+        expire: function(){},
+        del: ms.delete,
+        flushdb: ms.clear,
+        dbsize: ms.size
+      });
+
+      sandbox.stub(RedisStore, '_createClient', function(){
+        return ms;
+      });
+
+      opt.cache = new Cache(RedisStore);
+    });
+    after(function(){
+      sandbox.restore();
+    });
+    describe('...', function(){
+      testStore(opt);
+    });
+  });
+
+  describe('Memcached store', function(){
+    var opt = {cache:null}, sandbox;
+    before(function(){
+      sandbox = sinon.sandbox.create();
+      var ms = new MemoryStore();
+      ms._set = ms.set;
+      _.extend(ms,{
+        expire: function(){},
+        del: ms.delete,
+        flush: ms.clear,
+        stats: function(cb){
+          ms.size(function(err, size){
+            cb(null, [{curr_items:size}]);
+          });
+        }
+      });
+
+      sandbox.stub(ms, 'set', function(key,val, ttl, cb){
+        return ms._set(key, val, cb);
+      });
+      sandbox.stub(MemcachedStore, '_createClient', function(){
+        return ms;
+      });
+
+      opt.cache = new Cache(MemcachedStore);
+    });
+    after(function(){
+      sandbox.restore();
+    });
+    describe('...', function(){
+      testStore(opt);
+    });
+  });
+
 });
