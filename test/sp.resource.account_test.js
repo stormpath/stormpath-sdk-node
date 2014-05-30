@@ -2,13 +2,13 @@ var common = require('./common');
 var sinon = common.sinon;
 var uuid = common.uuid;
 var assert = common.assert;
-var nock = common.nock;
 var Group = require('../lib/resource/Group');
 var Account = require('../lib/resource/Account');
 var ApiKey = require('../lib/resource/ApiKey');
 var DataStore = require('../lib/ds/DataStore');
 var CustomData = require('../lib/resource/CustomData');
 var instantiate = require('../lib/resource/ResourceFactory').instantiate;
+var CollectionResource = require('../lib/resource/CollectionResource');
 var GroupMembership = require('../lib/resource/GroupMembership');
 
 
@@ -279,68 +279,91 @@ describe('Resources: ', function () {
     });
 
     describe('createApiKey',function () {
-      var cbSpy = sinon.spy();
-      var cbArgs;
+      var sandbox = sinon.sandbox.create();
+      var accountHref = 'accounts/'+uuid();
+      var result;
       before(function(done){
-        var accountHref = 'accounts/'+uuid();
-        var account = new Account({
+        sandbox.stub(dataStore.requestExecutor,'execute',function(requestOptions,cb) {
+          cb(null,{
+              "account": {
+                "href": "https://api.stormpath.com/v1/accounts/8897"
+              },
+              "href": "https://api.stormpath.com/v1/apiKeys/5678",
+              "id": "5678",
+              "secret": "secret",
+              "status": "ENABLED",
+              "tenant": {
+                "href": "https://api.stormpath.com/v1/tenants/abc123"
+              }
+            });
+        });
+        new Account({
           href:accountHref,
           apiKeys: {
             href: accountHref + '/apiKeys'
           }
-        }, dataStore);
-        nock('https://api.stormpath.com')
-          .post('/v1/'+account.apiKeys.href)
-          .reply(201,{
-            href: account.apiKeys.href + '/' + uuid()
+        }, dataStore)
+          .createApiKey(function(err,value) {
+            result = [err,value];
+            done();
           });
-        account.createApiKey(function() {
-          cbSpy.apply(null,arguments);
-          cbArgs = cbSpy.args[0];
-          done();
-        });
+      });
+      after(function(){
+        sandbox.restore();
       });
       it('should not err',function(){
-        assert.equal(cbArgs[0],null);
+        assert.equal(result[0],null);
       });
       it('should return an ApiKey instance',function(){
-        assert.instanceOf(cbArgs[1],ApiKey);
+        assert.instanceOf(result[1],ApiKey);
       });
     });
 
     describe('getApiKeys',function () {
-      var cbSpy = sinon.spy();
-      var cbArgs;
+      var sandbox = sinon.sandbox.create();
+      var accountHref = 'accounts/'+uuid();
+      var result;
       before(function(done){
-        var accountHref = 'accounts/'+uuid();
-        var account = new Account({
+        sandbox.stub(dataStore.requestExecutor,'execute',function(requestOptions,cb) {
+          cb(null,{
+            "href": "https://api.stormpath.com/v1/accounts/1234/apiKeys",
+            "items": [
+              {
+                "href": "https://api.stormpath.com/v1/apiKeys/5678",
+                "id": "5678",
+                "secret": "secret",
+                "status": "ENABLED"
+              }
+            ],
+            "limit": 25,
+            "offset": 0
+          });
+        });
+        new Account({
           href:accountHref,
           apiKeys: {
             href: accountHref + '/apiKeys'
           }
-        }, dataStore);
-        nock('https://api.stormpath.com')
-          .get('/v1/'+account.apiKeys.href)
-          .reply(200,{
-            offset: 0,
-            limit: 25,
-            items: [{
-              href: 'https://api.stormpath.com/v1/apiKeys/' + uuid()
-            }]
+        }, dataStore)
+          .getApiKeys(function(err,value) {
+            result = [err,value];
+            done();
           });
-        account.getApiKeys(function() {
-          cbSpy.apply(null,arguments);
-          cbArgs = cbSpy.args[0];
-          done();
-        });
+      });
+      after(function(){
+        sandbox.restore();
       });
       it('should not err',function(){
-        assert.equal(cbArgs[0],null);
+        assert.equal(result[0],null);
       });
-      it('should return an array of ApiKey instances',function(){
-        assert.equal(Array.isArray(cbArgs[1].items),true);
-        assert.instanceOf(cbArgs[1].items[0],ApiKey);
+      it('should return a collection resource',function(){
+        assert.instanceOf(result[1],CollectionResource);
+      });
+      it('should return ApiKey instances',function(){
+        assert.instanceOf(result[1].items[0],ApiKey);
       });
     });
   });
+
+
 });
