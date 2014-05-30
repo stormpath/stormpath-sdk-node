@@ -1,5 +1,6 @@
 var common = require('./common');
 var sinon = common.sinon;
+var assert = common.assert;
 
 var utils = require('../lib/utils');
 var Account = require('../lib/resource/Account');
@@ -7,6 +8,7 @@ var Group = require('../lib/resource/Group');
 var Tenant = require('../lib/resource/Tenant');
 var Application = require('../lib/resource/Application');
 var AuthenticationResult = require('../lib/resource/AuthenticationResult');
+var ApiKey = require('../lib/resource/ApiKey');
 var DataStore = require('../lib/ds/DataStore');
 
 describe('Resources: ', function () {
@@ -220,7 +222,7 @@ describe('Resources: ', function () {
         });
       });
     });
-    
+
     describe('create account', function () {
       describe('if accounts not set', function () {
         var application = new Application();
@@ -377,7 +379,7 @@ describe('Resources: ', function () {
         });
       });
     });
-    
+
     describe('get tenant', function () {
       describe('if tenants href not set', function () {
         var application = new Application();
@@ -428,5 +430,110 @@ describe('Resources: ', function () {
         });
       });
     });
+
+    describe('get apiKey',function(){
+      var appHref = 'https://api.stormpath.com/v1/applications/someapp';
+      var application = new Application({
+        href:appHref,
+        apiKeys: {
+          href: appHref + '/apiKeys'
+        }
+      }, dataStore);
+
+      var foundResponse = {
+        "offset" : 0,
+        "href" : "https://api.stormpath.com/v1/applications/1ux4vVy4SBeeLLfZtldtXj/apiKeys",
+        "limit" : 25,
+        "items" : [
+          {
+            "secret" : "zGvFGQh95FOrka7Ai5SWJsKmExhphZd6WqOciCiaFHDdlt3NP1VrbnpN0KO/9/VqTCoDCx66guqnIGdnuMJrpg==",
+            "status" : "ENABLED",
+            "account" : {
+              "href" : "https://api.stormpath.com/v1/accounts/Uu87kzssxEcnjmhC9uzwF"
+            },
+            "id" : "1S9H13Q61HLJHIVU7N357QI7U",
+            "tenant" : {
+              "href" : "https://api.stormpath.com/v1/tenants/eU0gloBbz42wGUtGXEjED"
+            },
+            "href" : "https://api.stormpath.com/v1/apiKeys/1S9H13Q61HLJHIVU7N357QI7U"
+          }
+        ]
+      };
+
+      var notFoundResponse = {
+        "offset" : 0,
+        "href" : "https://api.stormpath.com/v1/applications/1234/apiKeys",
+        "limit" : 25,
+        "items" : []
+      };
+
+      describe('when apikey is found',function(){
+        var sandbox = sinon.sandbox.create();
+        var result, requestedOptions, cacheResult;
+        before(function(done){
+          sandbox.stub(dataStore.requestExecutor,'execute',function(requestOptions,cb) {
+            requestedOptions = requestOptions;
+            cb(null,foundResponse);
+          });
+          application.getApiKey('an id',function(err,value) {
+            result = [err,value];
+            dataStore.cacheHandler.get(foundResponse.items[0].href,function(err,value){
+              cacheResult = [err,value];
+              done();
+            });
+
+          });
+        });
+        after(function(){
+          sandbox.restore();
+        });
+        it('should have asked for encrypted secret',function(){
+          assert.equal(requestedOptions.query.encryptSecret,true);
+        });
+        it('should return an ApiKey instance',function(){
+          assert.instanceOf(result[1],ApiKey);
+        });
+        it('should cache the ApiKey',function(){
+          assert.equal(JSON.stringify(cacheResult[1]),JSON.stringify(foundResponse.items[0]));
+        });
+      });
+      describe('on second get',function(){
+        var result;
+        before(function(done){
+          application.getApiKey(foundResponse.items[0].id,function(err,value) {
+            result = [err,value];
+            done();
+          });
+        });
+        it('should have the key from the cache',function(){
+          assert.equal(JSON.stringify(result[1]),JSON.stringify(foundResponse.items[0]));
+        });
+      });
+      describe('when apikey is not found',function(){
+        var sandbox = sinon.sandbox.create();
+        var result, requestedOptions;
+
+        before(function(done){
+          sandbox.stub(dataStore.requestExecutor,'execute',function(requestOptions,cb) {
+            requestedOptions = requestOptions;
+            cb(null,notFoundResponse);
+          });
+          application.getApiKey('an id',function(err,value) {
+            result = [err,value];
+            done();
+          });
+        });
+        after(function(){
+          sandbox.restore();
+        });
+        it('should have asked for encrypted secret',function(){
+          assert.equal(requestedOptions.query.encryptSecret,true);
+        });
+        it('should return a not found error',function(){
+          assert.equal(result[0].message,'ApiKey not found');
+        });
+      });
+    });
+
   });
 });
