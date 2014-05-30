@@ -281,9 +281,11 @@ describe('Resources: ', function () {
     describe('createApiKey',function () {
       var sandbox = sinon.sandbox.create();
       var accountHref = 'accounts/'+uuid();
-      var result;
+      var result, requestedOptions;
+
       before(function(done){
         sandbox.stub(dataStore.requestExecutor,'execute',function(requestOptions,cb) {
+          requestedOptions = requestOptions;
           cb(null,{
               "account": {
                 "href": "https://api.stormpath.com/v1/accounts/8897"
@@ -311,6 +313,9 @@ describe('Resources: ', function () {
       after(function(){
         sandbox.restore();
       });
+      it('should have asked for encrypted secret',function(){
+        assert.equal(requestedOptions.query.encryptSecret,true);
+      });
       it('should not err',function(){
         assert.equal(result[0],null);
       });
@@ -322,9 +327,11 @@ describe('Resources: ', function () {
     describe('getApiKeys',function () {
       var sandbox = sinon.sandbox.create();
       var accountHref = 'accounts/'+uuid();
-      var result;
+      var result, requestedOptions;
+
       before(function(done){
         sandbox.stub(dataStore.requestExecutor,'execute',function(requestOptions,cb) {
+          requestedOptions = requestOptions;
           cb(null,{
             "href": "https://api.stormpath.com/v1/accounts/1234/apiKeys",
             "items": [
@@ -352,6 +359,9 @@ describe('Resources: ', function () {
       });
       after(function(){
         sandbox.restore();
+      });
+      it('should have asked for encrypted secret',function(){
+        assert.equal(requestedOptions.query.encryptSecret,true);
       });
       it('should not err',function(){
         assert.equal(result[0],null);
