@@ -34,55 +34,68 @@ function listAppsAndDirs(clientOrTenant) {
     .exec(function (err, apps) {
       if (err) throw err;
 
-      apps.each(function (err, app, offset) {
-        if (err) throw err;
-
-        console.log(offset + ": ");
+    apps.each(function iterator(app, cb) {
         console.log(app);
 
         app.getAccounts(function (err, accts) {
           if (err) throw err;
 
-          accts.each(function (err, acct, offset) {
+        accts.each(function iterator(acct, cb) {
             console.log(acct);
+          cb();
+        }, function callback(err){
+          if (err) throw err;
           });
         });
 
-        app.getGroups(function (err, groups) {
+     app.getGroups(function (err, groups) {
           if (err) throw err;
 
-          groups.each(function (err, group, offset) {
+        groups.each(function iterator (group, cb) {
             console.log(group);
+          cb();
+        }, function callback(err){
+          if (err) throw err;
           });
         });
 
+      cb();
+    }, function callback(err){
+      if (err) throw err;
       });
     });
 
   clientOrTenant.getDirectories(function (err, dirs) {
     if (err) throw err;
 
-    dirs.each(function (err, dir, offset) {
-      if (err) throw err;
-
+    dirs.each(function iterator(dir, cb) {
       console.log(dir);
 
       dir.getAccounts(function (err, accts) {
         if (err) throw err;
 
-        accts.each(function (err, acct, offset) {
+        accts.each(function iterator (acct, cb) {
           console.log(acct);
+          cb();
+        }, function callback(err){
+          if (err) throw err;
         });
       });
 
       dir.getGroups(function (err, groups) {
         if (err) throw err;
 
-        groups.each(function (err, group, offset) {
+        groups.each(function iterator(group, cb) {
           console.log(group);
+          cb();
+        }, function callback(err){
+          if (err) throw err;
         });
       });
 
+      cb();
+    }, function callback(err){
+      if (err) throw err;
     });
   });
 }

@@ -102,7 +102,25 @@ function items() {
 
     item('CollectionResource', 'collectionResource', [
       anchor('Overview', 'top'),
-      anchor('each')
+      anchor('each'),
+      anchor('eachSeries'),
+      anchor('eachLimit'),
+      anchor('map'),
+      anchor('mapSeries'),
+      anchor('mapLimit'),
+      anchor('filter'),
+      anchor('filterSeries'),
+      anchor('reject'),
+      anchor('rejectSeries'),
+      anchor('reduce'),
+      anchor('reduceRight'),
+      anchor('detect'),
+      anchor('detectSeries'),
+      anchor('sortBy'),
+      anchor('some'),
+      anchor('every'),
+      anchor('concat'),
+      anchor('concatSeries')
     ]),
 
     item('CustomData', 'customData', [

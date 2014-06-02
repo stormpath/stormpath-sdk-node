@@ -48,7 +48,8 @@
     "node-uuid": "~1.4.0",
     "async": "~0.7.0",
     "redis": "~0.10.1",
-    "memcached": "~0.2.8"
+    "memcached": "~0.2.8",
+    "glob": "3"
   },
   "devDependencies": {
     "grunt": "~0.4.2",
