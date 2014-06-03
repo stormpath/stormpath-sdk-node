@@ -11,7 +11,7 @@ var client = null; //available after the ApiKey is loaded from disk (api key is 
 stormpath.loadApiKey(apiKeyFilePath, function (err, apiKey) {
   if (err) throw err;
 
-  client = new stormpath.Client({apiKey: apiKey});
+  client = new stormpath.Client({apiKey: apiKey, cacheOptions: {store: 'disabled'}});
   client.getCurrentTenant(function (err, tenant) {
     if (err) throw err;
     onTenantReady(tenant);
