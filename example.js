@@ -349,13 +349,13 @@ function doAccountStoreMappingsCrud(client){
               app.setDefaultAccountStore(dirs[_dirIndex], w(cb, 'set default account store: '));
             },
             function(cb){
-              app.setDefaultAccountStore(dirs[_dirIndex], w(cb, 'set default account store: '));
+              app.setDefaultAccountStore(dirs[_dirIndex].href, w(cb, 'set default account store: '));
             },
             function (cb){
               app.setDefaultGroupStore(dirs[_dirIndex], w(cb, 'set default group store: '));
             },
             function (cb){
-              app.setDefaultGroupStore(dirs[_dirIndex], w(cb, 'set default group store: '));
+              app.setDefaultGroupStore(dirs[_dirIndex].href, w(cb, 'set default group store: '));
             }
           ], cb);
         },
