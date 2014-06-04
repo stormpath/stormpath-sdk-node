@@ -2,7 +2,6 @@ var common = require('./common');
 var should = common.should;
 var expect = common.expect;
 var sinon = common.sinon;
-var assert = common.assert;
 
 var CacheHandler = require('../lib/cache/CacheHandler');
 
@@ -65,49 +64,5 @@ describe('Cache module',function(){
       });
     });
 
-    describe('put method with collection response',function(){
-
-      var cbSpy = sinon.spy();
-
-      var apiKeyResponse = {
-        "href": "https://api.stormpath.com/v1/applications/1234/apiKeys",
-        "items": [
-          {
-            "account": {
-              "href": "https://api.stormpath.com/v1/accounts/8897"
-            },
-            "href": "https://api.stormpath.com/v1/apiKeys/5678",
-            "id": "5678",
-            "secret": "secret",
-            "status": "ENABLED",
-            "tenant": {
-              "href": "https://api.stormpath.com/v1/tenants/abc123"
-            }
-          }
-        ],
-        "limit": 25,
-        "offset": 0
-      };
-
-      var cacheHandler = new CacheHandler();
-
-      before(function(done){
-        cacheHandler.put(apiKeyResponse.href,apiKeyResponse,
-          function(err){
-            if(err){
-              throw err;
-            }else{
-              cacheHandler.get(apiKeyResponse.items[0].href,function(){
-                cbSpy.apply(null,arguments);
-                done();
-              });
-            }
-          }
-        );
-      });
-      it('it should cache the items',function(){
-        assert.deepEqual(cbSpy.args[0][1],apiKeyResponse.items[0]);
-      });
-    });
   });
 });
