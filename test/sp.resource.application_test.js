@@ -532,7 +532,7 @@ describe('Resources: ', function () {
     });
 
     describe('set default account store', function () {
-      var storeObj, store, appObj, asmObj, app, savedApp, asm, cbSpy;
+      var sandbox, storeObj, store, appObj, asmObj, app, asm, evokeSpy, cbSpy;
       before(function (done) {
         // arrange
         asmObj = { href: '/asm/href', offset: 0, limit: 25, items: [] };
@@ -540,7 +540,9 @@ describe('Resources: ', function () {
         storeObj = {href: '/directories/href', name: 'test dir name'};
         app = new Application(appObj, dataStore);
         store = new Directory(storeObj, dataStore);
-        cbSpy = sinon.spy();
+        sandbox = sinon.sandbox.create();
+        evokeSpy = sandbox.spy(app.dataStore, '_evict');
+        cbSpy = sandbox.spy(done);
         nock(u.BASE_URL)
           .get(u.v1(app.accountStoreMappings.href))
           .reply(200, asmObj)
@@ -550,17 +552,14 @@ describe('Resources: ', function () {
             asm = JSON.parse(reqBody);
             asm.href = '/accountStoreMappings/href';
             return asm;
-          })
-
-          .post(u.v1(appObj.href))
-          .reply(200, function (uri, reqBody) {
-            savedApp = JSON.parse(reqBody);
-            done();
-            return savedApp;
           });
 
         // act
         app.setDefaultAccountStore(store, cbSpy);
+      });
+
+      after(function(){
+        sandbox.restore();
       });
 
       // assert
@@ -570,8 +569,13 @@ describe('Resources: ', function () {
         asm.application.href.should.be.equal(app.href);
       });
 
-      it('should update default account store mapping in application and save it', function () {
-        savedApp.defaultAccountStoreMapping.href.should.be.equal(asm.href);
+      it('should invalidate application cache', function(){
+        evokeSpy.should.have.been.calledOnce;
+        evokeSpy.should.have.been.calledWith(appObj.href);
+
+      });
+
+      it('callback should be called once', function () {
         cbSpy.should.have.been.calledOnce;
       });
     });
@@ -633,7 +637,7 @@ describe('Resources: ', function () {
     });
 
     describe('set default group store', function () {
-      var storeObj, store, appObj, asmObj, app, savedApp, asm, cbSpy;
+      var sandbox, storeObj, store, appObj, asmObj, app, evokeSpy, asm, cbSpy;
       before(function (done) {
         // arrange
         asmObj = { href: '/asm/href', offset: 0, limit: 25, items: [] };
@@ -641,7 +645,9 @@ describe('Resources: ', function () {
         storeObj = {href: '/directories/href', name: 'test dir name'};
         app = new Application(appObj, dataStore);
         store = new Directory(storeObj, dataStore);
-        cbSpy = sinon.spy();
+        sandbox = sinon.sandbox.create();
+        evokeSpy = sinon.spy(app.dataStore, '_evict');
+        cbSpy = sinon.spy(done);
         nock(u.BASE_URL)
           .get(u.v1(app.accountStoreMappings.href))
           .reply(200, asmObj)
@@ -651,17 +657,14 @@ describe('Resources: ', function () {
             asm = JSON.parse(reqBody);
             asm.href = '/accountStoreMappings/href';
             return asm;
-          })
-
-          .post(u.v1(appObj.href))
-          .reply(200, function (uri, reqBody) {
-            savedApp = JSON.parse(reqBody);
-            done();
-            return savedApp;
           });
 
         // act
         app.setDefaultGroupStore(store, cbSpy);
+      });
+
+      after(function(){
+        sandbox.restore();
       });
 
       // assert
@@ -671,8 +674,12 @@ describe('Resources: ', function () {
         asm.application.href.should.be.equal(app.href);
       });
 
-      it('should update default account store mapping in application and save it', function () {
-        savedApp.defaultGroupStoreMapping.href.should.be.equal(asm.href);
+      it('should invalidate application cache', function(){
+        evokeSpy.should.have.been.calledOnce;
+        evokeSpy.should.have.been.calledWith(appObj.href);
+      });
+
+      it('callback should be called once', function () {
         cbSpy.should.have.been.calledOnce;
       });
     });

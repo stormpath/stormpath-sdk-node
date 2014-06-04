@@ -11,7 +11,7 @@ var client = null; //available after the ApiKey is loaded from disk (api key is 
 stormpath.loadApiKey(apiKeyFilePath, function (err, apiKey) {
   if (err) throw err;
 
-  client = new stormpath.Client({apiKey: apiKey, cacheOptions: {store: 'disabled'}});
+  client = new stormpath.Client({ apiKey: apiKey });
   client.getCurrentTenant(function (err, tenant) {
     if (err) throw err;
     onTenantReady(tenant);
@@ -321,7 +321,11 @@ function doAccountStoreMappingsCrud(client){
     function getAll(cb){
       async.series([
         function(cb){
-          client.getApplication(app.href, w(cb, 'application: '));
+          function updateApp(err, _app){
+            app = _app;
+            cb(err);
+          }
+          client.getApplication(app.href, w(updateApp, 'get application: '));
         },
         function(cb){
           app.getAccountStoreMappings(w(cb, 'account store mappings store: '));
