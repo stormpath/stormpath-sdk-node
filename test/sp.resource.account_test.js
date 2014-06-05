@@ -11,11 +11,16 @@ var instantiate = require('../lib/resource/ResourceFactory').instantiate;
 var CollectionResource = require('../lib/resource/CollectionResource');
 var GroupMembership = require('../lib/resource/GroupMembership');
 
-
 describe('Resources: ', function () {
   "use strict";
   describe('Account resource class', function () {
-    var dataStore = new DataStore({apiKey: {id: 1, secret: 2}});
+    var dataStore = new DataStore({
+      apiKey: {
+        id: 1,
+        // this secret will decrypt the api keys correctly
+        secret: '6b2c3912-4779-49c1-81e7-23c204f43d2d'
+      }
+    });
 
     describe('get groups', function () {
       describe('if groups not set', function () {
@@ -332,13 +337,16 @@ describe('Resources: ', function () {
       before(function(done){
         sandbox.stub(dataStore.requestExecutor,'execute',function(requestOptions,cb) {
           requestedOptions = requestOptions;
+
+          // hack - override the salt
+          requestOptions.query.encryptionKeySalt = 'uHMSUA6F8LFoCIPqKYSRCg==';
           cb(null,{
             "href": "https://api.stormpath.com/v1/accounts/1234/apiKeys",
             "items": [
               {
                 "href": "https://api.stormpath.com/v1/apiKeys/5678",
                 "id": "5678",
-                "secret": "secret",
+                "secret": "NuUYYcIAjRYS+LiNBPhpu3z45zxu2uWJZx9Uhsez6Ls5NI7AI0G8Ykov9FyhvAetDfITRBlNS9d7VCugLPjHaA==",
                 "status": "ENABLED"
               }
             ],

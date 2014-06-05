@@ -1,7 +1,7 @@
 var common = require('./common');
 var sinon = common.sinon;
 var assert = common.assert;
-
+var _ = common._;
 var utils = require('../lib/utils');
 var Account = require('../lib/resource/Account');
 var Group = require('../lib/resource/Group');
@@ -13,7 +13,14 @@ var DataStore = require('../lib/ds/DataStore');
 
 describe('Resources: ', function () {
   describe('Application resource', function () {
-    var dataStore = new DataStore({apiKey: {id: 1, secret: 2}});
+
+    var dataStore = new DataStore({
+      apiKey: {
+        id: 1,
+        // this secret will decrypt the api keys correctly
+        secret: '6b2c3912-4779-49c1-81e7-23c204f43d2d'
+      }
+    });
     describe('authenticate account', function () {
       var authRequest = {username: 'test'};
       describe('if login attempts not set', function () {
@@ -446,7 +453,7 @@ describe('Resources: ', function () {
         "limit" : 25,
         "items" : [
           {
-            "secret" : "zGvFGQh95FOrka7Ai5SWJsKmExhphZd6WqOciCiaFHDdlt3NP1VrbnpN0KO/9/VqTCoDCx66guqnIGdnuMJrpg==",
+            "secret" : "NuUYYcIAjRYS+LiNBPhpu3z45zxu2uWJZx9Uhsez6Ls5NI7AI0G8Ykov9FyhvAetDfITRBlNS9d7VCugLPjHaA==",
             "status" : "ENABLED",
             "account" : {
               "href" : "https://api.stormpath.com/v1/accounts/Uu87kzssxEcnjmhC9uzwF"
@@ -467,13 +474,19 @@ describe('Resources: ', function () {
         "items" : []
       };
 
+      var decryptedSecret = 'rncdUXr2dtjjQ5OyDdWRHRxncRW7K0OnU6/Wqf2iqdQ';
+      var callCount=0;
+
       describe('when apikey is found',function(){
         var sandbox = sinon.sandbox.create();
         var result, requestedOptions, cacheResult;
         before(function(done){
           sandbox.stub(dataStore.requestExecutor,'execute',function(requestOptions,cb) {
+            callCount++;
+            // hack - override the salt
+            requestOptions.query.encryptionKeySalt = 'uHMSUA6F8LFoCIPqKYSRCg==';
             requestedOptions = requestOptions;
-            cb(null,foundResponse);
+            cb(null,_.extend({},foundResponse));
           });
           application.getApiKey('an id',function(err,value) {
             result = [err,value];
@@ -487,14 +500,23 @@ describe('Resources: ', function () {
         after(function(){
           sandbox.restore();
         });
+        it('should not err',function(){
+          assert.equal(result[0],null);
+        });
         it('should have asked for encrypted secret',function(){
           assert.equal(requestedOptions.query.encryptSecret,true);
         });
         it('should return an ApiKey instance',function(){
           assert.instanceOf(result[1],ApiKey);
         });
+        it('should return an ApiKey instance with a decrypted secret',function(){
+          assert.equal(result[1].secret,decryptedSecret);
+        });
         it('should cache the ApiKey',function(){
-          assert.equal(JSON.stringify(cacheResult[1]),JSON.stringify(foundResponse.items[0]));
+          assert.equal(cacheResult[1].href,foundResponse.items[0].href);
+        });
+        it('should store the encrypted key in the cache',function(){
+          assert.equal(cacheResult[1].secret,foundResponse.items[0].secret);
         });
       });
       describe('on second get',function(){
@@ -505,8 +527,11 @@ describe('Resources: ', function () {
             done();
           });
         });
-        it('should have the key from the cache',function(){
-          assert.equal(JSON.stringify(result[1]),JSON.stringify(foundResponse.items[0]));
+        it('should have got it from the cache',function(){
+          assert.equal(callCount,1);
+        });
+        it('should get the api key with the decrypted secret',function(){
+          assert.equal(result[1].secret,decryptedSecret);
         });
       });
       describe('when apikey is not found',function(){
