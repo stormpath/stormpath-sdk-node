@@ -30,6 +30,10 @@ angular.module('docsApp', [
         templateUrl: 'views/account.html',
         controller: 'MainCtrl'
       })
+      .when('/accountStoreMapping', {
+        templateUrl: 'views/accountStoreMapping.html',
+        controller: 'MainCtrl'
+      })
       .when('/application', {
         templateUrl: 'views/application.html',
         controller: 'MainCtrl'

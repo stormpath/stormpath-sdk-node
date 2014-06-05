@@ -68,6 +68,14 @@ function items() {
       anchor('getCustomData')
     ]),
 
+    item('AccountStoreMapping', 'accountStoreMapping', [
+      anchor('Overview', 'top'),
+      anchor('getApplication'),
+      anchor('setApplication'),
+      anchor('getAccountStore'),
+      anchor('setAccountStore')
+    ]),
+
     item('Application', null, [
       anchor('Overview', 'top'),
       anchor('authenticateAccount'),
@@ -77,7 +85,14 @@ function items() {
       anchor('getGroups'),
       anchor('getTenant'),
       anchor('sendPasswordResetEmail'),
-      anchor('verifyPasswordResetToken')
+      anchor('verifyPasswordResetToken'),
+      anchor('getAccountStoreMappings'),
+      anchor('getDefaultAccountStore'),
+      anchor('setDefaultAccountStore'),
+      anchor('getDefaultGroupStore'),
+      anchor('setDefaultGroupStore'),
+      anchor('createAccountStoreMapping'),
+      anchor('addAccountStore')
     ]),
 
     item('AuthenticationResult', 'authenticationResult', [
