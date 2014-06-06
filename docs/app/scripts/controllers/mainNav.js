@@ -65,7 +65,8 @@ function items() {
       anchor('getGroupMemberships'),
       anchor('getDirectory'),
       anchor('getTenant'),
-      anchor('getCustomData')
+      anchor('getCustomData'),
+      anchor('getProviderData')
     ]),
 
     item('AccountStoreMapping', 'accountStoreMapping', [
@@ -86,6 +87,7 @@ function items() {
       anchor('getTenant'),
       anchor('sendPasswordResetEmail'),
       anchor('verifyPasswordResetToken'),
+      anchor('getAccount'),
       anchor('getAccountStoreMappings'),
       anchor('getDefaultAccountStore'),
       anchor('setDefaultAccountStore'),
@@ -112,7 +114,7 @@ function items() {
     item('Cache manager', 'cacheManager', [
       anchor('Overview', 'top'),
       anchor('getCache'),
-      anchor('createCache'),
+      anchor('createCache')
     ]),
 
     item('CollectionResource', 'collectionResource', [
@@ -152,7 +154,8 @@ function items() {
       anchor('createGroup'),
       anchor('getAccounts'),
       anchor('getGroups'),
-      anchor('getTenant')
+      anchor('getTenant'),
+      anchor('getProvider')
     ]),
 
     item('Group', null, [

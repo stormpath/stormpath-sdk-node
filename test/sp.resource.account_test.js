@@ -1,11 +1,15 @@
+/* jshint -W030 */
 var common = require('./common');
 var sinon = common.sinon;
+var nock = common.nock;
+var u = common.u;
 
 var Group = require('../lib/resource/Group');
 var Account = require('../lib/resource/Account');
 var DataStore = require('../lib/ds/DataStore');
 var CustomData = require('../lib/resource/CustomData');
 var instantiate = require('../lib/resource/ResourceFactory').instantiate;
+var ProviderData = require('../lib/resource/ProviderData');
 var GroupMembership = require('../lib/resource/GroupMembership');
 
 
@@ -271,6 +275,63 @@ describe('Resources: ', function () {
             // call with optional param
             getResourceStub.should.have.been.calledWith('boom!', opt, CustomData, cbSpy);
           });
+        });
+      });
+    });
+
+    describe('get provider data', function(){
+      function getProviderData(data) {
+        return function () {
+          var accObj, providerDataObj, app, providerData;
+          before(function (done) {
+            // assert
+            providerDataObj = {href: '/provider/data/href', name: 'provider name'};
+            accObj = {providerData: {href: providerDataObj.href}};
+            app = new Account(accObj, dataStore);
+
+            nock(u.BASE_URL).get(u.v1(providerDataObj.href)).reply(200, providerDataObj);
+
+            var args = [];
+            if (data) {
+              args.push(data);
+            }
+            args.push(function cb(err, pd) {
+              providerData = pd;
+              done();
+            });
+
+            // act
+            app.getProviderData.apply(app, args);
+          });
+
+          it('should get provider data', function () {
+            providerData.href.should.be.equal(providerData.href);
+            providerData.name.should.be.equal(providerData.name);
+          });
+
+          it('should be an instance of ProviderData', function () {
+            providerData.should.be.an.instanceOf(ProviderData);
+          });
+        };
+      }
+
+      describe('without options', getProviderData());
+      describe('with options', getProviderData({}));
+      describe('if provider data not set', function () {
+        var accObj, app, cbSpy;
+        before(function () {
+          // assert
+          accObj = {providerData: null};
+          app = new Account(accObj, dataStore);
+          cbSpy = sinon.spy();
+
+          // act
+          app.getProviderData(cbSpy);
+        });
+
+        it('should call cb without options', function () {
+          cbSpy.should.have.been.calledOnce;
+          cbSpy.should.have.been.calledWith(undefined, undefined);
         });
       });
     });

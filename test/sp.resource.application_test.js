@@ -748,5 +748,48 @@ describe('Resources: ', function () {
         cbSpy.should.have.been.calledOnce;
       });
     });
+
+    describe('get account',function(){
+      function getAccount(isNew, data) {
+        return function () {
+          var appObj, accObj, app, resp;
+          before(function (done) {
+            // assert
+            accObj = {href: '/accounts/href', name: 'provider name'};
+            appObj = {accounts: {href: accObj.href}};
+            app = new Application(appObj, dataStore);
+
+            nock(u.BASE_URL).post(u.v1(accObj.href)).reply(isNew ? 201: 200, accObj);
+
+            var args = [{}];
+            if (data) {
+              args.push(data);
+            }
+            args.push(function cb(err, acc) {
+              resp = acc;
+              done();
+            });
+
+            // act
+            app.getAccount.apply(app, args);
+          });
+
+          it('should get provider data', function () {
+            resp.account.href.should.be.equal(accObj.href);
+            resp.account.name.should.be.equal(accObj.name);
+            resp.created.should.be.equal(isNew);
+          });
+
+          it('should be an instance of ProviderData', function () {
+            resp.account.should.be.an.instanceOf(Account);
+          });
+        };
+      }
+
+      describe('without options', getAccount(false));
+      describe('without options', getAccount(true));
+      describe('with options', getAccount(false, {}));
+      describe('with options', getAccount(true, {}));
+    });
   });
 });

@@ -536,6 +536,111 @@ void; If an account with the specified password reset token is not found, the ca
 
 ---
 
+<a name="getAccount"></a>
+### <span class="member">method</span> getAccount(providerData, *[options,]* callback)
+
+Retrieves or creates an `Account`, if `Application` have an associated `Account Store` with `Provider`
+ and provides it to the specified `callback` in special format:
+
+```javascript
+{
+  account: Account,
+  created: Boolean
+}
+```
+
+If `account` was created, `created` will be `true`, if `account` was created earlier, `created` will be `false`.
+
+#### Usage
+
+Google (you can view full usage sample in /samples/google_integration folder):
+
+```javascript
+// required scopes: 'email profile'
+var req = {
+  providerData: {
+    providerId: 'google',
+    accessToken: oauth.access_token,
+    refreshToken: oauth.refresh_token
+  };
+
+application.getAccount(req, function(err, resp) {
+    if (err) throw err;
+
+    if(resp.created){
+      console.log('Just created a new user');
+    }
+
+    console.log(resp.account);
+});
+```
+
+Facebook (you can view full usage sample in /samples/facebook_integration folder):
+
+```javascript
+// required scope: 'email'
+var req = {
+  providerData: {
+    providerId: 'facebook',
+    accessToken: oauth.access_token,
+    refreshToken: oauth.refresh_token
+  };
+
+application.getAccount(req, function(err, resp) {
+    if (err) throw err;
+
+    if(resp.created){
+      console.log('Just created a new user');
+    }
+
+    console.log(resp.account);
+});
+```
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>providerData</td>
+      <td>`object`</td>
+      <td>required</td>
+      <td>An request object with `ProviderData` inside,
+        take a look on [documentation](http://docs.stormpath.com/rest/product-guide/#accessing-accounts-with-google-authorization-codes-or-an-access-tokens) for details </td>
+    </tr>
+    <tr>
+      <td>_`options`_</td>
+      <td>`object`</td>
+      <td>_optional_</td>
+      <td>Name/value pairs to use as query parameters, for example, for [resource expansion](http://docs.stormpath.com/rest/product-guide/#link-expansion).</td>
+    </tr>
+    <tr>
+      <td>`callback`</td>
+      <td>function</td>
+      <td>required</td>
+      <td>The callback to execute upon resource retrieval.
+        The 1st parameter is an `Error` object.
+        The 2nd parameter is the retrieved `ProviderData` resource.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+#### Returns
+
+void; the retrieved `Account` resource will be provided to the `callback`
+ as the callback's second parameter, in special format.
+
+---
+
 <a name="getAccountStoreMappings"></a>
 ### <span class="member">method</span> getAccountStoreMappings(*[options,]* callback)
 
