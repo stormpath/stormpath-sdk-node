@@ -186,7 +186,7 @@ describe('Resources: ', function () {
         token = 'token!';
         tenant = new Tenant({}, dataStore);
         createResourceStub = sandbox.stub(dataStore, 'createResource',
-          function (href, options, ctor, cb) {
+          function (href, query, data, ctor, cb) {
             cb();
           });
         cbSpy = sandbox.spy();
@@ -205,10 +205,7 @@ describe('Resources: ', function () {
 
         // call without optional param
         createResourceStub.should.have.been
-          .calledWith(createEmailVerificationTokenPath + token, null, Account, cbSpy);
-        // call with optional param
-        createResourceStub.should.have.been
-          .calledWith(createEmailVerificationTokenPath + token, null, Account, cbSpy);
+          .calledWith(createEmailVerificationTokenPath + token, {}, null, Account, cbSpy);
       });
     });
   });
