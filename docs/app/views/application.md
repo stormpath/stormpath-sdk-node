@@ -560,8 +560,8 @@ Google (you can view full usage sample in /samples/google_integration folder):
 var req = {
   providerData: {
     providerId: 'google',
-    accessToken: oauth.access_token,
-    refreshToken: oauth.refresh_token
+    accessToken: oauth.access_token
+    //code: oauth.authorization_code
   };
 
 application.getAccount(req, function(err, resp) {
@@ -582,8 +582,7 @@ Facebook (you can view full usage sample in /samples/facebook_integration folder
 var req = {
   providerData: {
     providerId: 'facebook',
-    accessToken: oauth.access_token,
-    refreshToken: oauth.refresh_token
+    accessToken: oauth.access_token
   };
 
 application.getAccount(req, function(err, resp) {
