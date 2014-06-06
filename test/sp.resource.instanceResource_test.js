@@ -1,5 +1,7 @@
 var common = require('./common');
 var sinon = common.sinon;
+var nock = common.nock;
+var u = common.u;
 
 var Resource = require('../lib/resource/Resource');
 var InstanceResource = require('../lib/resource/InstanceResource');
@@ -9,7 +11,7 @@ describe('Resources: ', function () {
   describe('InstanceResource class', function(){
 
     var ds = new DataStore({apiKey:{id:1,secret:2}});
-    var app = {href: 'href'};
+    var app = {href: '/href'};
     var instanceResource = new InstanceResource({
       applications: app,
       directory: {}
@@ -67,6 +69,7 @@ describe('Resources: ', function () {
           cb = function(err){error = err;};
           sandbox = sinon.sandbox.create();
           getResourceSpy = sandbox.spy(ds, 'getResource');
+          nock(u.BASE_URL).get(u.v1(app.href)).reply(200, {});
 
           instanceResource.get('applications', cb);
         });
@@ -90,6 +93,7 @@ describe('Resources: ', function () {
           ctor = Resource;
           sandbox = sinon.sandbox.create();
           getResourceSpy = sandbox.spy(ds, 'getResource');
+          nock(u.BASE_URL).get(u.v1(app.href)).reply(200, app);
 
           instanceResource.get('applications', ctor, cb);
         });
@@ -113,6 +117,7 @@ describe('Resources: ', function () {
           cb = function(err){error = err;};
           sandbox = sinon.sandbox.create();
           getResourceSpy = sandbox.spy(ds, 'getResource');
+          nock(u.BASE_URL).get(u.v1(app.href) + '?q='+query.q).reply(200, app);
 
           instanceResource.get('applications', query, cb);
         });
@@ -133,6 +138,7 @@ describe('Resources: ', function () {
           query = {q:'boom!'};
           sandbox = sinon.sandbox.create();
           getResourceSpy = sandbox.spy(ds, 'getResource');
+          nock(u.BASE_URL).get(u.v1(app.href) + '?q='+query.q).reply(200, app);
 
           instanceResource.get('applications', query, ctor, cb);
         });

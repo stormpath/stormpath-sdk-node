@@ -30,12 +30,24 @@ angular.module('docsApp', [
         templateUrl: 'views/account.html',
         controller: 'MainCtrl'
       })
+      .when('/accountStoreMapping', {
+        templateUrl: 'views/accountStoreMapping.html',
+        controller: 'MainCtrl'
+      })
       .when('/application', {
         templateUrl: 'views/application.html',
         controller: 'MainCtrl'
       })
       .when('/authenticationResult', {
         templateUrl: 'views/authenticationResult.html',
+        controller: 'MainCtrl'
+      })
+      .when('/cache', {
+        templateUrl: 'views/cache.html',
+        controller: 'MainCtrl'
+      })
+      .when('/cacheManager', {
+        templateUrl: 'views/cacheManager.html',
         controller: 'MainCtrl'
       })
       .when('/collectionResource', {

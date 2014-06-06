@@ -71,6 +71,7 @@ describe('ds:', function () {
 
         reqExec.execute({uri: uri}, cbSpy);
       });
+
       it('should return resource error in case of incorrect request', function (done) {
         var cbSpy;
         var uri = 'https://api.stormpath.com/v1/test';
@@ -78,6 +79,25 @@ describe('ds:', function () {
         nock(uri).get('/v1/test').reply(400, res);
         function cb(err, body) {
           err.should.be.an.instanceof(ResourceError);
+          expect(body).to.be.null;
+          cbSpy.should.have.been.calledOnce;
+          done();
+        }
+        cbSpy = sinon.spy(cb);
+
+        reqExec.execute({uri: uri, method:'GET'}, cbSpy);
+      });
+
+      it('should include the original request error in case of request error', function (done) {
+        var cbSpy;
+        // This triggers one of the possible http request errors
+        var uri = 'http://doesntexist/v1/test';
+
+        function cb(err, body) {
+          err.should.be.an.instanceof(Error);
+          err.should.have.property('inner')
+            .that.is.an.instanceof(Error)
+            .and.property('code', 'ENOTFOUND');
           expect(body).to.be.null;
           cbSpy.should.have.been.calledOnce;
           done();

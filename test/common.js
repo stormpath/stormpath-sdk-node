@@ -19,6 +19,11 @@ u.BASE_URL = 'https://api.stormpath.com/v1';
 /** adds '/v1' to relative URL, to work with nock request mocker  */
 u.v1 = function(s){return '/v1' + s;};
 
+function random(){
+  return '' + Math.random()*Date.now();
+}
+
+
 module.exports = {
   _: _,
   u: u,
@@ -30,5 +35,6 @@ module.exports = {
   config: process.env,
   should: should,
   moment: moment,
-  Stormpath: Stormpath
+  Stormpath: Stormpath,
+  random: random
 };
