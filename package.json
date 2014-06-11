@@ -49,6 +49,7 @@
     "async": "~0.7.0",
     "redis": "~0.10.1",
     "memcached": "~0.2.8",
+    "glob": "3",
     "jwt-simple": "^0.2.0"
   },
   "devDependencies": {

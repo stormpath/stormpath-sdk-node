@@ -533,3 +533,492 @@ application.verifyPasswordResetToken(sptoken, function(err, associatedAccount) {
 #### Returns
 
 void; If an account with the specified password reset token is not found, the callback's first parameter (`err`) will report the failure.  If the account is found, it will be provided to the `callback` as the callback's second parameter.
+
+---
+
+<a name="getAccount"></a>
+### <span class="member">method</span> getAccount(providerData, *[options,]* callback)
+
+Retrieves or creates an `Account`, if `Application` have an associated `Account Store` with `Provider`
+ and provides it to the specified `callback` in special format:
+
+```javascript
+{
+  account: Account,
+  created: Boolean
+}
+```
+
+If `account` was created, `created` will be `true`, if `account` was created earlier, `created` will be `false`.
+
+#### Usage
+
+Google (you can view full usage sample in /samples/google_integration folder):
+
+```javascript
+// required scopes: 'email profile'
+var req = {
+  providerData: {
+    providerId: 'google',
+    accessToken: oauth.access_token
+    //code: oauth.authorization_code
+  };
+
+application.getAccount(req, function(err, resp) {
+    if (err) throw err;
+
+    if(resp.created){
+      console.log('Just created a new user');
+    }
+
+    console.log(resp.account);
+});
+```
+
+Facebook (you can view full usage sample in /samples/facebook_integration folder):
+
+```javascript
+// required scope: 'email'
+var req = {
+  providerData: {
+    providerId: 'facebook',
+    accessToken: oauth.access_token
+  };
+
+application.getAccount(req, function(err, resp) {
+    if (err) throw err;
+
+    if(resp.created){
+      console.log('Just created a new user');
+    }
+
+    console.log(resp.account);
+});
+```
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>providerData</td>
+      <td>`object`</td>
+      <td>required</td>
+      <td>An request object with `ProviderData` inside,
+        take a look on [documentation](http://docs.stormpath.com/rest/product-guide/#accessing-accounts-with-google-authorization-codes-or-an-access-tokens) for details </td>
+    </tr>
+    <tr>
+      <td>_`options`_</td>
+      <td>`object`</td>
+      <td>_optional_</td>
+      <td>Name/value pairs to use as query parameters, for example, for [resource expansion](http://docs.stormpath.com/rest/product-guide/#link-expansion).</td>
+    </tr>
+    <tr>
+      <td>`callback`</td>
+      <td>function</td>
+      <td>required</td>
+      <td>The callback to execute upon resource retrieval.
+        The 1st parameter is an `Error` object.
+        The 2nd parameter is the retrieved `ProviderData` resource.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+#### Returns
+
+void; the retrieved `Account` resource will be provided to the `callback`
+ as the callback's second parameter, in special format.
+
+---
+
+<a name="getAccountStoreMappings"></a>
+### <span class="member">method</span> getAccountStoreMappings(*[options,]* callback)
+
+Retrieves the Collection of `AccountStoreMappings` and provides it to the specified `callback`.
+
+#### Usage
+
+
+```javascript
+application.getAccountStoreMappings({expand: 'accountStore'}, function(err, asm){
+  var accountStoreMappings = asm;
+})
+
+```
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>_`options`_</td>
+      <td>`object`</td>
+      <td>_optional_</td>
+      <td>Name/value pairs to use as query parameters, for example, for [resource expansion](http://docs.stormpath.com/rest/product-guide/#link-expansion).</td>
+    </tr>
+    <tr>
+      <td>`callback`</td>
+      <td>`function`</td>
+      <td>required</td>
+      <td>The callback to execute upon server response. The 1st parameter is an [error](resourceError).  The 2nd parameter
+      is an [AccountStoreMapping](accountStoreMapping) instance.</td>
+    </tr>
+  </tbody>
+</table>
+
+#### Returns
+
+void;
+If the request fails, the callback's first parameter (`err`) will report the failure.
+If the request succeeds, the instance of  [AccountStoreMapping](accountStoreMapping) will be provided to the `callback` as the callback's second parameter.
+
+---
+
+<a name="getDefaultAccountStore"></a>
+### <span class="member">method</span> getDefaultAccountStore(*[options,]* callback)
+
+Retrieve a default `AccountStoreMapping` for storing accounts and provides it to the specified `callback`.
+If default Account Store not set, `callback` will be called without parameters.
+
+#### Usage
+
+
+```javascript
+application.getDefaultAccountStore({expand: 'accountStore'}, function(err, asm){
+  var accountStoreMappings = asm;
+})
+
+```
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>_`options`_</td>
+      <td>`object`</td>
+      <td>_optional_</td>
+      <td>Name/value pairs to use as query parameters, for example, for [resource expansion](http://docs.stormpath.com/rest/product-guide/#link-expansion).</td>
+    </tr>
+    <tr>
+      <td>`callback`</td>
+      <td>`function`</td>
+      <td>required</td>
+      <td>The callback to execute upon server response. The 1st parameter is an [error](resourceError).
+      The 2nd parameter is an [AccountStoreMapping](accountStoreMapping) instance.</td>
+    </tr>
+  </tbody>
+</table>
+
+#### Returns
+
+void;
+If the request fails, the callback's first parameter (`err`) will report the failure.
+If the request succeeds, the instance of  [AccountStoreMapping](accountStoreMapping) will be provided to the `callback` as the callback's second parameter.
+
+---
+
+<a name="getDefaultGroupStore"></a>
+### <span class="member">method</span> getDefaultGroupStore(*[options,]* callback)
+
+Retrieves default `AccountStoreMapping` for storing `Groups` and provides it to the specified `callback`.
+If default Group Store not set, `callback` will be called without parameters.
+
+#### Usage
+
+
+```javascript
+application.getDefaultAccountStore({expand: 'accountStore'}, function(err, asm){
+  var accountStoreMappings = asm;
+})
+
+```
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>_`options`_</td>
+      <td>`object`</td>
+      <td>_optional_</td>
+      <td>Name/value pairs to use as query parameters, for example, for [resource expansion](http://docs.stormpath.com/rest/product-guide/#link-expansion).</td>
+    </tr>
+    <tr>
+      <td>`callback`</td>
+      <td>`function`</td>
+      <td>required</td>
+      <td>The callback to execute upon server response. The 1st parameter is an [error](resourceError).
+      The 2nd parameter is an [AccountStoreMapping](accountStoreMapping) instance.</td>
+    </tr>
+  </tbody>
+</table>
+
+#### Returns
+
+void;
+If the request fails, the callback's first parameter (`err`) will report the failure.
+If the request succeeds, the instance of  [AccountStoreMapping](accountStoreMapping) will be provided to the `callback` as the callback's second parameter.
+
+
+---
+
+<a name="setDefaultAccountStore"></a>
+### <span class="member">method</span> setDefaultAccountStore(store, callback)
+
+Sets default `store` (`Group` or `Directory`) for storing `Application`'s `accounts`.
+Returns a newly created `AccountStoreMapping` as a second callback parameter.
+
+
+#### Usage
+
+
+```javascript
+application.setDefaultAccountStore(directory, function(err, asm){
+  var accountStoreMapping = asm;
+})
+
+```
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>`store`</td>
+      <td>`object`</td>
+      <td>required</td>
+      <td> An instance of `Group` or `Directory`
+      </td>
+    </tr>
+    <tr>
+      <td>`callback`</td>
+      <td>`function`</td>
+      <td>required</td>
+      <td>The callback to execute upon server response. The 1st parameter is an [error](resourceError).
+      The 2nd parameter is an [AccountStoreMapping](accountStoreMapping) instance.</td>
+    </tr>
+  </tbody>
+</table>
+
+#### Returns
+
+void;
+If the request fails, the callback's first parameter (`err`) will report the failure.
+If the request succeeds, the instance of  [AccountStoreMapping](accountStoreMapping) will be provided to the `callback` as the callback's second parameter.
+
+---
+
+<a name="setDefaultGroupStore"></a>
+### <span class="member">method</span> setDefaultGroupStore(store, callback)
+
+Sets default `store` (`Directory`) for storing `Application`'s `groups`.
+Returns a newly created `AccountStoreMapping` as a second callback parameter.
+
+
+#### Usage
+
+
+```javascript
+application.setDefaultGroupStore(directory, function(err, asm){
+  var accountStoreMapping = asm;
+})
+
+```
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>`store`</td>
+      <td>`object`</td>
+      <td>required</td>
+      <td> An instance of `Directory`
+      </td>
+    </tr>
+    <tr>
+      <td>`callback`</td>
+      <td>`function`</td>
+      <td>required</td>
+      <td>The callback to execute upon server response. The 1st parameter is an [error](resourceError).
+      The 2nd parameter is an [AccountStoreMapping](accountStoreMapping) instance.</td>
+    </tr>
+  </tbody>
+</table>
+
+#### Returns
+
+void;
+If the request fails, the callback's first parameter (`err`) will report the failure.
+If the request succeeds, the instance of  [AccountStoreMapping](accountStoreMapping) will be provided to the `callback` as the callback's second parameter.
+
+---
+
+<a name="createAccountStoreMapping"></a>
+### <span class="member">method</span> createAccountStoreMapping(accountStoreMapping, callback)
+
+Creates an instance of `AccountStoreMapping` from `accountStoreMapping` object and associate it with current application.
+Returns a newly created `AccountStoreMapping` as a second callback parameter.
+
+
+#### Usage
+
+
+```javascript
+var mapping = {
+           application: {
+             href: "https://api.stormpath.com/v1/applications/Uh8FzIouQ9C8EpcExAmPLe"
+           }
+           accountStore: {
+             href: "https://api.stormpath.com/v1/directories/bckhcGMXQDujIXpExAmPLe"
+           },
+           isDefaultAccountStore: true,
+           isDefaultGroupStore: true
+         };
+
+application.createAccountStoreMapping(mapping, function(err, asm){
+  var accountStoreMapping = asm;
+})
+
+```
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>`accountStoreMapping`</td>
+      <td>`object`</td>
+      <td>required</td>
+      <td> The `AcountStoreMapping` object
+      </td>
+    </tr>
+    <tr>
+      <td>`callback`</td>
+      <td>`function`</td>
+      <td>required</td>
+      <td>The callback to execute upon server response. The 1st parameter is an [error](resourceError).
+      The 2nd parameter is an [AccountStoreMapping](accountStoreMapping) instance.</td>
+    </tr>
+  </tbody>
+</table>
+
+#### Returns
+
+void;
+If the request fails, the callback's first parameter (`err`) will report the failure.
+If the request succeeds, the instance of  [AccountStoreMapping](accountStoreMapping) will be provided to the `callback` as the callback's second parameter.
+
+---
+
+<a name="addAccountStore"></a>
+### <span class="member">method</span> addAccountStore(store, callback)
+
+
+Creates an instance of `AccountStoreMapping`, associate it with current `application`
+and sets it's `accountStore` to provided `store`
+Returns a newly created `AccountStoreMapping` as a second callback parameter.
+
+
+#### Usage
+
+
+```javascript
+application.addAccountStore(directory, function(err, asm){
+  var accountStoreMapping = asm;
+})
+
+```
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>`store`</td>
+      <td>`object`</td>
+      <td>required</td>
+      <td> An instance of `Directory` or `Group`
+      </td>
+    </tr>
+    <tr>
+      <td>`callback`</td>
+      <td>`function`</td>
+      <td>required</td>
+      <td>The callback to execute upon server response. The 1st parameter is an [error](resourceError).
+      The 2nd parameter is an [AccountStoreMapping](accountStoreMapping) instance.</td>
+    </tr>
+  </tbody>
+</table>
+
+#### Returns
+
+void;
+If the request fails, the callback's first parameter (`err`) will report the failure.
+If the request succeeds, the instance of  [AccountStoreMapping](accountStoreMapping) will be provided to the `callback` as the callback's second parameter.

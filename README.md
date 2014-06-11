@@ -52,5 +52,18 @@ Send us an email to support@stormpath.com or open up a Pull Request and offer su
 grunt
 ```
 
+To build the documentation, you need to enter the `docs` directory, then run:
+
+```console
+$ npm install -g bower
+$ npm install
+$ bower install
+$ grunt
+```
+
+The `grunt serve` command will build and serve the docs locally on port 9000.  You can
+view the HTML documentation by visiting http://localhost:9000/home in your browser.
+
+
 ## Contributing
 In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).

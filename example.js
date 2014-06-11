@@ -1,4 +1,5 @@
 'use strict';
+var async = require('async');
 var assert = require('assert');
 var stormpath = require('./lib');
 
@@ -10,7 +11,7 @@ var client = null; //available after the ApiKey is loaded from disk (api key is 
 stormpath.loadApiKey(apiKeyFilePath, function (err, apiKey) {
   if (err) throw err;
 
-  client = new stormpath.Client({apiKey: apiKey});
+  client = new stormpath.Client({ apiKey: apiKey });
   client.getCurrentTenant(function (err, tenant) {
     if (err) throw err;
     onTenantReady(tenant);
@@ -23,6 +24,7 @@ function onTenantReady(tenant) {
   doAppCrud(client);
   doDirCrud(client);
   doCustomDataCrud(client);
+  doAccountStoreMappingsCrud(client);
 }
 
 function listAppsAndDirs(clientOrTenant) {
@@ -34,61 +36,73 @@ function listAppsAndDirs(clientOrTenant) {
     .exec(function (err, apps) {
       if (err) throw err;
 
-      apps.each(function (err, app, offset) {
-        if (err) throw err;
-
-        console.log(offset + ": ");
+    apps.each(function iterator(app, cb) {
         console.log(app);
 
         app.getAccounts(function (err, accts) {
           if (err) throw err;
 
-          accts.each(function (err, acct, offset) {
+        accts.each(function iterator(acct, cb) {
             console.log(acct);
+          cb();
+        }, function callback(err){
+          if (err) throw err;
           });
         });
 
-        app.getGroups(function (err, groups) {
+     app.getGroups(function (err, groups) {
           if (err) throw err;
 
-          groups.each(function (err, group, offset) {
+        groups.each(function iterator (group, cb) {
             console.log(group);
+          cb();
+        }, function callback(err){
+          if (err) throw err;
           });
         });
 
+      cb();
+    }, function callback(err){
+      if (err) throw err;
       });
     });
 
   clientOrTenant.getDirectories(function (err, dirs) {
     if (err) throw err;
 
-    dirs.each(function (err, dir, offset) {
-      if (err) throw err;
-
+    dirs.each(function iterator(dir, cb) {
       console.log(dir);
 
       dir.getAccounts(function (err, accts) {
         if (err) throw err;
 
-        accts.each(function (err, acct, offset) {
+        accts.each(function iterator (acct, cb) {
           console.log(acct);
+          cb();
+        }, function callback(err){
+          if (err) throw err;
         });
       });
 
       dir.getGroups(function (err, groups) {
         if (err) throw err;
 
-        groups.each(function (err, group, offset) {
+        groups.each(function iterator(group, cb) {
           console.log(group);
+          cb();
+        }, function callback(err){
+          if (err) throw err;
         });
       });
 
+      cb();
+    }, function callback(err){
+      if (err) throw err;
     });
   });
 }
 
 function doAppCrud(client) {
-
   client.getCurrentTenant(function (err, tenant) {
     if (err) throw err;
 
@@ -181,7 +195,7 @@ function doCustomDataCrud(client) {
       // create user with custom data
       var accQ = {
         email: Math.floor(Math.random() * 1000000) + '@gmail.com',
-        password: '' + Math.floor(Math.random() * 1000000000),
+        password: 'Aa' + Math.floor(Math.random() * 1000000000),
         givenName: 'Testing',
         surname: 'DeleteMe',
         customData: {
@@ -259,3 +273,131 @@ function doCustomDataCrud(client) {
     });
 }
 
+function doAccountStoreMappingsCrud(client){
+  function e(err){
+    if(err){
+      throw err;
+    }
+  }
+
+  function w(cb, message){
+    return function(err, res){
+      e(err);
+      console.log(message, res);
+      cb(err, res);
+    };
+  }
+
+  client.getCurrentTenant(function (err, tenant) {
+    e(err);
+    var acc, app, dirs = [], maps = [];
+    var _dirIndex = 0;
+    function createApp(cb){
+      function _app(err, res){
+        app = res;
+        cb(err, res);
+      }
+
+      tenant.createApplication({name: 'Just Testing ASM! Delete me.' + Math.floor(Math.random() * 1000)}, w(_app, 'Application created: '));
+    }
+
+    function createDir(cb){
+      function _dir(err, res){
+        dirs.push(res);
+        cb(err, res);
+      }
+
+      tenant.createDirectory({name: 'Testing NodeJS SDK. Delete me! ' + Math.floor(Math.random() * 1000)}, w(_dir, 'Directory created: '));
+    }
+
+    function createMapping(cb){
+      function _map(err, res){
+        maps.push(res);
+        cb();
+      }
+      app.addAccountStore(dirs[_dirIndex++], w(_map, 'add account store: '));
+    }
+
+    function getAll(cb){
+      async.series([
+        function(cb){
+          function updateApp(err, _app){
+            app = _app;
+            cb(err);
+          }
+          client.getApplication(app.href, w(updateApp, 'get application: '));
+        },
+        function(cb){
+          app.getAccountStoreMappings(w(cb, 'account store mappings store: '));
+        },
+        function (cb){
+          app.getDefaultAccountStore(w(cb, 'default account store: '));
+        },
+        function (cb){
+          app.getDefaultGroupStore(w(cb, 'default group store: '));
+        }
+      ], cb);
+    }
+
+    function do_crud_sample(cb){
+      async.series([
+        function (cb){
+          console.log('Empty: ');
+          cb();
+        },
+        getAll,
+        function set(cb){
+          async.series([
+            createMapping,
+            function(cb){
+              app.setDefaultAccountStore(dirs[_dirIndex], w(cb, 'set default account store: '));
+            },
+            function(cb){
+              app.setDefaultAccountStore(dirs[_dirIndex].href, w(cb, 'set default account store: '));
+            },
+            function (cb){
+              app.setDefaultGroupStore(dirs[_dirIndex], w(cb, 'set default group store: '));
+            },
+            function (cb){
+              app.setDefaultGroupStore(dirs[_dirIndex].href, w(cb, 'set default group store: '));
+            }
+          ], cb);
+        },
+        getAll,
+        function getAccountStore (cb){
+          maps[0].getAccountStore(w(cb, 'get account store: '));
+        },
+        function (cb){
+          function _acc(err,res){
+            acc = res;
+            cb();
+          }
+          // create user with custom data
+          var accQ = {
+            email: Math.floor(Math.random() * 1000000) + '@gmail.com',
+            password: 'Aa' + Math.floor(Math.random() * 1000000000),
+            givenName: 'Testing',
+            surname: 'DeleteMe'
+          };
+          app.createAccount(accQ, w(_acc, 'user account created: '));
+        }
+      ], cb);
+    }
+
+    async.series([
+      createApp,
+      createDir,
+      createDir,
+      createDir,
+      do_crud_sample,
+       function deleteDir(cb){
+       async.each(dirs, function(dir, cb){ dir.delete(w(cb, 'Dir deleted!'));}, cb);
+       },
+       function deleteApp(cb){
+       app.delete(w(cb, 'App deleted!'));
+       }
+    ], function cleanUp(err){
+      e(err);
+    });
+  });
+}

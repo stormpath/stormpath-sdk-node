@@ -90,13 +90,13 @@ module.exports = function (grunt) {
             middlewares.push(rewriteRulesSnippet);
 
             if (!Array.isArray(options.base)) {
-                options.base = [options.base];
+              options.base = [options.base];
             }
 
             var directory = options.directory || options.base[options.base.length - 1];
             options.base.forEach(function (base) {
-                // Serve static files.
-                middlewares.push(connect.static(base));
+              // Serve static files.
+              middlewares.push(connect.static(base));
             });
 
             // Make directory browse-able.
