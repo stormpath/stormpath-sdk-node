@@ -688,7 +688,7 @@ client.getApplication(href, {expand: 'accounts'}, function(err, app) {
       <td><em><code>options</code></em></td>
       <td><code>object></code></td>
       <td><em>optional</em></td>
-      <td>Name/value pairs to use as query parameters, for example, for [resource expansion](http://docs.stormpath.com/rest/product-guide/#application-retrieve).</td>
+      <td>Name/value pairs to use as query parameters, for example, for [resource expansion][].</td>
     </tr>
     <tr>
           <td><code>callback</code></td>
@@ -699,11 +699,14 @@ client.getApplication(href, {expand: 'accounts'}, function(err, app) {
   </tbody>
 </table>
 
+
 #### Returns
 
-void; the retrieved `Application` resource will be provided to the `callback` as the callback's second parameter.
+The retrieved `Application` resource will be provided to the `callback` as the
+callback's second parameter.
 
 ---
+
 
 <a name="getApplications"></a>
 ### <span class="member">method</span> getApplications(*[options,]* callback)
