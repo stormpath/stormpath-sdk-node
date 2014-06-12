@@ -48,7 +48,7 @@ You can do this in one of two ways:
 ---
 
 
-#### Caching
+### Caching
 
 The caching mechanism enables you to store the state of an already accessed
 resource in a cache store.
