@@ -190,7 +190,7 @@ var account = {
   password: 'Changeme1!'
 };
 
-newApp.createAccount(account, function(err, newAccount) {
+app.createAccount(account, function(err, newAccount) {
   if (err) throw err;
 
   console.log(newAccount);
@@ -204,8 +204,8 @@ You can update an Account object by modifying the fields you want to change,
 then calling the `save` method:
 
 ```javascript
-newAccount.middleName = 'Make it so.';
-newAccount.save(function(err, updatedAccount) {
+account.middleName = 'Make it so.';
+account.save(function(err, updatedAccount) {
   if (err) throw err;
 
   console.log(updatedAccount);
@@ -226,7 +226,7 @@ var credentials = {
   password: 'Changeme1!'
 };
 
-newApp.authenticateAccount(credentials, function(err, result) {
+app.authenticateAccount(credentials, function(err, result) {
   if (err) throw err;
 
   // If successful, you can obtain the Account by doing the following:
