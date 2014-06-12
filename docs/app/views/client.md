@@ -549,7 +549,8 @@ client.createDirectory(dir, function(err, newDir) {
 
 #### Returns
 
-The created `Directory` returned from the server will be provided to the `callback` as the callback's second parameter.
+The created `Directory` returned from the server will be provided to the
+`callback` as the callback's second parameter.
 
 ---
 
