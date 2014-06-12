@@ -112,20 +112,31 @@ you make to Stormpath when developing fast applications.
 If you know a resource's `href`, you can retrieve it directly:
 
 ```javascript
-client.getApplication('https://api.stormpath.com/v1/applications/LYENsku3RYatufdNHL0d2', callback);
-client.getDirectory('https://api.stormpath.com/v1/directories/LYN1zLGlGV0qxVu7Cwg4C', callback);
-client.getAccount('https://api.stormpath.com/v1/groups/1NB5Ymg9Gh9WATB54MoIai', callback);
-client.getGroup('https://api.stormpath.com/v1/groups/2gdhVFXQMTpoUHAHzCXbn4', callback);
-client.getGroupMembership('https://api.stormpath.com/v1/groupMemberships/2ObFs1E4AB0LlqxxLtzlgi', callback);
+client.getApplication('https://api.stormpath.com/v1/applications/xxx', callback);
+client.getDirectory('https://api.stormpath.com/v1/directories/xxx', callback);
+client.getAccount('https://api.stormpath.com/v1/accounts/xxx', callback);
+client.getGroup('https://api.stormpath.com/v1/groups/xxx', callback);
+client.getGroupMembership('https://api.stormpath.com/v1/groupMemberships/xxx', callback);
 ```
 
-`callback` accepts two arguments: an `Error` object, followed by the resource returned, for example:
+In each of the above cases, `callback` should be a function which accepts two
+arguments:
+
+- An `Error` object.
+- The resource object.
+
+For example:
 
 ```javascript
-client.getApplication(appHref, function (err, application) {
-  console.log(application);
+var appHref = 'https://api.stormpath.com/v1/applications/xxx';
+
+client.getApplication(appHref, function(err, app) {
+  if (err) throw err;
+
+  console.log(app);
 });
 ```
+
 
 ### Create an Application
 
