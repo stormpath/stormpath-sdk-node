@@ -243,16 +243,23 @@ immediately (*no HTTP request necessary*).
 
 ### Send a Password Reset Email
 
-If your end-user forgets their password, you can trigger the 'forgot password' reset workflow, and we'll send the email:
+If one of your end-users forgets their password, you can trigger the
+*"Forgot Password"* reset workflow, and we'll send the user an email:
 
 ```javascript
-var emailOrUsername = 'jlpicard'; //or we could have entered 'jlpicard@starfleet.com';
+var emailOrUsername = 'jlpicard';
 
-createdApp.sendPasswordResetEmail(emailOrUsername, function onEmailSent(err, token) {
+app.sendPasswordResetEmail(emailOrUsername, function(err, token) {
   if (err) throw err;
+
   console.log(token);
 });
 ```
+
+For more information on resetting a user's password, you might want to read
+about Stormpath's [Password Reset Workflow][]  (*and yes, you can customize the
+password reset emails!*).
+
 
 ### Create a Group
 
@@ -316,3 +323,4 @@ account.getGroups(function onGroups(err, groups) {
   [downloaded your API key file]: http://docs.stormpath.com/rest/quickstart/#get-an-api-key "Get a Stormpath API Key"
   [Applications]: https://api.stormpath.com/v#!applications "Your Stormpath Applications"
   [Directories]: https://api.stormpath.com/v#!directories "Your Stormpath Directories"
+  [Password Reset Workflow]: http://docs.stormpath.com/rest/product-guide/#reset-an-accounts-password "Stormpath Docs - Reset an Account's Password"
