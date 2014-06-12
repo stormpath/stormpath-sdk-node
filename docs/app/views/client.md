@@ -255,7 +255,7 @@ var client = new stormpath.Client({
 ```
 
 
-#### Cache options parameters
+#### Cache options Parameters
 
 <table class="table table-striped table-hover table-curved">
   <thead>
@@ -282,7 +282,7 @@ var client = new stormpath.Client({
       </td>
       <td>optional</td>
       <td>
-        Passed to <code>new Memcached(<strong>connection</strong>, options);</code>
+        Passed to <code>new Memcached(<strong>connection</strong>, options);</code>.
       </td>
     </tr>
     <tr>
@@ -290,7 +290,7 @@ var client = new stormpath.Client({
       <td><code>object</code></td>
       <td>optional</td>
       <td>
-        <p>Passed to <code>new Memcached(connection, <strong>options</strong>);</code></p>
+        <p>Passed to <code>new Memcached(connection, <strong>options</strong>);</code>.</p>
         <p>See the <a href="https://github.com/3rd-Eden/node-memcached" target="_blank">node-memcached docmenation</a> for complete option list.<p>
       </td>
     </tr>
@@ -298,7 +298,7 @@ var client = new stormpath.Client({
       <td><code>ttl</code></td>
       <td><code>number</code></td>
       <td>optional</td>
-      <td>Time To Live. The amount of time (in seconds) after which the stored resource data will be considered expired.
+      <td>Time To Live. The amount of time (<i>in seconds</i>) after which the stored resource data will be considered expired.
         By default, if not set, will be equal to 300 seconds.
       </td>
     </tr>
@@ -314,6 +314,7 @@ var client = new stormpath.Client({
 </table>
 
 ---
+
 
 <a name="redis"></a>
 ### Redis
