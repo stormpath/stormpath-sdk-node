@@ -60,7 +60,7 @@ You can do this easily in one of two ways:
   });
   ```
 
-* Create an ApiKey object manually
+* Create an ApiKey object manually:
 
   ```javascript
   var stormpath = require('stormpath');
