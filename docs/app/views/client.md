@@ -494,6 +494,7 @@ The created `Application` returned from the server will be provided to the `call
 
 Creates a new [Directory](directory) instance in the Client's [Tenant](tenant).
 
+
 #### Usage
 
 ```javascript
