@@ -498,15 +498,15 @@ Creates a new [Directory](directory) instance in the Client's [Tenant](tenant).
 #### Usage
 
 ```javascript
-var app = {
+var dir = {
   name: 'Employees Directory',
   description: 'Only Employee accounts in here please.'
 };
 
-client.createApplication(app, function(err, newApp) {
+client.createDirectory(dir, function(err, newDir) {
     if (err) throw err;
 
-    console.log(newApp);
+    console.log(newDir);
 });
 ```
 
