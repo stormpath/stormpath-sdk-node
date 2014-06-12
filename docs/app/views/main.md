@@ -85,17 +85,19 @@ In order to get a list of all your Stormpath [Applications][] and
 client.getApplications(function(err, apps) {
   if (err) throw err;
 
-  apps.each(function(err, app, offset) { //offset is an optional argument
-    console.log(offset + ": " + app);
+  apps.each(function(app, callback) {
+    console.log(app);
+    callback();
   });
 });
 
-//showing optional options argument (the callback function is always the last arg):
+
 client.getDirectories({expand: 'groups'}, function(err, dirs) {
   if (err) throw err;
 
-  dirs.each(function(err, dir) {
+  dirs.each(function(dir, callback) {
     console.log(dir);
+    callback();
   });
 });
 ```
