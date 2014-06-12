@@ -147,7 +147,7 @@ var client = new stormpath.Client(options);
 ---
 
 
-### Cache options parameters
+### Cache options Parameters
 
 <table class="table table-striped table-hover table-curved">
   <thead>
