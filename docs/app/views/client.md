@@ -139,12 +139,13 @@ var client = new stormpath.Client(options);
       <td><code>options.cacheOptions</code></td>
       <td><code>object</code></td>
       <td>optional</td>
-      <td>See 'Cache options parameters' below for details</td>
+      <td>See "Cache options parameters" below for details.</td>
     </tr>
   </tbody>
 </table>
 
 ---
+
 
 ### Cache options parameters
 
