@@ -347,23 +347,29 @@ describe('Resources: ', function () {
     describe('createApiKey',function () {
       var sandbox = sinon.sandbox.create();
       var accountHref = 'accounts/'+uuid();
-      var result, requestedOptions;
+      var result, cacheResult, requestedOptions;
+
+      var creationResponse = {
+        "account": {
+          "href": "https://api.stormpath.com/v1/accounts/8897"
+        },
+        "href": "https://api.stormpath.com/v1/apiKeys/5678",
+        "id": "5678",
+        "secret": "NuUYYcIAjRYS+LiNBPhpu3z45zxu2uWJZx9Uhsez6Ls5NI7AI0G8Ykov9FyhvAetDfITRBlNS9d7VCugLPjHaA==",
+        "status": "ENABLED",
+        "tenant": {
+          "href": "https://api.stormpath.com/v1/tenants/abc123"
+        }
+      };
+
+      var decryptedSecret = 'rncdUXr2dtjjQ5OyDdWRHRxncRW7K0OnU6/Wqf2iqdQ';
 
       before(function(done){
         sandbox.stub(dataStore.requestExecutor,'execute',function(requestOptions,cb) {
           requestedOptions = requestOptions;
-          cb(null,{
-              "account": {
-                "href": "https://api.stormpath.com/v1/accounts/8897"
-              },
-              "href": "https://api.stormpath.com/v1/apiKeys/5678",
-              "id": "5678",
-              "secret": "secret",
-              "status": "ENABLED",
-              "tenant": {
-                "href": "https://api.stormpath.com/v1/tenants/abc123"
-              }
-            });
+          // hack - override the salt
+          requestOptions.query.encryptionKeySalt = 'uHMSUA6F8LFoCIPqKYSRCg==';
+          cb(null,creationResponse);
         });
         new Account({
           href:accountHref,
@@ -373,7 +379,10 @@ describe('Resources: ', function () {
         }, dataStore)
           .createApiKey(function(err,value) {
             result = [err,value];
-            done();
+            dataStore.cacheHandler.get(creationResponse.href,function(err,value){
+              cacheResult = [err,value];
+              done();
+            });
           });
       });
       after(function(){
@@ -387,6 +396,15 @@ describe('Resources: ', function () {
       });
       it('should return an ApiKey instance',function(){
         assert.instanceOf(result[1],ApiKey);
+      });
+      it('should cache the ApiKey',function(){
+        assert.equal(cacheResult[1].href,creationResponse.href);
+      });
+      it('should store the encrypted key in the cache',function(){
+        assert.equal(cacheResult[1].secret,creationResponse.secret);
+      });
+      it('should return the decrypted secret',function(){
+        assert.equal(result[1].secret,decryptedSecret);
       });
     });
 
