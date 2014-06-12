@@ -498,13 +498,18 @@ Creates a new [Directory](directory) instance in the Client's [Tenant](tenant).
 #### Usage
 
 ```javascript
-var app = {name: 'Employees Directory', description: 'Only Employee accounts in here please.'};
+var app = {
+  name: 'Employees Directory',
+  description: 'Only Employee accounts in here please.'
+};
 
-client.createApplication(app, function(err, createdApplication) {
+client.createApplication(app, function(err, newApp) {
     if (err) throw err;
-    console.log(createdApplication);
+
+    console.log(newApp);
 });
 ```
+
 
 #### Parameters
 
