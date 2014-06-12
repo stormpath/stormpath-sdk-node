@@ -558,27 +558,37 @@ The created `Directory` returned from the server will be provided to the
 <a name="getAccount"></a>
 ### <span class="member">method</span> getAccount(accountHref, *[options,]* callback)
 
-Retrieves the [Account](account) resource at `accountHref` and provides it to the specified `callback`.
+Retrieves the [Account](account) resource at `accountHref` and provides it to
+the specified `callback`.
 
-**NOTE**: This implementation does not validate that the returned resource is an `Account`: it is assumed that the caller knows the `href` represents an account location.
+**NOTE**: This implementation does not validate that the returned resource is
+an `Account`: it is assumed that the caller knows the `href` represents an
+account location.
+
 
 #### Usage
 
 For an `href` that you know represents an account:
 
 ```javascript
-client.getAccount(accountHref, function(err, account) {
-    if (err) throw err;
-    console.log(account);
+client.getAccount(href, function(err, account) {
+  if (err) throw err;
+
+  console.log(account);
 });
 ```
-You can specify query parameters as the __options__ argument, for example, for [resource expansion](http://docs.stormpath.com/rest/product-guide/#account-retrieve):
+
+You can specify query parameters as the **options** argument, for example, for
+[resource expansion][]:
+
 ```javascript
-client.getAccount(accountHref, {expand:'customData'}, function(err, account) {
-    if (err) throw err;
-    console.log(account);
+client.getAccount(href, {expand: 'customData'}, function(err, account) {
+  if (err) throw err;
+
+  console.log(account);
 });
 ```
+
 
 #### Parameters
 
@@ -1065,3 +1075,4 @@ void; the retrieved `GroupMembership` resource will be provided to the `callback
 
 
   [Stormpath API key]: http://docs.stormpath.com/rest/quickstart/#get-an-api-key "Stormpath API Key"
+  [resource expansion]: http://docs.stormpath.com/rest/product-guide/#account-retrieve "Stormpath Resource Expansion"
