@@ -96,9 +96,13 @@ var client = new stormpath.Client({
 <a name="ctor"></a>
 ### <span class="member">constructor</span> Client(options)
 
-The `Client` constructor function creates a new `Client` instance according to the specified `options` argument.
+The `Client` constructor function creates a new `Client` instance according to
+the specified `options` argument.
 
-`options` is an Object that contains at least an `apiKey` field with an [ApiKey](apiKey) object.  An `ApiKey` is required for all Client communication to the Stormpath API servers.
+`options` is an object that contains at least an `apiKey` field with an
+[ApiKey](apiKey) object.  An `ApiKey` is required for all Client communication
+to the Stormpath service.
+
 
 #### Usage
 
