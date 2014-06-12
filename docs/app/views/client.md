@@ -345,7 +345,7 @@ var client = new stormpath.Client({
 ```
 
 
-#### Cache options parameters
+#### Cache options Parameters
 
 <table class="table table-striped table-hover table-curved">
   <thead>
@@ -371,7 +371,7 @@ var client = new stormpath.Client({
       </td>
       <td>optional</td>
       <td>
-        An object that allows you to specity <code>host</code> or <code>port</code>, as strings, for your redis connection.  This is is passed to <code>redis.createClient(<strong>host</strong>,<strong>port</strong>,options)</code> and will default to 127.0.0.1 and 6379 if not provided.
+        An object that allows you to specity <code>host</code> or <code>port</code>, as strings, for your redis connection.  This is is passed to <code>redis.createClient(<strong>host</strong>, <strong>port</strong>, options)</code> and will default to 127.0.0.1 and 6379 if not provided.
       </td>
     </tr>
     <tr>
@@ -379,7 +379,7 @@ var client = new stormpath.Client({
       <td><code>object</code></td>
       <td>optional</td>
       <td>
-        <p>Options object that will be passed to <code>redis.createClient(host,port,<strong>options</strong>)</code></p>
+        <p>Options object that will be passed to <code>redis.createClient(host, port, <strong>options</strong>)</code>.</p>
         <p>See the <a href="https://github.com/mranney/node_redis" target="_blank">node-redis docmenation</a> for complete option list.</p>
       </td>
     </tr>
@@ -387,7 +387,7 @@ var client = new stormpath.Client({
       <td><code>ttl</code></td>
       <td><code>number</code></td>
       <td>optional</td>
-      <td>Time To Live. The amount of time (in seconds) after which the stored resource data will be considered expired.
+      <td>Time To Live. The amount of time (<i>in seconds</i>) after which the stored resource data will be considered expired.
         By default, if not set, will be equal to 300 seconds.
       </td>
     </tr>
@@ -403,6 +403,7 @@ var client = new stormpath.Client({
 </table>
 
 ---
+
 
 <a name="createApplication"></a>
 ### <span class="member">method</span> createApplication(application, *[options,]* callback)
