@@ -215,24 +215,31 @@ newAccount.save(function(err, updatedAccount) {
 
 ### Authenticate an Account
 
-You can authenticate an account during login:
+You can authenticate an Account (*retrieve an Account object given a username
+(or email address) and password*) using the `authenticateAccount` method of and
+Application or Directory:
 
 ```javascript
-var authcRequest = {
-  username: 'jlpicard', //username can be an email address too
+// NOTE: The username field could also be an email address.
+var credentials = {
+  username: 'jlpicard',
   password: 'Changeme1!'
 };
 
-createdApp.authenticateAccount(authcRequest, function onAuthcResult(err, result) {
+newApp.authenticateAccount(credentials, function(err, result) {
   if (err) throw err;
 
-  //if successful, you can obtain the account by calling result.getAccount:
-  return result.getAccount(function(err2, account) { //this is cached and will execute immediately (no server request):
-    if(err) throw err;
+  // If successful, you can obtain the Account by doing the following:
+  result.getAccount(function(err, account) {
+    if (err) throw err;
     console.log(account);
   });
-};
+});
 ```
+
+**NOTE**: The call to `result.getAccount` is cached, and will execute
+immediately (*no HTTP request necessary*).
+
 
 ### Send a Password Reset Email
 
