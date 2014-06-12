@@ -234,26 +234,26 @@ var client = new stormpath.Client({
 
 Memcached provider.
 
+
 #### Usage
 
-   ```javascript
-    var stormpath = require('stormpath');
+```javascript
+var cacheOptions = {
+  store: 'memcached',
+  connection: '127.0.0.1:11212',
+  options: {
+    poolSize: 10
+  },
+  ttl: 300,
+  tti: 300
+};
 
-    //In this example, we'll reference the values from env vars (NEVER HARDCODE API KEY VALUES IN SOURCE CODE!)
-    var apiKey = new stormpath.ApiKey(process.env['STORMPATH_API_KEY_ID'], process.env['STORMPATH_API_KEY_SECRET']);
+var client = new stormpath.Client({
+  apiKey: apiKey,
+  cacheOptions: cacheOptions
+});
+```
 
-    var cacheOptions = {
-      store: 'memcached',
-      connection: '192.168.0.102:11212',
-      options: {
-        poolSize: 10    // memcached option
-      },
-      ttl: 300,
-      tti: 300
-    }
-
-    var client = new stormpath.Client({apiKey: apiKey, cacheOptions: cacheOptions});
-    ```
 
 #### Cache options parameters
 
