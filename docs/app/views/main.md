@@ -34,37 +34,42 @@ This quickstart assumes you have [signed up for Stormpath][],
 
 ### Create a Stormpath Client
 
-The Stormpath `Client` object is your starting point for all interactions with the Stormpath REST API.  You can create (and customize) the Stormpath client in a number of ways, but at a bare minimum you need to specify your Stormpath API Key.
+The Stormpath `Client` object is your starting point for all interactions with
+the Stormpath REST API.  You can create (*and customize*) the Stormpath Client
+in a number of ways, but at a bare minimum you need to specify your Stormpath
+API credentials.
 
 You can do this easily in one of two ways:
 
 * Reference your downloaded `apiKey.properties` file:
 
-    ```javascript
-    var stormpath = require('stormpath');
+  ```javascript
+  var stormpath = require('stormpath');
 
-    //Reference apiKey.properties in the process user's home dir.  Works on both Windows and *nix systems:
-    var homeDir = process.env[(process.platform === 'win32' ? 'USERPROFILE' : 'HOME')];
-    var apiKeyFilePath = homeDir + '/.stormpath/apiKey.properties';
+  // Find the user's home directory (works on both Windows and *nix):
+  var home = process.env[(process.platform === 'win32' ? 'USERPROFILE' : 'HOME')];
+  var apiKeyFilePath = home + '/.stormpath/apiKey.properties';
 
-    var client = null; //available after the ApiKey file is asynchronously loaded from disk
+  // Will be available after the properties file is asynchronously loaded from
+  // disk:
+  var client; 
 
-    stormpath.loadApiKey(apiKeyFilePath, function apiKeyFileLoaded(err, apiKey) {
-      if (err) throw err;
-      client = new stormpath.Client({apiKey: apiKey});
-    });
-    ```
+  stormpath.loadApiKey(apiKeyFilePath, function apiKeyFileLoaded(err, apiKey) {
+    if (err) throw err;
+    client = new stormpath.Client({apiKey: apiKey});
+  });
+  ```
 
 * Create an ApiKey object manually
 
-    ```javascript
-    var stormpath = require('stormpath');
+  ```javascript
+  var stormpath = require('stormpath');
 
-    //In this example, we'll reference the values from env vars (NEVER HARDCODE API KEY VALUES IN SOURCE CODE!)
-    var apiKey = new stormpath.ApiKey(process.env['STORMPATH_API_KEY_ID'], process.env['STORMPATH_API_KEY_SECRET']);
+  //In this example, we'll reference the values from env vars (NEVER HARDCODE API KEY VALUES IN SOURCE CODE!)
+  var apiKey = new stormpath.ApiKey(process.env['STORMPATH_API_KEY_ID'], process.env['STORMPATH_API_KEY_SECRET']);
 
-    var client = new stormpath.Client({apiKey: apiKey});
-    ```
+  var client = new stormpath.Client({apiKey: apiKey});
+  ```
 
 ### List Your Applications and Directories
 
