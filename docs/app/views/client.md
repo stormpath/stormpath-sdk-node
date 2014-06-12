@@ -634,27 +634,37 @@ The retrieved `Account` resource will be provided to the `callback` as the callb
 <a name="getApplication"></a>
 ### <span class="member">method</span> getApplication(applicationHref, *[options,]* callback)
 
-Retrieves the [Application](application) resource at `applicationHref` and provides it to the specified `callback`.
+Retrieves the [Application](application) resource at `applicationHref` and
+provides it to the specified `callback`.
 
-**NOTE**: This implementation does not validate that the returned resource is an `Application`: it is assumed that the caller knows the `applicationHref` represents an application location.
+**NOTE**: This implementation does not validate that the returned resource is
+an `Application`: it is assumed that the caller knows the `applicationHref`
+represents an application location.
+
 
 #### Usage
 
 For an `applicationHref` that you know represents an application:
 
 ```javascript
-client.getApplication(appHref, function(err, app) {
-    if (err) throw err;
-    console.log(app);
+client.getApplication(href, function(err, app) {
+  if (err) throw err;
+
+  console.log(app);
 });
 ```
-You can specify query parameters as the __options__ argument, for example, for [resource expansion](http://docs.stormpath.com/rest/product-guide/#retrieve-an-application):
+
+You can specify query parameters as the **options** argument, for example, for
+[resource expansion][]:
+
 ```javascript
-client.getApplication(appHref, {expand:'accounts'}, function(err, app) {
-    if (err) throw err;
-    console.log(app);
+client.getApplication(href, {expand: 'accounts'}, function(err, app) {
+  if (err) throw err;
+
+  console.log(app);
 });
 ```
+
 
 #### Parameters
 
