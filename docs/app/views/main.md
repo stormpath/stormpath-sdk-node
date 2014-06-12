@@ -200,15 +200,18 @@ newApp.createAccount(account, function(err, newAccount) {
 
 ### Update an Account
 
-Change the fields you want and then call `save`:
+You can update an Account object by modifying the fields you want to change,
+then calling the `save` method:
 
 ```javascript
-createdAccount.middleName = 'Make it so.';
-createdAccount.save(function onSave(err, savedAccount) {
+newAccount.middleName = 'Make it so.';
+newAccount.save(function(err, updatedAccount) {
   if (err) throw err;
-  console.log(savedAccount);
+
+  console.log(updatedAccount);
 });
 ```
+
 
 ### Authenticate an Account
 
