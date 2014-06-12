@@ -263,18 +263,22 @@ password reset emails!*).
 
 ### Create a Group
 
-In Stormpath, the best way to think about roles and permissions is with [Groups](http://docs.stormpath.com/rest/product-guide/#groups).  Groups allow you to categorize Accounts and build complex permission systems.
+In Stormpath, the best way to think about roles and permissions is via
+[Groups][].  Groups allow you to categorize Accounts and build complex
+permission systems.
 
 Creating a new Group is easy:
 
 ```javascript
-var group = {name: 'Administrators'}
+var group = {name: 'Administrators'};
 
-createdApp.createGroup(group, onGroupCreation(err, createdGroup) {
+app.createGroup(group, function(err, newGroup) {
   if (err) throw err;
-  console.log(createdGroup);
+
+  console.log(newGroup);
 });
 ```
+
 
 ### Add an Account to a Group:
 
@@ -324,3 +328,4 @@ account.getGroups(function onGroups(err, groups) {
   [Applications]: https://api.stormpath.com/v#!applications "Your Stormpath Applications"
   [Directories]: https://api.stormpath.com/v#!directories "Your Stormpath Directories"
   [Password Reset Workflow]: http://docs.stormpath.com/rest/product-guide/#reset-an-accounts-password "Stormpath Docs - Reset an Account's Password"
+  [Groups]: http://docs.stormpath.com/rest/product-guide/#groups "Stormpath Groups"
