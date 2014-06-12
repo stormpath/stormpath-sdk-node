@@ -17,7 +17,10 @@ module.exports = function (grunt) {
         src: ['test/**/*_live.js']
       },
       it: {
-        src: ['test/**/*_it.js']
+        src: ['test/**/*_it.js'],
+        options: {
+          timeout: 20000
+        }
       }
     },
     mocha_istanbul: {

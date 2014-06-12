@@ -1,4 +1,5 @@
 var common = require('../common');
+var uuid = common.uuid;
 var stormpath = common.Stormpath;
 
 function loadApiKey(cb){
@@ -17,7 +18,23 @@ function getClient(cb){
   });
 }
 
+function uniqId(){
+  return 'it-'+uuid();
+}
+
+function fakeAccount(){
+  return {
+    givenName: uniqId(),
+    surname: uniqId(),
+    // username: 'jlpicard',
+    email: 'uniqId()@mailinator.com',
+    password: 'Changeme1!'
+  };
+}
+
 module.exports = {
   loadApiKey: loadApiKey,
-  getClient: getClient
+  getClient: getClient,
+  uniqId: uniqId,
+  fakeAccount: fakeAccount
 };
