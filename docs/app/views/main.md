@@ -178,7 +178,8 @@ client.createApplication(app, function(err, newApp) {
 
 ### Create an Account
 
-Now that you've created an Application (and assigned it a Directory), you an add a user account!
+Now that you've created an Application (*and assigned it a Directory*), you can
+create a user account!
 
 ```javascript
 var account = {
@@ -189,11 +190,13 @@ var account = {
   password: 'Changeme1!'
 };
 
-createdApp.createAccount(account, function onAccountCreated(err, createdAccount) {
+newApp.createAccount(account, function(err, newAccount) {
   if (err) throw err;
-  console.log(createdAccount);
+
+  console.log(newAccount);
 });
 ```
+
 
 ### Update an Account
 
