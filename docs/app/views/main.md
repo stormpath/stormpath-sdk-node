@@ -176,7 +176,7 @@ client.createApplication(app, function(err, newApp) {
 ```
 
 
-### Create an Application Account
+### Create an Account
 
 Now that you've created an Application (and assigned it a Directory), you an add a user account!
 
