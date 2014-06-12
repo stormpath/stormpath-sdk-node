@@ -116,6 +116,7 @@ var options = {...};
 var client = new stormpath.Client(options);
 ```
 
+
 #### Parameters
 
 <table class="table table-striped table-hover table-curved">
