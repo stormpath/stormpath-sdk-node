@@ -711,37 +711,59 @@ callback's second parameter.
 <a name="getApplications"></a>
 ### <span class="member">method</span> getApplications(*[options,]* callback)
 
-Retrieves a [collection](collectionResource) of [Tenant](tenant) [Application](application)s and provides the collection to the specified `callback`.
+Retrieves a [collection](collectionResource) of [Tenant](tenant)
+[Application](application)s and provides the collection to the specified
+`callback`.
 
-If no options are specified, all of the client tenant's applications are retrieved.  If options (query parameters) are specified for a search, only those applications matching the search will be retrieved.  If the search does not return any results, the collection will be empty.
+If no options are specified, all of the client tenant's applications are
+retrieved.  If options (*query parameters*) are specified for a search, only
+those applications matching the search will be retrieved.  If the search
+does not return any results, the collection will be empty.
+
 
 #### Usage
 
-If you want to retrieve _all_ of your tenant's applications:
+If you want to retrieve *all* of your tenant's applications:
 
 ```javascript
 client.getApplications(function(err, applications) {
-    if (err) throw err;
+  if (err) throw err;
 
-    applications.each(function(err, app, offset) {
-      console.log('Offset ' + offset + ', application: ' + app);
-    });
+  applications.each(function(app, callback) {
+    console.log(app);
+    callback();
+  }, function(err) {
+    if (err) throw err;
+  });
 });
 ```
-As you can see, the [Collection](collectionResource) provided to the `callback` has an `each` function that accepts its own callback.  The collection will iterate over all of the applications in the collection, and invoke the callback for each one.  The `offset` parameter indicates the index of the application in the returned collection.  The `offset` parameter is optional - it may be omitted from the callback definition.
 
-If you don't want all applications, and only want specific ones, you can search for them by specifying the _options_ argument with [application search](http://docs.stormpath.com/rest/product-guide/#tenant-applications-search) query parameters:
+As you can see, the [Collection](collectionResource) provided to the `callback`
+has an `each` function that accepts its own callback.  The collection will
+iterate over all of the applications in the collection, and invoke the callback
+for each one.
+
+If you don't want all applications, and only want specific ones, you can search
+for them by specifying the *options* argument with [application search][]
+query parameters:
 
 ```javascript
-client.getApplications({name: '*Awesome*'}, function(err, applications) {
-    if (err) throw err;
+client.getApplications({name: '*Awesome*'}, function(err, apps) {
+  if (err) throw err;
 
-    applications.each(function(err, app) {
-      console.log(app);
-    });
+  applications.each(function(app, callback) {
+    console.log(app);
+    callback();
+  }, function(err) {
+    if (err) throw err;
+  });
 });
 ```
-The above code example would only print out applications with the text fragment `Awesome` in their name.  See the Stormpath REST API Guide's [application search documentation](http://docs.stormpath.com/rest/product-guide/#tenant-applications-search) for other supported query parameters, such as reference expansion.
+
+The above code example would only print out applications with the text fragment
+`Awesome` in their name.  See the Stormpath [application search documentation][]
+for other supported query parameters, such as reference expansion.
+
 
 #### Parameters
 
@@ -770,11 +792,14 @@ The above code example would only print out applications with the text fragment 
   </tbody>
 </table>
 
+
 #### Returns
 
-void; the retrieved collection of `Application`s will be provided to the `callback` as the callback's second parameter.
+The retrieved collection of `Application`s will be provided to the `callback`
+as the callback's second parameter.
 
 ---
+
 
 <a name="getCurrentTenant"></a>
 ### <span class="member">method</span> getCurrentTenant(*[options,]* callback)
@@ -1091,3 +1116,5 @@ void; the retrieved `GroupMembership` resource will be provided to the `callback
 
   [Stormpath API key]: http://docs.stormpath.com/rest/quickstart/#get-an-api-key "Stormpath API Key"
   [resource expansion]: http://docs.stormpath.com/rest/product-guide/#account-retrieve "Stormpath Resource Expansion"
+  [application search]: http://docs.stormpath.com/rest/product-guide/#tenant-applications-search "Stormpath Application Search"
+  [application search documentation]: http://docs.stormpath.com/rest/product-guide/#tenant-applications-search "Stormpath Application Search"
