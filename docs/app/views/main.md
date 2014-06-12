@@ -280,28 +280,29 @@ app.createGroup(group, function(err, newGroup) {
 ```
 
 
-### Add an Account to a Group:
+### Assign an Account to a Group
 
-You can do this easily two ways: by interacting with the account or by interacting with the group:
+You can do easily assign a Group to an Account in two ways: by interacting with
+the Account, or by interacting with the Group:
 
 ```javascript
-//via the account
-//groupOrGroupHref may be the actual group or the group's href:
-account.addToGroup(groupOrGroupHref, onMembershipCreated(err, membership) {
+account.addToGroup(groupOrGroupHref, function(err, membership) {
   if (err) throw err;
 
-  //membership is a GroupMembership resource that represents the pairing of the group to the account:
   console.log(membership);
 });
 
-//via the group:
-group.addAccount(accountOrAccountHref, onMembershipCreated(err, membership) {
+group.addAccount(accountOrAccountHref, function(err, membership) {
   if (err) throw err;
 
-  //membership is a GroupMembership resource that represents the pairing of the group to the account:
   console.log(membership);
 });
 ```
+
+**NOTE**: In both examples above, `membership` is a [GroupMembership][] resource
+that represents the pairing of the Group to the Account -- in most cases, you
+don't need to worry about using this directly.
+
 
 ### Retrieve an Account's Groups
 
@@ -329,3 +330,4 @@ account.getGroups(function onGroups(err, groups) {
   [Directories]: https://api.stormpath.com/v#!directories "Your Stormpath Directories"
   [Password Reset Workflow]: http://docs.stormpath.com/rest/product-guide/#reset-an-accounts-password "Stormpath Docs - Reset an Account's Password"
   [Groups]: http://docs.stormpath.com/rest/product-guide/#groups "Stormpath Groups"
+  [GroupMembership]: http://docs.stormpath.com/rest/product-guide/#group-memberships "Stormpath GroupMembership"
