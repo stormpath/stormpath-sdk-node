@@ -2,9 +2,17 @@
 
 This is the Stormpath Node.js module's API documentation.
 
-[Stormpath](https://www.stormpath.com) is a cloud-hosted user management service that automates best-in-class user security for your applications so you can ship your application faster and more securely.
+[Stormpath][] is a cloud-hosted user management service that automates
+best-in-class user security for your applications so you can ship your
+application faster and more securely.
 
-It provides applications safe user account and group/role management, authentication, best-practices password security, access control, automated security workflows like user registration, account email verification and password resets, social login with services like Facebook and Google Apps, secure sync for on-premise LDAP and Active Directory accounts, custom user and group data, and much more.
+This module provides abstractions around applications, safe user account and
+group / role management, authentication, best-practices password security,
+access control, social login with services like Facebook and Google, automated
+security workflows (*user registration, account email verification, password
+reset*), secure sync for on-premise LDAP and Active Directory accounts, custom
+user and group data, and much more.
+
 
 ## <a name="install"></a>Install
 
@@ -242,3 +250,5 @@ account.getGroups(function onGroups(err, groups) {
 
 });
 ```
+
+  [Stormpath]: https://stormpath.com/ "Stormpath"
