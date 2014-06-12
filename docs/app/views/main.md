@@ -102,6 +102,11 @@ client.getDirectories({expand: 'groups'}, function(err, dirs) {
 });
 ```
 
+**NOTE**: You can *expand* any linked properties available when listing
+Stormpath resources.  This is a great way to reduce the amount of network calls
+you make to Stormpath when developing fast applications.
+
+
 ### Retrieve a specific Application, Directory, Account, Group or GroupMembership:
 
 If you know a resource's `href`, you can retrieve it directly:
