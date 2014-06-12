@@ -1,42 +1,52 @@
 ## Client
 
-A `Client` instance is your starting point for all interactions with the Stormpath REST API - once you have a `Client` instance, you can do everything else.
+A `Client` instance is your starting point for all interactions with the
+Stormpath REST API.  Once you have a `Client` instance, you can do everything
+else.
 
-You can create (and customize) the Stormpath client in a number of ways, but at a bare minimum you need to specify your [Stormpath API Key](http://docs.stormpath.com/rest/quickstart/#get-an-api-key):
+You can create (*and customize*) the Stormpath client in a number of ways, but
+at a bare minimum you need to specify your [Stormpath API Key][] information.
 
-You can do this easily in one of two ways:
+You can do this in one of two ways:
 
-* Reference your downloaded `apiKey.properties` file (presumably in `$HOME/.stormpath/apiKey.properties`):
+* Reference your downloaded `apiKey.properties` file (*presumably
+  `~/.stormpath/apiKey.properties`*):
 
-    ```javascript
-    var stormpath = require('stormpath');
+  ```javascript
+  var stormpath = require('stormpath');
 
-    //Reference apiKey.properties in the process user's home dir.  Works on both Windows and *nix systems:
-    var homeDir = process.env[(process.platform === 'win32' ? 'USERPROFILE' : 'HOME')];
-    var apiKeyFilePath = homeDir + '/.stormpath/apiKey.properties';
+  // Platform agnostic way of getting the home directory.
+  var homeDir = process.env[(process.platform === 'win32' ? 'USERPROFILE' : 'HOME')];
+  var apiKeyFilePath = homeDir + '/.stormpath/apiKey.properties';
 
-    var client = null; //available after the ApiKey file is asynchronously loaded from disk
+  // Available after the properties file is asynchronously loaded from disk.
+  var client;
 
-    stormpath.loadApiKey(apiKeyFilePath, function apiKeyFileLoaded(err, apiKey) {
-      if (err) throw err;
-      client = new stormpath.Client({apiKey: apiKey});
-    });
-    ```
+  stormpath.loadApiKey(apiKeyFilePath, function(err, apiKey) {
+    if (err) throw err;
+    client = new stormpath.Client({apiKey: apiKey});
+  });
+  ```
 
-* Create an ApiKey object manually
+* Create an ApiKey object manually:
 
-    ```javascript
-    var stormpath = require('stormpath');
+  ```javascript
+  var stormpath = require('stormpath');
 
-    //In this example, we'll reference the values from env vars (NEVER HARDCODE API KEY VALUES IN SOURCE CODE!)
-    var apiKey = new stormpath.ApiKey(process.env['STORMPATH_API_KEY_ID'], process.env['STORMPATH_API_KEY_SECRET']);
+  // In this example, we'll reference the API credentials from environment
+  // variables (*NEVER HARDCODE API KEY VALUES IN SOURCE CODE!*).
+  var apiKey = new stormpath.ApiKey(
+    process.env['STORMPATH_API_KEY_ID'],
+    process.env['STORMPATH_API_KEY_SECRET']
+  );
 
-    var client = new stormpath.Client({apiKey: apiKey});
-    ```
+  var client = new stormpath.Client({apiKey: apiKey});
+  ```
 
 **Since**: 0.1
 
 ---
+
 
 #### Caching
 
@@ -1006,3 +1016,6 @@ client.getGroupMembership(href, {expand:'account,group'}, function(err, membersh
 #### Returns
 
 void; the retrieved `GroupMembership` resource will be provided to the `callback` as the callback's second parameter.
+
+
+  [Stormpath API key]: http://docs.stormpath.com/rest/quickstart/#get-an-api-key "Stormpath API Key"
