@@ -408,30 +408,46 @@ var client = new stormpath.Client({
 <a name="createApplication"></a>
 ### <span class="member">method</span> createApplication(application, *[options,]* callback)
 
-Creates a new [Application](application) instance in the Client's [Tenant](tenant).
+Creates a new [Application](application) instance in the Client's
+[Tenant](tenant).
+
 
 #### Usage
 
-Create a new Application with its own private Directory so you can start adding user accounts right away:
+Create a new Application with its own private Directory so you can start adding
+user accounts right away:
 
 ```javascript
-var app = {name: 'My Awesome App', description: 'Srsly. Awesome.'};
+var app = {
+  name: 'My Awesome App',
+  description: 'Srsly. Awesome.'
+};
 
-client.createApplication(app, {createDirectory:true}, function(err, createdApplication) {
+client.createApplication(app, {createDirectory: true}, function(err, newApp) {
     if (err) throw err;
-    console.log(createdApplication);
+
+    console.log(newApp);
 });
 ```
-Create a new Application without any mapped user account stores.  You are responsible for adding account stores later if you want to be able to create new user accounts via the application directly.  Notice there is no _options_ param:
+
+Create a new Application without any mapped user account stores.  You are
+responsible for adding account stores later if you want to be able to create
+new user accounts via the application directly.  Notice there is no
+_options_ param:
 
 ```javascript
-var app = {name: 'My Awesome App', description: 'Srsly. Awesome.'};
+var app = {
+  name: 'My Awesome App',
+  description: 'Srsly. Awesome.'
+};
 
-client.createApplication(app, function(err, createdApplication) {
+client.createApplication(app, function(err, newApp) {
     if (err) throw err;
-    console.log(createdApplication);
+
+    console.log(newApp);
 });
 ```
+
 
 #### Parameters
 
