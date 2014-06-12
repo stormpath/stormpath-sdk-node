@@ -206,24 +206,28 @@ var client = new stormpath.Client(options);
 
 
 <a name="memory"></a>
-### In memory cache
+### In Memory Cache
 
-In memory cache provider. Supported options: `ttl`, `tti`
+In memory cache provider.  Supported options: `ttl`, `tti`
+
 
 #### Usage
 
-   ```javascript
+```javascript
+var cacheOptions = {
+  store: 'memory',
+  ttl: 300,
+  tti: 300
+};
 
-    var cacheOptions = {
-      store: 'memory',
-      ttl: 300,
-      tti: 300
-    }
-
-    var client = new stormpath.Client({apiKey: apiKey, cacheOptions: cacheOptions});
-    ```
+var client = new stormpath.Client({
+  apiKey: apiKey,
+  cacheOptions: cacheOptions
+});
+```
 
 ---
+
 
 <a name="memcached"></a>
 ### Memcached
