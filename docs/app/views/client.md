@@ -484,9 +484,10 @@ client.createApplication(app, function(err, newApp) {
 
 #### Returns
 
-void; the created `Application` returned from the server will be provided to the `callback` as the callback's second parameter.
+The created `Application` returned from the server will be provided to the `callback` as the callback's second parameter.
 
 ---
+
 
 <a name="createDirectory"></a>
 ### <span class="member">method</span> createDirectory(directory, *[options,]* callback)
