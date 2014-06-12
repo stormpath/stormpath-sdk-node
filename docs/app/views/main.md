@@ -71,6 +71,7 @@ You can do this easily in one of two ways:
   var client = new stormpath.Client({apiKey: apiKey});
   ```
 
+
 ### List Your Applications and Directories
 
 ```javascript
