@@ -107,7 +107,7 @@ Stormpath resources.  This is a great way to reduce the amount of network calls
 you make to Stormpath when developing fast applications.
 
 
-### Retrieve a specific Application, Directory, Account, Group or GroupMembership:
+### Retrieve a Specific Resource
 
 If you know a resource's `href`, you can retrieve it directly:
 
