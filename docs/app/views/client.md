@@ -319,29 +319,31 @@ var client = new stormpath.Client({
 <a name="redis"></a>
 ### Redis
 
-
 Redis provider.
+
 
 #### Usage
 
-   ```javascript
-    var stormpath = require('stormpath');
+```javascript
+var cacheOptions = {
+  store: 'redis',
+  connection: {
+    host: 'localhost',
+    port: 6379
+  },
+  options: {
+    return_buffers: false
+  },
+  ttl: 300,
+  tti: 300
+};
 
-    //In this example, we'll reference the values from env vars (NEVER HARDCODE API KEY VALUES IN SOURCE CODE!)
-    var apiKey = new stormpath.ApiKey(process.env['STORMPATH_API_KEY_ID'], process.env['STORMPATH_API_KEY_SECRET']);
+var client = new stormpath.Client({
+  apiKey: apiKey,
+  cacheOptions: cacheOptions
+});
+```
 
-    var cacheOptions = {
-      store: 'redis',
-      connection: { host: '127.0.0.1', port: 6379 },
-      options: {
-        return_buffers: false   //redis option
-      },
-      ttl: 300,
-      tti: 300
-    }
-
-    var client = new stormpath.Client({apiKey: apiKey, cacheOptions: cacheOptions});
-    ```
 
 #### Cache options parameters
 
