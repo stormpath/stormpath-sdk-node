@@ -140,37 +140,41 @@ client.getApplication(appHref, function(err, app) {
 
 ### Create an Application
 
-Registering your Application with Stormpath is as easy as creating a new `Application` record:
+Creating a Stormpath Application is simple:
 
 ```javascript
 var app = {
   name: 'My Awesome Application!',
-  description: 'No, Srsly. It\'s Awesome.'
+  description: "No, Srsly. It's Awesome."
 };
 
-client.createApplication(app, {createDirectory:true}, function onAppCreated(err, createdApp) {
+client.createApplication(app, {createDirectory: true}, function(err, newApp) {
   if (err) throw err;
-  console.log(createdApp);
+
+  console.log(newApp);
 });
 ```
 
-Did you see the optional options argument we specified: `{createDirectory:true}`?  This will automatically create a new
-`Directory` to store all accounts and groups for that Application and assign it to the Application.
+**NOTE**: The optional argument we specified, `{createDirectory: true}`, will
+automatically create a new Directory to hold all Accounts and Groups for that
+Application automatically.  Nice, right?
 
-For more advanced use cases, you can omit the `options` argument and set up different account stores for your
-Application later, for example:
+For more advanced use cases, you can omit the `options` argument and set up
+different account stores for your Application later.  For example:
 
 ```javascript
 var app = {
-  name: 'My Awesome Application!',
-  description: 'No, Srsly. It\'s Awesome.'
+  name: 'Cooler App',
+  description: 'The coolest app ever made.'
 };
 
-client.createApplication(app, function onAppCreated(err, createdApp) {
+client.createApplication(app, function(err, newApp) {
   if (err) throw err;
-  console.log(createdApp);
+
+  console.log(newApp);
 });
 ```
+
 
 ### Create an Application Account
 
