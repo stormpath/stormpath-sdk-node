@@ -50,43 +50,48 @@ You can do this in one of two ways:
 
 #### Caching
 
-The caching mechanism enables you to store the state of an already accessed resource in a cache store.
- If you accessed the resource again and the data inside the cache hasn’t yet expired,
-  you would get the resource directly from the cache store.
-  By doing so, you can reduce network traffic and still have access to some
-  of the resources even if there is a connectivity problem with `Stormpath`.
-  Be aware, however, that when using a persistent cache store like `Redis`,
-  if the data changes quickly on `Stormpath` and the `TTL` and `TTI` are set to a large value,
-  you may get resources with attributes that don’t reflect the actual state.
-  If this edge case won’t affect your data consistency,
-  you can use the caching mechanism by providing an additional parameter
-  when creating the `Client` instance:
+The caching mechanism enables you to store the state of an already accessed
+resource in a cache store.
 
-   ```javascript
-    var stormpath = require('stormpath');
+If you access the resource again and the data inside the cache hasn't yet
+expired, you would get the resource directly from the cache store.
 
-    //In this example, we'll reference the values from env vars (NEVER HARDCODE API KEY VALUES IN SOURCE CODE!)
-    var apiKey = new stormpath.ApiKey(process.env['STORMPATH_API_KEY_ID'], process.env['STORMPATH_API_KEY_SECRET']);
+By doing so, you can reduce network traffic and still have access to some of
+the resources even if there is a connectivity problem with `Stormpath`.
 
-    var cacheOptions = {
-      store: 'redis',
-      connection: {
-        host: 'localhost',
-        port: 6739,
-      }
-      options: {
-        // redis client options
-      },
-      ttl: 300,
-      tti: 300
-    }
+Be aware, however, that when using a persistent cache store like [Redis][],
+if the data changes quickly on `Stormpath` and the `TTL` and `TTI` are set to
+a large value, you may get resources with attributes that don't reflect the
+actual state.
 
-    var client = new stormpath.Client({apiKey: apiKey, cacheOptions: cacheOptions});
-    ```
+If this edge case won't affect your data consistency, you can use the caching
+mechanism by providing an additional parameter when creating the `Client`
+instance:
+
+```javascript
+var cacheOptions = {
+  store: 'redis',
+  connection: {
+    host: 'localhost',
+    port: 6379,
+  },
+  options: {
+    // redis client options (username, password, etc.)
+  },
+  ttl: 300,
+  tti: 300
+};
+
+var client = new stormpath.Client({
+  apiKey: apiKey,
+  cacheOptions: cacheOptions
+});
+```
 
 **Since**: 0.1.2
 
 ---
+
 
 <a name="ctor"></a>
 ### <span class="member">constructor</span> Client(options)
