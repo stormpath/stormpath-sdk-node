@@ -27,7 +27,10 @@ And the module will be installed and ready for use!
 
 ## <a name="quickstart"></a>Quickstart
 
-This quickstart assumes you have [signed up for Stormpath](http://docs.stormpath.com/rest/quickstart/#sign-up-for-stormpath), [downloaded your API Key file](http://docs.stormpath.com/rest/quickstart/#get-an-api-key), and saved it to `$HOME/.stormpath/apiKey.properties`
+This quickstart assumes you have [signed up for Stormpath][],
+[downloaded your API key file][], and saved it to
+`~/.stormpath/apiKey.properties`.
+
 
 ### Create a Stormpath Client
 
@@ -261,3 +264,5 @@ account.getGroups(function onGroups(err, groups) {
   [Stormpath]: https://stormpath.com/ "Stormpath"
   [stormpath module]: https://www.npmjs.org/package/stormpath "Stormpath on npm"
   [npm]: https://www.npmjs.org/ "npm"
+  [signed up for stormpath]: http://docs.stormpath.com/rest/quickstart/#sign-up-for-stormpath "Sign Up For Stormpath"
+  [downloaded your API key file]: http://docs.stormpath.com/rest/quickstart/#get-an-api-key "Get a Stormpath API Key"
