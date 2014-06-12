@@ -867,37 +867,59 @@ The retrieved `Tenant` resource will be provided to the `callback` as the callba
 <a name="getDirectories"></a>
 ### <span class="member">method</span> getDirectories(*[options,]* callback)
 
-Retrieves a [collection](collectionResource) of [Tenant](tenant) [Directories](directory) and provides the collection to the specified `callback`.
+Retrieves a [collection](collectionResource) of [Tenant](tenant)
+[Directories](directory) and provides the collection to the specified
+`callback`.
 
-If no options are specified, all of the client tenant's directories are retrieved.  If options (query parameters) are specified for a search, only those directories matching the search will be retrieved.  If the search does not return any results, the collection will be empty.
+If no options are specified, all of the client tenant's directories are
+retrieved.  If options (*query parameters*) are specified for a search, only
+those directories matching the search will be retrieved.  If the search does
+not return any results, the collection will be empty.
+
 
 #### Usage
 
-If you want to retrieve _all_ of your tenant's directories:
+If you want to retrieve *all* of your tenant's directories:
 
 ```javascript
 client.getDirectories(function(err, directories) {
-    if (err) throw err;
+  if (err) throw err;
 
-    directories.each(function(err, dir, offset) {
-      console.log('Offset ' + offset + ', dir: ' + dir);
-    });
+  directories.each(function(dir, callback) {
+    console.log(dir);
+    callback();
+  }, function(err) {
+    if (err) throw err;
+  });
 });
 ```
-As you can see, the [Collection](collectionResource) provided to the `callback` has an `each` function that accepts its own callback.  The collection will iterate over all of the directories in the collection, and invoke the callback for each one.  The `offset` parameter indicates the index of the directory in the returned collection.  The `offset` parameter is optional - it may be omitted from the callback definition.
 
-If you don't want all directories, and only want specific ones, you can search for them by specifying the _options_ argument with [directory search](http://docs.stormpath.com/rest/product-guide/#tenant-directories-search) query parameters:
+As you can see, the [Collection](collectionResource) provided to the `callback`
+has an `each` function that accepts its own callback.  The collection will
+iterate over all of the directories in the collection, and invoke the callback
+for each one.
+
+If you don't want all directories, and only want specific ones, you can search
+for them by specifying the *options* argument with [directory search][]
+query parameters:
 
 ```javascript
 client.getDirectories({name: '*foo*'}, function(err, directories) {
-    if (err) throw err;
+  if (err) throw err;
 
-    directories.each(function(err, dir) {
-      console.log(dir);
-    });
+  directories.each(function(dir, callback) {
+    console.log(dir);
+    callback();
+  }, function(err) {
+    if (err) throw err;
+  });
 });
 ```
-The above code example would only print out directories with the text fragment `foo` in their name.  See the Stormpath REST API Guide's [directory search documentation](http://docs.stormpath.com/rest/product-guide/#tenant-directories-search) for other supported query parameters, such as reference expansion.
+
+The above code example would only print out directories with the text fragment
+`foo` in their name.  See the Stormpath [directory search documentation][] for
+other supported query parameters, such as reference expansion.
+
 
 #### Parameters
 
@@ -926,11 +948,14 @@ The above code example would only print out directories with the text fragment `
   </tbody>
 </table>
 
+
 #### Returns
 
-void; the retrieved collection of `Directory` resources will be provided to the `callback` as the callback's second parameter.
+The retrieved collection of `Directory` resources will be provided to the
+`callback` as the callback's second parameter.
 
 ---
+
 
 <a name="getDirectory"></a>
 ### <span class="member">method</span> getDirectory(directoryHref, *[options,]* callback)
@@ -1127,3 +1152,5 @@ void; the retrieved `GroupMembership` resource will be provided to the `callback
   [resource expansion]: http://docs.stormpath.com/rest/product-guide/#account-retrieve "Stormpath Resource Expansion"
   [application search]: http://docs.stormpath.com/rest/product-guide/#tenant-applications-search "Stormpath Application Search"
   [application search documentation]: http://docs.stormpath.com/rest/product-guide/#tenant-applications-search "Stormpath Application Search"
+  [directory search]: http://docs.stormpath.com/rest/product-guide/#tenant-directories-search "Stormpath Directory Search"
+  [directory search documentation]: http://docs.stormpath.com/rest/product-guide/#tenant-directories-search "Stormpath Directory Search"
