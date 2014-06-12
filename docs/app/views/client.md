@@ -612,7 +612,7 @@ client.getAccount(href, {expand: 'customData'}, function(err, account) {
       <td><em><code>options</code></em></td>
       <td><code>object></code></td>
       <td><em>optional</em></td>
-      <td>An object literal of name/value pairs to use as query parameters, for example, [resource expansion](http://docs.stormpath.com/rest/product-guide/#account-retrieve).</td>
+      <td>An object literal of name/value pairs to use as query parameters, for example, [resource expansion][].</td>
     </tr>
     <tr>
           <td><code>callback</code></td>
@@ -623,11 +623,13 @@ client.getAccount(href, {expand: 'customData'}, function(err, account) {
   </tbody>
 </table>
 
+
 #### Returns
 
-void; the retrieved `Account` resource will be provided to the `callback` as the callback's second parameter.
+The retrieved `Account` resource will be provided to the `callback` as the callback's second parameter.
 
 ---
+
 
 <a name="getApplication"></a>
 ### <span class="member">method</span> getApplication(applicationHref, *[options,]* callback)
