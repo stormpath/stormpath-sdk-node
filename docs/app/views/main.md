@@ -52,7 +52,7 @@ You can do this easily in one of two ways:
 
   // Will be available after the properties file is asynchronously loaded from
   // disk:
-  var client; 
+  var client;
 
   stormpath.loadApiKey(apiKeyFilePath, function(err, apiKey) {
     if (err) throw err;
