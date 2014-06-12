@@ -165,16 +165,16 @@ var client = new stormpath.Client(options);
       <td>optional</td>
       <td>The name or function that representing which cache store to use.
         By default `memory` store provider is used.
-        Available options: `memory`, `memcached`, `redis`
+        Available options: `memory`, `memcached`, `redis`.
       </td>
     </tr>
     <tr>
       <td><code>connection</code></td>
       <td><code>object</code></td>
       <td>optional</td>
-      <td>The store specific connection options, if any. E.g. `redis` requires a host
-        and a port to be set because we need that information when accessing `Redis`,
-        while `MemoryStore` do not requires any further options.
+      <td>The store specific connection options, if any.  e.g. `redis` requires a host
+        and a port to be set because we need that information when accessing `redis`,
+        while `MemoryStore` do not require any further options.
       </td>
     </tr>
     <tr>
@@ -187,7 +187,7 @@ var client = new stormpath.Client(options);
       <td><code>ttl</code></td>
       <td><code>number</code></td>
       <td>optional</td>
-      <td>Time To Live. The amount of time (in seconds) after which the stored resource data will be considered expired.
+      <td>Time To Live. The amount of time (<i>in seconds</i>) after which the stored resource data will be considered expired.
         By default, if not set, will be equal to 300 seconds.
       </td>
     </tr>
@@ -203,6 +203,7 @@ var client = new stormpath.Client(options);
 </table>
 
 ---
+
 
 <a name="memory"></a>
 ### In memory cache
