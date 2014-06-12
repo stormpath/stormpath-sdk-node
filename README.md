@@ -48,8 +48,18 @@ Send us an email to support@stormpath.com or open up a Pull Request and offer su
 
 ## Building
 
+This code does not require a build step and can be immediately required by your node application after installed from npm (see above).
+
+You may run the unit tests with the grunt command:
+
 ```bash
 grunt
+```
+
+Or the integration tests (which assume an apikey file in `~/.stormpath`):
+
+```bash
+grunt it
 ```
 
 To build the documentation, you need to enter the `docs` directory, then run:

@@ -15,6 +15,9 @@ module.exports = function (grunt) {
       },
       live: {
         src: ['test/**/*_live.js']
+      },
+      it: {
+        src: ['test/**/*_it.js']
       }
     },
     mocha_istanbul: {
@@ -65,6 +68,7 @@ module.exports = function (grunt) {
 
   // Default task.
   grunt.registerTask('test', ['mochaTest:test']);
+  grunt.registerTask('it', ['mochaTest:it']);
   grunt.registerTask('live', ['mochaTest:live']);
   grunt.registerTask('coverage', ['mocha_istanbul:coverage']);
   grunt.registerTask('default', ['jshint', 'coverage']);
