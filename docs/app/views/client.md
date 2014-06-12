@@ -960,27 +960,37 @@ The retrieved collection of `Directory` resources will be provided to the
 <a name="getDirectory"></a>
 ### <span class="member">method</span> getDirectory(directoryHref, *[options,]* callback)
 
-Retrieves the [Directory](directory) resource at `directoryHref` and provides it to the specified `callback`.
+Retrieves the [Directory](directory) resource at `directoryHref` and provides
+it to the specified `callback`.
 
-**NOTE**: This implementation does not validate that the returned resource is a `Directory`: it is assumed that the caller knows the `directoryHref` represents a directory location.
+**NOTE**: This implementation does not validate that the returned resource is a
+`Directory`: it is assumed that the caller knows the `directoryHref` represents
+a directory location.
+
 
 #### Usage
 
 For a `directoryHref` that you know represents a directory:
 
 ```javascript
-client.getDirectory(directoryHref, function(err, dir) {
-    if (err) throw err;
-    console.log(dir);
+client.getDirectory(href, function(err, dir) {
+  if (err) throw err;
+
+  console.log(dir);
 });
 ```
-You can specify query parameters as the __options__ argument, for example, for [resource expansion](http://docs.stormpath.com/rest/product-guide/#retrieve-a-directory):
+
+You can specify query parameters as the **options** argument, for example, for
+[resource expansion][]:
+
 ```javascript
-client.getDirectory(directoryHref, {expand:'accounts'}, function(err, dir) {
-    if (err) throw err;
-    console.log(dir);
+client.getDirectory(href, {expand: 'accounts'}, function(err, dir) {
+  if (err) throw err;
+
+  console.log(dir);
 });
 ```
+
 
 #### Parameters
 
@@ -1015,36 +1025,49 @@ client.getDirectory(directoryHref, {expand:'accounts'}, function(err, dir) {
   </tbody>
 </table>
 
+
 #### Returns
 
-void; the retrieved `Directory` resource will be provided to the `callback` as the callback's second parameter.
+The retrieved `Directory` resource will be provided to the `callback` as the
+callback's second parameter.
 
 ---
+
 
 <a name="getGroup"></a>
 ### <span class="member">method</span> getGroup(groupHref, *[options,]* callback)
 
-Retrieves the [Group](group) resource at `groupHref` and provides it to the specified `callback`.
+Retrieves the [Group](group) resource at `groupHref` and provides it to the
+specified `callback`.
 
-**NOTE**: This implementation does not validate that the returned resource is a `Group`: it is assumed that the caller knows the `groupHref` represents a group location.
+**NOTE**: This implementation does not validate that the returned resource is a
+`Group`: it is assumed that the caller knows the `groupHref` represents a group
+location.
+
 
 #### Usage
 
 For a `groupHref` that you know represents a group:
 
 ```javascript
-client.getGroup(groupHref, function(err, group) {
-    if (err) throw err;
-    console.log(group);
+client.getGroup(href, function(err, group) {
+  if (err) throw err;
+
+  console.log(group);
 });
 ```
-You can specify query parameters as the __options__ argument, for example, for [resource expansion](http://docs.stormpath.com/rest/product-guide/#retrieve-a-group):
+
+You can specify query parameters as the **options** argument, for example, for
+[resource expansion][]:
+
 ```javascript
-client.group(groupHref, {expand:'accounts'}, function(err, group) {
-    if (err) throw err;
-    console.log(group);
+client.group(href, {expand: 'accounts'}, function(err, group) {
+  if (err) throw err;
+
+  console.log(group);
 });
 ```
+
 
 #### Parameters
 
@@ -1079,18 +1102,25 @@ client.group(groupHref, {expand:'accounts'}, function(err, group) {
   </tbody>
 </table>
 
+
 #### Returns
 
-void; the retrieved `Group` resource will be provided to the `callback` as the callback's second parameter.
+The retrieved `Group` resource will be provided to the `callback` as the
+callback's second parameter.
 
 ---
+
 
 <a name="getGroupMembership"></a>
 ### <span class="member">method</span> getGroupMembership(href, *[options,]* callback)
 
-Retrieves the [GroupMembership](groupMembership) resource at `href` and provides it to the specified `callback`.
+Retrieves the [GroupMembership](groupMembership) resource at `href` and
+provides it to the specified `callback`.
 
-**NOTE**: This implementation does not validate that the returned resource is a `GroupMembership`: it is assumed that the caller knows the `href` represents a group location.
+**NOTE**: This implementation does not validate that the returned resource is
+a `GroupMembership`: it is assumed that the caller knows the `href` represents
+a group location.
+
 
 #### Usage
 
@@ -1098,17 +1128,23 @@ For an `href` that you know represents a GroupMembership:
 
 ```javascript
 client.getGroupMembership(href, function(err, membership) {
-    if (err) throw err;
-    console.log(membership);
+  if (err) throw err;
+
+  console.log(membership);
 });
 ```
-You can specify query parameters as the __options__ argument, for example, for [resource expansion](http://docs.stormpath.com/rest/product-guide/#retrieve-a-group-membership):
+
+You can specify query parameters as the **options** argument, for example, for
+[resource expansion][]:
+
 ```javascript
-client.getGroupMembership(href, {expand:'account,group'}, function(err, membership) {
-    if (err) throw err;
-    console.log(membership);
+client.getGroupMembership(href, {expand: 'account,group'}, function(err, membership) {
+  if (err) throw err;
+
+  console.log(membership);
 });
 ```
+
 
 #### Parameters
 
@@ -1143,9 +1179,11 @@ client.getGroupMembership(href, {expand:'account,group'}, function(err, membersh
   </tbody>
 </table>
 
+
 #### Returns
 
-void; the retrieved `GroupMembership` resource will be provided to the `callback` as the callback's second parameter.
+The retrieved `GroupMembership` resource will be provided to the `callback` as
+the callback's second parameter.
 
 
   [Stormpath API key]: http://docs.stormpath.com/rest/quickstart/#get-an-api-key "Stormpath API Key"
