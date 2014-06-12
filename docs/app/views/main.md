@@ -54,7 +54,7 @@ You can do this easily in one of two ways:
   // disk:
   var client; 
 
-  stormpath.loadApiKey(apiKeyFilePath, function apiKeyFileLoaded(err, apiKey) {
+  stormpath.loadApiKey(apiKeyFilePath, function(err, apiKey) {
     if (err) throw err;
     client = new stormpath.Client({apiKey: apiKey});
   });
@@ -77,6 +77,9 @@ You can do this easily in one of two ways:
 
 
 ### List Your Applications and Directories
+
+In order to get a list of all your Stormpath [Applications][] and
+[Directories][], you can use the following code snippet:
 
 ```javascript
 client.getApplications(function(err, apps) {
@@ -276,3 +279,5 @@ account.getGroups(function onGroups(err, groups) {
   [npm]: https://www.npmjs.org/ "npm"
   [signed up for stormpath]: http://docs.stormpath.com/rest/quickstart/#sign-up-for-stormpath "Sign Up For Stormpath"
   [downloaded your API key file]: http://docs.stormpath.com/rest/quickstart/#get-an-api-key "Get a Stormpath API Key"
+  [Applications]: https://api.stormpath.com/v#!applications "Your Stormpath Applications"
+  [Directories]: https://api.stormpath.com/v#!directories "Your Stormpath Directories"
