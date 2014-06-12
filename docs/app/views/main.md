@@ -65,8 +65,12 @@ You can do this easily in one of two ways:
   ```javascript
   var stormpath = require('stormpath');
 
-  //In this example, we'll reference the values from env vars (NEVER HARDCODE API KEY VALUES IN SOURCE CODE!)
-  var apiKey = new stormpath.ApiKey(process.env['STORMPATH_API_KEY_ID'], process.env['STORMPATH_API_KEY_SECRET']);
+  // In this example, we'll reference the API credentials from environment
+  // variables (*NEVER HARDCODE API KEY VALUES IN SOURCE CODE!*).
+  var apiKey = new stormpath.ApiKey(
+    process.env['STORMPATH_API_KEY_ID'],
+    process.env['STORMPATH_API_KEY_SECRET']
+  );
 
   var client = new stormpath.Client({apiKey: apiKey});
   ```
