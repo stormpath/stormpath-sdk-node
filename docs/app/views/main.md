@@ -306,20 +306,28 @@ don't need to worry about using this directly.
 
 ### Retrieve an Account's Groups
 
-It is often useful to obtain an Account's Groups so you can perform access control - for example, see if an account is in the 'Administrators' group before allowing them to see certain data:
+It is often useful to obtain an Account's Groups so you can perform access
+control.  For example, you might want to see if an Account is in the
+'Administrators' Group before allowing them to see certain data.
+
+You can do this by iterating over an Account's groups like so:
 
 ```javascript
-account.getGroups(function onGroups(err, groups) {
+account.getGroups(function(err, groups) {
   if (err) throw err;
 
-  groups.each(function(err, group) {
+  groups.each(function(group, callback) {
     if (group.name === 'Administrators') {
       console.log('We have an administrator!');
     }
-  });
 
+    callback();
+  }, function(err) {
+    if (err) throw err;
+  });
 });
 ```
+
 
   [Stormpath]: https://stormpath.com/ "Stormpath"
   [stormpath module]: https://www.npmjs.org/package/stormpath "Stormpath on npm"
