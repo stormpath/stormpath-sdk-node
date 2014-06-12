@@ -806,21 +806,28 @@ as the callback's second parameter.
 
 Retrieves the client's [Tenant](tenant) and provides it to the specified `callback`.
 
+
 #### Usage
 
 ```javascript
 client.getCurrentTenant(function(err, tenant) {
-    if (err) throw err;
-    console.log(tenant);
+  if (err) throw err;
+
+  console.log(tenant);
 });
 ```
-You can also use [resource expansion](http://docs.stormpath.com/rest/product-guide/#link-expansion) options (query params) to obtain linked resources in the same request:
+
+You can also use [resource expansion][] options (query params) to obtain
+linked resources in the same request:
+
 ```javascript
 client.getCurrentTenant({expand:'applications'}, function(err, tenant) {
-    if (err) throw err;
-    console.log(tenant);
+  if (err) throw err;
+
+  console.log(tenant);
 });
 ```
+
 
 #### Parameters
 
@@ -849,11 +856,13 @@ client.getCurrentTenant({expand:'applications'}, function(err, tenant) {
   </tbody>
 </table>
 
+
 #### Returns
 
-void; the retrieved `Tenant` resource will be provided to the `callback` as the callback's second parameter.
+The retrieved `Tenant` resource will be provided to the `callback` as the callback's second parameter.
 
 ---
+
 
 <a name="getDirectories"></a>
 ### <span class="member">method</span> getDirectories(*[options,]* callback)
