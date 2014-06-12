@@ -16,7 +16,14 @@ user and group data, and much more.
 
 ## <a name="install"></a>Install
 
-    npm install stormpath
+Installing the [stormpath module][] is simple via [npm][].  Just run:
+
+```console
+$ npm install stormpath
+```
+
+And the module will be installed and ready for use!
+
 
 ## <a name="quickstart"></a>Quickstart
 
@@ -252,3 +259,5 @@ account.getGroups(function onGroups(err, groups) {
 ```
 
   [Stormpath]: https://stormpath.com/ "Stormpath"
+  [stormpath module]: https://www.npmjs.org/package/stormpath "Stormpath on npm"
+  [npm]: https://www.npmjs.org/ "npm"
