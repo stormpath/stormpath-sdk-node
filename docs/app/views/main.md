@@ -1,6 +1,6 @@
 # Stormpath Node.js API
 
-This is the API documentation of the Stormpath SDK Node.js module/package.
+This is the Stormpath Node.js module's API documentation.
 
 [Stormpath](https://www.stormpath.com) is a cloud-hosted user management service that automates best-in-class user security for your applications so you can ship your application faster and more securely.
 
