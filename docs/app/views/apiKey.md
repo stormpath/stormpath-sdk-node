@@ -1,42 +1,53 @@
 ## ApiKey
 
-An `ApiKey` represents a Stormpath customer's API-specific ID and secret. All Stormpath REST invocations must be authenticated with an ApiKey. API Keys are assigned to *individual people*. Never share your API Key with anyone, not even co-workers.  API Keys can be generated for your tenant by following [Stormpath API Key Documentation](http://docs.stormpath.com/rest/quickstart/#get-an-api-key)
+An `ApiKey` represents a Stormpath customer's API-specific ID and secret.  All
+Stormpath REST calls must be authenticated with an API key.  API keys are
+assigned to *individual people*.  Never share your API key with anyone, not
+even co-workers.
+
+To learn more about API keys (*including how to create them*), you might want
+to check out the [Stormpath API Key Documentation][].
 
 There are two easy ways to obtain an `ApiKey` instance:
 
-* Reference your downloaded `apiKey.properties` file (for example, in `$HOME/.stormpath/apiKey.properties`):
+* Reference your downloaded `apiKey.properties` file (*for example,
+  `~/.stormpath/apiKey.properties`*):
 
-    ```javascript
-    var stormpath = require('stormpath');
+  ```javascript
+  var stormpath = require('stormpath');
 
-    //Reference apiKey.properties in the process user's home dir.  Works on both Windows and *nix systems:
-    var homeDir = process.env[(process.platform === 'win32' ? 'USERPROFILE' : 'HOME')];
-    var apiKeyFilePath = homeDir + '/.stormpath/apiKey.properties';
+  // Platform independent way to grab the user's home directory.
+  var homeDir = process.env[(process.platform === 'win32' ? 'USERPROFILE' : 'HOME')];
+  var apiKeyFilePath = homeDir + '/.stormpath/apiKey.properties';
 
-    var client = null; //available after the ApiKey file is asynchronously loaded from disk
+  // Available after the properties file is asynchronously loaded from disk.
+  var client;
 
-    stormpath.loadApiKey(apiKeyFilePath, function apiKeyFileLoaded(err, apiKey) {
-      if (err) throw err;
+  stormpath.loadApiKey(apiKeyFilePath, function(err, apiKey) {
+    if (err) throw err;
+    client = new stormpath.Client({apiKey: apiKey});
+  });
+  ```
 
-      //apiKey has been loaded from disk - use it to create a client:
-      client = new stormpath.Client({apiKey: apiKey});
-    });
-    ```
+* Create an `ApiKey` object manually:
 
-* Create an ApiKey object manually
+  ```javascript
+  var stormpath = require('stormpath');
 
-    ```javascript
-    var stormpath = require('stormpath');
+  // In this example, we'll reference the values from the environment (*NEVER
+  // HARDCODE API KEY VALUES IN SOURCE CODE!*).
+  var apiKey = new stormpath.ApiKey(
+    process.env['STORMPATH_API_KEY_ID'],
+    process.env['STORMPATH_API_KEY_SECRET']
+  );
 
-    //In this example, we'll reference the values from env vars (NEVER HARDCODE API KEY VALUES IN SOURCE CODE!)
-    var apiKey = new stormpath.ApiKey(process.env['STORMPATH_API_KEY_ID'], process.env['STORMPATH_API_KEY_SECRET']);
-
-    var client = new stormpath.Client({apiKey: apiKey});
-    ```
+  var client = new stormpath.Client({apiKey: apiKey});
+  ```
 
 **Since**: 0.1
 
 ---
+
 
 <a name="ctor"></a>
 ### <span class="member">constructor</span> ApiKey(id, secret)
@@ -95,3 +106,6 @@ A string that represents the `ApiKey` in the following format
 
 ```
 ---
+
+
+  [Stormpath API Key Documentation]: http://docs.stormpath.com/rest/quickstart/#get-an-api-key "Stormpath API Key Documentation"
