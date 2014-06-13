@@ -18,6 +18,7 @@ pre code {
     height: 76px;
     padding-top: 14px;
     font-size: 16px;
+    background-color: #000;
 }
 
 .navbar-inverse .navbar-nav>li>a:hover, .navbar-inverse .navbar-nav>li>a:focus {
@@ -29,13 +30,6 @@ pre code {
 }
 .navbar-brand {
     padding: 5px 0 0 13px;
-}
-
-.vertical-divider {
-    height: 27px;
-    width: 1px;
-    margin: 13px 6px 0 6px;
-    background-color: #535353;
 }
 
 .cta-button {
@@ -55,6 +49,10 @@ pre code {
     -webkit-box-shadow: 0px 1px 0px 0px #6ee45e inset;
     -moz-box-shadow: 0px 1px 0px 0px #6ee45e inset;
     box-shadow: 0px 1px 0px 0px #6ee45e inset
+}
+
+.navbar-collapse .cta-button {
+  max-width: 8em;
 }
 
 .cta-button:hover, .cta-button:focus, .cta-button:active {
@@ -213,4 +211,8 @@ padding: 5px 30px 5px 30px;
     font-weight: bold;
     line-height: 14px;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
+.navbar-collapse {
+  background: #000;
 }

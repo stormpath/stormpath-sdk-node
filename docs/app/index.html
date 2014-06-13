@@ -40,8 +40,8 @@
         your browser</a> to improve your experience.</p>
     <![endif]-->
 
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="container-fluid">
+    <div class="container-fluid">
+        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                     <span class="sr-only">Toggle navigation</span>
@@ -58,7 +58,6 @@
                     <li><a href="http://stormpath.com/pricing">Pricing</a></li>
                     <li><a href="https://support.stormpath.com/home">Support</a></li>
                     <li><a href="http://stormpath.com/customers">Customers</a></li>
-                    <li class="vertical-divider"></li>
                     <li><a href="https://api.stormpath.com/login">Login</a></li>
                     <li><a id="signUpButton" class="cta-button" href="https://api.stormpath.com/register">Sign Up</a></li>
                 </ul>
@@ -66,7 +65,7 @@
                     <input type="text" class="form-control" placeholder="Search...">
                 </form> -->
             </div>
-        </div>
+        </nav>
     </div>
 
     <div class="container-fluid" data-ng-controller="MainNavController">
@@ -98,6 +97,9 @@
             </div>
         </div>
     </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
     <!--[if lte IE 8]>
     <script src="bower_components/es5-shim/es5-shim.js"></script>
