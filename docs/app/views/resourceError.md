@@ -61,7 +61,7 @@ Here is an example of an `ResourceError`'s representation (in this case, a [2001
 
 ```javascript
 someObject.doSomethingWrong(..., function myCallback(err, result) {
-  if (err) throw err;
+
   ...
 });
 ```

@@ -23,7 +23,7 @@ You can do this in one of two ways:
   var client;
 
   stormpath.loadApiKey(apiKeyFilePath, function(err, apiKey) {
-    if (err) throw err;
+
     client = new stormpath.Client({apiKey: apiKey});
   });
   ```
@@ -424,7 +424,7 @@ var app = {
 };
 
 client.createApplication(app, {createDirectory: true}, function(err, newApp) {
-    if (err) throw err;
+
 
     console.log(newApp);
 });
@@ -442,7 +442,7 @@ var app = {
 };
 
 client.createApplication(app, function(err, newApp) {
-    if (err) throw err;
+
 
     console.log(newApp);
 });
@@ -504,7 +504,7 @@ var dir = {
 };
 
 client.createDirectory(dir, function(err, newDir) {
-    if (err) throw err;
+
 
     console.log(newDir);
 });
@@ -572,7 +572,7 @@ For an `href` that you know represents an account:
 
 ```javascript
 client.getAccount(href, function(err, account) {
-  if (err) throw err;
+
 
   console.log(account);
 });
@@ -583,7 +583,7 @@ You can specify query parameters as the **options** argument, for example, for
 
 ```javascript
 client.getAccount(href, {expand: 'customData'}, function(err, account) {
-  if (err) throw err;
+
 
   console.log(account);
 });
@@ -648,7 +648,7 @@ For an `applicationHref` that you know represents an application:
 
 ```javascript
 client.getApplication(href, function(err, app) {
-  if (err) throw err;
+
 
   console.log(app);
 });
@@ -659,7 +659,7 @@ You can specify query parameters as the **options** argument, for example, for
 
 ```javascript
 client.getApplication(href, {expand: 'accounts'}, function(err, app) {
-  if (err) throw err;
+
 
   console.log(app);
 });
@@ -727,13 +727,13 @@ If you want to retrieve *all* of your tenant's applications:
 
 ```javascript
 client.getApplications(function(err, applications) {
-  if (err) throw err;
+
 
   applications.each(function(app, callback) {
     console.log(app);
     callback();
   }, function(err) {
-    if (err) throw err;
+
   });
 });
 ```
@@ -749,13 +749,13 @@ query parameters:
 
 ```javascript
 client.getApplications({name: '*Awesome*'}, function(err, apps) {
-  if (err) throw err;
+
 
   applications.each(function(app, callback) {
     console.log(app);
     callback();
   }, function(err) {
-    if (err) throw err;
+
   });
 });
 ```
@@ -811,7 +811,7 @@ Retrieves the client's [Tenant](tenant) and provides it to the specified `callba
 
 ```javascript
 client.getCurrentTenant(function(err, tenant) {
-  if (err) throw err;
+
 
   console.log(tenant);
 });
@@ -822,7 +822,7 @@ linked resources in the same request:
 
 ```javascript
 client.getCurrentTenant({expand:'applications'}, function(err, tenant) {
-  if (err) throw err;
+
 
   console.log(tenant);
 });
@@ -883,13 +883,13 @@ If you want to retrieve *all* of your tenant's directories:
 
 ```javascript
 client.getDirectories(function(err, directories) {
-  if (err) throw err;
+
 
   directories.each(function(dir, callback) {
     console.log(dir);
     callback();
   }, function(err) {
-    if (err) throw err;
+
   });
 });
 ```
@@ -905,13 +905,13 @@ query parameters:
 
 ```javascript
 client.getDirectories({name: '*foo*'}, function(err, directories) {
-  if (err) throw err;
+
 
   directories.each(function(dir, callback) {
     console.log(dir);
     callback();
   }, function(err) {
-    if (err) throw err;
+
   });
 });
 ```
@@ -974,7 +974,7 @@ For a `directoryHref` that you know represents a directory:
 
 ```javascript
 client.getDirectory(href, function(err, dir) {
-  if (err) throw err;
+
 
   console.log(dir);
 });
@@ -985,7 +985,7 @@ You can specify query parameters as the **options** argument, for example, for
 
 ```javascript
 client.getDirectory(href, {expand: 'accounts'}, function(err, dir) {
-  if (err) throw err;
+
 
   console.log(dir);
 });
@@ -1051,7 +1051,7 @@ For a `groupHref` that you know represents a group:
 
 ```javascript
 client.getGroup(href, function(err, group) {
-  if (err) throw err;
+
 
   console.log(group);
 });
@@ -1062,7 +1062,7 @@ You can specify query parameters as the **options** argument, for example, for
 
 ```javascript
 client.group(href, {expand: 'accounts'}, function(err, group) {
-  if (err) throw err;
+
 
   console.log(group);
 });
@@ -1128,7 +1128,7 @@ For an `href` that you know represents a GroupMembership:
 
 ```javascript
 client.getGroupMembership(href, function(err, membership) {
-  if (err) throw err;
+
 
   console.log(membership);
 });
@@ -1139,7 +1139,7 @@ You can specify query parameters as the **options** argument, for example, for
 
 ```javascript
 client.getGroupMembership(href, {expand: 'account,group'}, function(err, membership) {
-  if (err) throw err;
+
 
   console.log(membership);
 });

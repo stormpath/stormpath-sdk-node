@@ -23,7 +23,7 @@ Create a new Application with its own private Directory so you can start adding 
 var app = {name: 'My Awesome App', description: 'Srsly. Awesome.'};
 
 tenant.createApplication(app, {createDirectory:true}, function(err, createdApplication) {
-    if (err) throw err;
+
     console.log(createdApplication);
 });
 ```
@@ -33,7 +33,7 @@ Create a new Application without any mapped user account stores.  You are respon
 var app = {name: 'My Awesome App', description: 'Srsly. Awesome.'};
 
 tenant.createApplication(app, function(err, createdApplication) {
-    if (err) throw err;
+
     console.log(createdApplication);
 });
 ```
@@ -88,7 +88,7 @@ Creates a new [Directory](directory) within the tenant.
 var app = {name: 'Employees Directory', description: 'Only Employee accounts in here please.'};
 
 tenant.createApplication(app, function(err, createdApplication) {
-    if (err) throw err;
+
     console.log(createdApplication);
 });
 ```
@@ -145,7 +145,7 @@ If you want to retrieve _all_ of the tenant's applications:
 
 ```javascript
 tenant.getApplications(function(err, applications) {
-    if (err) throw err;
+
 
     applications.each(function(err, app, offset) {
       console.log('Offset ' + offset + ', application: ' + app);
@@ -158,7 +158,7 @@ If you don't want all applications, and only want specific ones, you can search 
 
 ```javascript
 tenant.getApplications({name: '*Awesome*'}, function(err, applications) {
-    if (err) throw err;
+
 
     applications.each(function(err, app) {
       console.log(app);
@@ -213,7 +213,7 @@ If you want to retrieve _all_ of the tenant's directories:
 
 ```javascript
 tenant.getDirectories(function(err, directories) {
-    if (err) throw err;
+
 
     directories.each(function(err, dir, offset) {
       console.log('Offset ' + offset + ', dir: ' + dir);
@@ -226,7 +226,7 @@ If you don't want all directories, and only want specific ones, you can search f
 
 ```javascript
 tenant.getDirectories({name: '*foo*'}, function(err, directories) {
-    if (err) throw err;
+
 
     directories.each(function(err, dir) {
       console.log(dir);
@@ -282,7 +282,7 @@ Obtain the email verification token from a request and specify that as the `toke
 var token = request.query.sptoken;
 
 tenant.verifyAccountEmail(token, function(err, verifiedAccount) {
-  if (err) throw err;
+
 
   console.log(verifiedAccount);
 });

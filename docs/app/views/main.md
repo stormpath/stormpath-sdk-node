@@ -54,11 +54,10 @@ You can do this easily in one of two ways:
   // disk:
   var client;
 
-  stormpath.loadApiKey(apiKeyFilePath, function(err, apiKey) {
-    if (err) throw err;
-    client = new stormpath.Client({apiKey: apiKey});
-  });
-  ```
+    stormpath.loadApiKey(apiKeyFilePath, function apiKeyFileLoaded(err, apiKey) {
+      client = new stormpath.Client({apiKey: apiKey});
+    });
+    ```
 
 * Create an ApiKey object manually:
 
@@ -83,17 +82,16 @@ In order to get a list of all your Stormpath [Applications][] and
 
 ```javascript
 client.getApplications(function(err, apps) {
-  if (err) throw err;
 
-  apps.each(function(app, callback) {
-    console.log(app);
-    callback();
+
+  apps.each(function(err, app, offset) { //offset is an optional argument
+    console.log(offset + ": " + app);
   });
 });
 
 
 client.getDirectories({expand: 'groups'}, function(err, dirs) {
-  if (err) throw err;
+
 
   dirs.each(function(dir, callback) {
     console.log(dir);
@@ -148,10 +146,8 @@ var app = {
   description: "No, Srsly. It's Awesome."
 };
 
-client.createApplication(app, {createDirectory: true}, function(err, newApp) {
-  if (err) throw err;
-
-  console.log(newApp);
+client.createApplication(app, {createDirectory:true}, function onAppCreated(err, createdApp) {
+  console.log(createdApp);
 });
 ```
 
@@ -168,10 +164,8 @@ var app = {
   description: 'The coolest app ever made.'
 };
 
-client.createApplication(app, function(err, newApp) {
-  if (err) throw err;
-
-  console.log(newApp);
+client.createApplication(app, function onAppCreated(err, createdApp) {
+  console.log(createdApp);
 });
 ```
 
@@ -190,10 +184,8 @@ var account = {
   password: 'Changeme1!'
 };
 
-app.createAccount(account, function(err, newAccount) {
-  if (err) throw err;
-
-  console.log(newAccount);
+createdApp.createAccount(account, function onAccountCreated(err, createdAccount) {
+  console.log(createdAccount);
 });
 ```
 
@@ -204,11 +196,9 @@ You can update an Account object by modifying the fields you want to change,
 then calling the `save` method:
 
 ```javascript
-account.middleName = 'Make it so.';
-account.save(function(err, updatedAccount) {
-  if (err) throw err;
-
-  console.log(updatedAccount);
+createdAccount.middleName = 'Make it so.';
+createdAccount.save(function onSave(err, savedAccount) {
+  console.log(savedAccount);
 });
 ```
 
@@ -226,12 +216,12 @@ var credentials = {
   password: 'Changeme1!'
 };
 
-app.authenticateAccount(credentials, function(err, result) {
-  if (err) throw err;
+createdApp.authenticateAccount(authcRequest, function onAuthcResult(err, result) {
 
-  // If successful, you can obtain the Account by doing the following:
-  result.getAccount(function(err, account) {
-    if (err) throw err;
+  //if successful, you can obtain the account by calling result.getAccount:
+
+  return result.getAccount(function(err2, account) { //this is cached and will execute immediately (no server request):
+    if(err) throw err;
     console.log(account);
   });
 });
@@ -249,9 +239,7 @@ If one of your end-users forgets their password, you can trigger the
 ```javascript
 var emailOrUsername = 'jlpicard';
 
-app.sendPasswordResetEmail(emailOrUsername, function(err, token) {
-  if (err) throw err;
-
+createdApp.sendPasswordResetEmail(emailOrUsername, function onEmailSent(err, token) {
   console.log(token);
 });
 ```
@@ -272,10 +260,8 @@ Creating a new Group is easy:
 ```javascript
 var group = {name: 'Administrators'};
 
-app.createGroup(group, function(err, newGroup) {
-  if (err) throw err;
-
-  console.log(newGroup);
+createdApp.createGroup(group, onGroupCreation(err, createdGroup) {
+  console.log(createdGroup);
 });
 ```
 
@@ -286,15 +272,19 @@ You can do easily assign a Group to an Account in two ways: by interacting with
 the Account, or by interacting with the Group:
 
 ```javascript
-account.addToGroup(groupOrGroupHref, function(err, membership) {
-  if (err) throw err;
+//via the account
+//groupOrGroupHref may be the actual group or the group's href:
+account.addToGroup(groupOrGroupHref, onMembershipCreated(err, membership) {
+
+  //membership is a GroupMembership resource that represents the pairing of the group to the account:
 
   console.log(membership);
 });
 
-group.addAccount(accountOrAccountHref, function(err, membership) {
-  if (err) throw err;
+//via the group:
+group.addAccount(accountOrAccountHref, onMembershipCreated(err, membership) {
 
+  //membership is a GroupMembership resource that represents the pairing of the group to the account:
   console.log(membership);
 });
 ```
@@ -313,10 +303,9 @@ control.  For example, you might want to see if an Account is in the
 You can do this by iterating over an Account's groups like so:
 
 ```javascript
-account.getGroups(function(err, groups) {
-  if (err) throw err;
+account.getGroups(function onGroups(err, groups) {
 
-  groups.each(function(group, callback) {
+  groups.each(function(err, group) {
     if (group.name === 'Administrators') {
       console.log('We have an administrator!');
     }

@@ -30,7 +30,7 @@ var account = {
 };
 
 directory.createAccount(account, function onAccountCreated(err, createdAccount) {
-  if (err) throw err;
+
   console.log(createdAccount);
 });
 ```
@@ -55,7 +55,7 @@ Whenever you create an `account`, an empty `customData` resource is created
  };
 
  directory.createAccount(account, function onAccountCreated(err, createdAccount) {
-   if (err) throw err;
+
    console.log(createdAccount);
  });
 ```
@@ -68,7 +68,7 @@ You can also specify options to control creation behavior and things like refere
 var options = {registrationWorkflowEnabled: false};
 
 directory.createAccount(account, options, function onAccountCreated(err, createdAccount) {
-  if (err) throw err;
+
   console.log(createdAccount);
 });
 ```
@@ -125,7 +125,7 @@ Example:
 var group = {name: 'Administrators'}
 
 directory.createGroup(group, onGroupCreation(err, createdGroup) {
-  if (err) throw err;
+
   console.log(createdGroup);
 });
 ```
@@ -134,7 +134,7 @@ You can also specify options to control things like reference expansion:
 
 ```javascript
 directory.createGroup(group, {expand:'directory'}, function onAccountCreated(err, createdGroup) {
-  if (err) throw err;
+
   console.log(createdGroup);
 });
 ```
@@ -191,7 +191,7 @@ If you want to retrieve _all_ of the directory's accounts:
 
 ```javascript
 directory.getAccounts(function(err, accounts) {
-    if (err) throw err;
+
 
     accounts.each(function(err, account, offset) {
       console.log('Offset ' + offset + ', account: ' + account);
@@ -204,7 +204,7 @@ If you don't want all accounts, and only want specific ones, you can search for 
 
 ```javascript
 directory.getAccounts({username: '*foo*'}, function(err, accounts) {
-    if (err) throw err;
+
 
     accounts.each(function(err, account) {
       console.log(account);
@@ -259,7 +259,7 @@ If you want to retrieve _all_ of the directory's groups:
 
 ```javascript
 directory.getGroups(function(err, groups) {
-    if (err) throw err;
+
 
     groups.each(function(err, group, offset) {
       console.log('Offset ' + offset + ', group: ' + group);
@@ -272,7 +272,7 @@ If you don't want all groups, and only want specific ones, you can search for th
 
 ```javascript
 directory.getGroups({name: '*bar*'}, function(err, groups) {
-    if (err) throw err;
+
 
     groups.each(function(err, group) {
       console.log(group);
@@ -323,14 +323,14 @@ Retrieves the directory's owning [Tenant](tenant) and provides it to the specifi
 
 ```javascript
 directory.getTenant(function(err, tenant) {
-    if (err) throw err;
+
     console.log(tenant);
 });
 ```
 You can also use [resource expansion](http://docs.stormpath.com/rest/product-guide/#link-expansion) options (query params) to obtain linked resources in the same request:
 ```javascript
 directory.getTenant({expand:'applications'}, function(err, tenant) {
-    if (err) throw err;
+
     console.log(tenant);
 });
 ```
@@ -378,7 +378,7 @@ If `provider` not set, `callback` will be called without parameters.
 
 ```javascript
 directory.getProvider(function(err, provider) {
-    if (err) throw err;
+
     console.log(provider);
 });
 ```

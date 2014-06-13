@@ -31,7 +31,7 @@ You may specify an account directly:
 
 ```javascript
 group.addAccount(account, function onMembershipCreated(err, membership) {
-  if (err) throw err;
+
   console.log(membership);
 };
 ```
@@ -39,7 +39,7 @@ Or just an account's `href`:
 
 ```javascript
 group.addAccount(accountHref, function onMembershipCreated(err, membership) {
-  if (err) throw err;
+
   console.log(membership);
 };
 ```
@@ -98,7 +98,7 @@ If you want to retrieve _all_ of the group's accounts:
 
 ```javascript
 group.getAccounts(function(err, accounts) {
-    if (err) throw err;
+
 
     accounts.each(function(err, account, offset) {
       console.log('Offset ' + offset + ', account: ' + account);
@@ -111,7 +111,7 @@ If you don't want all accounts, and only want specific ones, you can search for 
 
 ```javascript
 group.getAccounts({username: '*foo*'}, function(err, accounts) {
-    if (err) throw err;
+
 
     accounts.each(function(err, account) {
       console.log(account);
@@ -166,7 +166,7 @@ If you want to retrieve all of the group's memberships/associations:
 
 ```javascript
 group.getAccountMemberships(function(err, memberships) {
-    if (err) throw err;
+
 
     memberships.each(function(err, membership, offset) {
       console.log('Offset ' + offset + ', membership: ' + membership);
@@ -179,7 +179,7 @@ If you want the returned memberships to have their accounts expanded (so you can
 
 ```javascript
 group.getAccountMemberships({expand: 'account'}, function(err, memberships) {
-    if (err) throw err;
+
 
     memberships.each(function(err, membership) {
       console.log(membership);
@@ -232,14 +232,14 @@ Retrieves the group's parent [Directory](directory) and provides it to the speci
 
 ```javascript
 group.getDirectory(function(err, directory) {
-    if (err) throw err;
+
     console.log(directory);
 });
 ```
 You can also use [resource expansion](http://docs.stormpath.com/rest/product-guide/#link-expansion) options (query params) to obtain linked resources in the same request:
 ```javascript
 group.getDirectory({expand:'accounts'}, function(err, directory) {
-    if (err) throw err;
+
     console.log(directory);
 });
 ```
@@ -286,14 +286,14 @@ Retrieves the group's owning [Tenant](tenant) and provides it to the specified `
 
 ```javascript
 group.getTenant(function(err, tenant) {
-    if (err) throw err;
+
     console.log(tenant);
 });
 ```
 You can also use [resource expansion](http://docs.stormpath.com/rest/product-guide/#link-expansion) options (query params) to obtain linked resources in the same request:
 ```javascript
 group.getTenant({expand:'applications'}, function(err, tenant) {
-    if (err) throw err;
+
     console.log(tenant);
 });
 ```
@@ -343,7 +343,7 @@ For an `href` that you know represents an account:
 
 ```javascript
 group.getCustomData(function(err, customData) {
-    if (err) throw err;
+
     console.log(customData);
 });
 ```
