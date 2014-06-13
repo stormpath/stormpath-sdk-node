@@ -4,12 +4,13 @@ var assert = common.assert;
 
 var AuthenticationResult = require('../../lib/resource/AuthenticationResult');
 var OauthAccessTokenResult = require('../../lib/resource/OauthAccessTokenResult');
-
+var OauthAuthenticationResult = require('../../lib/resource/OauthAuthenticationResult');
 describe('Application',function(){
 
-  var app, account, apiKey;
+  var app, account, apiKey, client;
   before(function(done){
-    helpers.getClient(function(client){
+    helpers.getClient(function(_client){
+      client = _client;
       client.createApplication(
         {name: helpers.uniqId()},
         {createDirectory:true},
@@ -114,15 +115,75 @@ describe('Application',function(){
           });
         });
 
+        describe('the authentication result',function(){
+          it('should not err',function(){
+            assert.equal(result[0],null);
+          });
+
+          it('should return an instance of OauthAccessTokenResult',function(){
+            assert.instanceOf(result[1],OauthAccessTokenResult);
+          });
+        });
+
+      });
+
+  });
+
+  describe('with a previously issued access token',function(){
+    var accessToken;
+    before(function(){
+      // manually generate an access token
+      var oauthAccessTokenResult = new OauthAccessTokenResult(apiKey,client._dataStore);
+      oauthAccessTokenResult.setApplicationHref(app.href);
+      accessToken = oauthAccessTokenResult.getTokenResponse().access_token;
+    });
+    describe('via Bearer authorization',function(){
+      describe('and access_token is passed verbatim',function(){
+        var result;
+        before(function(done){
+          var requestObject = {
+            headers: {
+              'authorization': 'Bearer ' + accessToken
+            },
+            url: '/some/resource'
+          };
+          app.authenticateApiRequest(requestObject,function(err,value){
+            result = [err,value];
+            done();
+          });
+        });
         it('should not err',function(){
           assert.equal(result[0],null);
         });
 
-        it('should return an instance of OauthAccessTokenResult',function(){
-          assert.instanceOf(result[1],OauthAccessTokenResult);
+        it('should return an instance of OauthAuthenticationResult',function(){
+          assert.instanceOf(result[1],OauthAuthenticationResult);
+        });
+      });
+      describe('and access_token is tampered with',function(){
+        var result;
+        before(function(done){
+          var tamperedToken = accessToken.replace(/e/,'b');
+          var requestObject = {
+            headers: {
+              'authorization': 'Bearer ' + tamperedToken
+            },
+            url: '/some/resource'
+          };
+          app.authenticateApiRequest(requestObject,function(err,value){
+            result = [err,value];
+            done();
+          });
+        });
+        it('should err',function(){
+          assert.instanceOf(result[0],Error);
         });
 
+        it('should not return an instance of AuthenticationResult',function(){
+          assert.isUndefined(result[1]);
+        });
       });
+    });
 
   });
 
