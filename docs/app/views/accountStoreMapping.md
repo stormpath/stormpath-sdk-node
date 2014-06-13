@@ -1,6 +1,6 @@
 ## Account Store Mapping
 
-*Account Store* is a generic term for either a [Directory](directory) or a [Group](group). 
+*Account Store* is a generic term for either a [Directory](directory) or a [Group](group).
 `Directories` and `Groups` are both are considered *`account stores`* because they both contain, or store,
  `Accounts`. An `Account Store Mapping`, then, represents an `Account Store` mapped (assigned) to an `Application`.
 
@@ -60,7 +60,7 @@ accountStoreMapping.getApplication({expand: 'accounts'}, function(err, app){
 
 #### Returns
 
-void; 
+void;
 If the request fails, the callback's first parameter (`err`) will report the failure.
 If the request succeeds, the instance of  [Application](application) will be provided to the `callback` as the callback's second parameter.
 
@@ -151,9 +151,9 @@ accountStoreMapping.getAccountStore({expand: 'accounts'}, function(err, store){
 
 #### Returns
 
-void; 
+void;
 If the request fails, the callback's first parameter (`err`) will report the failure.
-If the request succeeds, the instance of [Directory](directory) or [Group](group) will 
+If the request succeeds, the instance of [Directory](directory) or [Group](group) will
  be provided to the `callback` as the callback's second parameter.
 
 ---
@@ -161,7 +161,7 @@ If the request succeeds, the instance of [Directory](directory) or [Group](group
 <a name="setAccountStore"></a>
 ### <span class="member">method</span> setAccountStore(accountStore)
 
-Sets `AccountStore` (`Group` or `Directory`) provided in params as `Account Store Mapping` 
+Sets `AccountStore` (`Group` or `Directory`) provided in params as `Account Store Mapping`
  *account store*.
 **This method doesn't generate a request to update `Account Store Mapping`.**
 
