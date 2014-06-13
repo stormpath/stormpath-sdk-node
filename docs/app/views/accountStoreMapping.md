@@ -1,20 +1,26 @@
 ## Account Store Mapping
 
-*Account Store* is a generic term for either a [Directory](directory) or a [Group](group).
-`Directories` and `Groups` are both are considered *`account stores`* because they both contain, or store,
- `Accounts`. An `Account Store Mapping`, then, represents an `Account Store` mapped (assigned) to an `Application`.
+"Account Store" is a generic term for either a [Directory](directory) or a
+[Group](group).  Directories and Groups are both are considered "account
+stores" because they both contain, or store, Accounts.  An "Account Store
+Mapping", then, represents an Account Store mapped (*assigned*) to an
+Application.
 
-In Stormpath, you control who may login to an `application` by associating (or ‘mapping’) one or more
- `account stores` to an `application`. All of the `accounts` across all of an `application’s` assigned
- `account stores` form the application’s effective *user base*; those `accounts` may login to the `application`.
- If no `account stores` are assigned to an `application`, no `accounts` will be able to login to the `application`.
+In Stormpath, you control who may login to an Application by associating (*or
+mapping*) one or more account stores to an Application.  All of the Accounts
+across all of an application's assigned account stores form the application's
+effective *user base*: accounts which can log into the Application.  If no
+account stores are assigned to an Application, no accounts will be able to
+log into the Application.
 
-You control which `account stores` are assigned (mapped) to an `application`, and the order in which they
- are consulted during a `login attempt`, by manipulating an application’s `AccountStoreMapping` resources.
+You can control which account stores are assigned (*mapped*) to an Application,
+and the order in which they are consulted during a login attempt, by
+manipulating an application's AccountStoreMapping resources.
 
 **Since**: 0.1.2
 
 ---
+
 
 <a name="getApplication"></a>
 ### <span class="member">method</span> getApplication(*[options,]* callback)
