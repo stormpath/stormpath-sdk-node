@@ -115,37 +115,48 @@ via `membership.group` or `membership.account`, respectively.
 <a name="getGroups"></a>
 ### <span class="member">method</span> getGroups(*[options,]* callback)
 
-Retrieves a [collection](collectionResource) of the account's assigned [Group](group)s and provides the collection to the specified `callback`.
+Retrieves a [collection](collectionResource) of the account's assigned
+[Group](group)s and provides the collection to the specified `callback`.
 
-If no options are specified, all of the account's groups are retrieved.  If options (query parameters) are specified for a search, only those groups matching the search will be retrieved.  If the search does not return any results, the collection will be empty.
+If no options are specified, all of the account's groups are retrieved.  If
+options (*query parameters*) are specified for a search, only those groups
+matching the search will be retrieved.  If the search does not return any
+results, the collection will be empty.
+
 
 #### Usage
 
-If you want to retrieve _all_ of the account's groups:
+If you want to retrieve *all* of the account's groups:
 
 ```javascript
 account.getGroups(function(err, groups) {
-    if (err) throw err;
-
-    groups.each(function(err, group, offset) {
-      console.log('Offset ' + offset + ', group: ' + group);
-    });
+  groups.each(function(group) {
+    console.log(group);
+  });
 });
 ```
-As you can see, the [Collection](collectionResource) provided to the `callback` has an `each` function that accepts its own callback.  The collection will iterate over all of the groups in the collection, and invoke the callback for each one.  The `offset` parameter indicates the index of the group in the returned collection.  The `offset` parameter is optional - it may be omitted from the callback definition.
 
-If you don't want all groups, and only want specific ones, you can search for them by specifying the _options_ argument with [account group](http://docs.stormpath.com/rest/product-guide/#account-groups) search query parameters:
+As you can see, the [Collection](collectionResource) provided to the `callback`
+has an `each` function that accepts its own callback.  The collection will
+iterate over all of the groups in the collection, and invoke the callback for
+each one.
+
+If you don't want all groups, and only want specific ones, you can search for
+them by specifying the *options* argument with [account group][] search query
+parameters:
 
 ```javascript
-account.getGroups({name: '*bar*'}, function(err, accounts) {
-    if (err) throw err;
-
-    accounts.each(function(err, account) {
-      console.log(account);
-    });
+account.getGroups({name: '*bar*'}, function(err, groups) {
+  groups.each(function(account) {
+    console.log(account);
+  });
 });
 ```
-The above code example would only print out the account's groups with the text fragment `bar` in their name.  See the Stormpath REST API Guide's [account group documentation](http://docs.stormpath.com/rest/product-guide/#account-groups) for other supported query parameters, such as reference expansion.
+
+The above code example would only print out the account's groups with the text
+fragment `bar` in their name.  See the [account group documentation][] for
+other supported query parameters, such as reference expansion.
+
 
 #### Parameters
 
@@ -174,11 +185,14 @@ The above code example would only print out the account's groups with the text f
   </tbody>
 </table>
 
+
 #### Returns
 
-void; the retrieved collection of [Group](group)s will be provided to the `callback` as the callback's second parameter.
+The retrieved collection of [Group](group)s will be provided to the `callback`
+as the callback's second parameter.
 
 ---
+
 
 <a name="getGroupMemberships"></a>
 ### <span class="member">method</span> getGroupMemberships(*[options,]* callback)
@@ -464,3 +478,5 @@ void; the retrieved `ProviderData` resource will be provided to the `callback` a
 
 
   [mapping a Directory or Group]: http://docs.stormpath.com/rest/product-guide/#account-store-mappings "Stormpath Account Store Mappings"
+  [account group]: http://docs.stormpath.com/rest/product-guide/#account-groups "Stormpath Account Groups"
+  [account group documentation]: http://docs.stormpath.com/rest/product-guide/#account-groups "Stormpath Account Group Documentation"
