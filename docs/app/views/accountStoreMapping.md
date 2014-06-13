@@ -77,16 +77,19 @@ will be provided to the callback as the callback's second parameter.
 <a name="setApplication"></a>
 ### <span class="member">method</span> setApplication(application)
 
-Sets `Application` provided in params as `Account Store Mapping` application.
+Sets Application as the Account Store Mapping's Application.
 **This method doesn't generate a request to update `Account Store Mapping`.**
+
 
 #### Usage
 
-
 ```javascript
-var mapping = accountStoreMapping.setApplication(application);
-mapping.save(callback)
+accountStoreMapping.setApplication(application);
+accountStoreMapping.save(function(err, mapping) {
+  console.log(mapping);
+});
 ```
+
 
 #### Parameters
 
@@ -109,11 +112,8 @@ mapping.save(callback)
   </tbody>
 </table>
 
-#### Returns
-
-Instance of `AccountStoreMapping`.
-
 ---
+
 
 <a name="getAccountStore"></a>
 ### <span class="member">method</span> getAccountStore(*[options,]* callback)
