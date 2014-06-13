@@ -277,23 +277,27 @@ callback's second parameter.
 <a name="getDirectory"></a>
 ### <span class="member">method</span> getDirectory(*[options,]* callback)
 
-Retrieves the account's parent [Directory](directory) and provides it to the specified `callback`.
+Retrieves the account's parent [Directory](directory) and provides it to the
+specified `callback`.
+
 
 #### Usage
 
 ```javascript
 account.getDirectory(function(err, directory) {
-    if (err) throw err;
-    console.log(directory);
+  console.log(directory);
 });
 ```
-You can also use [resource expansion](http://docs.stormpath.com/rest/product-guide/#link-expansion) options (query params) to obtain linked resources in the same request:
+
+You can also use [resource expansion][] options (*query params*) to obtain
+linked resources in the same request:
+
 ```javascript
 account.getDirectory({expand:'groups'}, function(err, directory) {
-    if (err) throw err;
-    console.log(directory);
+  console.log(directory);
 });
 ```
+
 
 #### Parameters
 
@@ -322,32 +326,42 @@ account.getDirectory({expand:'groups'}, function(err, directory) {
   </tbody>
 </table>
 
+
 #### Returns
 
-void; the retrieved [Directory](directory) resource will be provided to the `callback` as the callback's second parameter.
+The retrieved [Directory](directory) resource will be provided to the `callback`
+as the callback's second parameter.
 
 ---
+
 
 <a name="getTenant"></a>
 ### <span class="member">method</span> getTenant(*[options,]* callback)
 
-Retrieves the account's owning [Tenant](tenant) and provides it to the specified `callback`.
+Retrieves the account's owning [Tenant](tenant) and provides it to the
+specified `callback`.
+
 
 #### Usage
 
 ```javascript
 account.getTenant(function(err, tenant) {
-    if (err) throw err;
-    console.log(tenant);
+  console.log(tenant);
 });
 ```
-You can also use [resource expansion](http://docs.stormpath.com/rest/product-guide/#link-expansion) options (query params) to obtain linked resources in the same request:
+
+You can also use [resource expansion][] options (*query params*) to obtain
+linked resources in the same request:
+
 ```javascript
 account.getTenant({expand:'applications'}, function(err, tenant) {
-    if (err) throw err;
-    console.log(tenant);
+  console.log(tenant);
+  tenant.applications.each(function(application) {
+    console.log(application);
+  });
 });
 ```
+
 
 #### Parameters
 
@@ -376,11 +390,14 @@ account.getTenant({expand:'applications'}, function(err, tenant) {
   </tbody>
 </table>
 
+
 #### Returns
 
-void; the retrieved `Tenant` resource will be provided to the `callback` as the callback's second parameter.
+The retrieved `Tenant` resource will be provided to the `callback` as the
+callback's second parameter.
 
 ---
+
 
 <a name="getCustomData"></a>
 ### <span class="member">method</span> getCustomData(*[options,]* callback)
@@ -490,3 +507,4 @@ void; the retrieved `ProviderData` resource will be provided to the `callback` a
   [mapping a Directory or Group]: http://docs.stormpath.com/rest/product-guide/#account-store-mappings "Stormpath Account Store Mappings"
   [account group]: http://docs.stormpath.com/rest/product-guide/#account-groups "Stormpath Account Groups"
   [account group documentation]: http://docs.stormpath.com/rest/product-guide/#account-groups "Stormpath Account Group Documentation"
+  [resource expansion]: http://docs.stormpath.com/rest/product-guide/#link-expansion "Stormpath Resource Expansion"
