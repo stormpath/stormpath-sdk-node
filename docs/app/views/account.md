@@ -98,9 +98,9 @@ If you want to retrieve _all_ of the account's groups:
 
 ```javascript
 account.getGroups(function(err, groups) {
-    groups.each(function(err, group, offset) {
-      console.log('Offset ' + offset + ', group: ' + group);
-    });
+  groups.each(function(err, group, offset) {
+    console.log('Offset ' + offset + ', group: ' + group);
+  });
 });
 ```
 As you can see, the [Collection](collectionResource) provided to the `callback` has an `each` function that accepts its own callback.  The collection will iterate over all of the groups in the collection, and invoke the callback for each one.  The `offset` parameter indicates the index of the group in the returned collection.  The `offset` parameter is optional - it may be omitted from the callback definition.
@@ -109,9 +109,9 @@ If you don't want all groups, and only want specific ones, you can search for th
 
 ```javascript
 account.getGroups({name: '*bar*'}, function(err, accounts) {
-    accounts.each(function(err, account) {
-      console.log(account);
-    });
+  accounts.each(function(err, account) {
+    console.log(account);
+  });
 });
 ```
 The above code example would only print out the account's groups with the text fragment `bar` in their name.  See the Stormpath REST API Guide's [account group documentation](http://docs.stormpath.com/rest/product-guide/#account-groups) for other supported query parameters, such as reference expansion.
@@ -162,9 +162,9 @@ If you want to retrieve all of the group's memberships/associations:
 
 ```javascript
 account.getGroupMemberships(function(err, memberships) {
-    memberships.each(function(err, membership, offset) {
-      console.log('Offset ' + offset + ', membership: ' + membership);
-    });
+  memberships.each(function(err, membership, offset) {
+    console.log('Offset ' + offset + ', membership: ' + membership);
+  });
 });
 ```
 As you can see, the [Collection](collectionResource) provided to the `callback` has an `each` function that accepts its own callback.  The collection will iterate over all of the memberships in the collection, and invoke the callback for each one.  The `offset` parameter indicates the index of the membership in the returned collection.  The `offset` parameter is optional - it may be omitted from the callback definition.
@@ -173,12 +173,12 @@ If you want the returned memberships to have their groups expanded (so you can a
 
 ```javascript
 account.getGroupMemberships({expand: 'group'}, function(err, memberships) {
-    memberships.each(function(err, membership) {
-      console.log(membership);
+  memberships.each(function(err, membership) {
+    console.log(membership);
 
-      //the membership's 'group' property will be available immediately:
-      console.log(membership.group);
-    });
+    //the membership's 'group' property will be available immediately:
+    console.log(membership.group);
+  });
 });
 ```
 
@@ -224,13 +224,13 @@ Retrieves the account's parent [Directory](directory) and provides it to the spe
 
 ```javascript
 account.getDirectory(function(err, directory) {
-    console.log(directory);
+  console.log(directory);
 });
 ```
 You can also use [resource expansion](http://docs.stormpath.com/rest/product-guide/#link-expansion) options (query params) to obtain linked resources in the same request:
 ```javascript
 account.getDirectory({expand:'groups'}, function(err, directory) {
-    console.log(directory);
+  console.log(directory);
 });
 ```
 
@@ -276,13 +276,13 @@ Retrieves the account's owning [Tenant](tenant) and provides it to the specified
 
 ```javascript
 account.getTenant(function(err, tenant) {
-    console.log(tenant);
+  console.log(tenant);
 });
 ```
 You can also use [resource expansion](http://docs.stormpath.com/rest/product-guide/#link-expansion) options (query params) to obtain linked resources in the same request:
 ```javascript
 account.getTenant({expand:'applications'}, function(err, tenant) {
-    console.log(tenant);
+  console.log(tenant);
 });
 ```
 
@@ -331,7 +331,7 @@ For an `href` that you know represents an account:
 
 ```javascript
 account.getCustomData(function(err, customData) {
-    console.log(customData);
+  console.log(customData);
 });
 ```
 
@@ -381,7 +381,7 @@ If `providerData` not set, `callback` will be called without parameters
 
 ```javascript
 account.getProviderData(function(err, providerData) {
-    console.log(providerData);
+  console.log(providerData);
 });
 ```
 

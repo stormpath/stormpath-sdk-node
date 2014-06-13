@@ -99,7 +99,7 @@ function iterator(application, cb){
 }
 
 applications.each(iterator, function(err){
-    // if any of the iterator calls produced an error, err would equal that error
+  // if any of the iterator calls produced an error, err would equal that error
 });
 ```
 
@@ -170,12 +170,12 @@ Iterates (with automatic pagination - see above) over all resources within the c
 // assuming applications is a collection resource
 
 function processApplication(application, cb){
-    //do some work with application
-    cb();
+  //do some work with application
+  cb();
 }
 
 async.eachLimit(20, processApplication, function(err){
-    // if any of the saves produced an error, err would equal that error
+  // if any of the saves produced an error, err would equal that error
 });
 ```
 
@@ -242,11 +242,11 @@ Iterates (with automatic pagination - see above) over all resources within the c
 // assuming applications is a collection resource
 
 function pluckAppName(application, cb){
-    cb(null, application.name);
+  cb(null, application.name);
 }
 
 applications.map(pluckAppName, function(err, results){
-    // results is now an array of name for each application
+  // results is now an array of name for each application
 });
 ```
 
@@ -314,11 +314,11 @@ Iterates (with automatic pagination - see above) over all resources within the c
 // assuming applications is a collection resource
 
 function pluckAppName(application, cb){
-    cb(null, application.name);
+  cb(null, application.name);
 }
 
 applications.map(pluckAppName, function(err, results){
-    // results is now an array of name for each application
+  // results is now an array of name for each application
 });
 ```
 
@@ -385,11 +385,11 @@ Iterates (with automatic pagination - see above) over all resources within the c
 // assuming applications is a collection resource
 
 function isAppContainsTest (application, cb){
-    cb(/test/.test(application.name));
+  cb(/test/.test(application.name));
 }
 
 applications.filter(isAppContainsTest, function(results){
-    // results now equals an array of the existing files
+  // results now equals an array of the existing files
 });
 ```
 
@@ -481,12 +481,12 @@ Iterates (with automatic pagination - see above) over all resources within the c
 // assuming applications is a collection resource
 
 applications.reduce(0, function(memo, item, callback){
-    // pointless async:
-    process.nextTick(function(){
-        callback(null, memo++)
-    });
+  // pointless async:
+  process.nextTick(function(){
+      callback(null, memo++)
+  });
 }, function(err, result){
-    // result is now equal to the last value of memo, which is count of applications
+  // result is now equal to the last value of memo, which is count of applications
 });
 ```
 
@@ -569,7 +569,7 @@ function isAppNameInLowerCase(application, cb){
 }
 
 applications.detect(isAppNameInLowerCase, function(result){
-    // result now equals the first application in the list that has name in lower case
+  // result now equals the first application in the list that has name in lower case
 });
 ```
 
@@ -634,10 +634,10 @@ Iterates (with automatic pagination - see above) over all resources within the c
 // assuming applications is a collection resource
 
 applications.sortBy(function(application, callback){
-    callback(null, application.name);
+  callback(null, application.name);
 }, function(err, results){
-    // results is now the array of application sorted by
-    // application name
+  // results is now the array of application sorted by
+  // application name
 });
 ```
 
@@ -648,16 +648,16 @@ By modifying the callback parameter the sorting order can be influenced:
 ```javascript
 //case insensitive order
 applications.sortBy(function(application, callback){
-    callback(err, application.name.toLowerCase());
+  callback(err, application.name.toLowerCase());
 }, function(err,result){
-    //result callback
+  //result callback
 } );
 
 //case sensitive order
 applications.sortBy(function(application, callback){
     callback(null, application.name);
 }, function(err,result){
-    //result callback
+  //result callback
 } );
 ```
 
@@ -716,11 +716,11 @@ Iterates (with automatic pagination - see above) over all resources within the c
 // assuming applications is a collection resource
 
 function isAppNameHasTest(application, cb){
-    cb(/test/.test(application.name));
+  cb(/test/.test(application.name));
 }
 
 applications.some(isAppNameHasTest, function(result){
-    // if result is true then at least one of the files exists
+  // if result is true then at least one of the files exists
 });
 ```
 
@@ -777,11 +777,11 @@ Iterates (with automatic pagination - see above) over all resources within the c
 // assuming applications is a collection resource
 
 function isAppNameHasSecure(application, cb){
-    cb(/secure/.test(application.description);
+  cb(/secure/.test(application.description);
 }
 
 applications.every(isAppNameHasSecure, function(result){
-    // if result is true then every application has 'secure' word in description
+  // if result is true then every application has 'secure' word in description
 });
 ```
 
@@ -836,11 +836,11 @@ Iterates (with automatic pagination - see above) over all resources within the c
 // assuming applications is a collection resource
 
 function pluckAppNameAndHref(application, cb){
-    cb(null, {href: application.href, name: application.name});
+  cb(null, {href: application.href, name: application.name});
 }
 
 applications.concat(pluckAppNameAndHref, function(err, apps){
-    // apps is now a list of app names and hrefs
+  // apps is now a list of app names and hrefs
 });
 ```
 

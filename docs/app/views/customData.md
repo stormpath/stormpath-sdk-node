@@ -11,11 +11,11 @@ Custom data can also be expanded and retrieved by specifying the `expand` option
 ```javascript
 
 application.getAccounts()
-    .search({email: "some@email.com"})
-    .expand({customData: true})
-    .exec(function(err, accounts){
-      // accounts with custom data
-    });
+  .search({email: "some@email.com"})
+  .expand({customData: true})
+  .exec(function(err, accounts){
+    // accounts with custom data
+  });
 
 ```
 
@@ -34,12 +34,12 @@ Calling this method retrieves `CustomData` resource.
 
 //Account
 account.customData.get(function(err, customData){
-    // customData
+  // customData
 });
 
 //Group
 group.customData.get(function(err, customData){
-    // customData
+  // customData
 });
 
 ```
@@ -112,7 +112,7 @@ account.customData.remove('address1');
 
 //Group
 group.customData.remove('old_image_url')
-    .remove('old_profile_id');
+  .remove('old_profile_id');
 
 ```
 
@@ -140,12 +140,12 @@ Calling this method updates `CustomData` resource directly.
 
 //Account
 account.customData.save(function(err, customData){
-    // customData
+  // customData
 });
 
 //Group
 group.customData.save(function(err, customData){
-    // customData
+  // customData
 });
 
 ```

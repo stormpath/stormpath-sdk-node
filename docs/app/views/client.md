@@ -424,7 +424,7 @@ var app = {
 };
 
 client.createApplication(app, {createDirectory: true}, function(err, newApp) {
-    console.log(newApp);
+  console.log(newApp);
 });
 ```
 
@@ -440,7 +440,7 @@ var app = {
 };
 
 client.createApplication(app, function(err, newApp) {
-    console.log(newApp);
+  console.log(newApp);
 });
 ```
 
@@ -500,7 +500,7 @@ var dir = {
 };
 
 client.createDirectory(dir, function(err, newDir) {
-    console.log(newDir);
+  console.log(newDir);
 });
 ```
 
@@ -863,7 +863,6 @@ If you want to retrieve *all* of your tenant's directories:
 
 ```javascript
 client.getDirectories(function(err, directories) {
-
 
   directories.each(function(dir, callback) {
     console.log(dir);
