@@ -197,9 +197,14 @@ as the callback's second parameter.
 <a name="getGroupMemberships"></a>
 ### <span class="member">method</span> getGroupMemberships(*[options,]* callback)
 
-Retrieves a [collection](collectionResource) of the account's [GroupMembership](groupMembership)s and provides the collection to the specified `callback`.
+Retrieves a [collection](collectionResource) of the account's
+[GroupMembership](groupMembership)s and provides the collection to the
+specified `callback`.
 
-If no options are specified, all of the account's groupMemberships are retrieved.  If options (query parameters) are specified for expansion, the returned memberships will have references expanded as necessary.
+If no options are specified, all of the account's groupMemberships are
+retrieved.  If options (*query parameters*) are specified for expansion, the
+returned memberships will have references expanded as necessary.
+
 
 #### Usage
 
@@ -207,29 +212,30 @@ If you want to retrieve all of the group's memberships/associations:
 
 ```javascript
 account.getGroupMemberships(function(err, memberships) {
-    if (err) throw err;
-
-    memberships.each(function(err, membership, offset) {
-      console.log('Offset ' + offset + ', membership: ' + membership);
-    });
+  memberships.each(function(membership) {
+    console.log(membership);
+  });
 });
 ```
-As you can see, the [Collection](collectionResource) provided to the `callback` has an `each` function that accepts its own callback.  The collection will iterate over all of the memberships in the collection, and invoke the callback for each one.  The `offset` parameter indicates the index of the membership in the returned collection.  The `offset` parameter is optional - it may be omitted from the callback definition.
 
-If you want the returned memberships to have their groups expanded (so you can access the membership and its associated group), you can specify an `expand` query parameter:
+As you can see, the [Collection](collectionResource) provided to the `callback`
+has an `each` function that accepts its own callback.  The collection will
+iterate over all of the memberships in the collection, and invoke the callback
+for each one.
+
+If you want the returned memberships to have their groups expanded (*so you can
+access the membership and its associated group*), you can specify an `expand`
+query parameter:
 
 ```javascript
 account.getGroupMemberships({expand: 'group'}, function(err, memberships) {
-    if (err) throw err;
-
-    memberships.each(function(err, membership) {
-      console.log(membership);
-
-      //the membership's 'group' property will be available immediately:
-      console.log(membership.group);
-    });
+  memberships.each(function(membership) {
+    console.log(membership);
+    console.log(membership.group);
+  });
 });
 ```
+
 
 #### Parameters
 
@@ -253,16 +259,20 @@ account.getGroupMemberships({expand: 'group'}, function(err, memberships) {
     <td>`callback`</td>
       <td>function</td>
       <td>required</td>
-      <td>The callback to execute upon resource retrieval. The 1st parameter is an `Error` object.  The 2nd parameter is a [collection](collectionResource) containing zero or more [GroupMembership](groupMembership) resources.</td>
+      <td>The callback to execute upon resource retrieval.  The 1st parameter is an `Error` object.  The 2nd parameter is a [collection](collectionResource) containing zero or more [GroupMembership](groupMembership) resources.</td>
     </tr>
   </tbody>
 </table>
 
+
 #### Returns
 
-void; the retrieved [collection](collectionResource) of the account's [GroupMembership](groupMembership)s will be provided to the `callback` as the callback's second parameter.
+The retrieved [collection](collectionResource) of the account's
+[GroupMembership](groupMembership)s will be provided to the `callback` as the
+callback's second parameter.
 
 ---
+
 
 <a name="getDirectory"></a>
 ### <span class="member">method</span> getDirectory(*[options,]* callback)
