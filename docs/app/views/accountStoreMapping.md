@@ -25,17 +25,17 @@ manipulating an application's AccountStoreMapping resources.
 <a name="getApplication"></a>
 ### <span class="member">method</span> getApplication(*[options,]* callback)
 
-Retrieves the associated `Application` and provides it to the specified `callback`.
+Retrieves the associated Application and provides it to the specified callback.
+
 
 #### Usage
 
-
 ```javascript
-accountStoreMapping.getApplication({expand: 'accounts'}, function(err, app){
-  var application = app;
-})
-
+accountStoreMapping.getApplication({expand: 'accounts'}, function(err, app) {
+  console.log(app);
+});
 ```
+
 
 #### Parameters
 
@@ -64,13 +64,15 @@ accountStoreMapping.getApplication({expand: 'accounts'}, function(err, app){
   </tbody>
 </table>
 
+
 #### Returns
 
-void;
-If the request fails, the callback's first parameter (`err`) will report the failure.
-If the request succeeds, the instance of  [Application](application) will be provided to the `callback` as the callback's second parameter.
+If the request fails, the callback's first parameter (`err`) will report the
+failure.  If the request succeeds, the instance of  [Application](application)
+will be provided to the callback as the callback's second parameter.
 
 ---
+
 
 <a name="setApplication"></a>
 ### <span class="member">method</span> setApplication(application)
