@@ -39,28 +39,33 @@ directly on an Account resource or independently.
 <a name="addToGroup"></a>
 ### <span class="member">method</span> addToGroup(groupOrGroupHref, *[options,]* callback)
 
-Adds the account to the specified [Group](group).  The group must have already been persisted - new groups cannot be created via this method.
+Adds the Account to the specified [Group](group).  The Group must have already
+been persisted - new groups cannot be created via this method.
+
 
 #### Usage
 
-You may specify an account directly:
+You may specify a Group directly:
 
 ```javascript
-account.addToGroup(group, function onMembershipCreated(err, membership) {
-  if (err) throw err;
+account.addToGroup(group, function(err, membership) {
   console.log(membership);
-};
+});
 ```
+
 Or just an group's `href`:
 
 ```javascript
-account.addToGroup(groupHref, function onMembershipCreated(err, membership) {
-  if (err) throw err;
+account.addToGroup(groupHref, function(err, membership) {
   console.log(membership);
-};
+});
 ```
 
-In both cases, the [GroupMembership](groupMembership) representing the group-to-account association will be provided to the callback as the callback's second parameter.  You can obtain either the group or the account via `membership.group` or 'membership.account`, respectively.
+In both cases, the [GroupMembership](groupMembership) representing the
+group-to-account association will be provided to the callback as the callback's
+second parameter.  You can obtain either the Group or the Account via
+`membership.group` or `membership.account`, respectively.
+
 
 #### Parameters
 
@@ -90,16 +95,22 @@ In both cases, the [GroupMembership](groupMembership) representing the group-to-
       <td>`callback`</td>
       <td>function</td>
       <td>required</td>
-      <td>The callback to execute upon server response. The 1st parameter is an [error](resourceError).  The 2nd parameter is the [GroupMembership](groupMembership) that reflects the group-to-account association. You can obtain either the group or the account via `membership.group` or 'membership.account`, respectively.</td>
+      <td>The callback to execute upon server response.  The 1st parameter is an [error](resourceError).  The 2nd parameter is the [GroupMembership](groupMembership) that reflects the group-to-account association. You can obtain either the group or the account via `membership.group` or 'membership.account`, respectively.</td>
     </tr>
   </tbody>
 </table>
 
+
 #### Returns
 
-void; If the association fails, the callback's first parameter (`err`) will report the failure.  If the association succeeds, the [GroupMembership](groupMembership) will be provided to the `callback` as the callback's second parameter.  You can obtain either the group or the account via `membership.group` or 'membership.account`, respectively.
+If the association fails, the callback's first parameter (`err`) will report
+the failure.  If the association succeeds, the
+[GroupMembership](groupMembership) will be provided to the `callback` as the
+callback's second parameter.  You can obtain either the Group or the Account
+via `membership.group` or `membership.account`, respectively.
 
 ---
+
 
 <a name="getGroups"></a>
 ### <span class="member">method</span> getGroups(*[options,]* callback)
