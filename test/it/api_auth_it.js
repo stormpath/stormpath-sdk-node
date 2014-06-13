@@ -232,12 +232,13 @@ describe('Application',function(){
 
   describe('with an expired access token',function(){
     var accessToken;
-    before(function(){
+    before(function(done){
       // manually generate an expired access token
       var oauthAccessTokenResult = new OauthAccessTokenResult(apiKey,client._dataStore);
       oauthAccessTokenResult.setApplicationHref(app.href);
-      oauthAccessTokenResult.setTtl(0);
+      oauthAccessTokenResult.setTtl(1);
       accessToken = oauthAccessTokenResult.getTokenResponse().access_token;
+      setTimeout(done,2000);
     });
 
     var result;
