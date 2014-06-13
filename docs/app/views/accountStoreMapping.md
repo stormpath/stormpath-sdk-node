@@ -118,17 +118,18 @@ accountStoreMapping.save(function(err, mapping) {
 <a name="getAccountStore"></a>
 ### <span class="member">method</span> getAccountStore(*[options,]* callback)
 
-Retrieves the associated `Account Store` (`Group` or `Directory`) and provides it to the specified `callback`.
+Retrieves the associated Account Store (*Group or Directory*) and provides it
+to the specified callback.
+
 
 #### Usage
 
-
 ```javascript
-accountStoreMapping.getAccountStore({expand: 'accounts'}, function(err, store){
-  var accountStore = store;
-})
-
+accountStoreMapping.getAccountStore({expand: 'accounts'}, function(err, store) {
+  console.log(store);
+});
 ```
+
 
 #### Parameters
 
@@ -157,14 +158,16 @@ accountStoreMapping.getAccountStore({expand: 'accounts'}, function(err, store){
   </tbody>
 </table>
 
+
 #### Returns
 
-void;
-If the request fails, the callback's first parameter (`err`) will report the failure.
-If the request succeeds, the instance of [Directory](directory) or [Group](group) will
- be provided to the `callback` as the callback's second parameter.
+If the request fails, the callback's first parameter (`err`) will report the
+failure.  If the request succeeds, the instance of [Directory](directory) or
+[Group](group) will be provided to the callback as the callback's second
+parameter.
 
 ---
+
 
 <a name="setAccountStore"></a>
 ### <span class="member">method</span> setAccountStore(accountStore)
