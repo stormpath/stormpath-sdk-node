@@ -456,17 +456,19 @@ callback's second parameter.
 <a name="getProviderData"></a>
 ### <span class="member">method</span> getProviderData(*[options,]* callback)
 
-Retrieves the account's `ProviderData` information  and provides it to the specified `callback`.
-If `providerData` not set, `callback` will be called without parameters
+Retrieves the account's `providerData` information and provides it to the
+specified `callback`.  If `providerData` not set, `callback` will be called
+without parameters
+
 
 #### Usage
 
 ```javascript
 account.getProviderData(function(err, providerData) {
-    if (err) throw err;
-    console.log(providerData);
+  console.log(providerData);
 });
 ```
+
 
 #### Parameters
 
@@ -498,9 +500,11 @@ account.getProviderData(function(err, providerData) {
   </tbody>
 </table>
 
+
 #### Returns
 
-void; the retrieved `ProviderData` resource will be provided to the `callback` as the callback's second parameter.
+The retrieved `providerData` resource will be provided to the `callback` as the
+callback's second parameter.
 
 ---
 
