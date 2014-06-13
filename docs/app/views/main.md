@@ -82,8 +82,6 @@ In order to get a list of all your Stormpath [Applications][] and
 
 ```javascript
 client.getApplications(function(err, apps) {
-
-
   apps.each(function(err, app, offset) { //offset is an optional argument
     console.log(offset + ": " + app);
   });
@@ -91,8 +89,6 @@ client.getApplications(function(err, apps) {
 
 
 client.getDirectories({expand: 'groups'}, function(err, dirs) {
-
-
   dirs.each(function(dir, callback) {
     console.log(dir);
     callback();
@@ -285,6 +281,7 @@ account.addToGroup(groupOrGroupHref, onMembershipCreated(err, membership) {
 group.addAccount(accountOrAccountHref, onMembershipCreated(err, membership) {
 
   //membership is a GroupMembership resource that represents the pairing of the group to the account:
+
   console.log(membership);
 });
 ```

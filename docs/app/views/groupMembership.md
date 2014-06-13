@@ -15,7 +15,6 @@ Retrieves the membership's associated [Account](account) and provides it to the 
 
 ```javascript
 membership.getAccount(function(err, account) {
-
     console.log(account);
 });
 ```
@@ -24,7 +23,6 @@ You can also use [resource expansion](http://docs.stormpath.com/rest/product-gui
 
 ```javascript
 membership.getAccount({expand:'groups'}, function(err, account) {
-
     console.log(account);
 });
 ```
@@ -71,7 +69,6 @@ Retrieves the membership's associated [Group](group) and provides it to the spec
 
 ```javascript
 membership.getGroup(function(err, group) {
-
     console.log(group);
 });
 ```
@@ -80,7 +77,6 @@ You can also use [resource expansion](http://docs.stormpath.com/rest/product-gui
 
 ```javascript
 membership.getGroup({expand:'accounts'}, function(err, group) {
-
     console.log(group);
 });
 ```

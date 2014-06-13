@@ -30,7 +30,6 @@ application.authenticateAccount(authcRequest, function onAuthcResult(err, result
 
   //if successful, the result will have an account field with the successfully authenticated account:
   result.getAccount(function(err, account) {
-
       console.log(account);
   });
 };
@@ -88,7 +87,6 @@ var account = {
 };
 
 application.createAccount(account, function onAccountCreated(err, createdAccount) {
-
   console.log(createdAccount);
 });
 ```
@@ -113,7 +111,6 @@ Whenever you create an `account`, an empty `customData` resource is created
  };
 
  application.createAccount(account, function onAccountCreated(err, createdAccount) {
-
    console.log(createdAccount);
  });
 ```
@@ -126,7 +123,6 @@ You can also specify options to control creation behavior and things like refere
 var options = {registrationWorkflowEnabled: false, expand: 'directory'};
 
 application.createAccount(account, options, function onAccountCreated(err, createdAccount) {
-
   console.log(createdAccount);
 });
 ```
@@ -183,7 +179,6 @@ Example:
 var group = {name: 'Administrators'}
 
 application.createGroup(group, onGroupCreation(err, createdGroup) {
-
   console.log(createdGroup);
 });
 ```
@@ -192,7 +187,6 @@ You can also specify options to control things like reference expansion:
 
 ```javascript
 application.createGroup(group, {expand:'directory'}, function onAccountCreated(err, createdGroup) {
-
   console.log(createdGroup);
 });
 ```
@@ -249,8 +243,6 @@ If you want to retrieve _all_ of the application's accounts:
 
 ```javascript
 application.getAccounts(function(err, accounts) {
-
-
     accounts.each(function(err, account, offset) {
       console.log('Offset ' + offset + ', account: ' + account);
     });
@@ -262,8 +254,6 @@ If you don't want all accounts, and only want specific ones, you can search for 
 
 ```javascript
 application.getAccounts({username: '*foo*'}, function(err, accounts) {
-
-
     accounts.each(function(err, account) {
       console.log(account);
     });
@@ -317,8 +307,6 @@ If you want to retrieve _all_ of the application's groups:
 
 ```javascript
 application.getGroups(function(err, groups) {
-
-
     groups.each(function(err, group, offset) {
       console.log('Offset ' + offset + ', group: ' + group);
     });
@@ -330,8 +318,6 @@ If you don't want all groups, and only want specific ones, you can search for th
 
 ```javascript
 application.getGroups({name: '*bar*'}, function(err, groups) {
-
-
     groups.each(function(err, group) {
       console.log(group);
     });
@@ -381,14 +367,12 @@ Retrieves the application's owning [Tenant](tenant) and provides it to the speci
 
 ```javascript
 application.getTenant(function(err, tenant) {
-
     console.log(tenant);
 });
 ```
 You can also use [resource expansion](http://docs.stormpath.com/rest/product-guide/#link-expansion) options (query params) to obtain linked resources in the same request:
 ```javascript
 application.getTenant({expand:'directories'}, function(err, tenant) {
-
     console.log(tenant);
 });
 ```
@@ -435,7 +419,6 @@ Triggers the [password reset workflow](http://docs.stormpath.com/rest/product-gu
 
 ```javascript
 application.sendPasswordResetEmail(email, function(err, passwordResetToken) {
-
 
   console.log(passwordResetToken);
 
@@ -566,7 +549,6 @@ var req = {
 
 application.getAccount(req, function(err, resp) {
 
-
     if(resp.created){
       console.log('Just created a new user');
     }
@@ -586,7 +568,6 @@ var req = {
   };
 
 application.getAccount(req, function(err, resp) {
-
 
     if(resp.created){
       console.log('Just created a new user');

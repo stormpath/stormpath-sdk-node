@@ -424,8 +424,6 @@ var app = {
 };
 
 client.createApplication(app, {createDirectory: true}, function(err, newApp) {
-
-
     console.log(newApp);
 });
 ```
@@ -442,8 +440,6 @@ var app = {
 };
 
 client.createApplication(app, function(err, newApp) {
-
-
     console.log(newApp);
 });
 ```
@@ -504,8 +500,6 @@ var dir = {
 };
 
 client.createDirectory(dir, function(err, newDir) {
-
-
     console.log(newDir);
 });
 ```
@@ -572,8 +566,6 @@ For an `href` that you know represents an account:
 
 ```javascript
 client.getAccount(href, function(err, account) {
-
-
   console.log(account);
 });
 ```
@@ -583,8 +575,6 @@ You can specify query parameters as the **options** argument, for example, for
 
 ```javascript
 client.getAccount(href, {expand: 'customData'}, function(err, account) {
-
-
   console.log(account);
 });
 ```
@@ -648,8 +638,6 @@ For an `applicationHref` that you know represents an application:
 
 ```javascript
 client.getApplication(href, function(err, app) {
-
-
   console.log(app);
 });
 ```
@@ -659,8 +647,6 @@ You can specify query parameters as the **options** argument, for example, for
 
 ```javascript
 client.getApplication(href, {expand: 'accounts'}, function(err, app) {
-
-
   console.log(app);
 });
 ```
@@ -728,7 +714,6 @@ If you want to retrieve *all* of your tenant's applications:
 ```javascript
 client.getApplications(function(err, applications) {
 
-
   applications.each(function(app, callback) {
     console.log(app);
     callback();
@@ -749,7 +734,6 @@ query parameters:
 
 ```javascript
 client.getApplications({name: '*Awesome*'}, function(err, apps) {
-
 
   applications.each(function(app, callback) {
     console.log(app);
@@ -811,8 +795,6 @@ Retrieves the client's [Tenant](tenant) and provides it to the specified `callba
 
 ```javascript
 client.getCurrentTenant(function(err, tenant) {
-
-
   console.log(tenant);
 });
 ```
@@ -822,8 +804,6 @@ linked resources in the same request:
 
 ```javascript
 client.getCurrentTenant({expand:'applications'}, function(err, tenant) {
-
-
   console.log(tenant);
 });
 ```
@@ -974,8 +954,6 @@ For a `directoryHref` that you know represents a directory:
 
 ```javascript
 client.getDirectory(href, function(err, dir) {
-
-
   console.log(dir);
 });
 ```
@@ -985,8 +963,6 @@ You can specify query parameters as the **options** argument, for example, for
 
 ```javascript
 client.getDirectory(href, {expand: 'accounts'}, function(err, dir) {
-
-
   console.log(dir);
 });
 ```
@@ -1051,8 +1027,6 @@ For a `groupHref` that you know represents a group:
 
 ```javascript
 client.getGroup(href, function(err, group) {
-
-
   console.log(group);
 });
 ```
@@ -1062,8 +1036,6 @@ You can specify query parameters as the **options** argument, for example, for
 
 ```javascript
 client.group(href, {expand: 'accounts'}, function(err, group) {
-
-
   console.log(group);
 });
 ```
@@ -1128,8 +1100,6 @@ For an `href` that you know represents a GroupMembership:
 
 ```javascript
 client.getGroupMembership(href, function(err, membership) {
-
-
   console.log(membership);
 });
 ```
@@ -1139,8 +1109,6 @@ You can specify query parameters as the **options** argument, for example, for
 
 ```javascript
 client.getGroupMembership(href, {expand: 'account,group'}, function(err, membership) {
-
-
   console.log(membership);
 });
 ```
