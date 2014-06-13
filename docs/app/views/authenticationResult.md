@@ -17,8 +17,7 @@ Retrieves the authentication result's corresponding successfully authenticated [
 
 ```javascript
 result.getAccount(function(err, account) {
-    if (err) throw err;
-    console.log(account);
+  console.log(account);
 });
 ```
 

@@ -31,7 +31,6 @@ You may specify an account directly:
 
 ```javascript
 group.addAccount(account, function onMembershipCreated(err, membership) {
-  if (err) throw err;
   console.log(membership);
 };
 ```
@@ -39,7 +38,6 @@ Or just an account's `href`:
 
 ```javascript
 group.addAccount(accountHref, function onMembershipCreated(err, membership) {
-  if (err) throw err;
   console.log(membership);
 };
 ```
@@ -98,11 +96,9 @@ If you want to retrieve _all_ of the group's accounts:
 
 ```javascript
 group.getAccounts(function(err, accounts) {
-    if (err) throw err;
-
-    accounts.each(function(err, account, offset) {
-      console.log('Offset ' + offset + ', account: ' + account);
-    });
+  accounts.each(function(err, account, offset) {
+    console.log('Offset ' + offset + ', account: ' + account);
+  });
 });
 ```
 As you can see, the [Collection](collectionResource) provided to the `callback` has an `each` function that accepts its own callback.  The collection will iterate over all of the accounts in the collection, and invoke the callback for each one.  The `offset` parameter indicates the index of the account in the returned collection.  The `offset` parameter is optional - it may be omitted from the callback definition.
@@ -111,11 +107,9 @@ If you don't want all accounts, and only want specific ones, you can search for 
 
 ```javascript
 group.getAccounts({username: '*foo*'}, function(err, accounts) {
-    if (err) throw err;
-
-    accounts.each(function(err, account) {
-      console.log(account);
-    });
+  accounts.each(function(err, account) {
+    console.log(account);
+  });
 });
 ```
 The above code example would only print out group accounts with the text fragment `foo` in the username.  See the Stormpath REST API Guide's [group account documentation](http://docs.stormpath.com/rest/product-guide/#group-accounts) for other supported query parameters, such as reference expansion.
@@ -166,11 +160,9 @@ If you want to retrieve all of the group's memberships/associations:
 
 ```javascript
 group.getAccountMemberships(function(err, memberships) {
-    if (err) throw err;
-
-    memberships.each(function(err, membership, offset) {
-      console.log('Offset ' + offset + ', membership: ' + membership);
-    });
+  memberships.each(function(err, membership, offset) {
+    console.log('Offset ' + offset + ', membership: ' + membership);
+  });
 });
 ```
 As you can see, the [Collection](collectionResource) provided to the `callback` has an `each` function that accepts its own callback.  The collection will iterate over all of the memberships in the collection, and invoke the callback for each one.  The `offset` parameter indicates the index of the membership in the returned collection.  The `offset` parameter is optional - it may be omitted from the callback definition.
@@ -179,14 +171,12 @@ If you want the returned memberships to have their accounts expanded (so you can
 
 ```javascript
 group.getAccountMemberships({expand: 'account'}, function(err, memberships) {
-    if (err) throw err;
+  memberships.each(function(err, membership) {
+    console.log(membership);
 
-    memberships.each(function(err, membership) {
-      console.log(membership);
-
-      //the membership's 'account' property will be available immediately:
-      console.log(membership.account);
-    });
+    //the membership's 'account' property will be available immediately:
+    console.log(membership.account);
+  });
 });
 ```
 
@@ -232,15 +222,13 @@ Retrieves the group's parent [Directory](directory) and provides it to the speci
 
 ```javascript
 group.getDirectory(function(err, directory) {
-    if (err) throw err;
-    console.log(directory);
+  console.log(directory);
 });
 ```
 You can also use [resource expansion](http://docs.stormpath.com/rest/product-guide/#link-expansion) options (query params) to obtain linked resources in the same request:
 ```javascript
 group.getDirectory({expand:'accounts'}, function(err, directory) {
-    if (err) throw err;
-    console.log(directory);
+  console.log(directory);
 });
 ```
 
@@ -286,15 +274,13 @@ Retrieves the group's owning [Tenant](tenant) and provides it to the specified `
 
 ```javascript
 group.getTenant(function(err, tenant) {
-    if (err) throw err;
-    console.log(tenant);
+  console.log(tenant);
 });
 ```
 You can also use [resource expansion](http://docs.stormpath.com/rest/product-guide/#link-expansion) options (query params) to obtain linked resources in the same request:
 ```javascript
 group.getTenant({expand:'applications'}, function(err, tenant) {
-    if (err) throw err;
-    console.log(tenant);
+  console.log(tenant);
 });
 ```
 
@@ -343,8 +329,7 @@ For an `href` that you know represents an account:
 
 ```javascript
 group.getCustomData(function(err, customData) {
-    if (err) throw err;
-    console.log(customData);
+  console.log(customData);
 });
 ```
 

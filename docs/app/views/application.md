@@ -26,12 +26,11 @@ var authcRequest = {
 };
 
 application.authenticateAccount(authcRequest, function onAuthcResult(err, result) {
-  if (err) throw err;
 
   //if successful, the result will have an account field with the successfully authenticated account:
+
   result.getAccount(function(err, account) {
-      if (err) throw err;
-      console.log(account);
+    console.log(account);
   });
 };
 ```
@@ -88,7 +87,6 @@ var account = {
 };
 
 application.createAccount(account, function onAccountCreated(err, createdAccount) {
-  if (err) throw err;
   console.log(createdAccount);
 });
 ```
@@ -98,24 +96,23 @@ Whenever you create an `account`, an empty `customData` resource is created
  `account` creation you can embed `customData` directly in `account` resource.
 
  ```javascript
- var account = {
-   givenName: 'Jean-Luc',
-   surname: 'Picard',
-   username: 'jlpicard',
-   email: 'jlpicard@starfleet.com',
-   password: 'Changeme1!',
-   customData: {
-     rank: 'Captain',
-     birthDate: '2305-07-13',
-     birthPlace: 'La Barre, France',
-     favoriteDrink: 'Earl Grey tea'
-   }
- };
+var account = {
+  givenName: 'Jean-Luc',
+  surname: 'Picard',
+  username: 'jlpicard',
+  email: 'jlpicard@starfleet.com',
+  password: 'Changeme1!',
+  customData: {
+    rank: 'Captain',
+    birthDate: '2305-07-13',
+    birthPlace: 'La Barre, France',
+    favoriteDrink: 'Earl Grey tea'
+  }
+};
 
- application.createAccount(account, function onAccountCreated(err, createdAccount) {
-   if (err) throw err;
-   console.log(createdAccount);
- });
+application.createAccount(account, function onAccountCreated(err, createdAccount) {
+  console.log(createdAccount);
+});
 ```
 
 You can also specify options to control creation behavior and things like reference expansion:
@@ -126,7 +123,6 @@ You can also specify options to control creation behavior and things like refere
 var options = {registrationWorkflowEnabled: false, expand: 'directory'};
 
 application.createAccount(account, options, function onAccountCreated(err, createdAccount) {
-  if (err) throw err;
   console.log(createdAccount);
 });
 ```
@@ -183,7 +179,6 @@ Example:
 var group = {name: 'Administrators'}
 
 application.createGroup(group, onGroupCreation(err, createdGroup) {
-  if (err) throw err;
   console.log(createdGroup);
 });
 ```
@@ -192,7 +187,6 @@ You can also specify options to control things like reference expansion:
 
 ```javascript
 application.createGroup(group, {expand:'directory'}, function onAccountCreated(err, createdGroup) {
-  if (err) throw err;
   console.log(createdGroup);
 });
 ```
@@ -249,11 +243,9 @@ If you want to retrieve _all_ of the application's accounts:
 
 ```javascript
 application.getAccounts(function(err, accounts) {
-    if (err) throw err;
-
-    accounts.each(function(err, account, offset) {
-      console.log('Offset ' + offset + ', account: ' + account);
-    });
+  accounts.each(function(err, account, offset) {
+    console.log('Offset ' + offset + ', account: ' + account);
+  });
 });
 ```
 As you can see, the [Collection](collectionResource) provided to the `callback` has an `each` function that accepts its own callback.  The collection will iterate over all of the accounts in the collection, and invoke the callback for each one.  The `offset` parameter indicates the index of the account in the returned collection.  The `offset` parameter is optional - it may be omitted from the callback definition.
@@ -262,11 +254,9 @@ If you don't want all accounts, and only want specific ones, you can search for 
 
 ```javascript
 application.getAccounts({username: '*foo*'}, function(err, accounts) {
-    if (err) throw err;
-
-    accounts.each(function(err, account) {
-      console.log(account);
-    });
+  accounts.each(function(err, account) {
+    console.log(account);
+  });
 });
 ```
 The above code example would only print out accounts with the text fragment `foo` in the username.  See the Stormpath REST API Guide's [application account search documentation](http://docs.stormpath.com/rest/product-guide/#application-accounts-search) for other supported query parameters, such as reference expansion.
@@ -317,11 +307,9 @@ If you want to retrieve _all_ of the application's groups:
 
 ```javascript
 application.getGroups(function(err, groups) {
-    if (err) throw err;
-
-    groups.each(function(err, group, offset) {
-      console.log('Offset ' + offset + ', group: ' + group);
-    });
+  groups.each(function(err, group, offset) {
+    console.log('Offset ' + offset + ', group: ' + group);
+  });
 });
 ```
 As you can see, the [collection](collectionResource) provided to the `callback` has an `each` function that accepts its own callback.  The collection will iterate over all of the groups in the collection, and invoke the callback for each one.  The `offset` parameter indicates the index of the group in the returned collection.  The `offset` parameter is optional - it may be omitted from the callback definition.
@@ -330,11 +318,9 @@ If you don't want all groups, and only want specific ones, you can search for th
 
 ```javascript
 application.getGroups({name: '*bar*'}, function(err, groups) {
-    if (err) throw err;
-
-    groups.each(function(err, group) {
-      console.log(group);
-    });
+  groups.each(function(err, group) {
+    console.log(group);
+  });
 });
 ```
 The above code example would only print out groups with the text fragment `foo` in their name.  See the Stormpath REST API Guide's [application group search documentation](http://docs.stormpath.com/rest/product-guide/#application-groups-search) for other supported query parameters, such as reference expansion.
@@ -381,15 +367,13 @@ Retrieves the application's owning [Tenant](tenant) and provides it to the speci
 
 ```javascript
 application.getTenant(function(err, tenant) {
-    if (err) throw err;
-    console.log(tenant);
+  console.log(tenant);
 });
 ```
 You can also use [resource expansion](http://docs.stormpath.com/rest/product-guide/#link-expansion) options (query params) to obtain linked resources in the same request:
 ```javascript
 application.getTenant({expand:'directories'}, function(err, tenant) {
-    if (err) throw err;
-    console.log(tenant);
+  console.log(tenant);
 });
 ```
 
@@ -435,7 +419,6 @@ Triggers the [password reset workflow](http://docs.stormpath.com/rest/product-gu
 
 ```javascript
 application.sendPasswordResetEmail(email, function(err, passwordResetToken) {
-  if (err) throw err;
 
   console.log(passwordResetToken);
 
@@ -490,7 +473,6 @@ Continues the [password reset workflow](http://docs.stormpath.com/rest/product-g
 var sptoken = request.query.sptoken;
 
 application.verifyPasswordResetToken(sptoken, function(err, associatedAccount) {
-  if (err) throw err;
 
   //if the associated account was retrieved, you need to collect the new password
   //from the end-user and update their account.
@@ -565,13 +547,12 @@ var req = {
   };
 
 application.getAccount(req, function(err, resp) {
-    if (err) throw err;
 
-    if(resp.created){
-      console.log('Just created a new user');
-    }
+  if(resp.created){
+    console.log('Just created a new user');
+  }
 
-    console.log(resp.account);
+  console.log(resp.account);
 });
 ```
 
@@ -586,13 +567,12 @@ var req = {
   };
 
 application.getAccount(req, function(err, resp) {
-    if (err) throw err;
 
-    if(resp.created){
-      console.log('Just created a new user');
-    }
+  if(resp.created){
+    console.log('Just created a new user');
+  }
 
-    console.log(resp.account);
+  console.log(resp.account);
 });
 ```
 
@@ -916,15 +896,15 @@ Returns a newly created `AccountStoreMapping` as a second callback parameter.
 
 ```javascript
 var mapping = {
-           application: {
-             href: "https://api.stormpath.com/v1/applications/Uh8FzIouQ9C8EpcExAmPLe"
-           }
-           accountStore: {
-             href: "https://api.stormpath.com/v1/directories/bckhcGMXQDujIXpExAmPLe"
-           },
-           isDefaultAccountStore: true,
-           isDefaultGroupStore: true
-         };
+  application: {
+    href: "https://api.stormpath.com/v1/applications/Uh8FzIouQ9C8EpcExAmPLe"
+  }
+  accountStore: {
+    href: "https://api.stormpath.com/v1/directories/bckhcGMXQDujIXpExAmPLe"
+  },
+  isDefaultAccountStore: true,
+  isDefaultGroupStore: true
+};
 
 application.createAccountStoreMapping(mapping, function(err, asm){
   var accountStoreMapping = asm;

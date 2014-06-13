@@ -18,10 +18,6 @@ Gets cache entry referenced by `key`, retrieved `entry` passed into `callback(er
 Example:
 ```javascript
 cache.get(href, function(err, entry){
-  if (err) {
-    return callback(err);
-  }
-
   console.log(entry);
 });
 ```
@@ -72,10 +68,6 @@ Example:
 Example:
 ```javascript
 cache.put(href, account, false, function(err, res){
-  if (err) {
-    return callback(err);
-  }
-
   console.log(res);
 });
 ```
@@ -138,10 +130,6 @@ Removes an `entry` from cache store referenced by `key`.
 Example:
 ```javascript
 cache.delete(href, function(err, res){
-  if (err) {
-    return callback(err);
-  }
-
   console.log(res);
 });
 ```
@@ -191,9 +179,7 @@ Delete all the keys in cache store.
 Example:
 ```javascript
 cache.clear(function(err, res){
-  if (err) {
-    return callback(err);
-  }
+  console.log(res);
 });
 ```
 
@@ -237,10 +223,6 @@ Return the number of keys in the cache store.
 Example:
 ```javascript
 cache.size(function(err, size){
-  if (err) {
-    return callback(err);
-  }
-
   console.log(size);
 });
 ```
