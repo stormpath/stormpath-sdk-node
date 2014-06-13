@@ -3,6 +3,7 @@ var helpers = require('./helpers');
 var assert = common.assert;
 
 var AuthenticationResult = require('../../lib/resource/AuthenticationResult');
+var OauthAccessTokenResult = require('../../lib/resource/OauthAccessTokenResult');
 
 describe('Application',function(){
 
@@ -92,6 +93,37 @@ describe('Application',function(){
         });
       });
     });
+  });
+
+  describe('with Authorization: Basic <key>:<secret> and ?grant_type=client_credentials',function(){
+
+    describe('with valid credentials',function(){
+
+        var result;
+
+        before(function(done){
+          var requestObject = {
+            headers: {
+              'authorization': 'Basic ' + new Buffer([apiKey.id,apiKey.secret].join(':')).toString('base64')
+            },
+            url: '/some/resource?grant_type=client_credentials'
+          };
+          app.authenticateApiRequest(requestObject,function(err,value){
+            result = [err,value];
+            done();
+          });
+        });
+
+        it('should not err',function(){
+          assert.equal(result[0],null);
+        });
+
+        it('should return an instance of OauthAccessTokenResult',function(){
+          assert.instanceOf(result[1],OauthAccessTokenResult);
+        });
+
+      });
+
   });
 
 });
