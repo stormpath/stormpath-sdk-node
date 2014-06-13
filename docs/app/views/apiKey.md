@@ -100,11 +100,14 @@ A new `ApiKey` instance with the specified API ID and secret.
 #### Usage
 
 ```javascript
-var apiKey = new stormpath.ApiKey(process.env['STORMPATH_API_KEY_ID'], process.env['STORMPATH_API_KEY_SECRET']);
+var apiKey = new stormpath.ApiKey(
+  process.env['STORMPATH_API_KEY_ID'],
+  process.env['STORMPATH_API_KEY_SECRET']
+);
 
 console.log(apiKey.toString());
-
 ```
+
 
 #### Returns
 
