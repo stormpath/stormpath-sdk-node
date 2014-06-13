@@ -111,12 +111,12 @@ console.log(apiKey.toString());
 
 #### Returns
 
-A string that represents the `ApiKey` in the following format
+A string that represents the `ApiKey` in the following format:
 
 ```javascript
 'id: ' + this.id + ', secret: <hidden>'
-
 ```
+
 ---
 
 
