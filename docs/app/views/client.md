@@ -208,7 +208,7 @@ var client = new stormpath.Client(options);
 <a name="memory"></a>
 ### In Memory Cache
 
-In memory cache provider.  Supported options: `ttl`, `tti`
+In memory cache provider, this is the defaut provider.  Supported options: `ttl`, `tti`
 
 
 #### Usage
@@ -1185,7 +1185,7 @@ client.getGroupMembership(href, {expand: 'account,group'}, function(err, members
 The retrieved `GroupMembership` resource will be provided to the `callback` as
 the callback's second parameter.
 
-
+  [Redis]: http://redis.io/ "Redis"
   [Stormpath API key]: http://docs.stormpath.com/rest/quickstart/#get-an-api-key "Stormpath API Key"
   [resource expansion]: http://docs.stormpath.com/rest/product-guide/#account-retrieve "Stormpath Resource Expansion"
   [application search]: http://docs.stormpath.com/rest/product-guide/#tenant-applications-search "Stormpath Application Search"
