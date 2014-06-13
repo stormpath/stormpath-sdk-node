@@ -39,62 +39,60 @@ describe('Application',function(){
     });
   });
 
-  describe('authenticateApiRequest',function(){
+  describe('with Authorization: Basic <key>:<secret>',function(){
 
-    describe('with Authorization: Basic <key>:<secret>',function(){
+    describe('with valid credentials',function(){
 
-      describe('with valid credentials',function(){
+      var result;
 
-        var result;
-
-        before(function(done){
-          var requestObject = {
-            headers: {
-              'authorization': 'Basic ' + new Buffer([apiKey.id,apiKey.secret].join(':')).toString('base64')
-            },
-            url: '/some/resource'
-          };
-          app.authenticateApiRequest(requestObject,function(err,value){
-            result = [err,value];
-            done();
-          });
-        });
-
-        it('should not err',function(){
-          assert.equal(result[0],null);
-        });
-
-        it('should return an instance of AuthenticationResult',function(){
-          assert.instanceOf(result[1],AuthenticationResult);
+      before(function(done){
+        var requestObject = {
+          headers: {
+            'authorization': 'Basic ' + new Buffer([apiKey.id,apiKey.secret].join(':')).toString('base64')
+          },
+          url: '/some/resource'
+        };
+        app.authenticateApiRequest(requestObject,function(err,value){
+          result = [err,value];
+          done();
         });
       });
 
-      describe('with invalid credentials',function(){
-        var result;
+      it('should not err',function(){
+        assert.equal(result[0],null);
+      });
 
-        before(function(done){
-          var requestObject = {
-            headers: {
-              'authorization': 'Basic ' + new Buffer(['invalid','invalid'].join(':')).toString('base64')
-            },
-            url: '/some/resource'
-          };
-          app.authenticateApiRequest(requestObject,function(err,value){
-            result = [err,value];
-            done();
-          });
-        });
+      it('should return an instance of AuthenticationResult',function(){
+        assert.instanceOf(result[1],AuthenticationResult);
+      });
+    });
 
-        it('should err',function(){
-          assert.instanceOf(result[0],Error);
-        });
+    describe('with invalid credentials',function(){
+      var result;
 
-        it('should not return an instance of AuthenticationResult',function(){
-          assert.isUndefined(result[1]);
+      before(function(done){
+        var requestObject = {
+          headers: {
+            'authorization': 'Basic ' + new Buffer(['invalid','invalid'].join(':')).toString('base64')
+          },
+          url: '/some/resource'
+        };
+        app.authenticateApiRequest(requestObject,function(err,value){
+          result = [err,value];
+          done();
         });
+      });
+
+      it('should err',function(){
+        assert.instanceOf(result[0],Error);
+      });
+
+      it('should not return an instance of AuthenticationResult',function(){
+        assert.isUndefined(result[1]);
       });
     });
   });
+
 
   describe('with Authorization: Basic <key>:<secret> and ?grant_type=client_credentials',function(){
 
@@ -137,7 +135,7 @@ describe('Application',function(){
       oauthAccessTokenResult.setApplicationHref(app.href);
       accessToken = oauthAccessTokenResult.getTokenResponse().access_token;
     });
-    describe('via Bearer authorization',function(){
+    describe('using Bearer authorization',function(){
       describe('and access_token is passed verbatim',function(){
         var result;
         before(function(done){
@@ -185,6 +183,149 @@ describe('Application',function(){
       });
     });
 
+    describe('using url param',function(){
+      var result;
+      before(function(done){
+        var requestObject = {
+          headers: {},
+          url: '/some/resource?access_token='+accessToken
+        };
+        app.authenticateApiRequest(requestObject,function(err,value){
+          result = [err,value];
+          done();
+        });
+      });
+      it('should not err',function(){
+        assert.equal(result[0],null);
+      });
+
+      it('should return an instance of OauthAuthenticationResult',function(){
+        assert.instanceOf(result[1],OauthAuthenticationResult);
+      });
+    });
+
+    describe('using body data',function(){
+      var result;
+      before(function(done){
+        var requestObject = {
+          headers: {},
+          url: '/some/resource',
+          body: {
+            access_token: accessToken
+          }
+        };
+        app.authenticateApiRequest(requestObject,function(err,value){
+          result = [err,value];
+          done();
+        });
+      });
+      it('should not err',function(){
+        assert.equal(result[0],null);
+      });
+
+      it('should return an instance of OauthAuthenticationResult',function(){
+        assert.instanceOf(result[1],OauthAuthenticationResult);
+      });
+    });
+
+  });
+
+  describe('with an expired access token',function(){
+    var accessToken;
+    before(function(){
+      // manually generate an expired access token
+      var oauthAccessTokenResult = new OauthAccessTokenResult(apiKey,client._dataStore);
+      oauthAccessTokenResult.setApplicationHref(app.href);
+      oauthAccessTokenResult.setTtl(0);
+      accessToken = oauthAccessTokenResult.getTokenResponse().access_token;
+    });
+
+    var result;
+    before(function(done){
+      var requestObject = {
+        headers: {
+          'authorization': 'Bearer ' + accessToken
+        },
+        url: '/some/resource'
+      };
+      app.authenticateApiRequest(requestObject,function(err,value){
+        result = [err,value];
+        done();
+      });
+    });
+    it('should err',function(){
+      assert.instanceOf(result[0],Error);
+    });
+
+    it('should not return an instance of AuthenticationResult',function(){
+      assert.isUndefined(result[1]);
+    });
+
+  });
+
+  describe('with invalid grant type',function(){
+    var result;
+    before(function(done){
+      var requestObject = {
+        headers: { },
+        url: '/some/resource?grant_type=not_client_Credentials'
+      };
+      app.authenticateApiRequest(requestObject,function(err,value){
+        result = [err,value];
+        done();
+      });
+    });
+    it('should err',function(){
+      assert.instanceOf(result[0],Error);
+    });
+
+    it('should not return an instance of AuthenticationResult',function(){
+      assert.isUndefined(result[1]);
+    });
+  });
+
+  describe('with invalid authorization type',function(){
+    var result;
+    before(function(done){
+      var requestObject = {
+        headers: {
+          'authorization': 'pretty please'
+        },
+        url: '/some/resource'
+      };
+      app.authenticateApiRequest(requestObject,function(err,value){
+        result = [err,value];
+        done();
+      });
+    });
+    it('should err',function(){
+      assert.instanceOf(result[0],Error);
+    });
+
+    it('should not return an instance of AuthenticationResult',function(){
+      assert.isUndefined(result[1]);
+    });
+  });
+
+  describe('without any of the expected values',function(){
+    var result;
+    before(function(done){
+      var requestObject = {
+        headers: { },
+        url: '/some/resource'
+      };
+      app.authenticateApiRequest(requestObject,function(err,value){
+        result = [err,value];
+        done();
+      });
+    });
+    it('should err',function(){
+      assert.instanceOf(result[0],Error);
+    });
+
+    it('should not return an instance of AuthenticationResult',function(){
+      assert.isUndefined(result[1]);
+    });
   });
 
 });
