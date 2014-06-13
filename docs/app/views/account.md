@@ -1,26 +1,40 @@
 ## Account
 
-An `Account` is a unique identity within a [Directory](directory), with a unique username and/or email address. An Account can log in to an [Application](application) using either the email address or username associated with it. Accounts can represent your end users (people), but they can also be used to represent services, daemons, processes, or any “entity” that needs to login to a Stormpath-enabled application.
+An Account is a unique identity within a [Directory](directory), with a
+unique username and/or email address.  An Account can log in to an
+[Application](application) using either the email address or username
+associated with it.  Accounts can represent your end users (*people*), but
+they can also be used to represent services, daemons, processes, or any
+"entity" that needs to login to a Stormpath-powered application.
 
-Additionally, an account may only exist in a single directory and may be in multiple groups owned by that directory. Accounts may not be assigned to groups within other directories.
+Additionally, an Account may only exist in a single Directory and may be in
+multiple Groups owned by that Directory.  Accounts may not be assigned to
+groups within other directories.
 
-It should be noted that the words ‘User’ and ‘Account’ usually mean the same thing, but there is a subtle difference that can be important at times:
+It should be noted that the words "User" and "Account" usually mean the same
+thing, but there is a subtle difference that can be important at times:
 
-* An Account is a unique identity within a Directory. An account can exist in only a single directory but can be a part of multiple groups owned by that directory.
-* When an account is granted access to an application (by [mapping a Directory or Group](http://docs.stormpath.com/rest/product-guide/#account-store-mappings) that contains the account to the application), it becomes a ‘User’ of that application.
+* An Account is a unique identity within a Directory.  An Account can exist in
+  only a single Directory but can be a part of multiple groups owned by that
+  Directory.
+* When an Account is granted access to an Application (*by
+  [mapping a Directory or Group][] that contains the Account to the
+  Application*), it becomes a "User" of that Application.
 
-Therefore an Account can be called a ‘User’ of an application if/when it can login to the application.
+Therefore an Account can be called a "User" of an Application if/when it can
+log into the Application.
 
-An `Account` resource have predefined fields that are useful to many `Applications`,
- but you are likely to have your own custom data that you need to associate
- with an `account` as well.  You can create your own custom data fields when
- creating `account` with [application.createAccount](application#createAccount)
- or [directory.createAccount](directory#createAccount). A `customData` can be
- updated as part of `account` resource or as a separate resource via `getCustomData` method.
+An Account resource has predefined fields that are useful to many applications,
+but you are likely to have your own custom data that you need to associate with
+an Account as well.  You can create your own custom data fields when creating
+an Account with [application.createAccount](application#createAccount) or
+[directory.createAccount](directory#createAccount).  Custom data can be set
+directly on an Account resource or independently.
 
 **Since**: 0.1
 
 ---
+
 
 <a name="addToGroup"></a>
 ### <span class="member">method</span> addToGroup(groupOrGroupHref, *[options,]* callback)
@@ -436,3 +450,6 @@ account.getProviderData(function(err, providerData) {
 void; the retrieved `ProviderData` resource will be provided to the `callback` as the callback's second parameter.
 
 ---
+
+
+  [mapping a Directory or Group]: http://docs.stormpath.com/rest/product-guide/#account-store-mappings "Stormpath Account Store Mappings"
