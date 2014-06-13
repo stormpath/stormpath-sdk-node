@@ -172,17 +172,20 @@ parameter.
 <a name="setAccountStore"></a>
 ### <span class="member">method</span> setAccountStore(accountStore)
 
-Sets `AccountStore` (`Group` or `Directory`) provided in params as `Account Store Mapping`
- *account store*.
-**This method doesn't generate a request to update `Account Store Mapping`.**
+Sets AccountStore (*Group or Directory*) provided as Account Store Mapping
+*account store*.  **This method doesn't generate a request to update
+Account Store Mapping.**
+
 
 #### Usage
 
-
 ```javascript
-var mapping = accountStoreMapping.setAccountStore(directory);
-mapping.save(callback)
+accountStoreMapping.setAccountStore(directory);
+accountStoreMapping.save(function(err, mapping) {
+  console.log(mapping);
+});
 ```
+
 
 #### Parameters
 
@@ -204,7 +207,3 @@ mapping.save(callback)
     </tr>
   </tbody>
 </table>
-
-#### Returns
-
-Instance of `AccountStoreMapping`.
