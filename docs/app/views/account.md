@@ -405,16 +405,15 @@ callback's second parameter.
 Retrieves the [CustomData](customData) resource of the `Account`'s assigned
  `CustomData` and provides it to the specified `callback`.
 
-#### Usage
 
-For an `href` that you know represents an account:
+#### Usage
 
 ```javascript
 account.getCustomData(function(err, customData) {
-    if (err) throw err;
-    console.log(customData);
+  console.log(customData);
 });
 ```
+
 
 #### Parameters
 
@@ -445,12 +444,14 @@ account.getCustomData(function(err, customData) {
   </tbody>
 </table>
 
+
 #### Returns
 
-void; the retrieved `CustomData` resource will be provided to the `callback`
- as the callback's second parameter.
+The retrieved `CustomData` resource will be provided to the `callback` as the
+callback's second parameter.
 
 ---
+
 
 <a name="getProviderData"></a>
 ### <span class="member">method</span> getProviderData(*[options,]* callback)
