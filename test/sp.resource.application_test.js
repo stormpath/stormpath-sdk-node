@@ -177,6 +177,35 @@ describe('Resources: ', function () {
       });
     });
 
+    describe('reset password', function(){
+      var application, cbSpy, app, acc, token, password, response;
+      before(function(done){
+        // Arrange
+        token = 'test_token';
+        password = 'test_password';
+        acc = { href: '/test/account/href' };
+        app = {passwordResetTokens: {href: '/test/passwordResetTokens/href'}};
+        application = new Application(app, dataStore);
+        cbSpy = sinon.spy(function(err, resp){
+          response = resp;
+          done();
+        });
+        nock(u.BASE_URL)
+          .post(u.v1(app.passwordResetTokens.href + '/' + token), { password: password })
+          .reply(200, { account: acc });
+
+        //Act
+        application.resetPassword(token, password, cbSpy);
+      });
+      after(function(){});
+
+      // Assert
+      it('should sent post request with password in body', function(){
+        cbSpy.should.have.been.calledOnce;
+        response.account.href.should.be.equal(acc.href);
+      });
+    });
+
     describe('get accounts', function () {
       describe('if accounts not set', function () {
         var application = new Application();
