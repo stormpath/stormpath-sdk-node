@@ -518,6 +518,64 @@ void; If an account with the specified password reset token is not found, the ca
 
 ---
 
+<a name="resetPassword"></a>
+### <span class="member">method</span> resetPassword(token, password, callback)
+
+Continues the [password reset workflow](http://docs.stormpath.com/rest/product-guide/#application-password-reset) by setting a new password for an account. On success, the response will include a link to the account that the password was reset on. This call on success will send the password change confirmation email that was configured in the Administrator Console to the email account associated with the account.
+
+#### Usage
+
+```javascript
+
+var token = req.body.token;
+var password = req.body.password;
+
+application.resetPassword(token, password, function(err, account) {
+    // link to the account, which is associated with this password reset workflow
+    console.log(account);
+});
+
+```
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>`token`</td>
+      <td>`string`</td>
+      <td>required</td>
+      <td>The `sptoken` query parameter in a [password reset workflow](http://docs.stormpath.com/rest/product-guide/#application-password-reset).</td>
+    </tr>
+    <tr>
+      <td>`password`</td>
+      <td>`string`</td>
+      <td>required</td>
+      <td>The `password` parameter in a [password reset workflow](http://docs.stormpath.com/rest/product-guide/#application-password-reset). Will be set as account password.</td>
+    </tr>
+    <tr>
+      <td>`callback`</td>
+      <td>function</td>
+      <td>required</td>
+      <td>The callback to execute upon server response. The 1st parameter is an [error](resourceError).  The 2nd parameter is the account associated with the reset token.</td>
+    </tr>
+  </tbody>
+</table>
+
+#### Returns
+
+void; If an account with the specified password reset token is not found, the callback's first parameter (`err`) will report the failure.  If the account is found, new `password` will be set and it will be provided to the `callback` as the callback's second parameter.
+
+---
+
 <a name="getAccount"></a>
 ### <span class="member">method</span> getAccount(providerData, *[options,]* callback)
 

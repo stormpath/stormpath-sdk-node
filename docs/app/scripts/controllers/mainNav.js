@@ -87,6 +87,7 @@ function items() {
       anchor('getTenant'),
       anchor('sendPasswordResetEmail'),
       anchor('verifyPasswordResetToken'),
+      anchor('resetPassword'),
       anchor('getAccount'),
       anchor('getAccountStoreMappings'),
       anchor('getDefaultAccountStore'),
