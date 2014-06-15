@@ -51,7 +51,7 @@ application.authenticateAccount(authcRequest, function onAuthcResult(err, result
       <td>`authenticationRequest`</td>
       <td>`object`</td>
       <td>required</td>
-      <td>Object with two name/value pairs: `username` and `password`.  `username` can be either a username or email address. `password` is the _raw_ password submitted directly by your application user.  Stormpath hashes and encrypts this value securely automatically - you don't have to do anything special before submitting to Stormpath.</td>
+      <td>Object with two required name/value pairs: `username` and `password` and one optional `accountStore`.  `username` can be either a username or email address. `password` is the _raw_ password submitted directly by your application user.  Stormpath hashes and encrypts this value securely automatically - you don't have to do anything special before submitting to Stormpath. If you desire to target a specific `accountStore`, then provide reference to the `accountStore` in options.</td>
     </tr>
     <tr>
       <td>`callback`</td>

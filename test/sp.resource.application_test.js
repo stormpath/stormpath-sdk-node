@@ -82,6 +82,38 @@ describe('Resources: ', function () {
             AuthenticationResult, cbSpy);
         });
       });
+
+      describe('if accountStore is provided', function(){
+        var application, accountStore, app, cbSpy, username, password;
+        before(function(done){
+          // arrange
+          username = 'test_username';
+          password = 'test_password';
+          app = { href: '/app/test/href', loginAttempts: {href: '/login/attempts/test/href'}};
+          accountStore = { href: '/account/store/test/href'};
+          application = new Application(app, dataStore);
+          cbSpy = sinon.spy(done);
+          nock(u.BASE_URL)
+            .post(u.v1(app.loginAttempts.href) + '?expand=account',{
+              value: utils.base64.encode(username + ":" + password),
+              type: 'basic',
+              accountStore: accountStore
+            })
+            .reply(200, {});
+
+          // act
+          application.authenticateAccount({
+            username: username,
+            password: password,
+            accountStore: accountStore
+          }, cbSpy);
+        });
+
+        // assert
+        it('should provide account store in request', function(){
+          cbSpy.should.have.been.calledOnce;
+        });
+      });
     });
 
     describe('send password reset form', function () {
@@ -191,13 +223,12 @@ describe('Resources: ', function () {
           done();
         });
         nock(u.BASE_URL)
-          .post(u.v1(app.passwordResetTokens.href + '/' + token), { password: password })
+          .post(u.v1(app.passwordResetTokens.href + '/' + token  + '?expand=account'), { password: password })
           .reply(200, { account: acc });
 
         //Act
         application.resetPassword(token, password, cbSpy);
       });
-      after(function(){});
 
       // Assert
       it('should sent post request with password in body', function(){
