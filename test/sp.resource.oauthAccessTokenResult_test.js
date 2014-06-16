@@ -57,19 +57,20 @@ describe('OauthAccessTokenResult', function () {
         decoded = jwt.decode(response.access_token,clientApiSecret);
       });
 
-      it('should have the correct client_id', function(){
-        assert.equal(decoded.client_id,fakeApiKey.id);
+      it('should have api key as the sub', function(){
+        assert.equal(decoded.sub,fakeApiKey.id);
       });
-      it('should have the application href', function(){
-        assert.equal(decoded.application_href,fakeAppHref);
+      it('should have the application href as the iss', function(){
+        assert.equal(decoded.iss,fakeAppHref);
       });
-      it('should have a timestamp that is equal to now', function(){
+      it('should have a timestamp (iat) that is equal to now', function(){
         // .. give or take a second because test may run parallel
-        var diff = utils.nowEpochSeconds() - decoded.timestamp;
+        var diff = utils.nowEpochSeconds() - decoded.iat;
         assert.closeTo(diff,0,1);
       });
-      it('should have the default ttl', function(){
-        assert.equal(decoded.expires_in,3600);
+      it('should have an expiry (exp) in one hour (the default)', function(){
+        var diff = decoded.exp - decoded.iat;
+        assert.equal(diff,3600);
       });
 
     });
