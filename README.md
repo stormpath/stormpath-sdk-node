@@ -18,6 +18,29 @@ The Quickstart is on the front page of the [Stormpath Node.js API Documentation]
 
 ## Change Log
 
+### 0.2.0
+
+Improvements:
+
+* Support Redis and Memcahced as cache stores
+
+* Social provider support for Google and Facebook
+
+* Create, modify, delete Account Store Mappings
+
+* Add iterator methods to collection resources
+
+Fixes:
+
+* Cache regions are now implemented
+
+* `Tenant.verifyAccountEmail` returns an `Account` object, as expected
+
+Breaking changes:
+
+* `Cache` now takes an options hash instead of positional params
+
+
 ### 0.1.2
 
 Fixed Readme to reflect 0.1.1 changes (this release does not affect code at all).
