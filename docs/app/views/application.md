@@ -1059,21 +1059,17 @@ function myRouteHandler(req,res){
 If you are not using a framework, you may manually construct an object literal and pass that instead:
 
 ```javascript
-
-// Example object literal
+// Example object literal for an Oauth token exchange request
 
 var requestObject = {
-  url: '/oauth/token?grant_type=client_credentials',  // url is required
-  headers:{                        // the headers property is required
-    'authorization': 'Basic '      // but the authorization field is optional
+  url: '/oauth/token?grant_type=client_credentials',
+  headers:{
+    'authorization': 'Basic 3HR937281K7QWC5YS37289WPE:MTdncVDALvHcdoY3sjrK+/WgYY3sj3AZx1vZx1v'
   },
-  body: {                          // body property and it's properties are all optional
-    'access_token': '',
-    'grant_type': ''
-  }
 };
+
 application.authenticateApiRequest(requestObject,function(err,authResult){
-  // ...
+  // .. handle the result
 })
 
 
@@ -1095,7 +1091,8 @@ application.authenticateApiRequest(requestObject,function(err,authResult){
       <td>`request`</td>
       <td>`object`</td>
       <td>required</td>
-      <td> An instance of an http request from your web framework, or an object literal which has the following properties:
+      <td>
+        <p>An instance of an http request from your web framework, or an object literal which has the following properties:</p>
         <ul>
           <li> `url` - REQUIRED - the url of the request, including the query string.  E.g. '/resource?access_token=anaccesstoken'</li>
           <li> `headers` - REQUIRED - a key/value object of request headers.  The object itself is required, but it may contain an optional `authorization` property</li>
