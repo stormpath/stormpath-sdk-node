@@ -1022,3 +1022,103 @@ application.addAccountStore(directory, function(err, asm){
 void;
 If the request fails, the callback's first parameter (`err`) will report the failure.
 If the request succeeds, the instance of  [AccountStoreMapping](accountStoreMapping) will be provided to the `callback` as the callback's second parameter.
+
+---
+
+<a name="authenticateApiRequest"></a>
+
+### <span class="member">method</span> authenticateApiRequest(request, callback)
+
+Used to authenticate users who wish to identify themselves with an ApiKey that has been created on their [Account](account).  The user will supply this information in an HTTP request to your server.  You will then pass that http request to this method as the `request` parameter
+
+This method takes that `request` and attempts to do one of the following, based on the nature of the request.
+
+* Authenticate the user via HTTP Basic Auth, if the `Authorization` header value is a Base64 encoded string of the format `Basic api_key_id:api_key_secret`.
+* Prepare an Oauth access token, if requested.  Occurs if HTTP Basic Auth is successful AND they request a token exchange by specifying `grant_type=client_credentials` as a URL param or body field.
+* Authenticate the user using a previously issued Oauth access token, which must be provided as the `access_token` parameter in the URL or body.
+
+In all situations, the `callback` will be called with either an error or a type of `AuthenticationResult`.  It is up to you to inspect the type of `AuthenticationResult` and respond with either the requested resource or the requested access token.  If an error is returned the error will contain information about the nature of the failure and is descriptive enough to be passed back to the end user.
+
+It is assumed that you are using a framework such as Express or Restify and that you have enabled the `bodyParser` in order to populate `req.body` as an object before passing the request to this function.  If you do not do this the method will not search the request body, only URL params.
+
+This method is useful if you want to support all these operations under one route handler and with one call to our API.
+
+#### Usage
+
+If you are using a framework such as Express or Restify, just pass along the request object:
+
+```javascript
+function myRouteHandler(req,res){
+  application.authenticateApiRequest(req,function(err,authResult){
+    // inspect the authResult type and determine how you'd like to respond
+  })
+}
+
+```
+
+If you are not using a framework, you may manually construct an object literal and pass that instead:
+
+```javascript
+
+// Example object literal
+
+var requestObject = {
+  url: '/oauth/token?grant_type=client_credentials',  // url is required
+  headers:{                        // the headers property is required
+    'authorization': 'Basic '      // but the authorization field is optional
+  },
+  body: {                          // body property and it's properties are all optional
+    'access_token': '',
+    'grant_type': ''
+  }
+};
+application.authenticateApiRequest(requestObject,function(err,authResult){
+  // ...
+})
+
+
+```
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>`request`</td>
+      <td>`object`</td>
+      <td>required</td>
+      <td> An instance of an http request from your web framework, or an object literal which has the following properties:
+        <ul>
+          <li> `url` - REQUIRED - the url of the request, including the query string.  E.g. '/resource?access_token=anaccesstoken'</li>
+          <li> `headers` - REQUIRED - a key/value object of request headers.  The object itself is required, but it may contain an optional `authorization` property</li>
+          <li>`body` - OPTIONAL - a key/value object which represents a parsed form body.  It will be searched for the `access_token` and `grant_type` properties</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>`callback`</td>
+      <td>`function`</td>
+      <td>required</td>
+      <td>
+        <p>The callback that will receive the error or authentication result.  The `authResult` will be one of the following types:</p>
+        <ul>
+        <li>[AuthenticationResult](authenticationResult) if they authenticated with Basic Auth</li>
+
+        <li>[OauthAccessTokenResult](oauthAccessTokenResult) if they authenticated with Basic Auth and requested an access token.  You can add scope (optional) and then send the vaule of `getTokenResponse()` as the response.</li>
+
+        <li>[OauthAuthenticationResult](oauthAuthenticationResult) if they authenticated with a previously issued Oauth access token.  You can inspect the scope of the token using the `requestedScopes` property</li>
+
+      </ul>
+
+      </td>
+    </tr>
+  </tbody>
+</table>

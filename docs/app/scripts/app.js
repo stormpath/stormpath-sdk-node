@@ -74,6 +74,14 @@ angular.module('docsApp', [
         templateUrl: 'views/resourceError.html',
         controller: 'MainCtrl'
       })
+      .when('/oauthAuthenticationResult', {
+        templateUrl: 'views/oauthAuthenticationResult.html',
+        controller: 'MainCtrl'
+      })
+      .when('/oauthAccessTokenResult', {
+        templateUrl: 'views/oauthAccessTokenResult.html',
+        controller: 'MainCtrl'
+      })
       .when('/tenant', {
         templateUrl: 'views/tenant.html',
         controller: 'MainCtrl'
