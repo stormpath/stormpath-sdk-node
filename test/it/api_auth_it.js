@@ -52,7 +52,9 @@ describe('Application',function(){
           },
           url: '/some/resource'
         };
-        app.authenticateApiRequest(requestObject,function(err,value){
+        app.authenticateApiRequest({
+          request: requestObject
+        },function(err,value){
           result = [err,value];
           done();
         });
@@ -77,7 +79,9 @@ describe('Application',function(){
           },
           url: '/some/resource'
         };
-        app.authenticateApiRequest(requestObject,function(err,value){
+        app.authenticateApiRequest({
+          request: requestObject
+        },function(err,value){
           result = [err,value];
           done();
         });
@@ -107,7 +111,9 @@ describe('Application',function(){
             },
             url: '/some/resource?grant_type=client_credentials'
           };
-          app.authenticateApiRequest(requestObject,function(err,value){
+          app.authenticateApiRequest({
+            request: requestObject
+          },function(err,value){
             result = [err,value];
             done();
           });
@@ -145,7 +151,9 @@ describe('Application',function(){
             },
             url: '/some/resource'
           };
-          app.authenticateApiRequest(requestObject,function(err,value){
+          app.authenticateApiRequest({
+            request: requestObject
+          },function(err,value){
             result = [err,value];
             done();
           });
@@ -168,7 +176,9 @@ describe('Application',function(){
             },
             url: '/some/resource'
           };
-          app.authenticateApiRequest(requestObject,function(err,value){
+          app.authenticateApiRequest({
+            request: requestObject
+          },function(err,value){
             result = [err,value];
             done();
           });
@@ -190,7 +200,9 @@ describe('Application',function(){
           headers: {},
           url: '/some/resource?access_token='+accessToken
         };
-        app.authenticateApiRequest(requestObject,function(err,value){
+        app.authenticateApiRequest({
+          request: requestObject
+        },function(err,value){
           result = [err,value];
           done();
         });
@@ -214,7 +226,9 @@ describe('Application',function(){
             access_token: accessToken
           }
         };
-        app.authenticateApiRequest(requestObject,function(err,value){
+        app.authenticateApiRequest({
+          request: requestObject
+        },function(err,value){
           result = [err,value];
           done();
         });
@@ -249,7 +263,9 @@ describe('Application',function(){
         },
         url: '/some/resource'
       };
-      app.authenticateApiRequest(requestObject,function(err,value){
+      app.authenticateApiRequest({
+          request: requestObject
+        },function(err,value){
         result = [err,value];
         done();
       });
@@ -271,7 +287,9 @@ describe('Application',function(){
         headers: { },
         url: '/some/resource?grant_type=not_client_Credentials'
       };
-      app.authenticateApiRequest(requestObject,function(err,value){
+      app.authenticateApiRequest({
+          request: requestObject
+        },function(err,value){
         result = [err,value];
         done();
       });
@@ -294,7 +312,9 @@ describe('Application',function(){
         },
         url: '/some/resource'
       };
-      app.authenticateApiRequest(requestObject,function(err,value){
+      app.authenticateApiRequest({
+          request: requestObject
+        },function(err,value){
         result = [err,value];
         done();
       });
@@ -315,7 +335,9 @@ describe('Application',function(){
         headers: { },
         url: '/some/resource'
       };
-      app.authenticateApiRequest(requestObject,function(err,value){
+      app.authenticateApiRequest({
+          request: requestObject
+        },function(err,value){
         result = [err,value];
         done();
       });
@@ -328,5 +350,9 @@ describe('Application',function(){
       assert.isUndefined(result[1]);
     });
   });
+
+  // TODO with setting custom scope (via scope factory)
+
+  // TODO with settting custom ttl
 
 });
