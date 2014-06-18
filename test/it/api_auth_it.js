@@ -426,10 +426,38 @@ describe('Application.authenticateApiRequest',function(){
 
   });
 
+  describe('with a custom ttl',function(){
 
+    var result;
+    var desiredTtl = 13;
+    var tokenResponse;
 
-  // TODO with setting custom scope (via scope factory)
+    before(function(done){
+      var requestObject = {
+        headers: {
+          'authorization': 'Basic ' + new Buffer([apiKey.id,apiKey.secret].join(':')).toString('base64')
+        },
+        url: '/some/resource?grant_type=client_credentials'
+      };
+      app.authenticateApiRequest({
+        request: requestObject,
+        ttl: desiredTtl
+      },function(err,value){
+        result = [err,value];
+        tokenResponse = value.tokenResponse;
+        done();
+      });
+    });
 
-  // TODO with settting custom ttl
+    it('should not err',function(){
+      assert.equal(result[0],null);
+    });
+
+    it('should set the ttl',function(){
+      assert.equal(tokenResponse.expires_in,desiredTtl);
+    });
+
+  });
+
 
 });
