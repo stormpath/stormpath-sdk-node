@@ -5,7 +5,7 @@ var assert = common.assert;
 var AuthenticationResult = require('../../lib/resource/AuthenticationResult');
 var OauthAccessTokenResult = require('../../lib/resource/OauthAccessTokenResult');
 var OauthAuthenticationResult = require('../../lib/resource/OauthAuthenticationResult');
-describe('Application',function(){
+describe('Application.authenticateApiRequest',function(){
 
   var app, account, apiKey, client;
   before(function(done){
@@ -142,7 +142,7 @@ describe('Application',function(){
       accessToken = oauthAccessTokenResult.getTokenResponse().access_token;
     });
     describe('using Bearer authorization',function(){
-      describe('and access_token is passed verbatim',function(){
+      describe('and access_token is passed as Authorization: Bearer <token>',function(){
         var result;
         before(function(done){
           var requestObject = {
@@ -191,28 +191,55 @@ describe('Application',function(){
           assert.isUndefined(result[1]);
         });
       });
+
+
     });
 
     describe('using url param',function(){
-      var result;
-      before(function(done){
-        var requestObject = {
-          headers: {},
-          url: '/some/resource?access_token='+accessToken
-        };
-        app.authenticateApiRequest({
-          request: requestObject
-        },function(err,value){
-          result = [err,value];
-          done();
+      describe('and url location search is enabled',function(){
+        var result;
+        before(function(done){
+          var requestObject = {
+            headers: {},
+            url: '/some/resource?access_token='+accessToken
+          };
+          app.authenticateApiRequest({
+            request: requestObject,
+            locations: ['url']
+          },function(err,value){
+            result = [err,value];
+            done();
+          });
+        });
+        it('should not err',function(){
+          assert.equal(result[0],null);
+        });
+
+        it('should return an instance of OauthAuthenticationResult',function(){
+          assert.instanceOf(result[1],OauthAuthenticationResult);
         });
       });
-      it('should not err',function(){
-        assert.equal(result[0],null);
-      });
+      describe('and url location search is NOT enabled',function(){
+        var result;
+        before(function(done){
+          var requestObject = {
+            headers: {},
+            url: '/some/resource?access_token='+accessToken
+          };
+          app.authenticateApiRequest({
+            request: requestObject
+          },function(err,value){
+            result = [err,value];
+            done();
+          });
+        });
+        it('should err',function(){
+          assert.instanceOf(result[0],Error);
+        });
 
-      it('should return an instance of OauthAuthenticationResult',function(){
-        assert.instanceOf(result[1],OauthAuthenticationResult);
+        it('should not return an instance of AuthenticationResult',function(){
+          assert.isUndefined(result[1]);
+        });
       });
     });
 
@@ -350,6 +377,8 @@ describe('Application',function(){
       assert.isUndefined(result[1]);
     });
   });
+
+
 
   // TODO with setting custom scope (via scope factory)
 
