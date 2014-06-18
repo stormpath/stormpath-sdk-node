@@ -80,6 +80,7 @@ function items() {
     item('Application', null, [
       anchor('Overview', 'top'),
       anchor('authenticateAccount'),
+      anchor('authenticateApiRequest'),
       anchor('createAccount'),
       anchor('createGroup'),
       anchor('getAccounts'),
@@ -94,8 +95,7 @@ function items() {
       anchor('getDefaultGroupStore'),
       anchor('setDefaultGroupStore'),
       anchor('createAccountStoreMapping'),
-      anchor('addAccountStore'),
-      anchor('authenticateApiRequest')
+      anchor('addAccountStore')
     ]),
 
     item('AuthenticationResult', 'authenticationResult', [
