@@ -178,22 +178,6 @@ function items() {
     //item('InstanceResource', 'instanceResource'),
     //item('Resource'),
 
-    item('OauthAuthenticationResult', 'oauthAuthenticationResult', [
-      anchor('Overview', 'top'),
-      anchor('getAccount'),
-      anchor('getScopes'),
-      anchor('getToken')
-    ]),
-
-    item('OauthAccessTokenResult', 'oauthAccessTokenResult', [
-      anchor('Overview', 'top'),
-      anchor('addScope'),
-      anchor('setTtl'),
-      anchor('setApplicationHref'),
-      anchor('getToken'),
-      anchor('getTokenResponse')
-    ]),
-
     item('ResourceError', 'resourceError', [
       anchor('Overview', 'top')
     ]),

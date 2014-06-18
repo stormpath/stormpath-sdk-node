@@ -204,7 +204,7 @@ describe('Application.authenticateApiRequest',function(){
         });
 
         it('should have the custom scope that was set',function(){
-          assert.equal(result[1].requestedScopes[0],customScope);
+          assert.equal(result[1].grantedScopes[0],customScope);
         });
       });
       describe('and access_token is tampered with',function(){
