@@ -1,3 +1,4 @@
+var jwt = require('jwt-simple');
 var common = require('../common');
 var helpers = require('./helpers');
 var assert = common.assert;
@@ -376,6 +377,53 @@ describe('Application.authenticateApiRequest',function(){
     it('should not return an instance of AuthenticationResult',function(){
       assert.isUndefined(result[1]);
     });
+  });
+
+  describe('with a scope factory',function(){
+
+    var result;
+    var requestedScope = 'requested-scope';
+    var givenScope = 'given-scope';
+    var scopeFactoryArgs;
+    var decodedAccessToken;
+
+    before(function(done){
+      var requestObject = {
+        headers: {
+          'authorization': 'Basic ' + new Buffer([apiKey.id,apiKey.secret].join(':')).toString('base64')
+        },
+        url: '/some/resource?grant_type=client_credentials&scope='+requestedScope
+      };
+      app.authenticateApiRequest({
+        request: requestObject,
+        scopeFactory: function(account,requestedScope){
+          scopeFactoryArgs = [account,requestedScope];
+          return givenScope;
+        }
+      },function(err,value){
+        result = [err,value];
+        decodedAccessToken = jwt.decode(result[1].tokenResponse.access_token,
+          client._dataStore.requestExecutor.options.apiKey.secret,'HS256');
+        done();
+      });
+    });
+
+    it('should not err',function(){
+      assert.equal(result[0],null);
+    });
+
+    it('should call the scope factory with the account',function(){
+      assert.equal(scopeFactoryArgs[0].href,account.href);
+    });
+
+    it('should call the scope factory with the requested scope',function(){
+      assert.equal(scopeFactoryArgs[1],requestedScope);
+    });
+
+    it('should add the scope to the token',function(){
+      assert.equal(decodedAccessToken.scope,givenScope);
+    });
+
   });
 
 
