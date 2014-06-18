@@ -134,12 +134,48 @@ describe('Application.authenticateApiRequest',function(){
 
   });
 
+  describe('with Authorization: Basic <key>:<secret> and grant_type=client_credentials in the body',function(){
+
+    var result;
+
+    before(function(done){
+      var requestObject = {
+        headers: {
+          'authorization': 'Basic ' + new Buffer([apiKey.id,apiKey.secret].join(':')).toString('base64')
+        },
+        url: '/some/resource',
+        body:{
+          grant_type: 'client_credentials'
+        }
+      };
+      app.authenticateApiRequest({
+        request: requestObject
+      },function(err,value){
+        result = [err,value];
+        done();
+      });
+    });
+
+    describe('the authentication result',function(){
+      it('should not err',function(){
+        assert.equal(result[0],null);
+      });
+
+      it('should return an instance of OauthAccessTokenResult',function(){
+        assert.instanceOf(result[1],OauthAccessTokenResult);
+      });
+    });
+
+  });
+
   describe('with a previously issued access token',function(){
+    var customScope = 'custom-scope';
     var accessToken;
     before(function(){
       // manually generate an access token
       var oauthAccessTokenResult = new OauthAccessTokenResult(apiKey,client._dataStore);
       oauthAccessTokenResult.setApplicationHref(app.href);
+      oauthAccessTokenResult.addScope(customScope);
       accessToken = oauthAccessTokenResult.getTokenResponse().access_token;
     });
     describe('using Bearer authorization',function(){
@@ -165,6 +201,10 @@ describe('Application.authenticateApiRequest',function(){
 
         it('should return an instance of OauthAuthenticationResult',function(){
           assert.instanceOf(result[1],OauthAuthenticationResult);
+        });
+
+        it('should have the custom scope that was set',function(){
+          assert.equal(result[1].requestedScopes[0],customScope);
         });
       });
       describe('and access_token is tampered with',function(){
