@@ -87,6 +87,45 @@ void; If the association fails, the callback's first parameter (`err`) will repo
 
 ---
 
+<a name="createApiKey"></a>
+### <span class="member">method</span> createApiKey(callback)
+
+Creates an [Api Key](apiKey) for this account, which can be used to authenticate a request to your service. For more information please read [Using Stormpath to Secure and Manage API Services](http://docs.stormpath.com/guides/securing-your-api/)
+
+#### Usage
+
+````javascript
+account.createApiKey(function(err,apiKey){
+  console.log(apiKey);
+})
+````
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+    <td>`callback`</td>
+      <td>function</td>
+      <td>required</td>
+      <td>
+        The callback to call when the Api Key has been created,
+        will be called with an error or instance of `ApiKey`.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+---
+
 <a name="getGroups"></a>
 ### <span class="member">method</span> getGroups(*[options,]* callback)
 

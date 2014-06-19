@@ -56,7 +56,7 @@ describe('Account.createApiKey',function(){
       assert.equal(result[0],null);
     });
 
-    it('should return an instance of Account',function(){
+    it('should return an instance of ApiKey',function(){
       assert.instanceOf(result[1],ApiKey);
     });
 
