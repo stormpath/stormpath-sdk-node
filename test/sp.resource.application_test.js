@@ -885,11 +885,18 @@ describe('Resources: ', function () {
       });
       describe('on second get',function(){
         var result;
+        var sandbox = sinon.sandbox.create();
         before(function(done){
+          sandbox.stub(dataStore.requestExecutor,'execute',function(requestOptions,cb) {
+            cb(null,_.extend({},foundResponse.items[0].account));
+          });
           application.getApiKey(foundResponse.items[0].id,function(err,value) {
             result = [err,value];
             done();
           });
+        });
+        after(function(){
+          sandbox.restore();
         });
         it('should have got it from the cache',function(){
           assert.equal(callCount,1);

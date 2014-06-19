@@ -499,5 +499,85 @@ describe('Application.authenticateApiRequest',function(){
 
   });
 
+  describe('with a disabled account',function(){
+
+    var result;
+
+    before(function(done){
+      account.status = 'DISABLED';
+      account.save(function(err){
+        if(err){
+          throw err;
+        }
+
+        var requestObject = {
+          headers: {
+            'authorization': 'Basic ' + new Buffer([apiKey.id,apiKey.secret].join(':')).toString('base64')
+          },
+          url: '/some/resource?grant_type=client_credentials'
+        };
+        app.authenticateApiRequest({
+          request: requestObject
+        },function(err,value){
+          result = [err,value];
+          done();
+        });
+      });
+    });
+
+    it('should err',function(){
+      assert.instanceOf(result[0],Error);
+    });
+
+    it('should not return an instance of AuthenticationResult',function(){
+      assert.isUndefined(result[1]);
+    });
+
+  });
+
+
+  describe('with a disabled api key',function(){
+
+    var result;
+
+    before(function(done){
+      account.status = 'ENABLED';
+      account.save(function(err){
+        if(err){
+          throw err;
+        }
+
+        apiKey.status = 'DISABLED';
+        apiKey.save(function(err){
+          if(err){
+            throw err;
+          }
+
+          var requestObject = {
+            headers: {
+              'authorization': 'Basic ' + new Buffer([apiKey.id,apiKey.secret].join(':')).toString('base64')
+            },
+            url: '/some/resource?grant_type=client_credentials'
+          };
+          app.authenticateApiRequest({
+            request: requestObject
+          },function(err,value){
+            result = [err,value];
+            done();
+          });
+        });
+      });
+    });
+
+    it('should err',function(){
+      assert.instanceOf(result[0],Error);
+    });
+
+    it('should not return an instance of AuthenticationResult',function(){
+      assert.isUndefined(result[1]);
+    });
+
+  });
+
 
 });
