@@ -1,89 +1,108 @@
 ## Client
 
-A `Client` instance is your starting point for all interactions with the Stormpath REST API - once you have a `Client` instance, you can do everything else.
+A `Client` instance is your starting point for all interactions with the
+Stormpath REST API.  Once you have a `Client` instance, you can do everything
+else.
 
-You can create (and customize) the Stormpath client in a number of ways, but at a bare minimum you need to specify your [Stormpath API Key](http://docs.stormpath.com/rest/quickstart/#get-an-api-key):
+You can create (*and customize*) the Stormpath client in a number of ways, but
+at a bare minimum you need to specify your [Stormpath API Key][] information.
 
-You can do this easily in one of two ways:
+You can do this in one of two ways:
 
-* Reference your downloaded `apiKey.properties` file (presumably in `$HOME/.stormpath/apiKey.properties`):
+* Reference your downloaded `apiKey.properties` file (*presumably
+  `~/.stormpath/apiKey.properties`*):
 
-    ```javascript
-    var stormpath = require('stormpath');
+  ```javascript
+  var stormpath = require('stormpath');
 
-    //Reference apiKey.properties in the process user's home dir.  Works on both Windows and *nix systems:
-    var homeDir = process.env[(process.platform === 'win32' ? 'USERPROFILE' : 'HOME')];
-    var apiKeyFilePath = homeDir + '/.stormpath/apiKey.properties';
+  // Platform agnostic way of getting the home directory.
+  var homeDir = process.env[(process.platform === 'win32' ? 'USERPROFILE' : 'HOME')];
+  var apiKeyFilePath = homeDir + '/.stormpath/apiKey.properties';
 
-    var client = null; //available after the ApiKey file is asynchronously loaded from disk
+  // Available after the properties file is asynchronously loaded from disk.
+  var client;
 
-    stormpath.loadApiKey(apiKeyFilePath, function apiKeyFileLoaded(err, apiKey) {
-      if (err) throw err;
-      client = new stormpath.Client({apiKey: apiKey});
-    });
-    ```
+  stormpath.loadApiKey(apiKeyFilePath, function(err, apiKey) {
 
-* Create an ApiKey object manually
+    client = new stormpath.Client({apiKey: apiKey});
+  });
+  ```
 
-    ```javascript
-    var stormpath = require('stormpath');
+* Create an ApiKey object manually:
 
-    //In this example, we'll reference the values from env vars (NEVER HARDCODE API KEY VALUES IN SOURCE CODE!)
-    var apiKey = new stormpath.ApiKey(process.env['STORMPATH_API_KEY_ID'], process.env['STORMPATH_API_KEY_SECRET']);
+  ```javascript
+  var stormpath = require('stormpath');
 
-    var client = new stormpath.Client({apiKey: apiKey});
-    ```
+  // In this example, we'll reference the API credentials from environment
+  // variables (*NEVER HARDCODE API KEY VALUES IN SOURCE CODE!*).
+  var apiKey = new stormpath.ApiKey(
+    process.env['STORMPATH_API_KEY_ID'],
+    process.env['STORMPATH_API_KEY_SECRET']
+  );
+
+  var client = new stormpath.Client({apiKey: apiKey});
+  ```
 
 **Since**: 0.1
 
 ---
 
-#### Caching
 
-The caching mechanism enables you to store the state of an already accessed resource in a cache store.
- If you accessed the resource again and the data inside the cache hasn’t yet expired,
-  you would get the resource directly from the cache store.
-  By doing so, you can reduce network traffic and still have access to some
-  of the resources even if there is a connectivity problem with `Stormpath`.
-  Be aware, however, that when using a persistent cache store like `Redis`,
-  if the data changes quickly on `Stormpath` and the `TTL` and `TTI` are set to a large value,
-  you may get resources with attributes that don’t reflect the actual state.
-  If this edge case won’t affect your data consistency,
-  you can use the caching mechanism by providing an additional parameter
-  when creating the `Client` instance:
+### Caching
 
-   ```javascript
-    var stormpath = require('stormpath');
+The caching mechanism enables you to store the state of an already accessed
+resource in a cache store.
 
-    //In this example, we'll reference the values from env vars (NEVER HARDCODE API KEY VALUES IN SOURCE CODE!)
-    var apiKey = new stormpath.ApiKey(process.env['STORMPATH_API_KEY_ID'], process.env['STORMPATH_API_KEY_SECRET']);
+If you access the resource again and the data inside the cache hasn't yet
+expired, you would get the resource directly from the cache store.
 
-    var cacheOptions = {
-      store: 'redis',
-      connection: {
-        host: 'localhost',
-        port: 6739,
-      }
-      options: {
-        // redis client options
-      },
-      ttl: 300,
-      tti: 300
-    }
+By doing so, you can reduce network traffic and still have access to some of
+the resources even if there is a connectivity problem with `Stormpath`.
 
-    var client = new stormpath.Client({apiKey: apiKey, cacheOptions: cacheOptions});
-    ```
+Be aware, however, that when using a persistent cache store like [Redis][],
+if the data changes quickly on `Stormpath` and the `TTL` and `TTI` are set to
+a large value, you may get resources with attributes that don't reflect the
+actual state.
+
+If this edge case won't affect your data consistency, you can use the caching
+mechanism by providing an additional parameter when creating the `Client`
+instance:
+
+```javascript
+var cacheOptions = {
+  store: 'redis',
+  connection: {
+    host: 'localhost',
+    port: 6379,
+  },
+  options: {
+    // redis client options (username, password, etc.)
+  },
+  ttl: 300,
+  tti: 300
+};
+
+var client = new stormpath.Client({
+  apiKey: apiKey,
+  cacheOptions: cacheOptions
+});
+```
 
 **Since**: 0.1.2
 
 ---
 
+
 <a name="ctor"></a>
 ### <span class="member">constructor</span> Client(options)
 
-The `Client` constructor function creates a new `Client` instance according to the specified `options` argument.
+The `Client` constructor function creates a new `Client` instance according to
+the specified `options` argument.
 
-`options` is an Object that contains at least an `apiKey` field with an [ApiKey](apiKey) object.  An `ApiKey` is required for all Client communication to the Stormpath API servers.
+`options` is an object that contains at least an `apiKey` field with an
+[ApiKey](apiKey) object.  An `ApiKey` is required for all Client communication
+to the Stormpath service.
+
 
 #### Usage
 
@@ -96,6 +115,7 @@ var options = {...};
 
 var client = new stormpath.Client(options);
 ```
+
 
 #### Parameters
 
@@ -119,14 +139,15 @@ var client = new stormpath.Client(options);
       <td><code>options.cacheOptions</code></td>
       <td><code>object</code></td>
       <td>optional</td>
-      <td>See 'Cache options parameters' below for details</td>
+      <td>See "Cache options parameters" below for details.</td>
     </tr>
   </tbody>
 </table>
 
 ---
 
-### Cache options parameters
+
+### Cache options Parameters
 
 <table class="table table-striped table-hover table-curved">
   <thead>
@@ -144,16 +165,16 @@ var client = new stormpath.Client(options);
       <td>optional</td>
       <td>The name or function that representing which cache store to use.
         By default `memory` store provider is used.
-        Available options: `memory`, `memcached`, `redis`
+        Available options: `memory`, `memcached`, `redis`.
       </td>
     </tr>
     <tr>
       <td><code>connection</code></td>
       <td><code>object</code></td>
       <td>optional</td>
-      <td>The store specific connection options, if any. E.g. `redis` requires a host
-        and a port to be set because we need that information when accessing `Redis`,
-        while `MemoryStore` do not requires any further options.
+      <td>The store specific connection options, if any.  e.g. `redis` requires a host
+        and a port to be set because we need that information when accessing `redis`,
+        while `MemoryStore` do not require any further options.
       </td>
     </tr>
     <tr>
@@ -166,7 +187,7 @@ var client = new stormpath.Client(options);
       <td><code>ttl</code></td>
       <td><code>number</code></td>
       <td>optional</td>
-      <td>Time To Live. The amount of time (in seconds) after which the stored resource data will be considered expired.
+      <td>Time To Live. The amount of time (<i>in seconds</i>) after which the stored resource data will be considered expired.
         By default, if not set, will be equal to 300 seconds.
       </td>
     </tr>
@@ -183,53 +204,58 @@ var client = new stormpath.Client(options);
 
 ---
 
-<a name="memory"></a>
-### In memory cache
 
-In memory cache provider. Supported options: `ttl`, `tti`
+<a name="memory"></a>
+### In Memory Cache
+
+In memory cache provider, this is the defaut provider.  Supported options: `ttl`, `tti`
+
 
 #### Usage
 
-   ```javascript
+```javascript
+var cacheOptions = {
+  store: 'memory',
+  ttl: 300,
+  tti: 300
+};
 
-    var cacheOptions = {
-      store: 'memory',
-      ttl: 300,
-      tti: 300
-    }
-
-    var client = new stormpath.Client({apiKey: apiKey, cacheOptions: cacheOptions});
-    ```
+var client = new stormpath.Client({
+  apiKey: apiKey,
+  cacheOptions: cacheOptions
+});
+```
 
 ---
+
 
 <a name="memcached"></a>
 ### Memcached
 
 Memcached provider.
 
+
 #### Usage
 
-   ```javascript
-    var stormpath = require('stormpath');
+```javascript
+var cacheOptions = {
+  store: 'memcached',
+  connection: '127.0.0.1:11212',
+  options: {
+    poolSize: 10
+  },
+  ttl: 300,
+  tti: 300
+};
 
-    //In this example, we'll reference the values from env vars (NEVER HARDCODE API KEY VALUES IN SOURCE CODE!)
-    var apiKey = new stormpath.ApiKey(process.env['STORMPATH_API_KEY_ID'], process.env['STORMPATH_API_KEY_SECRET']);
+var client = new stormpath.Client({
+  apiKey: apiKey,
+  cacheOptions: cacheOptions
+});
+```
 
-    var cacheOptions = {
-      store: 'memcached',
-      connection: '192.168.0.102:11212',
-      options: {
-        poolSize: 10    // memcached option
-      },
-      ttl: 300,
-      tti: 300
-    }
 
-    var client = new stormpath.Client({apiKey: apiKey, cacheOptions: cacheOptions});
-    ```
-
-#### Cache options parameters
+#### Cache options Parameters
 
 <table class="table table-striped table-hover table-curved">
   <thead>
@@ -256,7 +282,7 @@ Memcached provider.
       </td>
       <td>optional</td>
       <td>
-        Passed to <code>new Memcached(<strong>connection</strong>, options);</code>
+        Passed to <code>new Memcached(<strong>connection</strong>, options);</code>.
       </td>
     </tr>
     <tr>
@@ -264,7 +290,7 @@ Memcached provider.
       <td><code>object</code></td>
       <td>optional</td>
       <td>
-        <p>Passed to <code>new Memcached(connection, <strong>options</strong>);</code></p>
+        <p>Passed to <code>new Memcached(connection, <strong>options</strong>);</code>.</p>
         <p>See the <a href="https://github.com/3rd-Eden/node-memcached" target="_blank">node-memcached docmenation</a> for complete option list.<p>
       </td>
     </tr>
@@ -272,7 +298,7 @@ Memcached provider.
       <td><code>ttl</code></td>
       <td><code>number</code></td>
       <td>optional</td>
-      <td>Time To Live. The amount of time (in seconds) after which the stored resource data will be considered expired.
+      <td>Time To Live. The amount of time (<i>in seconds</i>) after which the stored resource data will be considered expired.
         By default, if not set, will be equal to 300 seconds.
       </td>
     </tr>
@@ -289,34 +315,37 @@ Memcached provider.
 
 ---
 
+
 <a name="redis"></a>
 ### Redis
 
-
 Redis provider.
+
 
 #### Usage
 
-   ```javascript
-    var stormpath = require('stormpath');
+```javascript
+var cacheOptions = {
+  store: 'redis',
+  connection: {
+    host: 'localhost',
+    port: 6379
+  },
+  options: {
+    return_buffers: false
+  },
+  ttl: 300,
+  tti: 300
+};
 
-    //In this example, we'll reference the values from env vars (NEVER HARDCODE API KEY VALUES IN SOURCE CODE!)
-    var apiKey = new stormpath.ApiKey(process.env['STORMPATH_API_KEY_ID'], process.env['STORMPATH_API_KEY_SECRET']);
+var client = new stormpath.Client({
+  apiKey: apiKey,
+  cacheOptions: cacheOptions
+});
+```
 
-    var cacheOptions = {
-      store: 'redis',
-      connection: { host: '127.0.0.1', port: 6379 },
-      options: {
-        return_buffers: false   //redis option
-      },
-      ttl: 300,
-      tti: 300
-    }
 
-    var client = new stormpath.Client({apiKey: apiKey, cacheOptions: cacheOptions});
-    ```
-
-#### Cache options parameters
+#### Cache options Parameters
 
 <table class="table table-striped table-hover table-curved">
   <thead>
@@ -342,7 +371,7 @@ Redis provider.
       </td>
       <td>optional</td>
       <td>
-        An object that allows you to specity <code>host</code> or <code>port</code>, as strings, for your redis connection.  This is is passed to <code>redis.createClient(<strong>host</strong>,<strong>port</strong>,options)</code> and will default to 127.0.0.1 and 6379 if not provided.
+        An object that allows you to specity <code>host</code> or <code>port</code>, as strings, for your redis connection.  This is is passed to <code>redis.createClient(<strong>host</strong>, <strong>port</strong>, options)</code> and will default to 127.0.0.1 and 6379 if not provided.
       </td>
     </tr>
     <tr>
@@ -350,7 +379,7 @@ Redis provider.
       <td><code>object</code></td>
       <td>optional</td>
       <td>
-        <p>Options object that will be passed to <code>redis.createClient(host,port,<strong>options</strong>)</code></p>
+        <p>Options object that will be passed to <code>redis.createClient(host, port, <strong>options</strong>)</code>.</p>
         <p>See the <a href="https://github.com/mranney/node_redis" target="_blank">node-redis docmenation</a> for complete option list.</p>
       </td>
     </tr>
@@ -358,7 +387,7 @@ Redis provider.
       <td><code>ttl</code></td>
       <td><code>number</code></td>
       <td>optional</td>
-      <td>Time To Live. The amount of time (in seconds) after which the stored resource data will be considered expired.
+      <td>Time To Live. The amount of time (<i>in seconds</i>) after which the stored resource data will be considered expired.
         By default, if not set, will be equal to 300 seconds.
       </td>
     </tr>
@@ -375,33 +404,46 @@ Redis provider.
 
 ---
 
+
 <a name="createApplication"></a>
 ### <span class="member">method</span> createApplication(application, *[options,]* callback)
 
-Creates a new [Application](application) instance in the Client's [Tenant](tenant).
+Creates a new [Application](application) instance in the Client's
+[Tenant](tenant).
+
 
 #### Usage
 
-Create a new Application with its own private Directory so you can start adding user accounts right away:
+Create a new Application with its own private Directory so you can start adding
+user accounts right away:
 
 ```javascript
-var app = {name: 'My Awesome App', description: 'Srsly. Awesome.'};
+var app = {
+  name: 'My Awesome App',
+  description: 'Srsly. Awesome.'
+};
 
-client.createApplication(app, {createDirectory:true}, function(err, createdApplication) {
-    if (err) throw err;
-    console.log(createdApplication);
+client.createApplication(app, {createDirectory: true}, function(err, newApp) {
+  console.log(newApp);
 });
 ```
-Create a new Application without any mapped user account stores.  You are responsible for adding account stores later if you want to be able to create new user accounts via the application directly.  Notice there is no _options_ param:
+
+Create a new Application without any mapped user account stores.  You are
+responsible for adding account stores later if you want to be able to create
+new user accounts via the application directly.  Notice there is no
+_options_ param:
 
 ```javascript
-var app = {name: 'My Awesome App', description: 'Srsly. Awesome.'};
+var app = {
+  name: 'My Awesome App',
+  description: 'Srsly. Awesome.'
+};
 
-client.createApplication(app, function(err, createdApplication) {
-    if (err) throw err;
-    console.log(createdApplication);
+client.createApplication(app, function(err, newApp) {
+  console.log(newApp);
 });
 ```
+
 
 #### Parameters
 
@@ -438,25 +480,30 @@ client.createApplication(app, function(err, createdApplication) {
 
 #### Returns
 
-void; the created `Application` returned from the server will be provided to the `callback` as the callback's second parameter.
+The created `Application` returned from the server will be provided to the `callback` as the callback's second parameter.
 
 ---
+
 
 <a name="createDirectory"></a>
 ### <span class="member">method</span> createDirectory(directory, *[options,]* callback)
 
 Creates a new [Directory](directory) instance in the Client's [Tenant](tenant).
 
+
 #### Usage
 
 ```javascript
-var app = {name: 'Employees Directory', description: 'Only Employee accounts in here please.'};
+var dir = {
+  name: 'Employees Directory',
+  description: 'Only Employee accounts in here please.'
+};
 
-client.createApplication(app, function(err, createdApplication) {
-    if (err) throw err;
-    console.log(createdApplication);
+client.createDirectory(dir, function(err, newDir) {
+  console.log(newDir);
 });
 ```
+
 
 #### Parameters
 
@@ -493,36 +540,45 @@ client.createApplication(app, function(err, createdApplication) {
   </tbody>
 </table>
 
+
 #### Returns
 
-void; the created `Directory` returned from the server will be provided to the `callback` as the callback's second parameter.
+The created `Directory` returned from the server will be provided to the
+`callback` as the callback's second parameter.
 
 ---
+
 
 <a name="getAccount"></a>
 ### <span class="member">method</span> getAccount(accountHref, *[options,]* callback)
 
-Retrieves the [Account](account) resource at `accountHref` and provides it to the specified `callback`.
+Retrieves the [Account](account) resource at `accountHref` and provides it to
+the specified `callback`.
 
-**NOTE**: This implementation does not validate that the returned resource is an `Account`: it is assumed that the caller knows the `href` represents an account location.
+**NOTE**: This implementation does not validate that the returned resource is
+an `Account`: it is assumed that the caller knows the `href` represents an
+account location.
+
 
 #### Usage
 
 For an `href` that you know represents an account:
 
 ```javascript
-client.getAccount(accountHref, function(err, account) {
-    if (err) throw err;
-    console.log(account);
+client.getAccount(href, function(err, account) {
+  console.log(account);
 });
 ```
-You can specify query parameters as the __options__ argument, for example, for [resource expansion](http://docs.stormpath.com/rest/product-guide/#account-retrieve):
+
+You can specify query parameters as the **options** argument, for example, for
+[resource expansion][]:
+
 ```javascript
-client.getAccount(accountHref, {expand:'customData'}, function(err, account) {
-    if (err) throw err;
-    console.log(account);
+client.getAccount(href, {expand: 'customData'}, function(err, account) {
+  console.log(account);
 });
 ```
+
 
 #### Parameters
 
@@ -546,7 +602,7 @@ client.getAccount(accountHref, {expand:'customData'}, function(err, account) {
       <td><em><code>options</code></em></td>
       <td><code>object></code></td>
       <td><em>optional</em></td>
-      <td>An object literal of name/value pairs to use as query parameters, for example, [resource expansion](http://docs.stormpath.com/rest/product-guide/#account-retrieve).</td>
+      <td>An object literal of name/value pairs to use as query parameters, for example, [resource expansion][].</td>
     </tr>
     <tr>
           <td><code>callback</code></td>
@@ -557,36 +613,44 @@ client.getAccount(accountHref, {expand:'customData'}, function(err, account) {
   </tbody>
 </table>
 
+
 #### Returns
 
-void; the retrieved `Account` resource will be provided to the `callback` as the callback's second parameter.
+The retrieved `Account` resource will be provided to the `callback` as the callback's second parameter.
 
 ---
+
 
 <a name="getApplication"></a>
 ### <span class="member">method</span> getApplication(applicationHref, *[options,]* callback)
 
-Retrieves the [Application](application) resource at `applicationHref` and provides it to the specified `callback`.
+Retrieves the [Application](application) resource at `applicationHref` and
+provides it to the specified `callback`.
 
-**NOTE**: This implementation does not validate that the returned resource is an `Application`: it is assumed that the caller knows the `applicationHref` represents an application location.
+**NOTE**: This implementation does not validate that the returned resource is
+an `Application`: it is assumed that the caller knows the `applicationHref`
+represents an application location.
+
 
 #### Usage
 
 For an `applicationHref` that you know represents an application:
 
 ```javascript
-client.getApplication(appHref, function(err, app) {
-    if (err) throw err;
-    console.log(app);
+client.getApplication(href, function(err, app) {
+  console.log(app);
 });
 ```
-You can specify query parameters as the __options__ argument, for example, for [resource expansion](http://docs.stormpath.com/rest/product-guide/#retrieve-an-application):
+
+You can specify query parameters as the **options** argument, for example, for
+[resource expansion][]:
+
 ```javascript
-client.getApplication(appHref, {expand:'accounts'}, function(err, app) {
-    if (err) throw err;
-    console.log(app);
+client.getApplication(href, {expand: 'accounts'}, function(err, app) {
+  console.log(app);
 });
 ```
+
 
 #### Parameters
 
@@ -610,7 +674,7 @@ client.getApplication(appHref, {expand:'accounts'}, function(err, app) {
       <td><em><code>options</code></em></td>
       <td><code>object></code></td>
       <td><em>optional</em></td>
-      <td>Name/value pairs to use as query parameters, for example, for [resource expansion](http://docs.stormpath.com/rest/product-guide/#application-retrieve).</td>
+      <td>Name/value pairs to use as query parameters, for example, for [resource expansion][].</td>
     </tr>
     <tr>
           <td><code>callback</code></td>
@@ -621,46 +685,69 @@ client.getApplication(appHref, {expand:'accounts'}, function(err, app) {
   </tbody>
 </table>
 
+
 #### Returns
 
-void; the retrieved `Application` resource will be provided to the `callback` as the callback's second parameter.
+The retrieved `Application` resource will be provided to the `callback` as the
+callback's second parameter.
 
 ---
+
 
 <a name="getApplications"></a>
 ### <span class="member">method</span> getApplications(*[options,]* callback)
 
-Retrieves a [collection](collectionResource) of [Tenant](tenant) [Application](application)s and provides the collection to the specified `callback`.
+Retrieves a [collection](collectionResource) of [Tenant](tenant)
+[Application](application)s and provides the collection to the specified
+`callback`.
 
-If no options are specified, all of the client tenant's applications are retrieved.  If options (query parameters) are specified for a search, only those applications matching the search will be retrieved.  If the search does not return any results, the collection will be empty.
+If no options are specified, all of the client tenant's applications are
+retrieved.  If options (*query parameters*) are specified for a search, only
+those applications matching the search will be retrieved.  If the search
+does not return any results, the collection will be empty.
+
 
 #### Usage
 
-If you want to retrieve _all_ of your tenant's applications:
+If you want to retrieve *all* of your tenant's applications:
 
 ```javascript
 client.getApplications(function(err, applications) {
-    if (err) throw err;
 
-    applications.each(function(err, app, offset) {
-      console.log('Offset ' + offset + ', application: ' + app);
-    });
+  applications.each(function(app, callback) {
+    console.log(app);
+    callback();
+  }, function(err) {
+
+  });
 });
 ```
-As you can see, the [Collection](collectionResource) provided to the `callback` has an `each` function that accepts its own callback.  The collection will iterate over all of the applications in the collection, and invoke the callback for each one.  The `offset` parameter indicates the index of the application in the returned collection.  The `offset` parameter is optional - it may be omitted from the callback definition.
 
-If you don't want all applications, and only want specific ones, you can search for them by specifying the _options_ argument with [application search](http://docs.stormpath.com/rest/product-guide/#tenant-applications-search) query parameters:
+As you can see, the [Collection](collectionResource) provided to the `callback`
+has an `each` function that accepts its own callback.  The collection will
+iterate over all of the applications in the collection, and invoke the callback
+for each one.
+
+If you don't want all applications, and only want specific ones, you can search
+for them by specifying the *options* argument with [application search][]
+query parameters:
 
 ```javascript
-client.getApplications({name: '*Awesome*'}, function(err, applications) {
-    if (err) throw err;
+client.getApplications({name: '*Awesome*'}, function(err, apps) {
 
-    applications.each(function(err, app) {
-      console.log(app);
-    });
+  applications.each(function(app, callback) {
+    console.log(app);
+    callback();
+  }, function(err) {
+
+  });
 });
 ```
-The above code example would only print out applications with the text fragment `Awesome` in their name.  See the Stormpath REST API Guide's [application search documentation](http://docs.stormpath.com/rest/product-guide/#tenant-applications-search) for other supported query parameters, such as reference expansion.
+
+The above code example would only print out applications with the text fragment
+`Awesome` in their name.  See the Stormpath [application search documentation][]
+for other supported query parameters, such as reference expansion.
+
 
 #### Parameters
 
@@ -689,32 +776,38 @@ The above code example would only print out applications with the text fragment 
   </tbody>
 </table>
 
+
 #### Returns
 
-void; the retrieved collection of `Application`s will be provided to the `callback` as the callback's second parameter.
+The retrieved collection of `Application`s will be provided to the `callback`
+as the callback's second parameter.
 
 ---
+
 
 <a name="getCurrentTenant"></a>
 ### <span class="member">method</span> getCurrentTenant(*[options,]* callback)
 
 Retrieves the client's [Tenant](tenant) and provides it to the specified `callback`.
 
+
 #### Usage
 
 ```javascript
 client.getCurrentTenant(function(err, tenant) {
-    if (err) throw err;
-    console.log(tenant);
+  console.log(tenant);
 });
 ```
-You can also use [resource expansion](http://docs.stormpath.com/rest/product-guide/#link-expansion) options (query params) to obtain linked resources in the same request:
+
+You can also use [resource expansion][] options (query params) to obtain
+linked resources in the same request:
+
 ```javascript
 client.getCurrentTenant({expand:'applications'}, function(err, tenant) {
-    if (err) throw err;
-    console.log(tenant);
+  console.log(tenant);
 });
 ```
+
 
 #### Parameters
 
@@ -743,46 +836,69 @@ client.getCurrentTenant({expand:'applications'}, function(err, tenant) {
   </tbody>
 </table>
 
+
 #### Returns
 
-void; the retrieved `Tenant` resource will be provided to the `callback` as the callback's second parameter.
+The retrieved `Tenant` resource will be provided to the `callback` as the callback's second parameter.
 
 ---
+
 
 <a name="getDirectories"></a>
 ### <span class="member">method</span> getDirectories(*[options,]* callback)
 
-Retrieves a [collection](collectionResource) of [Tenant](tenant) [Directories](directory) and provides the collection to the specified `callback`.
+Retrieves a [collection](collectionResource) of [Tenant](tenant)
+[Directories](directory) and provides the collection to the specified
+`callback`.
 
-If no options are specified, all of the client tenant's directories are retrieved.  If options (query parameters) are specified for a search, only those directories matching the search will be retrieved.  If the search does not return any results, the collection will be empty.
+If no options are specified, all of the client tenant's directories are
+retrieved.  If options (*query parameters*) are specified for a search, only
+those directories matching the search will be retrieved.  If the search does
+not return any results, the collection will be empty.
+
 
 #### Usage
 
-If you want to retrieve _all_ of your tenant's directories:
+If you want to retrieve *all* of your tenant's directories:
 
 ```javascript
 client.getDirectories(function(err, directories) {
-    if (err) throw err;
 
-    directories.each(function(err, dir, offset) {
-      console.log('Offset ' + offset + ', dir: ' + dir);
-    });
+  directories.each(function(dir, callback) {
+    console.log(dir);
+    callback();
+  }, function(err) {
+
+  });
 });
 ```
-As you can see, the [Collection](collectionResource) provided to the `callback` has an `each` function that accepts its own callback.  The collection will iterate over all of the directories in the collection, and invoke the callback for each one.  The `offset` parameter indicates the index of the directory in the returned collection.  The `offset` parameter is optional - it may be omitted from the callback definition.
 
-If you don't want all directories, and only want specific ones, you can search for them by specifying the _options_ argument with [directory search](http://docs.stormpath.com/rest/product-guide/#tenant-directories-search) query parameters:
+As you can see, the [Collection](collectionResource) provided to the `callback`
+has an `each` function that accepts its own callback.  The collection will
+iterate over all of the directories in the collection, and invoke the callback
+for each one.
+
+If you don't want all directories, and only want specific ones, you can search
+for them by specifying the *options* argument with [directory search][]
+query parameters:
 
 ```javascript
 client.getDirectories({name: '*foo*'}, function(err, directories) {
-    if (err) throw err;
 
-    directories.each(function(err, dir) {
-      console.log(dir);
-    });
+
+  directories.each(function(dir, callback) {
+    console.log(dir);
+    callback();
+  }, function(err) {
+
+  });
 });
 ```
-The above code example would only print out directories with the text fragment `foo` in their name.  See the Stormpath REST API Guide's [directory search documentation](http://docs.stormpath.com/rest/product-guide/#tenant-directories-search) for other supported query parameters, such as reference expansion.
+
+The above code example would only print out directories with the text fragment
+`foo` in their name.  See the Stormpath [directory search documentation][] for
+other supported query parameters, such as reference expansion.
+
 
 #### Parameters
 
@@ -811,36 +927,45 @@ The above code example would only print out directories with the text fragment `
   </tbody>
 </table>
 
+
 #### Returns
 
-void; the retrieved collection of `Directory` resources will be provided to the `callback` as the callback's second parameter.
+The retrieved collection of `Directory` resources will be provided to the
+`callback` as the callback's second parameter.
 
 ---
+
 
 <a name="getDirectory"></a>
 ### <span class="member">method</span> getDirectory(directoryHref, *[options,]* callback)
 
-Retrieves the [Directory](directory) resource at `directoryHref` and provides it to the specified `callback`.
+Retrieves the [Directory](directory) resource at `directoryHref` and provides
+it to the specified `callback`.
 
-**NOTE**: This implementation does not validate that the returned resource is a `Directory`: it is assumed that the caller knows the `directoryHref` represents a directory location.
+**NOTE**: This implementation does not validate that the returned resource is a
+`Directory`: it is assumed that the caller knows the `directoryHref` represents
+a directory location.
+
 
 #### Usage
 
 For a `directoryHref` that you know represents a directory:
 
 ```javascript
-client.getDirectory(directoryHref, function(err, dir) {
-    if (err) throw err;
-    console.log(dir);
+client.getDirectory(href, function(err, dir) {
+  console.log(dir);
 });
 ```
-You can specify query parameters as the __options__ argument, for example, for [resource expansion](http://docs.stormpath.com/rest/product-guide/#retrieve-a-directory):
+
+You can specify query parameters as the **options** argument, for example, for
+[resource expansion][]:
+
 ```javascript
-client.getDirectory(directoryHref, {expand:'accounts'}, function(err, dir) {
-    if (err) throw err;
-    console.log(dir);
+client.getDirectory(href, {expand: 'accounts'}, function(err, dir) {
+  console.log(dir);
 });
 ```
+
 
 #### Parameters
 
@@ -875,36 +1000,45 @@ client.getDirectory(directoryHref, {expand:'accounts'}, function(err, dir) {
   </tbody>
 </table>
 
+
 #### Returns
 
-void; the retrieved `Directory` resource will be provided to the `callback` as the callback's second parameter.
+The retrieved `Directory` resource will be provided to the `callback` as the
+callback's second parameter.
 
 ---
+
 
 <a name="getGroup"></a>
 ### <span class="member">method</span> getGroup(groupHref, *[options,]* callback)
 
-Retrieves the [Group](group) resource at `groupHref` and provides it to the specified `callback`.
+Retrieves the [Group](group) resource at `groupHref` and provides it to the
+specified `callback`.
 
-**NOTE**: This implementation does not validate that the returned resource is a `Group`: it is assumed that the caller knows the `groupHref` represents a group location.
+**NOTE**: This implementation does not validate that the returned resource is a
+`Group`: it is assumed that the caller knows the `groupHref` represents a group
+location.
+
 
 #### Usage
 
 For a `groupHref` that you know represents a group:
 
 ```javascript
-client.getGroup(groupHref, function(err, group) {
-    if (err) throw err;
-    console.log(group);
+client.getGroup(href, function(err, group) {
+  console.log(group);
 });
 ```
-You can specify query parameters as the __options__ argument, for example, for [resource expansion](http://docs.stormpath.com/rest/product-guide/#retrieve-a-group):
+
+You can specify query parameters as the **options** argument, for example, for
+[resource expansion][]:
+
 ```javascript
-client.group(groupHref, {expand:'accounts'}, function(err, group) {
-    if (err) throw err;
-    console.log(group);
+client.group(href, {expand: 'accounts'}, function(err, group) {
+  console.log(group);
 });
 ```
+
 
 #### Parameters
 
@@ -939,18 +1073,25 @@ client.group(groupHref, {expand:'accounts'}, function(err, group) {
   </tbody>
 </table>
 
+
 #### Returns
 
-void; the retrieved `Group` resource will be provided to the `callback` as the callback's second parameter.
+The retrieved `Group` resource will be provided to the `callback` as the
+callback's second parameter.
 
 ---
+
 
 <a name="getGroupMembership"></a>
 ### <span class="member">method</span> getGroupMembership(href, *[options,]* callback)
 
-Retrieves the [GroupMembership](groupMembership) resource at `href` and provides it to the specified `callback`.
+Retrieves the [GroupMembership](groupMembership) resource at `href` and
+provides it to the specified `callback`.
 
-**NOTE**: This implementation does not validate that the returned resource is a `GroupMembership`: it is assumed that the caller knows the `href` represents a group location.
+**NOTE**: This implementation does not validate that the returned resource is
+a `GroupMembership`: it is assumed that the caller knows the `href` represents
+a group location.
+
 
 #### Usage
 
@@ -958,17 +1099,19 @@ For an `href` that you know represents a GroupMembership:
 
 ```javascript
 client.getGroupMembership(href, function(err, membership) {
-    if (err) throw err;
-    console.log(membership);
+  console.log(membership);
 });
 ```
-You can specify query parameters as the __options__ argument, for example, for [resource expansion](http://docs.stormpath.com/rest/product-guide/#retrieve-a-group-membership):
+
+You can specify query parameters as the **options** argument, for example, for
+[resource expansion][]:
+
 ```javascript
-client.getGroupMembership(href, {expand:'account,group'}, function(err, membership) {
-    if (err) throw err;
-    console.log(membership);
+client.getGroupMembership(href, {expand: 'account,group'}, function(err, membership) {
+  console.log(membership);
 });
 ```
+
 
 #### Parameters
 
@@ -1003,6 +1146,16 @@ client.getGroupMembership(href, {expand:'account,group'}, function(err, membersh
   </tbody>
 </table>
 
+
 #### Returns
 
-void; the retrieved `GroupMembership` resource will be provided to the `callback` as the callback's second parameter.
+The retrieved `GroupMembership` resource will be provided to the `callback` as
+the callback's second parameter.
+
+  [Redis]: http://redis.io/ "Redis"
+  [Stormpath API key]: http://docs.stormpath.com/rest/quickstart/#get-an-api-key "Stormpath API Key"
+  [resource expansion]: http://docs.stormpath.com/rest/product-guide/#account-retrieve "Stormpath Resource Expansion"
+  [application search]: http://docs.stormpath.com/rest/product-guide/#tenant-applications-search "Stormpath Application Search"
+  [application search documentation]: http://docs.stormpath.com/rest/product-guide/#tenant-applications-search "Stormpath Application Search"
+  [directory search]: http://docs.stormpath.com/rest/product-guide/#tenant-directories-search "Stormpath Directory Search"
+  [directory search documentation]: http://docs.stormpath.com/rest/product-guide/#tenant-directories-search "Stormpath Directory Search"

@@ -1,35 +1,41 @@
 ## Account Store Mapping
 
-*Account Store* is a generic term for either a [Directory](directory) or a [Group](group). 
-`Directories` and `Groups` are both are considered *`account stores`* because they both contain, or store,
- `Accounts`. An `Account Store Mapping`, then, represents an `Account Store` mapped (assigned) to an `Application`.
+"Account Store" is a generic term for either a [Directory](directory) or a
+[Group](group).  Directories and Groups are both are considered "account
+stores" because they both contain, or store, Accounts.  An "Account Store
+Mapping", then, represents an Account Store mapped (*assigned*) to an
+Application.
 
-In Stormpath, you control who may login to an `application` by associating (or ‘mapping’) one or more
- `account stores` to an `application`. All of the `accounts` across all of an `application’s` assigned
- `account stores` form the application’s effective *user base*; those `accounts` may login to the `application`.
- If no `account stores` are assigned to an `application`, no `accounts` will be able to login to the `application`.
+In Stormpath, you control who may login to an Application by associating (*or
+mapping*) one or more account stores to an Application.  All of the Accounts
+across all of an application's assigned account stores form the application's
+effective *user base*: accounts which can log into the Application.  If no
+account stores are assigned to an Application, no accounts will be able to
+log into the Application.
 
-You control which `account stores` are assigned (mapped) to an `application`, and the order in which they
- are consulted during a `login attempt`, by manipulating an application’s `AccountStoreMapping` resources.
+You can control which account stores are assigned (*mapped*) to an Application,
+and the order in which they are consulted during a login attempt, by
+manipulating an application's AccountStoreMapping resources.
 
 **Since**: 0.1.2
 
 ---
 
+
 <a name="getApplication"></a>
 ### <span class="member">method</span> getApplication(*[options,]* callback)
 
-Retrieves the associated `Application` and provides it to the specified `callback`.
+Retrieves the associated Application and provides it to the specified callback.
+
 
 #### Usage
 
-
 ```javascript
-accountStoreMapping.getApplication({expand: 'accounts'}, function(err, app){
-  var application = app;
-})
-
+accountStoreMapping.getApplication({expand: 'accounts'}, function(err, app) {
+  console.log(app);
+});
 ```
+
 
 #### Parameters
 
@@ -58,27 +64,32 @@ accountStoreMapping.getApplication({expand: 'accounts'}, function(err, app){
   </tbody>
 </table>
 
+
 #### Returns
 
-void; 
-If the request fails, the callback's first parameter (`err`) will report the failure.
-If the request succeeds, the instance of  [Application](application) will be provided to the `callback` as the callback's second parameter.
+If the request fails, the callback's first parameter (`err`) will report the
+failure.  If the request succeeds, the instance of  [Application](application)
+will be provided to the callback as the callback's second parameter.
 
 ---
+
 
 <a name="setApplication"></a>
 ### <span class="member">method</span> setApplication(application)
 
-Sets `Application` provided in params as `Account Store Mapping` application.
+Sets Application as the Account Store Mapping's Application.
 **This method doesn't generate a request to update `Account Store Mapping`.**
+
 
 #### Usage
 
-
 ```javascript
-var mapping = accountStoreMapping.setApplication(application);
-mapping.save(callback)
+accountStoreMapping.setApplication(application);
+accountStoreMapping.save(function(err, mapping) {
+  console.log(mapping);
+});
 ```
+
 
 #### Parameters
 
@@ -101,26 +112,24 @@ mapping.save(callback)
   </tbody>
 </table>
 
-#### Returns
-
-Instance of `AccountStoreMapping`.
-
 ---
+
 
 <a name="getAccountStore"></a>
 ### <span class="member">method</span> getAccountStore(*[options,]* callback)
 
-Retrieves the associated `Account Store` (`Group` or `Directory`) and provides it to the specified `callback`.
+Retrieves the associated Account Store (*Group or Directory*) and provides it
+to the specified callback.
+
 
 #### Usage
 
-
 ```javascript
-accountStoreMapping.getAccountStore({expand: 'accounts'}, function(err, store){
-  var accountStore = store;
-})
-
+accountStoreMapping.getAccountStore({expand: 'accounts'}, function(err, store) {
+  console.log(store);
+});
 ```
+
 
 #### Parameters
 
@@ -149,29 +158,34 @@ accountStoreMapping.getAccountStore({expand: 'accounts'}, function(err, store){
   </tbody>
 </table>
 
+
 #### Returns
 
-void; 
-If the request fails, the callback's first parameter (`err`) will report the failure.
-If the request succeeds, the instance of [Directory](directory) or [Group](group) will 
- be provided to the `callback` as the callback's second parameter.
+If the request fails, the callback's first parameter (`err`) will report the
+failure.  If the request succeeds, the instance of [Directory](directory) or
+[Group](group) will be provided to the callback as the callback's second
+parameter.
 
 ---
+
 
 <a name="setAccountStore"></a>
 ### <span class="member">method</span> setAccountStore(accountStore)
 
-Sets `AccountStore` (`Group` or `Directory`) provided in params as `Account Store Mapping` 
- *account store*.
-**This method doesn't generate a request to update `Account Store Mapping`.**
+Sets AccountStore (*Group or Directory*) provided as Account Store Mapping
+*account store*.  **This method doesn't generate a request to update
+Account Store Mapping.**
+
 
 #### Usage
 
-
 ```javascript
-var mapping = accountStoreMapping.setAccountStore(directory);
-mapping.save(callback)
+accountStoreMapping.setAccountStore(directory);
+accountStoreMapping.save(function(err, mapping) {
+  console.log(mapping);
+});
 ```
+
 
 #### Parameters
 
@@ -193,7 +207,3 @@ mapping.save(callback)
     </tr>
   </tbody>
 </table>
-
-#### Returns
-
-Instance of `AccountStoreMapping`.
