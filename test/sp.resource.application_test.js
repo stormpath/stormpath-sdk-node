@@ -817,7 +817,7 @@ describe('Resources: ', function () {
         "limit" : 25,
         "items" : [
           {
-            "secret" : "NuUYYcIAjRYS+LiNBPhpu3z45zxu2uWJZx9Uhsez6Ls5NI7AI0G8Ykov9FyhvAetDfITRBlNS9d7VCugLPjHaA==",
+            "secret" : "NuUYYcIAjRYS+LiNBPhpu/p8iYP+jBltei1n1wxcMye3FTKRCTILpP/cD6Ynfvu6S4UokPM/SwuBaEn77aM3Ww==",
             "status" : "ENABLED",
             "account" : {
               "href" : "https://api.stormpath.com/v1/accounts/Uu87kzssxEcnjmhC9uzwF"
