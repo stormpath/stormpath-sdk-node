@@ -457,16 +457,20 @@ void; the retrieved collection of `Account`s will be provided to the `callback` 
 ---
 
 <a name="getApiKey"></a>
-### <span class="member">method</span> getApiKey(apiKeyId, callback)
+### <span class="member">method</span> getApiKey(apiKeyId, <em>[options,]</em> callback)
 
-Retrieves an [ApiKey](api) with an expanded `account` object, if there is an account wit the given
-Api Key Id and the account is accessible from this application through an
-[account store mapping](accountStoreMapping).
+Retrieves the specified ApiKey for an Account that may login to the Application (as determined by the application's [mapped account stores](accountStoreMapping) ). If the API Key does not correspond to an Account that may login to the application, and error is provided to the callback.
 
-#### Usage
+The Api Key secret will be encrypted while in transit and while stored in the local cache.
+We momentarily decrypt the secret when we need to do a comparision [during authentication](application#authenticateApiRequest).
+
+By default we use the AES 128 algorithm.  Your Api Key Secret (that you initialized your [Client](client) with), plus a random salt,
+is used at the input to the [PBKDF2](http://en.wikipedia.org/wiki/PBKDF2) function and we use 1024 iterations while deriving a key.
+
+Using the `options` object you may request a higher level of encryption, AES 256.  You can also use the options object to request a lower number of key iterations.  This can reduce the CPU time required to decypt the key while doing authentication, at the risk of slightly decreased security.
 
 ````javascript
-application.getApiKey(function(err,apiKey){
+application.getApiKey('an api key id',function(err,apiKey){
   console.log(apiKey);
 })
 ````
@@ -488,6 +492,19 @@ application.getApiKey(function(err,apiKey){
       <td>`string`</td>
       <td>required</td>
       <td>The Api Key Id for which you want the matching account.</td>
+    </tr>
+    <tr>
+      <td><em>`options`</em></td>
+      <td>`object`</td>
+      <td><em>optional</em></td>
+      <td>
+        <p>An object which allows you to modify the query parameters for this request, the following properties are valid:</p>
+        <ul>
+          <li>`encryptionKeySize` - Set to `256` if you want to use AES 256 while encrypting the api key secret</li>
+          <li>`encryptionKeyIterations` - Defaults to `1024`, but you can set it to a smaller value e.g. `512`</li>
+        </ul>
+
+      </td>
     </tr>
     <tr>
     <td>`callback`</td>

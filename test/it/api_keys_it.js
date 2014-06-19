@@ -127,6 +127,40 @@ describe('Account api keys',function(){
 
   });
 
+  describe('getApiKeys with alternate encryption options',function(){
+
+    var result, apiKey;
+
+    before(function(done){
+      account.createApiKey(function(err,value){
+        apiKey = value;
+
+        account.getApiKeys({
+          encryptionKeySize: 256,
+          encryptionKeyIterations: 512
+        },
+        function(err,collectionResult){
+          result = [err,collectionResult];
+          done();
+        });
+
+      });
+    });
+
+    after(function(done){
+      apiKey.delete(done);
+    });
+
+    it('should not err',function(){
+      assert.equal(result[0],null);
+    });
+
+    it('should return some api keys',function(){
+      assert.instanceOf(result[1].items[0],ApiKey);
+    });
+
+  });
+
   describe('disable an api key',function(){
 
     var apiKey, saveResult, cacheResult;
