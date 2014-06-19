@@ -5,7 +5,7 @@ var assert = common.assert;
 
 var AuthenticationResult = require('../../lib/resource/AuthenticationResult');
 var OauthAccessTokenResult = require('../../lib/resource/OauthAccessTokenResult');
-var OauthAuthenticationResult = require('../../lib/resource/OauthAuthenticationResult');
+var AuthenticationResult = require('../../lib/resource/AuthenticationResult');
 describe('Application.authenticateApiRequest',function(){
 
   var app, account, apiKey, client;
@@ -199,8 +199,8 @@ describe('Application.authenticateApiRequest',function(){
           assert.equal(result[0],null);
         });
 
-        it('should return an instance of OauthAuthenticationResult',function(){
-          assert.instanceOf(result[1],OauthAuthenticationResult);
+        it('should return an instance of AuthenticationResult',function(){
+          assert.instanceOf(result[1],AuthenticationResult);
         });
 
         it('should have the custom scope that was set',function(){
@@ -256,8 +256,8 @@ describe('Application.authenticateApiRequest',function(){
           assert.equal(result[0],null);
         });
 
-        it('should return an instance of OauthAuthenticationResult',function(){
-          assert.instanceOf(result[1],OauthAuthenticationResult);
+        it('should return an instance of AuthenticationResult',function(){
+          assert.instanceOf(result[1],AuthenticationResult);
         });
       });
       describe('and url location search is NOT enabled',function(){
@@ -305,8 +305,8 @@ describe('Application.authenticateApiRequest',function(){
         assert.equal(result[0],null);
       });
 
-      it('should return an instance of OauthAuthenticationResult',function(){
-        assert.instanceOf(result[1],OauthAuthenticationResult);
+      it('should return an instance of AuthenticationResult',function(){
+        assert.instanceOf(result[1],AuthenticationResult);
       });
     });
 
