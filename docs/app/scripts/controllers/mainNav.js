@@ -61,6 +61,8 @@ function items() {
     item('Account', null, [
       anchor('Overview', 'top'),
       anchor('addToGroup'),
+      anchor('createApiKey'),
+      anchor('getApiKeys'),
       anchor('getGroups'),
       anchor('getGroupMemberships'),
       anchor('getDirectory'),
@@ -80,9 +82,11 @@ function items() {
     item('Application', null, [
       anchor('Overview', 'top'),
       anchor('authenticateAccount'),
+      anchor('authenticateApiRequest'),
       anchor('createAccount'),
       anchor('createGroup'),
       anchor('getAccounts'),
+      anchor('getApiKey'),
       anchor('getGroups'),
       anchor('getTenant'),
       anchor('sendPasswordResetEmail'),
