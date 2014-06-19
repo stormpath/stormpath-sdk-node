@@ -187,6 +187,23 @@ padding: 5px 30px 5px 30px;
     font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
 }
 
+.property{
+    color: #ffffff;
+    background-color: #f0ad4e;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    padding: 2px 4px;
+    font-size: 11.844px;
+    font-weight: bold;
+    line-height: 14px;
+    font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+}
+
 .navbar-collapse {
   background: #000;
 }
