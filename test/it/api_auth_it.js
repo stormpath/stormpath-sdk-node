@@ -4,7 +4,6 @@ var helpers = require('./helpers');
 var assert = common.assert;
 
 var AuthenticationResult = require('../../lib/resource/AuthenticationResult');
-var OauthAccessTokenResult = require('../../lib/resource/OauthAccessTokenResult');
 var AuthenticationResult = require('../../lib/resource/AuthenticationResult');
 describe('Application.authenticateApiRequest',function(){
 
@@ -125,8 +124,12 @@ describe('Application.authenticateApiRequest',function(){
             assert.equal(result[0],null);
           });
 
-          it('should return an instance of OauthAccessTokenResult',function(){
-            assert.instanceOf(result[1],OauthAccessTokenResult);
+          it('should return an instance of AuthenticationResult',function(){
+            assert.instanceOf(result[1],AuthenticationResult);
+          });
+
+          it('should put a tokenResponse on the AuthenticationResult',function(){
+            assert.instanceOf(result[1].tokenResponse,Object);
           });
         });
 
@@ -161,8 +164,12 @@ describe('Application.authenticateApiRequest',function(){
         assert.equal(result[0],null);
       });
 
-      it('should return an instance of OauthAccessTokenResult',function(){
-        assert.instanceOf(result[1],OauthAccessTokenResult);
+      it('should return an instance of AuthenticationResult',function(){
+        assert.instanceOf(result[1],AuthenticationResult);
+      });
+
+      it('should put a tokenResponse on the AuthenticationResult',function(){
+        assert.instanceOf(result[1].tokenResponse,Object);
       });
     });
 
@@ -171,12 +178,25 @@ describe('Application.authenticateApiRequest',function(){
   describe('with a previously issued access token',function(){
     var customScope = 'custom-scope';
     var accessToken;
-    before(function(){
-      // manually generate an access token
-      var oauthAccessTokenResult = new OauthAccessTokenResult(apiKey,client._dataStore);
-      oauthAccessTokenResult.setApplicationHref(app.href);
-      oauthAccessTokenResult.addScope(customScope);
-      accessToken = oauthAccessTokenResult.getTokenResponse().access_token;
+    before(function(done){
+      var requestObject = {
+        headers: {
+          'authorization': 'Basic ' + new Buffer([apiKey.id,apiKey.secret].join(':')).toString('base64')
+        },
+        url: '/some/resource',
+        body:{
+          grant_type: 'client_credentials'
+        }
+      };
+      app.authenticateApiRequest({
+        request: requestObject,
+        scopeFactory: function() {
+          return customScope;
+        }
+      },function(err,value){
+        accessToken = value.tokenResponse.access_token;
+        done();
+      });
     });
     describe('using Bearer authorization',function(){
       describe('and access_token is passed as Authorization: Bearer <token>',function(){
@@ -314,13 +334,24 @@ describe('Application.authenticateApiRequest',function(){
 
   describe('with an expired access token',function(){
     var accessToken;
+
     before(function(done){
-      // manually generate an expired access token
-      var oauthAccessTokenResult = new OauthAccessTokenResult(apiKey,client._dataStore);
-      oauthAccessTokenResult.setApplicationHref(app.href);
-      oauthAccessTokenResult.setTtl(1);
-      accessToken = oauthAccessTokenResult.getTokenResponse().access_token;
-      setTimeout(done,2000);
+      var requestObject = {
+        headers: {
+          'authorization': 'Basic ' + new Buffer([apiKey.id,apiKey.secret].join(':')).toString('base64')
+        },
+        url: '/some/resource',
+        body:{
+          grant_type: 'client_credentials'
+        }
+      };
+      app.authenticateApiRequest({
+        request: requestObject,
+        ttl: 1
+      },function(err,value){
+        accessToken = value.tokenResponse.access_token;
+        setTimeout(done,2000);
+      });
     });
 
     var result;
