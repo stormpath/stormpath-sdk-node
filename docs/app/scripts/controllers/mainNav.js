@@ -86,6 +86,7 @@ function items() {
       anchor('createAccount'),
       anchor('createGroup'),
       anchor('getAccounts'),
+      anchor('getApiKey'),
       anchor('getGroups'),
       anchor('getTenant'),
       anchor('sendPasswordResetEmail'),

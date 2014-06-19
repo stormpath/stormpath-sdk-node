@@ -466,6 +466,54 @@ void; the retrieved collection of `Account`s will be provided to the `callback` 
 
 ---
 
+<a name="getApiKey"></a>
+### <span class="member">method</span> getApiKey(apiKeyId, callback)
+
+Retrieves an [ApiKey](api) with an expanded `account` object, if there is an account wit the given
+Api Key Id and the account is accessible from this application through an
+[account store mapping](accountStoreMapping).
+
+#### Usage
+
+````javascript
+application.getApiKey(function(err,apiKey){
+  console.log(apiKey);
+})
+````
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>`apiKeyId`</td>
+      <td>`string`</td>
+      <td>required</td>
+      <td>The Api Key Id for which you want the matching account.</td>
+    </tr>
+    <tr>
+    <td>`callback`</td>
+      <td>`function`</td>
+      <td>required</td>
+      <td>
+        The function to call when the request is complete,
+        it will be called with an error or an `ApiKey` instance which contains an
+        expanded `account` property.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+---
+
 <a name="getGroups"></a>
 ### <span class="member">method</span> getGroups(*[options,]* callback)
 
