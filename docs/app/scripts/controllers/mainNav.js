@@ -61,6 +61,8 @@ function items() {
     item('Account', null, [
       anchor('Overview', 'top'),
       anchor('addToGroup'),
+      anchor('createApiKey'),
+      anchor('getApiKeys'),
       anchor('getGroups'),
       anchor('getGroupMemberships'),
       anchor('getDirectory'),

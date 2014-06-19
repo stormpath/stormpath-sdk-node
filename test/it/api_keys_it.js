@@ -5,7 +5,7 @@ var assert = common.assert;
 
 var ApiKey = require('../../lib/resource/ApiKey');
 
-describe('Account.createApiKey',function(){
+describe('Account api keys',function(){
 
   var app, account, client;
   before(function(done){
@@ -62,6 +62,71 @@ describe('Account.createApiKey',function(){
 
   });
 
+  describe('getApiKeys',function(){
+
+    var result, apiKey;
+
+    before(function(done){
+      account.createApiKey(function(err,value){
+        apiKey = value;
+        account.getApiKeys(function(err,collectionResult){
+          result = [err,collectionResult];
+          done();
+        });
+      });
+    });
+
+    after(function(done){
+      apiKey.delete(done);
+    });
+
+    it('should not err',function(){
+      assert.equal(result[0],null);
+    });
+
+    it('should return some api keys',function(){
+      assert.instanceOf(result[1].items[0],ApiKey);
+    });
+
+  });
+
+  describe('getApiKeys by id query',function(){
+
+    var result, apiKey1, apiKey2;
+
+    before(function(done){
+      account.createApiKey(function(err,value){
+        apiKey1 = value;
+        account.createApiKey(function(err,value){
+          apiKey2 = value;
+          account.getApiKeys({id:apiKey2.id},function(err,collectionResult){
+            result = [err,collectionResult];
+            done();
+          });
+        });
+      });
+    });
+
+    after(function(done){
+      apiKey1.delete(function(){
+        apiKey2.delete(done);
+      });
+    });
+
+    it('should not err',function(){
+      assert.equal(result[0],null);
+    });
+
+    it('should return only 1 item',function(){
+      assert.equal(result[1].items.length,1);
+    });
+
+    it('should return the queried api key',function(){
+      assert.equal(result[1].items[0].href,apiKey2.href);
+    });
+
+  });
+
   describe('disable an api key',function(){
 
     var apiKey, saveResult, cacheResult;
@@ -94,7 +159,7 @@ describe('Account.createApiKey',function(){
 
   });
 
-  describe('disable an api key',function(){
+  describe('delete an api key',function(){
 
     var deleteResult, cacheResult;
 
@@ -119,7 +184,5 @@ describe('Account.createApiKey',function(){
     });
 
   });
-
-
 
 });

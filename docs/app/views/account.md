@@ -117,12 +117,63 @@ account.createApiKey(function(err,apiKey){
       <td>function</td>
       <td>required</td>
       <td>
-        The callback to call when the Api Key has been created,
+        The function to call when the Api Key has been created,
         will be called with an error or instance of `ApiKey`.
       </td>
     </tr>
   </tbody>
 </table>
+
+---
+
+<a name="getApiKeys"></a>
+### <span class="member">method</span> getApiKeys(*[options,]* callback)
+
+Retrieves a [collection](collectionResource) of the account's [Api Keys](apiKey) and provides the collection to the specified `callback`.
+
+You can pass an `id` property on the `options` object to search for an Api Key by it's id.
+
+#### Usage
+
+````javascript
+account.getApiKeys(function(err,collectionResult){
+  collectionResult.each(function(apiKey){
+    console.log(apiKey);
+  })
+})
+````
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>*`options`*</td>
+      <td>`object`</td>
+      <td>*optional*</td>
+      <td>Name/value pairs to use as query parameters, only supports `id`.</td>
+    </tr>
+    <tr>
+    <td>`callback`</td>
+      <td>function</td>
+      <td>required</td>
+      <td>
+        The function to call when the request is complete,
+        it will be called with an error or a [collection](collectionResource) that contains
+        `ApiKey` instances.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
 
 ---
 
