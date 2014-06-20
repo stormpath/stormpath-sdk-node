@@ -199,7 +199,7 @@ function items() {
 
 
 angular.module('docsApp')
-  .controller('MainNavController', function ($scope,$location, $window) {
+  .controller('MainNavController', function ($scope,$location, $window, $anchorScroll) {
 
     $scope.oneAtATime = true;
 
@@ -216,5 +216,7 @@ angular.module('docsApp')
 
       //apply table styles
       angular.element(document.getElementsByTagName('table')).addClass('table table-striped table-hover table-curved');
+
+      $anchorScroll();
     });
   });
