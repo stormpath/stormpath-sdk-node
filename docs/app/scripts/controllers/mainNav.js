@@ -205,9 +205,15 @@ angular.module('docsApp')
 
     $scope.items = items();
 
+    $scope.path = $location.path();
+
     $scope.changeView = function (path) {
       $location.path(path);
       $window.scrollTo(0,0);
+    };
+
+    $scope.isActive = function(item){
+      return $scope.path.replace(/^\//,'') === item.href;
     };
 
     $scope.$on('$viewContentLoaded', function() {
