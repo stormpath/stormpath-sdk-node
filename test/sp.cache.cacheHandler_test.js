@@ -5,6 +5,7 @@ var sinon = common.sinon;
 
 var CacheHandler = require('../lib/cache/CacheHandler');
 
+
 function rand(){
   return parseInt(Math.random() * 1000,10);
 }
@@ -18,7 +19,7 @@ describe('Cache module',function(){
         should.exist(handler.cacheManager);
       });
       it('it should have a cache', function(){
-        should.exist(handler.cacheManager.cache);
+        should.exist(handler.cacheManager.caches);
       });
     });
 
@@ -27,11 +28,12 @@ describe('Cache module',function(){
       var cacheOptions= {
           store: spy
       };
-      new CacheHandler({
+      var handler = new CacheHandler({
         cacheOptions: cacheOptions
       });
-      it('should call the provided store only once', function(){
-        expect(spy.callCount).to.equal(1);
+      it('should create caches for each region', function(){
+        expect(Object.keys(handler.cacheManager.caches))
+          .to.deep.equal(CacheHandler.CACHE_REGIONS);
       });
     });
 
@@ -54,12 +56,13 @@ describe('Cache module',function(){
       });
 
       it('should call the store with the global options', function(){
-          var options = handler.cacheManager.cache.store._options;
+          var options = handler.cacheManager.caches['applications'].store._options;
           expect(options.ttl).to.equal(cacheOptions.ttl);
           expect(options.tti).to.equal(cacheOptions.tti);
           expect(options.options.a).to.equal(cacheOptions.options.a);
           expect(options.options.b).to.equal(cacheOptions.options.b);
       });
     });
+
   });
 });

@@ -10,6 +10,8 @@ var assert = require('chai').assert;
 var should = require("chai").should();
 var moment = require('moment');
 var sinonChai = require("sinon-chai");
+var uuid = require('node-uuid');
+var nock = require('nock');
 
 var Stormpath = require('../lib');
 chai.use(sinonChai);
@@ -36,5 +38,6 @@ module.exports = {
   should: should,
   moment: moment,
   Stormpath: Stormpath,
-  random: random
+  random: random,
+  uuid: uuid
 };

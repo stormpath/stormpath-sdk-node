@@ -68,6 +68,168 @@ void; If the authentication fails, the callback's first parameter (`err`) will r
 
 ---
 
+<a name="authenticateApiRequest"></a>
+
+### <span class="member">method</span> authenticateApiRequest(options, callback)
+
+This method gives you the ability to perform API Key Authentication for your users, as described in [Using Stormpath to Secure and Manage API Services](http://docs.stormpath.com/guides/securing-your-api/)
+
+Used this method to:
+
+ * Authenticate users who wish to identify themselves with an ApiKey that has been created on their [Account](account).
+ * Allow those same users to exchange their ApiKey credentials for an Oauth Access tken
+ * Auuthenticate a user who has an Oauth Access token that you have issued to them
+
+
+The user will supply the necessary information to you by making an HTTP request to your server.  You will pass that request, using the `options.request` paramter, to this method.  This method will to do one of the following, based on the nature of the request:
+
+* Authenticate the user via HTTP Basic Auth, if the `Authorization` header exists with a value of `Basic <Base64 Encoded api_key_id:api_key_secret>`.
+* Create an Oauth access token if authorization is successful and a token is requested by `grant_type=client_credentials` in the URL or post body.
+* Authenticate the user, using a previously issued Oauth access token which must be provided in one of these locations:
+ * In the header as `Authorization: Bearer <token>`
+ * As the value of the `access_token` field in a `application/www-url-form-encoded` post body
+ * As that value of the `access_token` query parameter in the request URL.  This is not recommened, as query parameters are typically logged in system logs and this would compromise the token.  The URL location must be specifically enabled (see parameters table below).
+
+In all situations the `callback` will be called with either an error, which is descriptive and can be passed back to the user, or an instance of `AuthenticationResult`, which will have the requested or granted scopes, if this is an Oauth type of request.
+
+If you will use form-encoded post bodies to pass the `grant_type` or `access_token`: it is assumed that you are using a framework such as Express or Restify and that you have enabled the `bodyParser` in order to populate `req.body` as an object before passing the request to this function.  If you do not this method will assume that no post body is present and will not find any values there.
+
+This method is useful if you want to support all these operations under one route handler and with one call to our API.
+
+#### Usage
+
+If you are using a framework such as Express or Restify, just pass along the request object to do basic authoriztion:
+Pass an object as the first parmeter, and assign the HTTP request to the `request` property.  For example:
+
+```javascript
+// Express.js example - accept Basic or OAuth Access Token for a given resource
+
+app.get('/protected/resource',function (req,res){
+  application.authenticateApiRequest({
+    request: req
+  },function(err,authResult){
+    authResult.getAccount(function(err,account){
+      var message = 'Hello, ' + account.username + '! Thanks for authenticating.';
+      if(authResult.grantedScopes){
+        message += ' You have been granted: ' + authResult.grantedScopes.join(' ');
+      }
+      res.json({message: message });
+    });
+  });
+});
+```
+
+Or if you want to support Oauth Access Token exchange:
+
+```javascript
+// Express.js example - support the exchange of api key credentials for an Oauth Access Token
+
+app.post('/oauth/token',function (req,res){
+  application.authenticateApiRequest({
+    request: req,
+    scopeFactory: function(account,requestedScope){
+      // determine what scope to give, then return
+      return 'granted-scope';
+    }
+  },function(err,authResult){
+    res.json(authResult.tokenResponse);
+  });
+});
+```
+
+
+If you are not using a framework, you may manually construct an object literal for the `request` value:
+
+```javascript
+// Example object literal for the request, this example is an Oauth Access Token request.
+
+var requestObject = {
+  url: '/oauth/token',
+  headers:{
+    'authorization': 'Basic 3HR937281K7QWC5YS37289WPE:MTdncVDALvHcdoY3sjrK+/WgYY3sj3AZx1vZx1v'
+  },
+  body:{
+    grant_type: 'client_credentials'
+  }
+};
+
+application.authenticateApiRequest({ request: requestObject },function(err,authResult){
+  // .. handle the result
+})
+
+
+```
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>`options`</td>
+      <td>`object`</td>
+      <td>required</td>
+      <td>
+        <p>An object literal, with the following properties:</p>
+        <ul>
+          <li> `request` - REQUIRED - this can be the `req` object from your framework, or an object literal with the following properties:
+            <ul>
+              <li>`url` - REQUIRED - the url of the reuqest, including query parameters</li>
+              <li>`headers` - REQUIRED - an object with an optional `authorization` property</li>
+              <li>`body` - OPTIONAL - an object where the properties corresponded to the form data that was posted</li>
+            </ul>
+          </li>
+        </ul>
+        <ul>
+          <li> `locations` - OPTIONAL - Where to look for an `access_token` in the request.
+            It is an array of strings which may contain any of thes values:
+            <ul>
+              <li>'header'</li>
+              <li>'body'</li>
+              <li>'url'</li>
+            </ul>
+            Defaults to `'header'` and `'body'`.  <strong>WARNING:</strong> enabling `url` is discouraged, passing the `access_token` in the
+            URL may cause it to be logged in a system log, at which point it would be comprimised.
+          </li>
+        </ul>
+        <ul>
+          <li>
+            `scopeFactory` - OPTIONAL - A function which will be called with `(account,requestedScope)` where the account is the
+            successfully authenticated account and `requstedScope` is the string that was given by the user in the request.  You must return
+            the scope(s) you wish to grant, as a single string or an array of strings.
+          </li>
+        </ul>
+        <ul>
+          <li>`ttl` - OPTIONAL - A number, how many seconds this token is valid for.</li>
+        </ul>
+      </td>
+    </tr>
+    <tr>
+      <td>`callback`</td>
+      <td>`function`</td>
+      <td>required</td>
+      <td>
+        <p>The callback that will receive the error or an instance of `AuthenticationResult`.  You can inspect `authResult` for the following properties:</p>
+        <ul>
+          <li>`tokenResponse` - The object that you should send to the user as a JSON string, if they have requested an Oauth Access token</li>
+          <li>`grantedScopes` - The scope(s) that the user can access, given the access token that they presented.  It is an array of strings.</li>
+
+        </ul>
+
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+---
+
 <a name="createAccount"></a>
 ### <span class="member">method</span> createAccount(account, *[options,]* callback)
 
@@ -291,6 +453,71 @@ The above code example would only print out accounts with the text fragment `foo
 #### Returns
 
 void; the retrieved collection of `Account`s will be provided to the `callback` as the callback's second parameter.
+
+---
+
+<a name="getApiKey"></a>
+### <span class="member">method</span> getApiKey(apiKeyId, <em>[options,]</em> callback)
+
+Retrieves the specified ApiKey for an Account that may login to the Application (as determined by the application's [mapped account stores](accountStoreMapping) ). If the API Key does not correspond to an Account that may login to the application, and error is provided to the callback.
+
+When retrieving the API Key from Stormpath, it is doubly encrypted: in transit over SSL by default, but also the API Key secret is additionally encrypted to ensure that nothing before or after SSL transit may even see the secret.  Additionally, API Key secret values remain encrypted if caching is enabled, so you don’t have to worry if your cache supports encryption.
+
+This all happens by default; there is nothing you need to configure to obtain these benefits.  However, if you would like to customize the secondary encryption options, you may do so:
+
+For those interested, password-based AES 256 encryption is used: the password is the API Key Secret you used to configure the SDK Client.  The PBKDF2 implementation will use 1024 iterations by default to derive the AES 256 key.  At the risk of potentially decreased security, you can use the `options` argument to specify a lower level of encryption key size, like 192 or 128.  You can also request a lower number of key iterations. This can reduce the CPU time required to decrypt the key after transit or when retrieving from cache. It is not recommended to go much lower than 1024 (if at all) in security sensitive environments.
+
+#### Usage
+
+````javascript
+application.getApiKey('an api key id',function(err,apiKey){
+  console.log(apiKey);
+})
+````
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>`apiKeyId`</td>
+      <td>`string`</td>
+      <td>required</td>
+      <td>The Api Key Id for which you want the matching account.</td>
+    </tr>
+    <tr>
+      <td><em>`options`</em></td>
+      <td>`object`</td>
+      <td><em>optional</em></td>
+      <td>
+        <p>An object which allows you to modify the query parameters for this request, the following properties are valid:</p>
+        <ul>
+          <li>`encryptionKeySize` - Set to `128` or `192` to change the AES key encryption size</li>
+          <li>`encryptionKeyIterations` - Defaults to `1024`</li>
+        </ul>
+
+      </td>
+    </tr>
+    <tr>
+    <td>`callback`</td>
+      <td>`function`</td>
+      <td>required</td>
+      <td>
+        The function to call when the request is complete,
+        it will be called with an error or an `ApiKey` instance which contains an
+        expanded `account` property.
+      </td>
+    </tr>
+  </tbody>
+</table>
 
 ---
 

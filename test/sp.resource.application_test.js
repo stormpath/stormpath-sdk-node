@@ -4,6 +4,8 @@ var sinon = common.sinon;
 var nock = common.nock;
 var u = common.u;
 
+var assert = common.assert;
+var _ = common._;
 var utils = require('../lib/utils');
 var Account = require('../lib/resource/Account');
 var Group = require('../lib/resource/Group');
@@ -12,12 +14,20 @@ var Directory = require('../lib/resource/Directory');
 var Application = require('../lib/resource/Application');
 var AuthenticationResult = require('../lib/resource/AuthenticationResult');
 var AccountStoreMapping = require('../lib/resource/AccountStoreMapping');
+var ApiKey = require('../lib/resource/ApiKey');
 var DataStore = require('../lib/ds/DataStore');
 
 describe('Resources: ', function () {
   "use strict";
   describe('Application resource', function () {
-    var dataStore = new DataStore({apiKey: {id: 1, secret: 2}});
+
+    var dataStore = new DataStore({
+      apiKey: {
+        id: 1,
+        // this secret will decrypt the api keys correctly
+        secret: '6b2c3912-4779-49c1-81e7-23c204f43d2d'
+      }
+    });
     describe('authenticate account', function () {
       var authRequest = {username: 'test'};
       describe('if login attempts not set', function () {
@@ -851,5 +861,135 @@ describe('Resources: ', function () {
       describe('with options', getAccount(false, {}));
       describe('with options', getAccount(true, {}));
     });
+
+    describe('get apiKey',function(){
+      var appHref = 'https://api.stormpath.com/v1/applications/someapp';
+      var application = new Application({
+        href:appHref,
+        apiKeys: {
+          href: appHref + '/apiKeys'
+        }
+      }, dataStore);
+
+      var foundResponse = {
+        "offset" : 0,
+        "href" : "https://api.stormpath.com/v1/applications/1ux4vVy4SBeeLLfZtldtXj/apiKeys",
+        "limit" : 25,
+        "items" : [
+          {
+            "secret" : "NuUYYcIAjRYS+LiNBPhpu/p8iYP+jBltei1n1wxcMye3FTKRCTILpP/cD6Ynfvu6S4UokPM/SwuBaEn77aM3Ww==",
+            "status" : "ENABLED",
+            "account" : {
+              "href" : "https://api.stormpath.com/v1/accounts/Uu87kzssxEcnjmhC9uzwF"
+            },
+            "id" : "1S9H13Q61HLJHIVU7N357QI7U",
+            "tenant" : {
+              "href" : "https://api.stormpath.com/v1/tenants/eU0gloBbz42wGUtGXEjED"
+            },
+            "href" : "https://api.stormpath.com/v1/apiKeys/1S9H13Q61HLJHIVU7N357QI7U"
+          }
+        ]
+      };
+
+      var notFoundResponse = {
+        "offset" : 0,
+        "href" : "https://api.stormpath.com/v1/applications/1234/apiKeys",
+        "limit" : 25,
+        "items" : []
+      };
+
+      var decryptedSecret = 'rncdUXr2dtjjQ5OyDdWRHRxncRW7K0OnU6/Wqf2iqdQ';
+      var callCount=0;
+
+      describe('when apikey is found',function(){
+        var sandbox = sinon.sandbox.create();
+        var result, requestedOptions, cacheResult;
+        before(function(done){
+          sandbox.stub(dataStore.requestExecutor,'execute',function(requestOptions,cb) {
+            callCount++;
+            // hack - override the salt
+            requestOptions.query.encryptionKeySalt = 'uHMSUA6F8LFoCIPqKYSRCg==';
+            requestedOptions = requestOptions;
+            cb(null,_.extend({},foundResponse));
+          });
+          application.getApiKey('an id',function(err,value) {
+            result = [err,value];
+            dataStore.cacheHandler.get(foundResponse.items[0].href,function(err,value){
+              cacheResult = [err,value];
+              done();
+            });
+
+          });
+        });
+        after(function(){
+          sandbox.restore();
+        });
+        it('should not err',function(){
+          assert.equal(result[0],null);
+        });
+        it('should have asked for encrypted secret',function(){
+          assert.equal(requestedOptions.query.encryptSecret,true);
+        });
+        it('should return an ApiKey instance',function(){
+          assert.instanceOf(result[1],ApiKey);
+        });
+        it('should return an ApiKey instance with a decrypted secret',function(){
+          assert.equal(result[1].secret,decryptedSecret);
+        });
+        it('should cache the ApiKey',function(){
+          assert.equal(cacheResult[1].href,foundResponse.items[0].href);
+        });
+        it('should store the encrypted key in the cache',function(){
+          assert.equal(cacheResult[1].secret,foundResponse.items[0].secret);
+        });
+      });
+      describe('on second get',function(){
+        var result;
+        var sandbox = sinon.sandbox.create();
+        before(function(done){
+          sandbox.stub(dataStore.requestExecutor,'execute',function(requestOptions,cb) {
+            cb(null,_.extend({},foundResponse.items[0].account));
+          });
+          application.getApiKey(foundResponse.items[0].id,function(err,value) {
+            result = [err,value];
+            done();
+          });
+        });
+        after(function(){
+          sandbox.restore();
+        });
+        it('should have got it from the cache',function(){
+          assert.equal(callCount,1);
+        });
+        it('should get the api key with the decrypted secret',function(){
+          assert.equal(result[1].secret,decryptedSecret);
+        });
+      });
+      describe('when apikey is not found',function(){
+        var sandbox = sinon.sandbox.create();
+        var result, requestedOptions;
+
+        before(function(done){
+          sandbox.stub(dataStore.requestExecutor,'execute',function(requestOptions,cb) {
+            requestedOptions = requestOptions;
+            cb(null,notFoundResponse);
+          });
+          application.getApiKey('an id',function(err,value) {
+            result = [err,value];
+            done();
+          });
+        });
+        after(function(){
+          sandbox.restore();
+        });
+        it('should have asked for encrypted secret',function(){
+          assert.equal(requestedOptions.query.encryptSecret,true);
+        });
+        it('should return a not found error',function(){
+          assert.equal(result[0].message,'ApiKey not found');
+        });
+      });
+    });
+
   });
 });
