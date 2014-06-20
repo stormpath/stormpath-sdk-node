@@ -154,6 +154,10 @@ $sidebarWidth: 275px;
     .toc{
       display: block;
     }
+    li{
+        list-style-type: none;
+        padding: 5px 0;
+    }
   }
   .content-area{
       margin-top: $navbarHeight;
