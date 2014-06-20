@@ -1,6 +1,9 @@
-/* Move down content because we have a fixed navbar that is 50px tall */
+
+$navbarHeight: 76px;
+
+/* Move down content because we have a fixed navbar that is ($navbarHeight) tall */
 body {
-    padding-top: 76px;
+    padding-top: $navbarHeight;
 }
 
 pre code {
@@ -15,7 +18,7 @@ pre code {
 }
 
 .navbar {
-    height: 76px;
+    height: $navbarHeight;
     padding-top: 14px;
     font-size: 16px;
     background-color: #000;
@@ -34,6 +37,15 @@ pre code {
 }
 .navbar-brand {
     padding: 5px 0 0 13px;
+}
+
+@media(max-width: 875px){
+    // before we hit he mobile layout, tighten up the link padding.
+    // this will prevent the link row from being pushed down below the logo
+    .navbar li a{
+        padding-left: 5px;
+        padding-right: 5px;
+    }
 }
 
 .cta-button {
@@ -101,17 +113,54 @@ padding: 5px 30px 5px 30px;
 /*
  * Sidebar
  */
-
+$sidebarWidth: 275px;
 .sidebar {
-  padding-top: 20px;
+  padding: 20px 10px;
   background-color: #f5f5f5;
   border-right: 1px solid #eee;
   border-bottom: 1px solid #eee;
+
+  position: fixed;
+  top:$navbarHeight;
+  bottom: 0;
+  left: 0;
+  width: $sidebarWidth;
+  overflow-y: auto;
+  .toc{
+    display: none;
+  }
+}
+
+.content-area{
+    position: fixed;
+    top:$navbarHeight;
+    bottom: 0;
+    right: 0;
+    overflow-y: auto;
+    left: $sidebarWidth;
+    a[name]{
+        display: block; position: relative; top: -10px;
+        visibility: hidden;
+    }
 }
 
 @media (max-width: 768px) {
+  // on mobile, show the sidebar above as a table-of-contents,
+  // above the content area
   .sidebar {
-    display: none;
+    position: inherit;
+    width: auto;
+    text-align: center;
+    .toc{
+      display: block;
+    }
+  }
+  .content-area{
+      margin-top: $navbarHeight;
+      position: inherit;
+      a[name]{
+        top: -$navbarHeight - 10px;
+      }
   }
 }
 
