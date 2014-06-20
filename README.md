@@ -18,6 +18,26 @@ The Quickstart is on the front page of the [Stormpath Node.js API Documentation]
 
 ## Change Log
 
+### 0.3.0
+
+#### New Features
+
+Secure your REST API using OAuth 2!
+
+The Stormpath Node SDK can now act as an OAuth 2 Provider with full API Key management support!
+
+You can now use the Node SDK to create and manage API Keys for your end-users so they can authenticate with your own REST API. You can create, delete, enable/disable as many API Keys as you want for each of your end-user Account resources. See the Account resource's createApiKey and getApiKeys methods.
+
+Now for the really powerful stuff: the Stormpath Node SDK implements OAuth2 provider functionality. Your end-users can use these API Keys to make OAuth 2 requests to your REST API, and the Stormpath Node SDK will authenticate the requests via OAuth as you wish. This includes both OAuth 2 access token requests (e.g. the /oauth/token endpoint) as well as resource requests (e.g. /movies/1234). At no point do you ever need to see, touch, or write OAuth code! The Stormpath SDK does it for you.
+
+See the Application resource's `authenticateApiRequest` method for detailed information.
+
+#### Improvements
+
+* You can use the new method `Application.resetPassword()` to validate a password reset token AND set a new password, with just one call to our API
+
+* You can authenticate an account against a specific account store when calling `Application.authenticateAccount()`, this is a useful performance option if you have a large number of stores and you know which store the user is in.
+
 ### 0.2.0
 
 Improvements:
@@ -71,8 +91,18 @@ Send us an email to support@stormpath.com or open up a Pull Request and offer su
 
 ## Building
 
+This code does not require a build step and can be immediately required by your node application after installed from npm (see above).
+
+You may run the unit tests with the grunt command:
+
 ```bash
 grunt
+```
+
+Or the integration tests (which assume an apikey file in `~/.stormpath`):
+
+```bash
+grunt it
 ```
 
 To build the documentation, you need to enter the `docs` directory, then run:

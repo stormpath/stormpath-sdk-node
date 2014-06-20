@@ -11,11 +11,11 @@ describe('Cache module',function(){
       var manager = new CacheManager();
       it('cache should be empty', function(){
         /* jshint -W030 */
-        manager.cache.should.be.empty;
+        manager.caches.should.deep.equal({});
       });
       it('stats should be empty', function(){
         /* jshint -W030 */
-        expect(manager.stats).not.exist;
+        expect(manager.stats).deep.equal({});
       });
     });
 

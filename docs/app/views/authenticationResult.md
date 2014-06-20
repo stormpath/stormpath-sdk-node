@@ -53,3 +53,30 @@ result.getAccount(function(err, account) {
 void; the retrieved [Account](account) resource will be provided to the `callback` as the callback's second parameter.
 
 ---
+
+### <span class="property">property</span> .tokenResponse <em>Object</em>
+
+Exists if the authentication result was created for an Oauth Access Token request, you should send this value as a `application/json` response to the requestor:
+
+#### Format
+
+````javascript
+{
+  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc ...",
+  "expires_in": 3600,
+  "token_type": "bearer"
+}
+
+````
+
+---
+
+### <span class="property">property</span> .grantedScopes <em>Array</em>
+
+Exists if the authentication result was created from a previously issued Oauth Access Token which has granted scopes, it will be an array of strings which are the granted scopes.
+
+#### Format
+
+````javascript
+['scope-a','scope-b']
+````

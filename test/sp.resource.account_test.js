@@ -3,20 +3,28 @@ var common = require('./common');
 var sinon = common.sinon;
 var nock = common.nock;
 var u = common.u;
-
+var uuid = common.uuid;
+var assert = common.assert;
 var Group = require('../lib/resource/Group');
 var Account = require('../lib/resource/Account');
+var ApiKey = require('../lib/resource/ApiKey');
 var DataStore = require('../lib/ds/DataStore');
 var CustomData = require('../lib/resource/CustomData');
 var instantiate = require('../lib/resource/ResourceFactory').instantiate;
 var ProviderData = require('../lib/resource/ProviderData');
+var CollectionResource = require('../lib/resource/CollectionResource');
 var GroupMembership = require('../lib/resource/GroupMembership');
-
 
 describe('Resources: ', function () {
   "use strict";
   describe('Account resource class', function () {
-    var dataStore = new DataStore({apiKey: {id: 1, secret: 2}});
+    var dataStore = new DataStore({
+      apiKey: {
+        id: 1,
+        // this secret will decrypt the api keys correctly
+        secret: '6b2c3912-4779-49c1-81e7-23c204f43d2d'
+      }
+    });
 
     describe('get groups', function () {
       describe('if groups not set', function () {
@@ -335,5 +343,124 @@ describe('Resources: ', function () {
         });
       });
     });
+
+    describe('createApiKey',function () {
+      var sandbox = sinon.sandbox.create();
+      var accountHref = 'accounts/'+uuid();
+      var result, cacheResult, requestedOptions;
+
+      var creationResponse = {
+        "account": {
+          "href": "https://api.stormpath.com/v1/accounts/8897"
+        },
+        "href": "https://api.stormpath.com/v1/apiKeys/5678",
+        "id": "5678",
+        "secret": "NuUYYcIAjRYS+LiNBPhpu/p8iYP+jBltei1n1wxcMye3FTKRCTILpP/cD6Ynfvu6S4UokPM/SwuBaEn77aM3Ww==",
+        "status": "ENABLED",
+        "tenant": {
+          "href": "https://api.stormpath.com/v1/tenants/abc123"
+        }
+      };
+
+      var decryptedSecret = 'rncdUXr2dtjjQ5OyDdWRHRxncRW7K0OnU6/Wqf2iqdQ';
+
+      before(function(done){
+        sandbox.stub(dataStore.requestExecutor,'execute',function(requestOptions,cb) {
+          requestedOptions = requestOptions;
+          // hack - override the salt
+          requestOptions.query.encryptionKeySalt = 'uHMSUA6F8LFoCIPqKYSRCg==';
+          cb(null,creationResponse);
+        });
+        new Account({
+          href:accountHref,
+          apiKeys: {
+            href: accountHref + '/apiKeys'
+          }
+        }, dataStore)
+          .createApiKey(function(err,value) {
+            result = [err,value];
+            dataStore.cacheHandler.get(creationResponse.href,function(err,value){
+              cacheResult = [err,value];
+              done();
+            });
+          });
+      });
+      after(function(){
+        sandbox.restore();
+      });
+      it('should have asked for encrypted secret',function(){
+        assert.equal(requestedOptions.query.encryptSecret,true);
+      });
+      it('should not err',function(){
+        assert.equal(result[0],null);
+      });
+      it('should return an ApiKey instance',function(){
+        assert.instanceOf(result[1],ApiKey);
+      });
+      it('should cache the ApiKey',function(){
+        assert.equal(cacheResult[1].href,creationResponse.href);
+      });
+      it('should store the encrypted key in the cache',function(){
+        assert.equal(cacheResult[1].secret,creationResponse.secret);
+      });
+      it('should return the decrypted secret',function(){
+        assert.equal(result[1].secret,decryptedSecret);
+      });
+    });
+
+    describe('getApiKeys',function () {
+      var sandbox = sinon.sandbox.create();
+      var accountHref = 'accounts/'+uuid();
+      var result, requestedOptions;
+
+      before(function(done){
+        sandbox.stub(dataStore.requestExecutor,'execute',function(requestOptions,cb) {
+          requestedOptions = requestOptions;
+
+          // hack - override the salt
+          requestOptions.query.encryptionKeySalt = 'uHMSUA6F8LFoCIPqKYSRCg==';
+          cb(null,{
+            "href": "https://api.stormpath.com/v1/accounts/1234/apiKeys",
+            "items": [
+              {
+                "href": "https://api.stormpath.com/v1/apiKeys/5678",
+                "id": "5678",
+                "secret": "NuUYYcIAjRYS+LiNBPhpu/p8iYP+jBltei1n1wxcMye3FTKRCTILpP/cD6Ynfvu6S4UokPM/SwuBaEn77aM3Ww==",
+                "status": "ENABLED"
+              }
+            ],
+            "limit": 25,
+            "offset": 0
+          });
+        });
+        new Account({
+          href:accountHref,
+          apiKeys: {
+            href: accountHref + '/apiKeys'
+          }
+        }, dataStore)
+          .getApiKeys(function(err,value) {
+            result = [err,value];
+            done();
+          });
+      });
+      after(function(){
+        sandbox.restore();
+      });
+      it('should have asked for encrypted secret',function(){
+        assert.equal(requestedOptions.query.encryptSecret,true);
+      });
+      it('should not err',function(){
+        assert.equal(result[0],null);
+      });
+      it('should return a collection resource',function(){
+        assert.instanceOf(result[1],CollectionResource);
+      });
+      it('should return ApiKey instances',function(){
+        assert.instanceOf(result[1].items[0],ApiKey);
+      });
+    });
   });
+
+
 });

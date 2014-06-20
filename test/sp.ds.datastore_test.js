@@ -87,7 +87,7 @@ describe('ds:', function () {
 
       before(function () {
         sandbox = sinon.sandbox.create();
-        cachePutSpy = sandbox.spy(ds.cacheHandler.cacheManager.getCache(), 'put');
+        cachePutSpy = sandbox.spy(ds.cacheHandler, 'put');
         reqExecSpy = sandbox.stub(ds.requestExecutor, 'execute', function (req, cb) {
           cb(null, data);
         });
@@ -102,19 +102,10 @@ describe('ds:', function () {
       it('should store root entity', function () {
         /* jshint -W030 */
         cachePutSpy.callCount.should.be.equal(4);
-        cachePutSpy.should.have.been.calledWith(data.href, {
-          'href': 'http://example.com/accounts/FOO',
-          'name': 'Foo',
-          'groups': {
-            'href': 'http://example.com/accounts/FOO/groups',
-            'items': [
-              {'href': 'http://example.com/groups/G1'},
-              {'href': 'http://example.com/groups/G2'}
-            ]
-          },
-          'directory': {
-            'href': 'http://example.com/directories/BAR'
-          }}, true);
+        cachePutSpy.should.have.been.calledWith(data.href);
+        cachePutSpy.should.have.been.calledWith(data.groups.items[0].href);
+        cachePutSpy.should.have.been.calledWith(data.groups.items[1].href);
+        cachePutSpy.should.have.been.calledWith(data.directory.href);
       });
     });
 
@@ -142,7 +133,7 @@ describe('ds:', function () {
         before(function (done) {
           sandbox = sinon.sandbox.create();
           reqExecSpy = sandbox.spy(ds.requestExecutor, 'execute');
-          var cache = ds.cacheHandler.cacheManager.getCache();
+          var cache = ds.cacheHandler.cacheManager.getCache('tenants');
           cacheGetSpy = sandbox.spy(cache, 'get');
           cache.put(href, data, true, done);
         });
@@ -178,7 +169,7 @@ describe('ds:', function () {
         var sandbox, cacheGetSpy, cachePutSpy, reqExecStub;
         before(function () {
           sandbox = sinon.sandbox.create();
-          var cache = ds.cacheHandler.cacheManager.getCache();
+          var cache = ds.cacheHandler.cacheManager.getCache('tenants');
           cacheGetSpy = sandbox.spy(cache, 'get');
           cachePutSpy = sandbox.spy(cache, 'put');
           reqExecStub = sandbox.stub(ds.requestExecutor, 'execute', function (req, cb) {
@@ -339,7 +330,7 @@ describe('ds:', function () {
       var sandbox, cachePutSpy, reqExecStub, requestSpy;
       before(function () {
         sandbox = sinon.sandbox.create();
-        var cache = ds.cacheHandler.cacheManager.getCache();
+        var cache = ds.cacheHandler.cacheManager.getCache('tenants');
         cachePutSpy = sandbox.spy(cache, 'put');
         reqExecStub = sandbox.stub(ds.requestExecutor, 'execute', function (req, cb) {
           requestSpy = req;
@@ -401,7 +392,7 @@ describe('ds:', function () {
       var sandbox, cachePutSpy, reqExecStub, requestSpy;
       before(function () {
         sandbox = sinon.sandbox.create();
-        var cache = ds.cacheHandler.cacheManager.getCache();
+        var cache = ds.cacheHandler.cacheManager.getCache('tenants');
         cachePutSpy = sandbox.spy(cache, 'put');
         reqExecStub = sandbox.stub(ds.requestExecutor, 'execute', function (req, cb) {
           requestSpy = req;
@@ -453,7 +444,7 @@ describe('ds:', function () {
       var sandbox, cacheDeleteSpy, reqExecStub, requestSpy;
       before(function () {
         sandbox = sinon.sandbox.create();
-        var cache = ds.cacheHandler.cacheManager.getCache();
+        var cache = ds.cacheHandler.cacheManager.getCache('tenants');
         cacheDeleteSpy = sandbox.spy(cache, 'delete');
         reqExecStub = sandbox.stub(ds.requestExecutor, 'execute', function (req, cb) {
           requestSpy = req;
