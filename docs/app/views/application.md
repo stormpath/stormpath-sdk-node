@@ -461,13 +461,13 @@ void; the retrieved collection of `Account`s will be provided to the `callback` 
 
 Retrieves the specified ApiKey for an Account that may login to the Application (as determined by the application's [mapped account stores](accountStoreMapping) ). If the API Key does not correspond to an Account that may login to the application, and error is provided to the callback.
 
-The Api Key secret will be encrypted while in transit and while stored in the local cache.
-We momentarily decrypt the secret when we need to do a comparision [during authentication](application#authenticateApiRequest).
+When retrieving the API Key from Stormpath, it is doubly encrypted: in transit over SSL by default, but also the API Key secret is additionally encrypted to ensure that nothing before or after SSL transit may even see the secret.  Additionally, API Key secret values remain encrypted if caching is enabled, so you don’t have to worry if your cache supports encryption.
 
-By default we use the AES 128 algorithm.  Your Api Key Secret (that you initialized your [Client](client) with), plus a random salt,
-is used at the input to the [PBKDF2](http://en.wikipedia.org/wiki/PBKDF2) function and we use 1024 iterations while deriving a key.
+This all happens by default; there is nothing you need to configure to obtain these benefits.  However, if you would like to customize the secondary encryption options, you may do so:
 
-Using the `options` object you may request a higher level of encryption, AES 256.  You can also use the options object to request a lower number of key iterations.  This can reduce the CPU time required to decypt the key while doing authentication, at the risk of slightly decreased security.
+For those interested, password-based AES 256 encryption is used: the password is the API Key Secret you used to configure the SDK Client.  The PBKDF2 implementation will use 1024 iterations by default to derive the AES 256 key.  At the risk of potentially decreased security, you can use the `options` argument to specify a lower level of encryption key size, like 192 or 128.  You can also request a lower number of key iterations. This can reduce the CPU time required to decrypt the key after transit or when retrieving from cache. It is not recommended to go much lower than 1024 (if at all) in security sensitive environments.
+
+#### Usage
 
 ````javascript
 application.getApiKey('an api key id',function(err,apiKey){
@@ -500,8 +500,8 @@ application.getApiKey('an api key id',function(err,apiKey){
       <td>
         <p>An object which allows you to modify the query parameters for this request, the following properties are valid:</p>
         <ul>
-          <li>`encryptionKeySize` - Set to `256` if you want to use AES 256 while encrypting the api key secret</li>
-          <li>`encryptionKeyIterations` - Defaults to `1024`, but you can set it to a smaller value e.g. `512`</li>
+          <li>`encryptionKeySize` - Set to `128` or `192` to change the AES key encryption size</li>
+          <li>`encryptionKeyIterations` - Defaults to `1024`</li>
         </ul>
 
       </td>

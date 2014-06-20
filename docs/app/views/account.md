@@ -154,8 +154,14 @@ account.createApiKey(function(err,apiKey){
 ### <span class="member">method</span> getApiKeys(*[options,]* callback)
 
 Retrieves a [collection](collectionResource) of the account's [Api Keys](apiKey) and provides the collection to the specified `callback`.
-
 You can pass an `id` property on the `options` object to search for an Api Key by it's id.
+
+When retrieving the API Key from Stormpath, it is doubly encrypted: in transit over SSL by default, but also the API Key secret is additionally encrypted to ensure that nothing before or after SSL transit may even see the secret.  Additionally, API Key secret values remain encrypted if caching is enabled, so you don’t have to worry if your cache supports encryption.
+
+This all happens by default; there is nothing you need to configure to obtain these benefits.  However, if you would like to customize the secondary encryption options, you may do so:
+
+For those interested, password-based AES 256 encryption is used: the password is the API Key Secret you used to configure the SDK Client.  The PBKDF2 implementation will use 1024 iterations by default to derive the AES 256 key.  At the risk of potentially decreased security, you can use the `options` argument to specify a lower level of encryption key size, like 192 or 128.  You can also request a lower number of key iterations. This can reduce the CPU time required to decrypt the key after transit or when retrieving from cache. It is not recommended to go much lower than 1024 (if at all) in security sensitive environments.
+
 
 #### Usage
 
@@ -180,10 +186,18 @@ account.getApiKeys(function(err,collectionResult){
   </thead>
   <tbody>
     <tr>
-      <td>*`options`*</td>
+      <td><em>`options`</em></td>
       <td>`object`</td>
-      <td>*optional*</td>
-      <td>Name/value pairs to use as query parameters, only supports `id`.</td>
+      <td><em>optional</em></td>
+      <td>
+        <p>An object which allows you to modify the query parameters for this request, the following properties are valid:</p>
+        <ul>
+          <li>`id` - search for a specific key by id</li>
+          <li>`encryptionKeySize` - Set to `128` or `192` to change the AES key encryption size</li>
+          <li>`encryptionKeyIterations` - Defaults to `1024`</li>
+        </ul>
+
+      </td>
     </tr>
     <tr>
     <td>`callback`</td>
