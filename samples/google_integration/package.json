@@ -1,0 +1,24 @@
+{
+  "name": "stormpath-google-integration-sample",
+  "version": "0.1.2",
+  "main": "example.js",
+  "description": "Official Stormpath SDK Sample for Node.js",
+  "license": "Apache-2.0",
+  "homepage": "https://github.com/stormpath/stormpath-sdk-node",
+  "bugs": "https://github.com/stormpath/stormpath-sdk-node/issues",
+  "author": {
+    "name": "Stormpath, Inc.",
+    "email": "support@stormpath.com",
+    "url": "http://www.stormpath.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/stormpath/stormpath-sdk-node.git"
+  },
+  "dependencies": {
+    "underscore": "~1.5.2",
+    "async": "~0.7.0",
+    "googleapis": "~0.7.0",
+    "open": "0.0.5"
+  }
+}

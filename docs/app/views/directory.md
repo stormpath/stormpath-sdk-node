@@ -30,7 +30,6 @@ var account = {
 };
 
 directory.createAccount(account, function onAccountCreated(err, createdAccount) {
-  if (err) throw err;
   console.log(createdAccount);
 });
 ```
@@ -41,23 +40,22 @@ Whenever you create an `account`, an empty `customData` resource is created
 
  ```javascript
  var account = {
-   givenName: 'Jean-Luc',
-   surname: 'Picard',
-   username: 'jlpicard',
-   email: 'jlpicard@starfleet.com',
-   password: 'Changeme1!',
-   customData: {
-     rank: 'Captain',
-     birthDate: '2305-07-13',
-     birthPlace: 'La Barre, France',
-     favoriteDrink: 'Earl Grey tea'
-   }
- };
+  givenName: 'Jean-Luc',
+  surname: 'Picard',
+  username: 'jlpicard',
+  email: 'jlpicard@starfleet.com',
+  password: 'Changeme1!',
+  customData: {
+    rank: 'Captain',
+    birthDate: '2305-07-13',
+    birthPlace: 'La Barre, France',
+    favoriteDrink: 'Earl Grey tea'
+  }
+};
 
- directory.createAccount(account, function onAccountCreated(err, createdAccount) {
-   if (err) throw err;
-   console.log(createdAccount);
- });
+directory.createAccount(account, function onAccountCreated(err, createdAccount) {
+  console.log(createdAccount);
+});
 ```
 
 You can also specify options to control creation behavior and things like reference expansion:
@@ -68,7 +66,6 @@ You can also specify options to control creation behavior and things like refere
 var options = {registrationWorkflowEnabled: false};
 
 directory.createAccount(account, options, function onAccountCreated(err, createdAccount) {
-  if (err) throw err;
   console.log(createdAccount);
 });
 ```
@@ -125,7 +122,6 @@ Example:
 var group = {name: 'Administrators'}
 
 directory.createGroup(group, onGroupCreation(err, createdGroup) {
-  if (err) throw err;
   console.log(createdGroup);
 });
 ```
@@ -134,7 +130,6 @@ You can also specify options to control things like reference expansion:
 
 ```javascript
 directory.createGroup(group, {expand:'directory'}, function onAccountCreated(err, createdGroup) {
-  if (err) throw err;
   console.log(createdGroup);
 });
 ```
@@ -191,11 +186,9 @@ If you want to retrieve _all_ of the directory's accounts:
 
 ```javascript
 directory.getAccounts(function(err, accounts) {
-    if (err) throw err;
-
-    accounts.each(function(err, account, offset) {
-      console.log('Offset ' + offset + ', account: ' + account);
-    });
+  accounts.each(function(err, account, offset) {
+    console.log('Offset ' + offset + ', account: ' + account);
+  });
 });
 ```
 As you can see, the [Collection](collectionResource) provided to the `callback` has an `each` function that accepts its own callback.  The collection will iterate over all of the accounts in the collection, and invoke the callback for each one.  The `offset` parameter indicates the index of the account in the returned collection.  The `offset` parameter is optional - it may be omitted from the callback definition.
@@ -204,11 +197,9 @@ If you don't want all accounts, and only want specific ones, you can search for 
 
 ```javascript
 directory.getAccounts({username: '*foo*'}, function(err, accounts) {
-    if (err) throw err;
-
-    accounts.each(function(err, account) {
-      console.log(account);
-    });
+  accounts.each(function(err, account) {
+    console.log(account);
+  });
 });
 ```
 The above code example would only print out directory accounts with the text fragment `foo` in the username.  See the Stormpath REST API Guide's [directory account documentation](http://docs.stormpath.com/rest/product-guide/#directory-accounts) for other supported query parameters, such as reference expansion.
@@ -259,11 +250,9 @@ If you want to retrieve _all_ of the directory's groups:
 
 ```javascript
 directory.getGroups(function(err, groups) {
-    if (err) throw err;
-
-    groups.each(function(err, group, offset) {
-      console.log('Offset ' + offset + ', group: ' + group);
-    });
+  groups.each(function(err, group, offset) {
+    console.log('Offset ' + offset + ', group: ' + group);
+  });
 });
 ```
 As you can see, the [collection](collectionResource) provided to the `callback` has an `each` function that accepts its own callback.  The collection will iterate over all of the groups in the collection, and invoke the callback for each one.  The `offset` parameter indicates the index of the group in the returned collection.  The `offset` parameter is optional - it may be omitted from the callback definition.
@@ -272,11 +261,9 @@ If you don't want all groups, and only want specific ones, you can search for th
 
 ```javascript
 directory.getGroups({name: '*bar*'}, function(err, groups) {
-    if (err) throw err;
-
-    groups.each(function(err, group) {
-      console.log(group);
-    });
+  groups.each(function(err, group) {
+    console.log(group);
+  });
 });
 ```
 The above code example would only print out groups with the text fragment `foo` in their name.  See the Stormpath REST API Guide's [directory group](http://docs.stormpath.com/rest/product-guide/#directory-groups) documentation for other supported query parameters, such as reference expansion.
@@ -323,15 +310,13 @@ Retrieves the directory's owning [Tenant](tenant) and provides it to the specifi
 
 ```javascript
 directory.getTenant(function(err, tenant) {
-    if (err) throw err;
-    console.log(tenant);
+  console.log(tenant);
 });
 ```
 You can also use [resource expansion](http://docs.stormpath.com/rest/product-guide/#link-expansion) options (query params) to obtain linked resources in the same request:
 ```javascript
 directory.getTenant({expand:'applications'}, function(err, tenant) {
-    if (err) throw err;
-    console.log(tenant);
+  console.log(tenant);
 });
 ```
 
@@ -365,5 +350,55 @@ directory.getTenant({expand:'applications'}, function(err, tenant) {
 #### Returns
 
 void; the retrieved `Tenant` resource will be provided to the `callback` as the callback's second parameter.
+
+---
+
+<a name="getProvider"></a>
+### <span class="member">method</span> getProvider(*[options,]* callback)
+
+Retrieves the directory's `Provider` information  and provides it to the specified `callback`.
+If `provider` not set, `callback` will be called without parameters.
+
+#### Usage
+
+```javascript
+directory.getProvider(function(err, provider) {
+  console.log(provider);
+});
+```
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>_`options`_</td>
+      <td>`object`</td>
+      <td>_optional_</td>
+      <td>Name/value pairs to use as query parameters, for example, for [resource expansion](http://docs.stormpath.com/rest/product-guide/#link-expansion).</td>
+    </tr>
+    <tr>
+      <td>`callback`</td>
+      <td>function</td>
+      <td>required</td>
+      <td>The callback to execute upon resource retrieval.
+        The 1st parameter is an `Error` object.
+        The 2nd parameter is the retrieved `Provider` resource.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+#### Returns
+
+void; the retrieved `Provider` resource will be provided to the `callback` as the callback's second parameter.
 
 ---

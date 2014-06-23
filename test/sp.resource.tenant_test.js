@@ -1,5 +1,7 @@
 var common = require('./common');
+var assert = common.assert;
 var sinon = common.sinon;
+var uuid = require('node-uuid');
 
 var Account = require('../lib/resource/Account');
 var Tenant = require('../lib/resource/Tenant');
@@ -179,37 +181,70 @@ describe('Resources: ', function () {
     });
 
     describe('verify account email', function () {
-      var sandbox, tenant, createResourceStub, cbSpy, token;
-      var createEmailVerificationTokenPath = '/accounts/emailVerificationTokens/';
-      before(function () {
-        sandbox = sinon.sandbox.create();
-        token = 'token!';
-        tenant = new Tenant({}, dataStore);
-        createResourceStub = sandbox.stub(dataStore, 'createResource',
-          function (href, options, ctor, cb) {
-            cb();
+      describe('with a successful token response',function(){
+        var sandbox, tenant, tenantResult,cacheResult;
+        var accountResponse = {
+          href: '/v1/accounts/'+uuid(),
+          status: 'ENABLED'
+        };
+        before(function (done) {
+          sandbox = sinon.sandbox.create();
+          tenant = new Tenant({href:'an href'}, dataStore);
+
+          sandbox.stub(dataStore.requestExecutor, 'execute',
+            // simulate a successful response
+            function (reqOpts, cb) {
+              cb(null,accountResponse);
+            });
+
+          tenant.verifyAccountEmail(uuid(), function(err,account){
+            tenantResult = [err,account];
+            dataStore.cacheHandler.get(account.href,function(err,account){
+              cacheResult = [err,account];
+              done();
+            });
           });
-        cbSpy = sandbox.spy();
+        });
+        after(function () {
+          sandbox.restore();
+        });
 
-        tenant.verifyAccountEmail(token, cbSpy);
+        it('should not err',function(){
+          assert.equal(tenantResult[0],null);
+        });
+        it('should callback with an Account intance',function(){
+          assert(tenantResult[1] instanceof Account,true);
+        });
+        it('should put the account in the cache',function(){
+          assert.deepEqual(cacheResult[1],accountResponse);
+        });
       });
-      after(function () {
-        sandbox.restore();
-      });
+      describe('with an error response',function(){
+        var sandbox, tenant, tenantResult;
+        before(function (done) {
+          sandbox = sinon.sandbox.create();
+          tenant = new Tenant({href:'an href'}, dataStore);
+          sandbox.stub(dataStore.requestExecutor, 'execute',
+            // simulate an error response
+            function (reqOpts, cb) {
+              cb({status:404});
+            });
 
-      it('should create application', function () {
-        /* jshint -W030 */
-        createResourceStub.should.have.been.calledOnce;
-        cbSpy.should.have.been.calledOnce;
-        /* jshint +W030 */
+          tenant.verifyAccountEmail(uuid(), function(err,account){
+            tenantResult = [err,account];
+            done();
+          });
+        });
+        after(function () {
+          sandbox.restore();
+        });
 
-        // call without optional param
-        createResourceStub.should.have.been
-          .calledWith(createEmailVerificationTokenPath + token, null, Account, cbSpy);
-        // call with optional param
-        createResourceStub.should.have.been
-          .calledWith(createEmailVerificationTokenPath + token, null, Account, cbSpy);
+        it('should err',function(){
+          assert.notEqual(tenantResult[0],null);
+          assert.equal(tenantResult[1],null);
+        });
       });
     });
   });
+
 });

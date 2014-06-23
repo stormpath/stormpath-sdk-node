@@ -61,23 +61,45 @@ function items() {
     item('Account', null, [
       anchor('Overview', 'top'),
       anchor('addToGroup'),
+      anchor('createApiKey'),
+      anchor('getApiKeys'),
       anchor('getGroups'),
       anchor('getGroupMemberships'),
       anchor('getDirectory'),
       anchor('getTenant'),
-      anchor('getCustomData')
+      anchor('getCustomData'),
+      anchor('getProviderData')
+    ]),
+
+    item('AccountStoreMapping', 'accountStoreMapping', [
+      anchor('Overview', 'top'),
+      anchor('getApplication'),
+      anchor('setApplication'),
+      anchor('getAccountStore'),
+      anchor('setAccountStore')
     ]),
 
     item('Application', null, [
       anchor('Overview', 'top'),
       anchor('authenticateAccount'),
+      anchor('authenticateApiRequest'),
       anchor('createAccount'),
       anchor('createGroup'),
       anchor('getAccounts'),
+      anchor('getApiKey'),
       anchor('getGroups'),
       anchor('getTenant'),
       anchor('sendPasswordResetEmail'),
-      anchor('verifyPasswordResetToken')
+      anchor('verifyPasswordResetToken'),
+      anchor('resetPassword'),
+      anchor('getAccount'),
+      anchor('getAccountStoreMappings'),
+      anchor('getDefaultAccountStore'),
+      anchor('setDefaultAccountStore'),
+      anchor('getDefaultGroupStore'),
+      anchor('setDefaultGroupStore'),
+      anchor('createAccountStoreMapping'),
+      anchor('addAccountStore')
     ]),
 
     item('AuthenticationResult', 'authenticationResult', [
@@ -85,9 +107,42 @@ function items() {
       anchor('getAccount')
     ]),
 
+    item('Cache', 'cache', [
+      anchor('Overview', 'top'),
+      anchor('get'),
+      anchor('put'),
+      anchor('delete'),
+      anchor('clear'),
+      anchor('size')
+    ]),
+
+    item('Cache manager', 'cacheManager', [
+      anchor('Overview', 'top'),
+      anchor('getCache'),
+      anchor('createCache')
+    ]),
+
     item('CollectionResource', 'collectionResource', [
       anchor('Overview', 'top'),
-      anchor('each')
+      anchor('each'),
+      anchor('eachSeries'),
+      anchor('eachLimit'),
+      anchor('map'),
+      anchor('mapSeries'),
+      anchor('mapLimit'),
+      anchor('filter'),
+      anchor('filterSeries'),
+      anchor('reject'),
+      anchor('rejectSeries'),
+      anchor('reduce'),
+      anchor('reduceRight'),
+      anchor('detect'),
+      anchor('detectSeries'),
+      anchor('sortBy'),
+      anchor('some'),
+      anchor('every'),
+      anchor('concat'),
+      anchor('concatSeries')
     ]),
 
     item('CustomData', 'customData', [
@@ -104,7 +159,8 @@ function items() {
       anchor('createGroup'),
       anchor('getAccounts'),
       anchor('getGroups'),
-      anchor('getTenant')
+      anchor('getTenant'),
+      anchor('getProvider')
     ]),
 
     item('Group', null, [

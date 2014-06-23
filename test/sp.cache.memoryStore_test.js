@@ -105,6 +105,5 @@ describe('Cache module', function () {
         });
       });
     });
-
   });
 });

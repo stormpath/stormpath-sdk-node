@@ -1,9 +1,14 @@
+/* jshint -W030 */
+"use strict";
 var common = require('./common');
 var sinon = common.sinon;
+var nock = common.nock;
+var u = common.u;
 
 var Account = require('../lib/resource/Account');
 var Group = require('../lib/resource/Group');
 var Tenant = require('../lib/resource/Tenant');
+var Provider = require('../lib/resource/Provider');
 var Directory = require('../lib/resource/Directory');
 var DataStore = require('../lib/ds/DataStore');
 
@@ -266,6 +271,62 @@ describe('Resources: ', function () {
           // call with optional param
           getResourceStub.should.have.been
             .calledWith(app.tenant.href, opt, Tenant, cbSpy);
+        });
+      });
+    });
+
+    describe('get provider', function(){
+      function getProvider(data) {
+        return function () {
+          var dirObj, providerObj, app, provider;
+          before(function (done) {
+            // assert
+            providerObj = {href: '/provider/href', name: 'provider name'};
+            dirObj = {provider: {href: providerObj.href}};
+            app = new Directory(dirObj, dataStore);
+
+            nock(u.BASE_URL).get(u.v1(providerObj.href)).reply(200, providerObj);
+
+            var args = [];
+            if (data) {
+              args.push(data);
+            }
+            args.push(function cb(err, prov) {
+              provider = prov;
+              done();
+            });
+
+            // act
+            app.getProvider.apply(app, args);
+          });
+          it('should get provider', function () {
+            provider.href.should.be.equal(provider.href);
+            provider.name.should.be.equal(provider.name);
+          });
+
+          it('should be an instance of Provider', function () {
+            provider.should.be.an.instanceOf(Provider);
+          });
+        };
+      }
+
+      describe('without options', getProvider());
+      describe('with options', getProvider({}));
+      describe('if provider not set', function () {
+        var accObj, app, cbSpy;
+        before(function () {
+          // assert
+          accObj = {providerData: null};
+          app = new Account(accObj, dataStore);
+          cbSpy = sinon.spy();
+
+          // act
+          app.getProviderData(cbSpy);
+        });
+
+        it('should call cb without options', function () {
+          cbSpy.should.have.been.calledOnce;
+          cbSpy.should.have.been.calledWith(undefined, undefined);
         });
       });
     });
