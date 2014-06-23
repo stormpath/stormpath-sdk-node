@@ -90,7 +90,7 @@ describe('Resources: ', function () {
           var test = new SsoResponseTest();
           it('should throw the cb_uri required error',function(){
             common.assert.throws(test.before,
-              'cb_uri URI must be provided and must be in your SSO whitelist'
+              'cb_uri URI must be provided and must be in your ID Site whitelist'
             );
           });
         });
