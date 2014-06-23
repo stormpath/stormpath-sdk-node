@@ -73,8 +73,9 @@ describe('Resources: ', function () {
         var self = this;
         self.before = function(){
           self.clientApiKeySecret = uuid();
+          self.clientApiKeyId = uuid();
           var dataStore = new DataStore({
-            apiKey: {id: uuid(), secret: self.clientApiKeySecret}
+            apiKey: {id: self.clientApiKeyId, secret: self.clientApiKeySecret}
           });
           var app = {href:'http://api.stormpath.com/v1/applications/'+uuid()};
           self.application = new Application(app, dataStore);
@@ -124,7 +125,8 @@ describe('Resources: ', function () {
             var responseJwt = jwt.encode({
               sub: accountHref,
               irt: test.jwtRequest.jti,
-              state: test.jwtRequest.state
+              state: test.jwtRequest.state,
+              aud: test.clientApiKeyId
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
             test.handleIdSiteCallback(responseUri);
@@ -150,7 +152,8 @@ describe('Resources: ', function () {
             responseJwt = jwt.encode({
               sub: accountHref,
               irt: test.jwtRequest.jti,
-              state: test.jwtRequest.state
+              state: test.jwtRequest.state,
+              aud: test.clientApiKeyId
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
             test.handleIdSiteCallback(responseUri,'jwt');
@@ -176,7 +179,8 @@ describe('Resources: ', function () {
             responseJwt = jwt.encode({
               sub: accountHref,
               irt: test.jwtRequest.jti,
-              state: test.jwtRequest.state
+              state: test.jwtRequest.state,
+              aud: test.clientApiKeyId
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
             test.handleIdSiteCallback(responseUri,'unknown');
