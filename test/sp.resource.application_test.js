@@ -18,7 +18,7 @@ describe('Resources: ', function () {
     describe('authenticate account', function () {
       var authRequest = {username: 'test'};
 
-      describe('createSsoUrl', function () {
+      describe('createIdSiteUrl', function () {
         var clientApiKeySecret = uuid();
         var dataStore = new DataStore({apiKey: {id: '1', secret: clientApiKeySecret}});
         var app = {
@@ -27,7 +27,7 @@ describe('Resources: ', function () {
         var application = new Application(app, dataStore);
         var clientState = uuid();
 
-        var redirectUrl = application.createSsoUrl({
+        var redirectUrl = application.createIdSiteUrl({
           cb_uri: 'https://stormpath.com',
           state: clientState
         });
@@ -68,13 +68,13 @@ describe('Resources: ', function () {
             var callback = args.pop();
             callback(null,{href:href});
           });
-          self.redirectUrl = self.application.createSsoUrl(options);
+          self.redirectUrl = self.application.createIdSiteUrl(options);
           var params = url.parse(self.redirectUrl,true).query;
           self.jwtRequest = self.decodeJwtRequest(params.jwtRequest);
           self.cbSpy = sinon.spy();
         };
-        self.handleSsoResponse = function(responseUri,responseMode){
-          self.application.handleSsoResponse(responseUri,responseMode,self.cbSpy);
+        self.handleIdSiteCallback = function(responseUri,responseMode){
+          self.application.handleIdSiteCallback(responseUri,responseMode,self.cbSpy);
         };
         self.after = function(){
           self.getResourceStub.restore();
@@ -85,7 +85,7 @@ describe('Resources: ', function () {
         return self;
       }
 
-      describe('handleSsoResponse',function(){
+      describe('handleIdSiteCallback',function(){
         describe('without a cb_uri',function(){
           var test = new SsoResponseTest();
           it('should throw the cb_uri required error',function(){
@@ -111,7 +111,7 @@ describe('Resources: ', function () {
               state: test.jwtRequest.state
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
-            test.handleSsoResponse(responseUri);
+            test.handleIdSiteCallback(responseUri);
           });
           after(function(){
             test.after();
@@ -137,7 +137,7 @@ describe('Resources: ', function () {
               state: test.jwtRequest.state
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
-            test.handleSsoResponse(responseUri,'jwt');
+            test.handleIdSiteCallback(responseUri,'jwt');
           });
           after(function(){
             test.after();
@@ -163,7 +163,7 @@ describe('Resources: ', function () {
               state: test.jwtRequest.state
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
-            test.handleSsoResponse(responseUri,'unknown');
+            test.handleIdSiteCallback(responseUri,'unknown');
           });
           after(function(){
             test.after();
@@ -184,7 +184,7 @@ describe('Resources: ', function () {
               irt: 'not the nonce that was given'
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=';
-            test.handleSsoResponse(responseUri);
+            test.handleIdSiteCallback(responseUri);
           });
           after(function(){
             test.after();
@@ -206,7 +206,7 @@ describe('Resources: ', function () {
               irt: test.jwtRequest.jti
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state='  + 'not the state that was given';
-            test.handleSsoResponse(responseUri);
+            test.handleIdSiteCallback(responseUri);
           });
           after(function(){
             test.after();
@@ -230,7 +230,7 @@ describe('Resources: ', function () {
               state: test.givenState
             },'not the right key','HS256');
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
-            test.handleSsoResponse(responseUri);
+            test.handleIdSiteCallback(responseUri);
           });
           after(function(){
             test.after();
