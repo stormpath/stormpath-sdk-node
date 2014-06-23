@@ -126,7 +126,8 @@ describe('Resources: ', function () {
               sub: accountHref,
               irt: test.jwtRequest.jti,
               state: test.jwtRequest.state,
-              aud: test.clientApiKeyId
+              aud: test.clientApiKeyId,
+              exp: utils.nowEpochSeconds() + 1
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
             test.handleIdSiteCallback(responseUri);
@@ -153,7 +154,8 @@ describe('Resources: ', function () {
               sub: accountHref,
               irt: test.jwtRequest.jti,
               state: test.jwtRequest.state,
-              aud: test.clientApiKeyId
+              aud: test.clientApiKeyId,
+              exp: utils.nowEpochSeconds() + 1
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
             test.handleIdSiteCallback(responseUri,'jwt');
@@ -161,8 +163,64 @@ describe('Resources: ', function () {
           after(function(){
             test.after();
           });
-          it('should succeed return the jwt payload',function(){
+          it('should succeed and return the jwt payload',function(){
             test.cbSpy.should.have.been.calledWith(null,jwt.decode(responseJwt,test.clientApiKeySecret));
+          });
+        });
+
+        describe('with an expired token',function(){
+          var accountHref = uuid();
+          var clientState = uuid();
+          var responseJwt;
+          var test = new SsoResponseTest({
+            cb_uri: '/',
+            state: clientState
+          });
+          before(function(){
+            test.before();
+            responseJwt = jwt.encode({
+              sub: accountHref,
+              irt: test.jwtRequest.jti,
+              state: test.jwtRequest.state,
+              aud: test.clientApiKeyId,
+              exp: utils.nowEpochSeconds() - 1
+            },test.clientApiKeySecret,'HS256');
+            var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
+            test.handleIdSiteCallback(responseUri,'jwt');
+          });
+          after(function(){
+            test.after();
+          });
+          it('should error with the expiration error',function(){
+            common.assert.equal(test.cbSpy.args[0][0].message,'JWT has expired');
+          });
+        });
+
+        describe('with an invalid exp value',function(){
+          var accountHref = uuid();
+          var clientState = uuid();
+          var responseJwt;
+          var test = new SsoResponseTest({
+            cb_uri: '/',
+            state: clientState
+          });
+          before(function(){
+            test.before();
+            responseJwt = jwt.encode({
+              sub: accountHref,
+              irt: test.jwtRequest.jti,
+              state: test.jwtRequest.state,
+              aud: test.clientApiKeyId,
+              exp: "yeah right"
+            },test.clientApiKeySecret,'HS256');
+            var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
+            test.handleIdSiteCallback(responseUri,'jwt');
+          });
+          after(function(){
+            test.after();
+          });
+          it('should error with the expiration error',function(){
+            common.assert.equal(test.cbSpy.args[0][0].message,'JWT has expired');
           });
         });
 
@@ -180,7 +238,8 @@ describe('Resources: ', function () {
               sub: accountHref,
               irt: test.jwtRequest.jti,
               state: test.jwtRequest.state,
-              aud: test.clientApiKeyId
+              aud: test.clientApiKeyId,
+              exp: utils.nowEpochSeconds() + 1
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
             test.handleIdSiteCallback(responseUri,'unknown');

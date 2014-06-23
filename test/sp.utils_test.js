@@ -6,6 +6,7 @@
 var common = require('./common');
 var utils = require('../lib/utils');
 var expect = common.expect;
+var assert = common.assert;
 
 describe('util', function () {
   it('isAssignableFrom should work', function () {
@@ -110,6 +111,34 @@ describe('util', function () {
   describe('base64', function(){
     var test = 'boom!';
     utils.base64.decode(utils.base64.encode(test)).should.be.equal(test);
+  });
+
+  describe('isNumber', function(){
+    describe('0',function(){
+      it('should be true',function(){
+        assert.isTrue(utils.isNumber(0));
+      });
+    });
+    describe('1',function(){
+      it('should be true',function(){
+        assert.isTrue(utils.isNumber(1));
+      });
+    });
+    describe('"1"',function(){
+      it('should be false',function(){
+        assert.isFalse(utils.isNumber("1"));
+      });
+    });
+    describe('NaN',function(){
+      it('should be false',function(){
+        assert.isFalse(utils.isNumber(NaN));
+      });
+    });
+    describe('parseInt("a")',function(){
+      it('should be false',function(){
+        assert.isFalse(utils.isNumber(parseInt("a",10)));
+      });
+    });
   });
 
 
