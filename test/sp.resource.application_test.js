@@ -107,7 +107,7 @@ describe('Resources: ', function () {
             test.before();
             var responseJwt = jwt.encode({
               sub: accountHref,
-              irt_jti: test.jwtRequest.jti,
+              irt: test.jwtRequest.jti,
               state: test.jwtRequest.state
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
@@ -133,7 +133,7 @@ describe('Resources: ', function () {
             test.before();
             responseJwt = jwt.encode({
               sub: accountHref,
-              irt_jti: test.jwtRequest.jti,
+              irt: test.jwtRequest.jti,
               state: test.jwtRequest.state
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
@@ -159,7 +159,7 @@ describe('Resources: ', function () {
             test.before();
             responseJwt = jwt.encode({
               sub: accountHref,
-              irt_jti: test.jwtRequest.jti,
+              irt: test.jwtRequest.jti,
               state: test.jwtRequest.state
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
@@ -181,7 +181,7 @@ describe('Resources: ', function () {
           before(function(){
             test.before();
             var responseJwt = jwt.encode({
-              irt_jti: 'not the nonce that was given'
+              irt: 'not the nonce that was given'
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=';
             test.handleSsoResponse(responseUri);
@@ -203,7 +203,7 @@ describe('Resources: ', function () {
           before(function(){
             test.before();
             var responseJwt = jwt.encode({
-              irt_jti: test.jwtRequest.jti
+              irt: test.jwtRequest.jti
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state='  + 'not the state that was given';
             test.handleSsoResponse(responseUri);
@@ -226,7 +226,7 @@ describe('Resources: ', function () {
           before(function(){
             test.before();
             var responseJwt = jwt.encode({
-              irt_jti: test.givenNonce,
+              irt: test.givenNonce,
               state: test.givenState
             },'not the right key','HS256');
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
