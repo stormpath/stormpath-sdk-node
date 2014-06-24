@@ -199,15 +199,28 @@ function items() {
 
 
 angular.module('docsApp')
-  .controller('MainNavController', function ($scope,$location, $window) {
+  .controller('MainNavController', function ($scope,$location, $window, $anchorScroll) {
 
     $scope.oneAtATime = true;
 
     $scope.items = items();
 
+    $scope.path = $location.path().replace(/^\//,'');
+
     $scope.changeView = function (path) {
       $location.path(path);
-      $window.scrollTo(0,0);
+    };
+
+    $scope.$on('$locationChangeSuccess',function(){
+      $scope.scrollTop();
+    });
+
+    $scope.isActive = function(item){
+      return $scope.path === item.href;
+    };
+
+    $scope.scrollTop = function scrollTop() {
+      document.getElementById('maincontentarea').scrollTop =0;
     };
 
     $scope.$on('$viewContentLoaded', function() {
@@ -216,5 +229,7 @@ angular.module('docsApp')
 
       //apply table styles
       angular.element(document.getElementsByTagName('table')).addClass('table table-striped table-hover table-curved');
+
+      $anchorScroll();
     });
   });
