@@ -252,47 +252,32 @@ describe('Resources: ', function () {
           });
         });
 
-
-        describe('with an unkown nonce',function(){
+        describe('with a replayed nonce',function(){
+          var accountHref = uuid();
           var test = new SsoResponseTest({
             cb_uri: '/'
           });
           before(function(){
             test.before();
             var responseJwt = jwt.encode({
-              irt: 'not the nonce that was given'
+              sub: accountHref,
+              irt: test.jwtRequest.jti,
+              state: test.jwtRequest.state,
+              aud: test.clientApiKeyId,
+              exp: utils.nowEpochSeconds() + 1
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=';
             test.handleIdSiteCallback(responseUri);
-          });
-          after(function(){
-            test.after();
-          });
-          it('should reject the nonce',function(){
-            common.assert.equal(test.cbSpy.args[0][0].message,'Invalid nonce');
-          });
-        });
-
-        describe('with a modified client state',function(){
-          var clientState = uuid();
-          var test = new SsoResponseTest({
-            cb_uri: '/',
-            state: clientState
-          });
-          before(function(){
-            test.before();
-            var responseJwt = jwt.encode({
-              irt: test.jwtRequest.jti
-            },test.clientApiKeySecret,'HS256');
-            var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state='  + 'not the state that was given';
             test.handleIdSiteCallback(responseUri);
           });
           after(function(){
             test.after();
           });
-
-          it('should reject the state',function(){
-            common.assert.equal(test.cbSpy.args[0][0].message,'Client state has been modified');
+          it('should succeed on the first try',function(){
+            test.cbSpy.should.have.been.calledWith(null,{href:accountHref});
+          });
+          it('should fail on the second try the nonce',function(){
+            common.assert.equal(test.cbSpy.args[1][0].message,'JWT has already been used.');
           });
         });
 
