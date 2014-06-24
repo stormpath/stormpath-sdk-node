@@ -392,6 +392,69 @@ void; the created [Group](group) returned from the server will be provided to th
 
 ---
 
+<a name="createIdSiteUrl"></a>
+### <span class="member">method</span> createIdSiteUrl(options)
+
+Creates a URL which will redirect a user to your ID Site.  The URL will have the query param `?jwtRequest=<token>` appended to it.
+This token is required when sending a user to your ID Site and is signed with your api key for protection.  To send the user to your ID site, simply Issue a `302` redirect and set the `Location` header to the URL that you get from this method.
+
+#### Usage
+
+````javascript
+// Express.js example
+
+app.get('/login',function(req,res){
+  var url = application.createIdSiteUrl({
+    cb_uri: 'https://www.mysite.com/dashboard'
+  });
+
+  res.writeHead(302, {
+    'Cache-Control': 'no-store',
+    'Pragma': 'no-cache',
+    'Location': url
+  });
+  res.end();
+});
+````
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>`options`</td>
+      <td>`object`</td>
+      <td>required</td>
+      <td>
+        <p>An options object, the following properties are supported:</p>
+        <ul>
+          <li>
+            `cb_uri` - REQUIRED - the fully-qualified location where the user should be sent after they authenticate,
+            i.e. *https://www.mysite.com/dashboard*.
+            The domain *www.mysite.com* must be configured as an Authorized Redirect URI in your ID Site configuration.
+          </li>
+          <li>
+            `path` - OPTIONAL - The path to send the user to on the ID Site, defaults to `/`
+          </li>
+          <li>
+            `state` - OPTIONAL - A string which you can use to carry state through the authentication process.  This value will be available on the [AuthenticationResult](authenticationResult) when the user returns after a successful authentciation.
+          </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+---
+
 <a name="getAccounts"></a>
 ### <span class="member">method</span> getAccounts(*[options,]* callback)
 

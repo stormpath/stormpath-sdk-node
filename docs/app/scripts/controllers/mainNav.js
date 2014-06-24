@@ -85,6 +85,7 @@ function items() {
       anchor('authenticateApiRequest'),
       anchor('createAccount'),
       anchor('createGroup'),
+      anchor('createIdSiteUrl'),
       anchor('getAccounts'),
       anchor('getApiKey'),
       anchor('getGroups'),
