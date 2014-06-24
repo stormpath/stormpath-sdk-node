@@ -204,6 +204,35 @@ describe('Resources: ', function () {
           });
         });
 
+        describe('with a different client id (aud)',function(){
+          var accountHref = uuid();
+          var clientState = uuid();
+          var responseJwt;
+          var test = new SsoResponseTest({
+            cb_uri: '/',
+            state: clientState
+          });
+          before(function(){
+            test.before();
+            responseJwt = jwt.encode({
+              sub: accountHref,
+              irt: test.jwtRequest.jti,
+              state: test.jwtRequest.state,
+              aud: uuid(),
+              exp: utils.nowEpochSeconds() - 1
+            },test.clientApiKeySecret,'HS256');
+            var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
+            test.handleIdSiteCallback(responseUri,'jwt');
+          });
+          after(function(){
+            test.after();
+          });
+          it('should error',function(){
+            common.assert.instanceOf(test.cbSpy.args[0][0],Error);
+            common.assert.equal(test.cbSpy.args[0][0].message,"The client used to sign the jwrResponse is different than the one used in this datasore.");
+          });
+        });
+
         describe('with an invalid exp value',function(){
           var accountHref = uuid();
           var clientState = uuid();
