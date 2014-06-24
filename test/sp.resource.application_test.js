@@ -6,6 +6,7 @@ var u = common.u;
 
 var assert = common.assert;
 var _ = common._;
+var errorMessages = require('../lib/error/messages');
 var utils = require('../lib/utils');
 var Account = require('../lib/resource/Account');
 var Group = require('../lib/resource/Group');
@@ -106,9 +107,7 @@ describe('Resources: ', function () {
         describe('without a cb_uri',function(){
           var test = new SsoResponseTest();
           it('should throw the cb_uri required error',function(){
-            common.assert.throws(test.before,
-              'cb_uri URI must be provided and must be in your ID Site whitelist'
-            );
+            common.assert.throws(test.before,errorMessages.ID_SITE_INVALID_CB_URI);
           });
         });
 
@@ -200,7 +199,7 @@ describe('Resources: ', function () {
             test.after();
           });
           it('should error with the expiration error',function(){
-            common.assert.equal(test.cbSpy.args[0][0].message,'JWT has expired');
+            common.assert.equal(test.cbSpy.args[0][0].message,errorMessages.ID_SITE_JWT_HAS_EXPIRED);
           });
         });
 
@@ -229,7 +228,7 @@ describe('Resources: ', function () {
           });
           it('should error',function(){
             common.assert.instanceOf(test.cbSpy.args[0][0],Error);
-            common.assert.equal(test.cbSpy.args[0][0].message,"The client used to sign the jwrResponse is different than the one used in this datasore.");
+            common.assert.equal(test.cbSpy.args[0][0].message,errorMessages.ID_SITE_JWT_INVALID_AUD);
           });
         });
 
@@ -257,7 +256,7 @@ describe('Resources: ', function () {
             test.after();
           });
           it('should error with the expiration error',function(){
-            common.assert.equal(test.cbSpy.args[0][0].message,'JWT has expired');
+            common.assert.equal(test.cbSpy.args[0][0].message,errorMessages.ID_SITE_JWT_HAS_EXPIRED);
           });
         });
 
@@ -286,7 +285,7 @@ describe('Resources: ', function () {
             common.assert.equal(test.cbSpy.args[0][0],null);
           });
           it('should fail on the second try the nonce',function(){
-            common.assert.equal(test.cbSpy.args[1][0].message,'JWT has already been used.');
+            common.assert.equal(test.cbSpy.args[1][0].message,errorMessages.ID_SITE_JWT_ALREADY_USED);
           });
         });
 
