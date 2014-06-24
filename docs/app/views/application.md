@@ -398,6 +398,8 @@ void; the created [Group](group) returned from the server will be provided to th
 Creates a URL which will redirect a user to your ID Site.  The URL will have the query param `?jwtRequest=<token>` appended to it.
 This token is required when sending a user to your ID Site and is signed with your api key for protection.  To send the user to your ID site, simply Issue a `302` redirect and set the `Location` header to the URL that you get from this method.
 
+For more information, see the [ID Site Feature Guide][]
+
 #### Usage
 
 ````javascript
@@ -712,6 +714,8 @@ This method is a convnenient way to decode that JWT and get the account which ha
 query param, and a callback.  Your callback will be called with an `AuthenticationResult` instance.  You can use
 [authResult.getAcount()](authenticationResult#getAcount) to get the account of the authenticated user.  You can also get the decoded token
 from the [authResult.idSiteResponse](authenticationResult#idSiteResponse) property.
+
+For more information, see the [ID Site Feature Guide][]
 
 #### Usage
 
@@ -1406,3 +1410,6 @@ application.addAccountStore(directory, function(err, asm){
 void;
 If the request fails, the callback's first parameter (`err`) will report the failure.
 If the request succeeds, the instance of  [AccountStoreMapping](accountStoreMapping) will be provided to the `callback` as the callback's second parameter.
+
+
+[ID Site Feature Guide]: http://docs.stormpath.com/guides/using-id-site
