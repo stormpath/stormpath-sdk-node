@@ -170,7 +170,7 @@ describe('Resources: ', function () {
           });
           it('should set the clientState property on the AuthenticationResult',function(){
             var result = test.cbSpy.args[0];
-            common.assert.equal(result[1].clientState,clientState);
+            common.assert.equal(result[1].idSiteResponse.state,clientState);
           });
         });
 
