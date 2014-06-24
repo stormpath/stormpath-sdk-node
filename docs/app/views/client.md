@@ -141,6 +141,12 @@ var client = new stormpath.Client(options);
       <td>optional</td>
       <td>See "Cache options parameters" below for details.</td>
     </tr>
+    <tr>
+      <td><code>options.nonceStore</code></td>
+      <td><code>object</code></td>
+      <td>optional</td>
+      <td>See "Custom Nonce Store" below for details.</td>
+    </tr>
   </tbody>
 </table>
 
@@ -204,6 +210,22 @@ var client = new stormpath.Client(options);
 
 ---
 
+
+<a name="customNonceStore"></a>
+### Custom Nonce Store
+
+If you are using the [ID Site Feature][] in your Stormpath implementation, the calls to
+[Application.createIdSiteUrl()](application#createIdSiteUrl) and [Application.handleIdSiteCallback()](application#handleIdSiteCallback)
+will make use of a nonce value to prevent replay attacks.  By default these nonces will be stored in a cache region in the client's data store.
+
+You may use your own Nonce Store by providing an interface object that we can use to communicate with it.  Your interface object must have these two methods:
+
+* `getNonce(nonceStringValue,callback)` - It will search your nonce store for the nonce value and then call the callback with with the `(err,value)` pattern, where `err` indicates a problem with the store and `value` is the found nonce or `null`
+* `putNonce(nonceStringValue,callback)` - It should place the nonce value in your nonce store and then call the callback with `(err)` where `err` is a store error or `null`
+
+You then pass this object to the stormpath client constructor as the `nonceStore` option.
+
+---
 
 <a name="memory"></a>
 ### In Memory Cache
@@ -1159,3 +1181,4 @@ the callback's second parameter.
   [application search documentation]: http://docs.stormpath.com/rest/product-guide/#tenant-applications-search "Stormpath Application Search"
   [directory search]: http://docs.stormpath.com/rest/product-guide/#tenant-directories-search "Stormpath Directory Search"
   [directory search documentation]: http://docs.stormpath.com/rest/product-guide/#tenant-directories-search "Stormpath Directory Search"
+  [ID Site Feature]: http://docs.stormpath.com/guides/using-id-site
