@@ -90,8 +90,8 @@ describe('Resources: ', function () {
           self.jwtRequest = self.decodeJwtRequest(params.jwtRequest);
           self.cbSpy = sinon.spy();
         };
-        self.handleIdSiteCallback = function(responseUri,responseMode){
-          self.application.handleIdSiteCallback(responseUri,responseMode,self.cbSpy);
+        self.handleIdSiteCallback = function(responseUri){
+          self.application.handleIdSiteCallback(responseUri,self.cbSpy);
         };
         self.after = function(){
           self.getResourceStub.restore();
@@ -112,61 +112,69 @@ describe('Resources: ', function () {
           });
         });
 
+        describe('with out the responseUri argument',function(){
+          var test = new SsoResponseTest({
+            cb_uri: '/',
+            state: uuid()
+          });
+          before(function(){
+            test.before();
+          });
+          after(function(){
+            test.after();
+          });
+          it('should throw',function(){
+            assert.throws(test.handleIdSiteCallback);
+          });
+        });
 
-        describe('with a happy roundtrip',function(){
+
+        describe('with a valid jwt response',function(){
           var accountHref = uuid();
           var clientState = uuid();
           var test = new SsoResponseTest({
             cb_uri: '/',
             state: clientState
           });
+          var responseJwt;
           before(function(){
             test.before();
-            var responseJwt = jwt.encode({
+            responseJwt = {
               sub: accountHref,
               irt: test.jwtRequest.jti,
               state: test.jwtRequest.state,
               aud: test.clientApiKeyId,
               exp: utils.nowEpochSeconds() + 1
-            },test.clientApiKeySecret,'HS256');
-            var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
+            };
+            var responseUri = '/somewhere?jwtResponse=' +
+              jwt.encode(responseJwt,test.clientApiKeySecret,'HS256') + '&state=' + test.givenState;
             test.handleIdSiteCallback(responseUri);
           });
           after(function(){
             test.after();
           });
-          it('should succeed and fetch the account resource',function(){
-            test.cbSpy.should.have.been.calledWith(null,{href:accountHref});
+          it('should not error',function(){
+            var result = test.cbSpy.args[0];
+            common.assert.equal(result[0],null);
+          });
+          it('should return an AuthenticationResult',function(){
+            var result = test.cbSpy.args[0];
+            common.assert.instanceOf(result[1],AuthenticationResult);
+          });
+          it('should set the account href on the AuthenticationResult',function(){
+            var result = test.cbSpy.args[0];
+            common.assert.equal(result[1].account.href,accountHref);
+          });
+          it('should set the idSiteResponse object on the AuthenticationResult',function(){
+            var result = test.cbSpy.args[0];
+            common.assert.deepEqual(result[1].idSiteResponse,responseJwt);
+          });
+          it('should set the clientState property on the AuthenticationResult',function(){
+            var result = test.cbSpy.args[0];
+            common.assert.equal(result[1].clientState,clientState);
           });
         });
 
-        describe('with a happy roundtrip and jwt reponse mode',function(){
-          var accountHref = uuid();
-          var clientState = uuid();
-          var responseJwt;
-          var test = new SsoResponseTest({
-            cb_uri: '/',
-            state: clientState
-          });
-          before(function(){
-            test.before();
-            responseJwt = jwt.encode({
-              sub: accountHref,
-              irt: test.jwtRequest.jti,
-              state: test.jwtRequest.state,
-              aud: test.clientApiKeyId,
-              exp: utils.nowEpochSeconds() + 1
-            },test.clientApiKeySecret,'HS256');
-            var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
-            test.handleIdSiteCallback(responseUri,'jwt');
-          });
-          after(function(){
-            test.after();
-          });
-          it('should succeed and return the jwt payload',function(){
-            test.cbSpy.should.have.been.calledWith(null,jwt.decode(responseJwt,test.clientApiKeySecret));
-          });
-        });
 
         describe('with an expired token',function(){
           var accountHref = uuid();
@@ -224,34 +232,6 @@ describe('Resources: ', function () {
           });
         });
 
-        describe('without an invalid responseMode',function(){
-          var accountHref = uuid();
-          var clientState = uuid();
-          var responseJwt;
-          var test = new SsoResponseTest({
-            cb_uri: '/',
-            state: clientState
-          });
-          before(function(){
-            test.before();
-            responseJwt = jwt.encode({
-              sub: accountHref,
-              irt: test.jwtRequest.jti,
-              state: test.jwtRequest.state,
-              aud: test.clientApiKeyId,
-              exp: utils.nowEpochSeconds() + 1
-            },test.clientApiKeySecret,'HS256');
-            var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
-            test.handleIdSiteCallback(responseUri,'unknown');
-          });
-          after(function(){
-            test.after();
-          });
-          it('should return the response mode error',function(){
-            common.assert.equal(test.cbSpy.args[0][0].message,'Unsupported response mode');
-          });
-        });
-
         describe('with a replayed nonce',function(){
           var accountHref = uuid();
           var test = new SsoResponseTest({
@@ -274,7 +254,7 @@ describe('Resources: ', function () {
             test.after();
           });
           it('should succeed on the first try',function(){
-            test.cbSpy.should.have.been.calledWith(null,{href:accountHref});
+            common.assert.equal(test.cbSpy.args[0][0],null);
           });
           it('should fail on the second try the nonce',function(){
             common.assert.equal(test.cbSpy.args[1][0].message,'JWT has already been used.');
