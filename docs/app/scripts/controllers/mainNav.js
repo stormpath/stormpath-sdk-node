@@ -90,6 +90,7 @@ function items() {
       anchor('getApiKey'),
       anchor('getGroups'),
       anchor('getTenant'),
+      anchor('handleIdSiteCallback'),
       anchor('sendPasswordResetEmail'),
       anchor('verifyPasswordResetToken'),
       anchor('resetPassword'),
