@@ -440,14 +440,17 @@ app.get('/login',function(req,res){
         <ul>
           <li>
             `callbackUri` - REQUIRED - the fully-qualified location where the user should be sent after they authenticate,
-            i.e. *https://www.mysite.com/dashboard*.
-            The domain *www.mysite.com* must be configured as an Authorized Redirect URI in your ID Site configuration.
+            e.g. *https://www.mysite.com/dashboard*.
+            For security reasons, the domain *www.mysite.com* must be registered in your ID Site configuration in the Stormpath Admin Console.
+
           </li>
           <li>
-            `path` - OPTIONAL - The path to send the user to on the ID Site, defaults to `/`
+            `path` - OPTIONAL - Sets the initial path in the ID Site where the user should be sent. If unspecified, this defaults to /, implying that the ID Site's landing/home page is the desired location.
+
+            Most Stormpath customers allow their ID Site's default landing page `/` to reflect a traditional 'Login or Signup' page for convenience. However, if you know that an end-user is attempting to register, and your ID Site's user registration form is located at /register, you would set the path to `/register` to send the user directly there.
           </li>
           <li>
-            `state` - OPTIONAL - A string which you can use to carry state through the authentication process.  This value will be available on the [AuthenticationResult](authenticationResult) when the user returns after a successful authentciation.
+            `state` - OPTIONAL - Application-specific state that should be retained and made available to your callbackUri when the user returns from the ID Site.
           </li>
         </ul>
       </td>
