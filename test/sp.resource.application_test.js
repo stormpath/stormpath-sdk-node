@@ -45,7 +45,7 @@ describe('Resources: ', function () {
         var clientState = uuid();
 
         var redirectUrl = application.createIdSiteUrl({
-          cb_uri: 'https://stormpath.com',
+          callbackUri: 'https://stormpath.com',
           state: clientState
         });
 
@@ -104,16 +104,16 @@ describe('Resources: ', function () {
       }
 
       describe('handleIdSiteCallback',function(){
-        describe('without a cb_uri',function(){
+        describe('without a callbackUri',function(){
           var test = new SsoResponseTest();
-          it('should throw the cb_uri required error',function(){
+          it('should throw the callbackUri required error',function(){
             common.assert.throws(test.before,errorMessages.ID_SITE_INVALID_CB_URI);
           });
         });
 
         describe('with out the responseUri argument',function(){
           var test = new SsoResponseTest({
-            cb_uri: '/',
+            callbackUri: '/',
             state: uuid()
           });
           before(function(){
@@ -132,7 +132,7 @@ describe('Resources: ', function () {
           var accountHref = uuid();
           var clientState = uuid();
           var test = new SsoResponseTest({
-            cb_uri: '/',
+            callbackUri: '/',
             state: clientState
           });
           var responseJwt;
@@ -180,7 +180,7 @@ describe('Resources: ', function () {
           var clientState = uuid();
           var responseJwt;
           var test = new SsoResponseTest({
-            cb_uri: '/',
+            callbackUri: '/',
             state: clientState
           });
           before(function(){
@@ -208,7 +208,7 @@ describe('Resources: ', function () {
           var clientState = uuid();
           var responseJwt;
           var test = new SsoResponseTest({
-            cb_uri: '/',
+            callbackUri: '/',
             state: clientState
           });
           before(function(){
@@ -237,7 +237,7 @@ describe('Resources: ', function () {
           var clientState = uuid();
           var responseJwt;
           var test = new SsoResponseTest({
-            cb_uri: '/',
+            callbackUri: '/',
             state: clientState
           });
           before(function(){
@@ -263,7 +263,7 @@ describe('Resources: ', function () {
         describe('with a replayed nonce',function(){
           var accountHref = uuid();
           var test = new SsoResponseTest({
-            cb_uri: '/'
+            callbackUri: '/'
           });
           before(function(){
             test.before();
@@ -292,7 +292,7 @@ describe('Resources: ', function () {
         describe('with an invalid signature',function(){
           var clientState = uuid();
           var test = new SsoResponseTest({
-            cb_uri: '/',
+            callbackUri: '/',
             state: clientState
           });
           before(function(){

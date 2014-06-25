@@ -407,7 +407,7 @@ For more information, see the [ID Site Feature Guide][]
 
 app.get('/login',function(req,res){
   var url = application.createIdSiteUrl({
-    cb_uri: 'https://www.mysite.com/dashboard'
+    callbackUri: 'https://www.mysite.com/dashboard'
   });
 
   res.writeHead(302, {
@@ -439,7 +439,7 @@ app.get('/login',function(req,res){
         <p>An options object, the following properties are supported:</p>
         <ul>
           <li>
-            `cb_uri` - REQUIRED - the fully-qualified location where the user should be sent after they authenticate,
+            `callbackUri` - REQUIRED - the fully-qualified location where the user should be sent after they authenticate,
             i.e. *https://www.mysite.com/dashboard*.
             The domain *www.mysite.com* must be configured as an Authorized Redirect URI in your ID Site configuration.
           </li>
@@ -705,10 +705,10 @@ void; the retrieved `Tenant` resource will be provided to the `callback` as the 
 <a name="handleIdSiteCallback"></a>
 ### <span class="member">method</span> handleIdSiteCallback(requestUrl, callback)
 
-After a user authenticates at your ID Site they will be sent back to the URL that you specified with the `cb_uri`
+After a user authenticates at your ID Site they will be sent back to the URL that you specified with the `callbackUri`
 option when calling `application.createIdSiteUrl()`
 
-When the user arrives at your `cb_uri` the URL will have the `?jwtResponse=<token>` parameter attached to it.  This token is a JSON Web Token which contains the identiy assertion for the user.
+When the user arrives at your `callbackUri` the URL will have the `?jwtResponse=<token>` parameter attached to it.  This token is a JSON Web Token which contains the identiy assertion for the user.
 
 This method is a convnenient way to decode that JWT and get the account which has been authenticated.  Simply give the URL, including the
 query param, and a callback.  Your callback will be called with an `AuthenticationResult` instance.  You can use
@@ -720,7 +720,7 @@ For more information, see the [ID Site Feature Guide][]
 #### Usage
 
 ```javascript
-// Express.js example, assumes you set '/dashboard' as the cb_uri when calling application.createIdSiteUrl()
+// Express.js example, assumes you set '/dashboard' as the callbackUri when calling application.createIdSiteUrl()
 
 app.get('/dashboard',function(req,res){
   application.handleIdSiteCallback(req.url,function(err,authResult){
