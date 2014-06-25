@@ -207,7 +207,7 @@ Application or Directory:
 
 ```javascript
 // NOTE: The username field could also be an email address.
-var credentials = {
+var authcRequest = {
   username: 'jlpicard',
   password: 'Changeme1!'
 };
