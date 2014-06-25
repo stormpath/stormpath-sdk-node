@@ -84,7 +84,8 @@ describe('Resources: ', function () {
             var args = Array.prototype.slice.call(arguments);
             var href = args.shift();
             var callback = args.pop();
-            callback(null,{href:href});
+            var Ctor = (args.length > 0 ) ? args.shift() : function Ctor(){};
+            callback(null,new Ctor({href:href}));
           });
           self.redirectUrl = self.application.createIdSiteUrl(options);
           var params = url.parse(self.redirectUrl,true).query;
@@ -143,7 +144,8 @@ describe('Resources: ', function () {
               irt: test.jwtRequest.jti,
               state: test.jwtRequest.state,
               aud: test.clientApiKeyId,
-              exp: utils.nowEpochSeconds() + 1
+              exp: utils.nowEpochSeconds() + 1,
+              isNewSub: false
             };
             var responseUri = '/somewhere?jwtResponse=' +
               jwt.encode(responseJwt,test.clientApiKeySecret,'HS256') + '&state=' + test.givenState;
@@ -156,21 +158,21 @@ describe('Resources: ', function () {
             var result = test.cbSpy.args[0];
             common.assert.equal(result[0],null);
           });
-          it('should return an AuthenticationResult',function(){
+          it('should return an account property on the idSiteResult',function(){
             var result = test.cbSpy.args[0];
-            common.assert.instanceOf(result[1],AuthenticationResult);
+            common.assert.instanceOf(result[1].account,Account);
           });
-          it('should set the account href on the AuthenticationResult',function(){
+          it('should return the correct account on the idSiteResult',function(){
             var result = test.cbSpy.args[0];
             common.assert.equal(result[1].account.href,accountHref);
           });
-          it('should set the idSiteResponse object on the AuthenticationResult',function(){
+          it('should set the isNew property on the idSiteResult',function(){
             var result = test.cbSpy.args[0];
-            common.assert.deepEqual(result[1].idSiteResponse,responseJwt);
+            common.assert.equal(result[1].isNew,false);
           });
-          it('should set the clientState property on the AuthenticationResult',function(){
+          it('should set the state property on the idSiteResult',function(){
             var result = test.cbSpy.args[0];
-            common.assert.equal(result[1].idSiteResponse.state,clientState);
+            common.assert.equal(result[1].state,clientState);
           });
         });
 

@@ -708,15 +708,7 @@ void; the retrieved `Tenant` resource will be provided to the `callback` as the 
 <a name="handleIdSiteCallback"></a>
 ### <span class="member">method</span> handleIdSiteCallback(requestUrl, callback)
 
-After a user authenticates at your ID Site they will be sent back to the URL that you specified with the `callbackUri`
-option when calling `application.createIdSiteUrl()`
-
-When the user arrives at your `callbackUri` the URL will have the `?jwtResponse=<token>` parameter attached to it.  This token is a JSON Web Token which contains the identiy assertion for the user.
-
-This method is a convnenient way to decode that JWT and get the account which has been authenticated.  Simply give the URL, including the
-query param, and a callback.  Your callback will be called with an `AuthenticationResult` instance.  You can use
-[authResult.getAcount()](authenticationResult#getAcount) to get the account of the authenticated user.  You can also get the decoded token
-from the [authResult.idSiteResponse](authenticationResult#idSiteResponse) property.
+This method should be called when processing an HTTP request sent by the ID Site to the `callbackUri` specified via the [createIdSiteUrl()](application#createIdSiteUrl) method.  You should provide the entire URL of the request, including all query paramaters.
 
 For more information, see the [ID Site Feature Guide][]
 
@@ -726,13 +718,13 @@ For more information, see the [ID Site Feature Guide][]
 // Express.js example, assumes you set '/dashboard' as the callbackUri when calling application.createIdSiteUrl()
 
 app.get('/dashboard',function(req,res){
-  application.handleIdSiteCallback(req.url,function(err,authResult){
-    authResult.getAccount(function(err,account){
-      // render the user dashboard for this user
-    })
+  application.handleIdSiteCallback(req.url,function(err,idSiteResult){
+    var account = idSiteResult.account;
+    // render the user dashboard for this account
   });
 })
 ```
+
 
 #### Parameters
 
@@ -750,16 +742,27 @@ app.get('/dashboard',function(req,res){
       <td>`requestUrl`</td>
       <td>`string`</td>
       <td>required</td>
-      <td>The URL, including the jwtResponse parameter.  Example: `/myCallbackUrl?jwtResponse=jwtTokenValue`</td>
+      <td>The request URL, including all query parameters</td>
     </tr>
     <tr>
       <td>`callback`</td>
       <td>function</td>
       <td>required</td>
-      <td>The callback to execute when the method is complete.  Will be called with an error as the first argument, or an [AuthenticationResult](authenticationResult) as the second argument.</td>
+      <td>The callback to execute when the method is complete.  If successful, an `idSiteResult` result will be
+      given as the second argument.  Otherwise and error will be returned as the first argument.</td>
     </tr>
   </tbody>
 </table>
+
+#### *Object* idSiteResult {}
+
+This object represents a successful ID Site callback and has the following properties:
+
+ | name | type | description |
+ | - | - | - |
+ | `account` | `object` `Account` | The account that was authenticated, this is an instance of [Account](account)
+ | `isNew` | `boolean` | A boolean indicating if this account was newly registered at the ID Site
+ | `state` | `string` | The application-specific state you you passed as an option to [createIdSiteUrl()](application#createIdSiteUrl)
 
 ---
 
