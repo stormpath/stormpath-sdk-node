@@ -54,6 +54,7 @@ void; the retrieved [Account](account) resource will be provided to the `callbac
 
 ---
 
+<a name="tokenResponse"></a>
 ### <span class="property">property</span> .tokenResponse <em>Object</em>
 
 Exists if the authentication result was created for an Oauth Access Token request, you should send this value as a `application/json` response to the requestor:
@@ -71,6 +72,7 @@ Exists if the authentication result was created for an Oauth Access Token reques
 
 ---
 
+<a name="grantedScopes"></a>
 ### <span class="property">property</span> .grantedScopes <em>Array</em>
 
 Exists if the authentication result was created from a previously issued Oauth Access Token which has granted scopes, it will be an array of strings which are the granted scopes.
