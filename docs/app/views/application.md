@@ -392,6 +392,74 @@ void; the created [Group](group) returned from the server will be provided to th
 
 ---
 
+<a name="createIdSiteUrl"></a>
+### <span class="member">method</span> createIdSiteUrl(options)
+
+Creates a URL which will redirect a user to your ID Site.  The URL will have the query param `?jwtRequest=<token>` appended to it.
+This token is required when sending a user to your ID Site and is signed with your api key for protection.  To send the user to your ID site, simply Issue a `302` redirect and set the `Location` header to the URL that you get from this method.
+
+For more information, see the [ID Site Feature Guide][]
+
+#### Usage
+
+````javascript
+// Express.js example
+
+app.get('/login',function(req,res){
+  var url = application.createIdSiteUrl({
+    callbackUri: 'https://www.mysite.com/dashboard'
+  });
+
+  res.writeHead(302, {
+    'Cache-Control': 'no-store',
+    'Pragma': 'no-cache',
+    'Location': url
+  });
+  res.end();
+});
+````
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>`options`</td>
+      <td>`object`</td>
+      <td>required</td>
+      <td>
+        <p>An options object, the following properties are supported:</p>
+        <ul>
+          <li>
+            `callbackUri` - REQUIRED - the fully-qualified location where the user should be sent after they authenticate,
+            e.g. *https://www.mysite.com/dashboard*.
+            For security reasons, the domain *www.mysite.com* must be registered in your ID Site configuration in the Stormpath Admin Console.
+
+          </li>
+          <li>
+            `path` - OPTIONAL - Sets the initial path in the ID Site where the user should be sent. If unspecified, this defaults to /, implying that the ID Site's landing/home page is the desired location.
+
+            Most Stormpath customers allow their ID Site's default landing page `/` to reflect a traditional 'Login or Signup' page for convenience. However, if you know that an end-user is attempting to register, and your ID Site's user registration form is located at /register, you would set the path to `/register` to send the user directly there.
+          </li>
+          <li>
+            `state` - OPTIONAL - Application-specific state that should be retained and made available to your callbackUri when the user returns from the ID Site.
+          </li>
+        </ul>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+---
+
 <a name="getAccounts"></a>
 ### <span class="member">method</span> getAccounts(*[options,]* callback)
 
@@ -637,6 +705,67 @@ void; the retrieved `Tenant` resource will be provided to the `callback` as the 
 
 ---
 
+<a name="handleIdSiteCallback"></a>
+### <span class="member">method</span> handleIdSiteCallback(requestUrl, callback)
+
+This method should be called when processing an HTTP request sent by the ID Site to the `callbackUri` specified via the [createIdSiteUrl()](application#createIdSiteUrl) method.  You should provide the entire URL of the request, including all query paramaters.
+
+For more information, see the [ID Site Feature Guide][]
+
+#### Usage
+
+```javascript
+// Express.js example, assumes you set '/dashboard' as the callbackUri when calling application.createIdSiteUrl()
+
+app.get('/dashboard',function(req,res){
+  application.handleIdSiteCallback(req.url,function(err,idSiteResult){
+    var account = idSiteResult.account;
+    // render the user dashboard for this account
+  });
+})
+```
+
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>`requestUrl`</td>
+      <td>`string`</td>
+      <td>required</td>
+      <td>The request URL, including all query parameters</td>
+    </tr>
+    <tr>
+      <td>`callback`</td>
+      <td>function</td>
+      <td>required</td>
+      <td>The callback to execute when the method is complete.  If successful, an `idSiteResult` result will be
+      given as the second argument.  Otherwise and error will be returned as the first argument.</td>
+    </tr>
+  </tbody>
+</table>
+
+#### *Object* idSiteResult {}
+
+This object represents a successful ID Site callback and has the following properties:
+
+ | name | type | description |
+ | - | - | - |
+ | `account` | `object` `Account` | The account that was authenticated, this is an instance of [Account](account)
+ | `isNew` | `boolean` | A boolean indicating if this account was newly registered at the ID Site
+ | `state` | `string` | The application-specific state you you passed as an option to [createIdSiteUrl()](application#createIdSiteUrl)
+
+---
+
 <a name="sendPasswordResetEmail"></a>
 ### <span class="member">method</span> sendPasswordResetEmail(email, callback)
 
@@ -697,20 +826,22 @@ Continues the [password reset workflow](http://docs.stormpath.com/rest/product-g
 
 ```javascript
 
-var sptoken = request.query.sptoken;
+var sptoken = request.query.sptoken; // get the sptoken from the request URL
 
-application.verifyPasswordResetToken(sptoken, function(err, associatedAccount) {
+application.verifyPasswordResetToken(sptoken, function(err, verificationResponse) {
 
-  //if the associated account was retrieved, you need to collect the new password
-  //from the end-user and update their account.
+  /*
+    If the token is valid and exists (there is no err), you can set the new
+    password on this response and call save().  This will consume the token (it
+    can't be used again) and will send the user an email, confirming that their
+    password has been changed.
+  */
 
-  //using your web framework of choice (express.js?), collect the new password and then change the
-  //associated account's password later:
-
-  associatedAccount.password = newRawPassword;
-  associatedAccount.save(function(err2, acct){});
+  verificationResponse.password = 'a new password';
+  verificationResponse.save();
 });
 ```
+
 
 #### Parameters
 
@@ -734,14 +865,24 @@ application.verifyPasswordResetToken(sptoken, function(err, associatedAccount) {
       <td>`callback`</td>
       <td>function</td>
       <td>required</td>
-      <td>The callback to execute upon server response. The 1st parameter is an [error](resourceError).  The 2nd parameter is the account associated with the reset token.  You can collect a new password for this account, set the account's password, and then [save](account#save) the account.</td>
+      <td>The callback to execute upon server response. The 1st parameter is an [error](resourceError) if the token is not found or has expired.  The 2nd parameter, a
+        `verificationResponse`, can be used to set a new password and complete the flow.</td>
     </tr>
   </tbody>
 </table>
 
-#### Returns
 
-void; If an account with the specified password reset token is not found, the callback's first parameter (`err`) will report the failure.  If the account is found, it will be provided to the `callback` as the callback's second parameter.
+#### *Object* verificationResponse {}
+
+This object represents a found password reset token and the account that it was created for
+
+ | Property Name | Type | Description |
+ | - | - | - |
+ | `account` | `object` | Contains an `href` property which indicates the account which this token is for
+ | `email` | `string` | The email address which received this password reset token
+ | `password` | `string` | Initially null, set this to a string to indicate a new password
+ | `save()` | `function` | The method to call after you set a new password, using the `password` property
+
 
 ---
 
@@ -1094,7 +1235,8 @@ application.setDefaultAccountStore(directory, function(err, asm){
       <td>`store`</td>
       <td>`object`</td>
       <td>required</td>
-      <td> An instance of `Group` or `Directory`
+      <td> If an `object`, an instance of `Group` or `Directory`.
+        If a `string`, the `href` of a Directory or Group resource.
       </td>
     </tr>
     <tr>
@@ -1146,9 +1288,10 @@ application.setDefaultGroupStore(directory, function(err, asm){
   <tbody>
     <tr>
       <td>`store`</td>
-      <td>`object`</td>
+      <td>`object` or `string`</td>
       <td>required</td>
-      <td> An instance of `Directory`
+      <td>
+        <p>If an `object`, an instance of `Directory`.  If a `string`, the `href` of a Directory resource.</p>
       </td>
     </tr>
     <tr>
@@ -1287,3 +1430,6 @@ application.addAccountStore(directory, function(err, asm){
 void;
 If the request fails, the callback's first parameter (`err`) will report the failure.
 If the request succeeds, the instance of  [AccountStoreMapping](accountStoreMapping) will be provided to the `callback` as the callback's second parameter.
+
+
+[ID Site Feature Guide]: http://docs.stormpath.com/guides/using-id-site

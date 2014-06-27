@@ -131,6 +131,33 @@ client.getApplication(appHref, function(err, app) {
 });
 ```
 
+### Update a Specific Resource
+
+Once you have retrieved a resource, you can update it's properties and then call it's `save()` method.  This will persist the changes to Stormpath by making the necessary call to the REST API.  For example, if you need to update the surname of an Account:
+
+```javascript
+// Update an account resource
+client.getAccount(accountHref,function(err,account){
+  account.surname = 'my new last name';
+  account.save(function(err, updatedAccount) {
+    console.log(updatedAccount);
+  });
+});
+```
+
+### Delete a Specific Resource
+
+All resources have a `delete()` method which will send an `DELETE` request to the REST API.  **This operation cannot be undone.**
+
+```javascript
+// Delete an account resource
+client.getAccount(accountHref,function(err,account){
+  account.delete(function(err) {
+    // handle error, if exists
+  });
+});
+```
+
 
 ### Create an Application
 
@@ -207,7 +234,7 @@ Application or Directory:
 
 ```javascript
 // NOTE: The username field could also be an email address.
-var credentials = {
+var authcRequest = {
   username: 'jlpicard',
   password: 'Changeme1!'
 };

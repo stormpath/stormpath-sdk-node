@@ -68,32 +68,22 @@
         </nav>
     </div>
 
-    <div class="container-fluid" data-ng-controller="MainNavController">
-        <div class="row">
-            <div class="col-md-2 sidebar">
-                <accordion close-others="oneAtATime">
-                    <!-- <accordion-group">
-                        <accordion-heading>
-                            <span ng-click="changeView('/')">Overview</span>
-                        </accordion-heading>
-                        <span>Overview</span>
-                    </accordion-group> -->
-                    <accordion-group ng-repeat="item in items">
-                        <accordion-heading>
-                            <span ng-click="changeView(item.href)">{{item.name}}</span>
-                        </accordion-heading>
-                        <li data-ng-repeat="child in item.children">
-                            <a href="{{child.href}}">{{child.name}}</a>
-                        </li>
-                    </accordion-group>
-                </accordion>
-                <!-- <ul class="nav nav-sidebar">
-                    <li data-ng-repeat="item in items"><a href="{{ item.href }}">{{item.name}}</a></li>
-                </ul> -->
-            </div>
-            <div class="col-xs-12 col-sm-12 col-md-10 col-lg-10 main">
-              <div class="container-fluid" data-ng-view=""></div>
-            </div>
+    <div data-ng-controller="MainNavController">
+        <div class="sidebar">
+            <h4 class="toc">Table of Contents</h4>
+            <accordion close-others="oneAtATime" ng-cloak>
+                <accordion-group ng-repeat="item in items" is-open="isActive(item)">
+                    <accordion-heading>
+                        <span ng-click="changeView(item.href)">{{item.name}}</span>
+                    </accordion-heading>
+                    <li data-ng-repeat="child in item.children">
+                        <a href="{{child.href}}">{{child.name}}</a>
+                    </li>
+                </accordion-group>
+            </accordion>
+        </div>
+        <div class="content-area" id="maincontentarea">
+            <div class="container-fluid" data-ng-view=""></div>
         </div>
     </div>
 

@@ -6,6 +6,7 @@ var u = common.u;
 
 var assert = common.assert;
 var _ = common._;
+var errorMessages = require('../lib/error/messages');
 var utils = require('../lib/utils');
 var Account = require('../lib/resource/Account');
 var Group = require('../lib/resource/Group');
@@ -16,6 +17,9 @@ var AuthenticationResult = require('../lib/resource/AuthenticationResult');
 var AccountStoreMapping = require('../lib/resource/AccountStoreMapping');
 var ApiKey = require('../lib/resource/ApiKey');
 var DataStore = require('../lib/ds/DataStore');
+var jwt = require('jwt-simple');
+var uuid = require('node-uuid');
+var url = require('url');
 
 describe('Resources: ', function () {
   "use strict";
@@ -30,6 +34,288 @@ describe('Resources: ', function () {
     });
     describe('authenticate account', function () {
       var authRequest = {username: 'test'};
+
+      describe('createIdSiteUrl', function () {
+        var clientApiKeySecret = uuid();
+        var dataStore = new DataStore({apiKey: {id: '1', secret: clientApiKeySecret}});
+        var app = {
+          href:'http://api.stormpath.com/v1/applications/' + uuid()
+        };
+        var application = new Application(app, dataStore);
+        var clientState = uuid();
+
+        var redirectUrl = application.createIdSiteUrl({
+          callbackUri: 'https://stormpath.com',
+          state: clientState
+        });
+
+        var params = url.parse(redirectUrl,true).query;
+        var path = url.parse(redirectUrl).pathname;
+
+        it('should create a request to /sso',function(){
+          common.assert.equal(path,'/sso');
+        });
+
+        it('should create a url with a jwtRequest',function(){
+          common.assert.isNotNull(params.jwtRequest);
+        });
+        it('should create a jwtRequest that is signed with the client secret',
+          function(){
+            common.assert.equal(
+              jwt.decode(params.jwtRequest,clientApiKeySecret).state,
+              clientState
+            );
+          }
+        );
+
+      });
+
+      function SsoResponseTest(options){
+        var self = this;
+        self.before = function(){
+          self.clientApiKeySecret = uuid();
+          self.clientApiKeyId = uuid();
+          var dataStore = new DataStore({
+            apiKey: {id: self.clientApiKeyId, secret: self.clientApiKeySecret}
+          });
+          var app = {href:'http://api.stormpath.com/v1/applications/'+uuid()};
+          self.application = new Application(app, dataStore);
+          self.getResourceStub = sinon.stub(dataStore,'getResource',function(){
+            var args = Array.prototype.slice.call(arguments);
+            var href = args.shift();
+            var callback = args.pop();
+            var Ctor = (args.length > 0 ) ? args.shift() : function Ctor(){};
+            callback(null,new Ctor({href:href}));
+          });
+          self.redirectUrl = self.application.createIdSiteUrl(options);
+          var params = url.parse(self.redirectUrl,true).query;
+          self.jwtRequest = self.decodeJwtRequest(params.jwtRequest);
+          self.cbSpy = sinon.spy();
+        };
+        self.handleIdSiteCallback = function(responseUri){
+          self.application.handleIdSiteCallback(responseUri,self.cbSpy);
+        };
+        self.after = function(){
+          self.getResourceStub.restore();
+        };
+        self.decodeJwtRequest = function(jwtRequest){
+          return jwt.decode(decodeURIComponent(jwtRequest),self.clientApiKeySecret);
+        };
+        return self;
+      }
+
+      describe('handleIdSiteCallback',function(){
+        describe('without a callbackUri',function(){
+          var test = new SsoResponseTest();
+          it('should throw the callbackUri required error',function(){
+            common.assert.throws(test.before,errorMessages.ID_SITE_INVALID_CB_URI);
+          });
+        });
+
+        describe('with out the responseUri argument',function(){
+          var test = new SsoResponseTest({
+            callbackUri: '/',
+            state: uuid()
+          });
+          before(function(){
+            test.before();
+          });
+          after(function(){
+            test.after();
+          });
+          it('should throw',function(){
+            assert.throws(test.handleIdSiteCallback);
+          });
+        });
+
+
+        describe('with a valid jwt response',function(){
+          var accountHref = uuid();
+          var clientState = uuid();
+          var test = new SsoResponseTest({
+            callbackUri: '/',
+            state: clientState
+          });
+          var responseJwt;
+          before(function(){
+            test.before();
+            responseJwt = {
+              sub: accountHref,
+              irt: test.jwtRequest.jti,
+              state: test.jwtRequest.state,
+              aud: test.clientApiKeyId,
+              exp: utils.nowEpochSeconds() + 1,
+              isNewSub: false
+            };
+            var responseUri = '/somewhere?jwtResponse=' +
+              jwt.encode(responseJwt,test.clientApiKeySecret,'HS256') + '&state=' + test.givenState;
+            test.handleIdSiteCallback(responseUri);
+          });
+          after(function(){
+            test.after();
+          });
+          it('should not error',function(){
+            var result = test.cbSpy.args[0];
+            common.assert.equal(result[0],null);
+          });
+          it('should return an account property on the idSiteResult',function(){
+            var result = test.cbSpy.args[0];
+            common.assert.instanceOf(result[1].account,Account);
+          });
+          it('should return the correct account on the idSiteResult',function(){
+            var result = test.cbSpy.args[0];
+            common.assert.equal(result[1].account.href,accountHref);
+          });
+          it('should set the isNew property on the idSiteResult',function(){
+            var result = test.cbSpy.args[0];
+            common.assert.equal(result[1].isNew,false);
+          });
+          it('should set the state property on the idSiteResult',function(){
+            var result = test.cbSpy.args[0];
+            common.assert.equal(result[1].state,clientState);
+          });
+        });
+
+
+        describe('with an expired token',function(){
+          var accountHref = uuid();
+          var clientState = uuid();
+          var responseJwt;
+          var test = new SsoResponseTest({
+            callbackUri: '/',
+            state: clientState
+          });
+          before(function(){
+            test.before();
+            responseJwt = jwt.encode({
+              sub: accountHref,
+              irt: test.jwtRequest.jti,
+              state: test.jwtRequest.state,
+              aud: test.clientApiKeyId,
+              exp: utils.nowEpochSeconds() - 1
+            },test.clientApiKeySecret,'HS256');
+            var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
+            test.handleIdSiteCallback(responseUri,'jwt');
+          });
+          after(function(){
+            test.after();
+          });
+          it('should error with the expiration error',function(){
+            common.assert.equal(test.cbSpy.args[0][0].message,errorMessages.ID_SITE_JWT_HAS_EXPIRED);
+          });
+        });
+
+        describe('with a different client id (aud)',function(){
+          var accountHref = uuid();
+          var clientState = uuid();
+          var responseJwt;
+          var test = new SsoResponseTest({
+            callbackUri: '/',
+            state: clientState
+          });
+          before(function(){
+            test.before();
+            responseJwt = jwt.encode({
+              sub: accountHref,
+              irt: test.jwtRequest.jti,
+              state: test.jwtRequest.state,
+              aud: uuid(),
+              exp: utils.nowEpochSeconds() - 1
+            },test.clientApiKeySecret,'HS256');
+            var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
+            test.handleIdSiteCallback(responseUri,'jwt');
+          });
+          after(function(){
+            test.after();
+          });
+          it('should error',function(){
+            common.assert.instanceOf(test.cbSpy.args[0][0],Error);
+            common.assert.equal(test.cbSpy.args[0][0].message,errorMessages.ID_SITE_JWT_INVALID_AUD);
+          });
+        });
+
+        describe('with an invalid exp value',function(){
+          var accountHref = uuid();
+          var clientState = uuid();
+          var responseJwt;
+          var test = new SsoResponseTest({
+            callbackUri: '/',
+            state: clientState
+          });
+          before(function(){
+            test.before();
+            responseJwt = jwt.encode({
+              sub: accountHref,
+              irt: test.jwtRequest.jti,
+              state: test.jwtRequest.state,
+              aud: test.clientApiKeyId,
+              exp: "yeah right"
+            },test.clientApiKeySecret,'HS256');
+            var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
+            test.handleIdSiteCallback(responseUri,'jwt');
+          });
+          after(function(){
+            test.after();
+          });
+          it('should error with the expiration error',function(){
+            common.assert.equal(test.cbSpy.args[0][0].message,errorMessages.ID_SITE_JWT_HAS_EXPIRED);
+          });
+        });
+
+        describe('with a replayed nonce',function(){
+          var accountHref = uuid();
+          var test = new SsoResponseTest({
+            callbackUri: '/'
+          });
+          before(function(){
+            test.before();
+            var responseJwt = jwt.encode({
+              sub: accountHref,
+              irt: test.jwtRequest.jti,
+              state: test.jwtRequest.state,
+              aud: test.clientApiKeyId,
+              exp: utils.nowEpochSeconds() + 1
+            },test.clientApiKeySecret,'HS256');
+            var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=';
+            test.handleIdSiteCallback(responseUri);
+            test.handleIdSiteCallback(responseUri);
+          });
+          after(function(){
+            test.after();
+          });
+          it('should succeed on the first try',function(){
+            common.assert.equal(test.cbSpy.args[0][0],null);
+          });
+          it('should fail on the second try the nonce',function(){
+            common.assert.equal(test.cbSpy.args[1][0].message,errorMessages.ID_SITE_JWT_ALREADY_USED);
+          });
+        });
+
+        describe('with an invalid signature',function(){
+          var clientState = uuid();
+          var test = new SsoResponseTest({
+            callbackUri: '/',
+            state: clientState
+          });
+          before(function(){
+            test.before();
+            var responseJwt = jwt.encode({
+              irt: test.givenNonce,
+              state: test.givenState
+            },'not the right key','HS256');
+            var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
+            test.handleIdSiteCallback(responseUri);
+          });
+          after(function(){
+            test.after();
+          });
+          it('should reject the signature',function(){
+            common.assert.equal(test.cbSpy.args[0][0].message,'Signature verification failed');
+          });
+        });
+
+      });
+
       describe('if login attempts not set', function () {
         var application = new Application();
 

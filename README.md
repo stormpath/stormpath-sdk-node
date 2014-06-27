@@ -18,6 +18,38 @@ The Quickstart is on the front page of the [Stormpath Node.js API Documentation]
 
 ## Change Log
 
+### 0.4.0
+
+#### ID Site Functionality! ####
+
+Your own hosted, white-labeled Identity Site, what we call an 'ID Site'!
+
+You can have a 100% customizable white-labeled site, for example, `https://id.awesomeapp.com` or
+`https://my.awesomeapp.com`, hosted and served securely by Stormpath.  Your ID Site provides your end-users with a
+hosted and secure registration, login, and password reset functionality, and **completely hands-off integration with
+Google and Facebook!**.
+
+Your white-labeled ID Site is beautiful and 'just works' out-of-the box and requires no development effort, but if you
+want to customize it in any way, you can easily fork our default GitHub repo and customize it as you desire, and we'll
+serve your fork securely just the same.
+
+All that is required for this to work is that your application redirects your end-user to your secure ID Site URL and,
+when the user is done, can receive a redirect back to your application.  This 0.4.0 release includes two
+additional functions so you don't have to code that yourself.
+
+See the new **[createIdSiteUrl](http://docs.stormpath.com/nodejs/api/application#createIdSiteUrl)**
+ method (for redirecting end-users to your ID Site) and the
+**[handleIdSiteCallback](http://docs.stormpath.com/nodejs/api/application#handleIdSiteCallback)**
+method (for handling the return reply from your ID Site) for code examples!
+
+For a comprehensive overview of the ID Site feature, see the [ID Site Feature Guide](http://docs.stormpath.com/guides/using-id-site)
+
+#### Improvements ####
+
+  * When you call `save()` and `delete()` on any resource, the callback is now optional and can be omitted.
+  * HTML/CSS layout improvements to the documentation app, it is now mobile friendly!
+  * Several descriptive fixes to the documentation.
+
 ### 0.3.0
 
 #### New Features
