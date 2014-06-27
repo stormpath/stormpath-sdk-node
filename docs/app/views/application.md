@@ -1223,7 +1223,8 @@ application.setDefaultAccountStore(directory, function(err, asm){
       <td>`store`</td>
       <td>`object`</td>
       <td>required</td>
-      <td> An instance of `Group` or `Directory`
+      <td> If an `object`, an instance of `Group` or `Directory`.
+        If a `string`, the `href` of a Directory or Group resource.
       </td>
     </tr>
     <tr>
@@ -1275,9 +1276,10 @@ application.setDefaultGroupStore(directory, function(err, asm){
   <tbody>
     <tr>
       <td>`store`</td>
-      <td>`object`</td>
+      <td>`object` or `string`</td>
       <td>required</td>
-      <td> An instance of `Directory`
+      <td>
+        <p>If an `object`, an instance of `Directory`.  If a `string`, the `href` of a Directory resource.</p>
       </td>
     </tr>
     <tr>
