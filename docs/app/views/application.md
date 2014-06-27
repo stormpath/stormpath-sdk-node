@@ -826,20 +826,22 @@ Continues the [password reset workflow](http://docs.stormpath.com/rest/product-g
 
 ```javascript
 
-var sptoken = request.query.sptoken;
+var sptoken = request.query.sptoken; // get the sptoken from the request URL
 
-application.verifyPasswordResetToken(sptoken, function(err, associatedAccount) {
+application.verifyPasswordResetToken(sptoken, function(err, verificationResponse) {
 
-  //if the associated account was retrieved, you need to collect the new password
-  //from the end-user and update their account.
+  /*
+    If the token is valid and exists (there is no err), you can set the new
+    password on this response and call save().  This will consume the token (it
+    can't be used again) and will send the user an email, confirming that their
+    password has been changed.
+  */
 
-  //using your web framework of choice (express.js?), collect the new password and then change the
-  //associated account's password later:
-
-  associatedAccount.password = newRawPassword;
-  associatedAccount.save(function(err2, acct){});
+  verificationResponse.password = 'a new password';
+  verificationResponse.save();
 });
 ```
+
 
 #### Parameters
 
@@ -863,14 +865,24 @@ application.verifyPasswordResetToken(sptoken, function(err, associatedAccount) {
       <td>`callback`</td>
       <td>function</td>
       <td>required</td>
-      <td>The callback to execute upon server response. The 1st parameter is an [error](resourceError).  The 2nd parameter is the account associated with the reset token.  You can collect a new password for this account, set the account's password, and then [save](account#save) the account.</td>
+      <td>The callback to execute upon server response. The 1st parameter is an [error](resourceError) if the token is not found or has expired.  The 2nd parameter, a
+        `verificationResponse`, can be used to set a new password and complete the flow.</td>
     </tr>
   </tbody>
 </table>
 
-#### Returns
 
-void; If an account with the specified password reset token is not found, the callback's first parameter (`err`) will report the failure.  If the account is found, it will be provided to the `callback` as the callback's second parameter.
+#### *Object* verificationResponse {}
+
+This object represents a found password reset token and the account that it was created for
+
+ | Property Name | Type | Description |
+ | - | - | - |
+ | `account` | `object` | Contains an `href` property which indicates the account which this token is for
+ | `email` | `string` | The email address which received this password reset token
+ | `password` | `string` | Initially null, set this to a string to indicate a new password
+ | `save()` | `function` | The method to call after you set a new password, using the `password` property
+
 
 ---
 
@@ -1223,7 +1235,8 @@ application.setDefaultAccountStore(directory, function(err, asm){
       <td>`store`</td>
       <td>`object`</td>
       <td>required</td>
-      <td> An instance of `Group` or `Directory`
+      <td> If an `object`, an instance of `Group` or `Directory`.
+        If a `string`, the `href` of a Directory or Group resource.
       </td>
     </tr>
     <tr>
@@ -1275,9 +1288,10 @@ application.setDefaultGroupStore(directory, function(err, asm){
   <tbody>
     <tr>
       <td>`store`</td>
-      <td>`object`</td>
+      <td>`object` or `string`</td>
       <td>required</td>
-      <td> An instance of `Directory`
+      <td>
+        <p>If an `object`, an instance of `Directory`.  If a `string`, the `href` of a Directory resource.</p>
       </td>
     </tr>
     <tr>
