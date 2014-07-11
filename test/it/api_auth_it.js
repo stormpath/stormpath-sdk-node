@@ -453,8 +453,8 @@ describe('Application.authenticateApiRequest',function(){
   describe('with a scope factory',function(){
 
     var result;
-    var requestedScope = 'requested-scope';
-    var givenScope = 'given-scope';
+    var requestedScope = 'scope-a scope-b';
+    var givenScope = ['given-scope-a given-scope-b'];
     var scopeFactoryArgs;
     var decodedAccessToken;
 
@@ -488,11 +488,13 @@ describe('Application.authenticateApiRequest',function(){
     });
 
     it('should call the scope factory with the requested scope',function(){
-      assert.equal(scopeFactoryArgs[1],requestedScope);
+      var requestedScopes = requestedScope.split(' ');
+      assert.equal(scopeFactoryArgs[1][0],requestedScopes[0]);
+      assert.equal(scopeFactoryArgs[1][1],requestedScopes[1]);
     });
 
     it('should add the scope to the token',function(){
-      assert.equal(decodedAccessToken.scope,givenScope);
+      assert.equal(decodedAccessToken.scope,givenScope.join(' '));
     });
 
   });

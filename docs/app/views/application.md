@@ -127,9 +127,9 @@ Or if you want to support Oauth Access Token exchange:
 app.post('/oauth/token',function (req,res){
   application.authenticateApiRequest({
     request: req,
-    scopeFactory: function(account,requestedScope){
+    scopeFactory: function(account,requestedScopes){
       // determine what scope to give, then return
-      return 'granted-scope';
+      return ['granted-scope'];
     }
   },function(err,authResult){
     res.json(authResult.tokenResponse);
@@ -201,9 +201,9 @@ application.authenticateApiRequest({ request: requestObject },function(err,authR
         </ul>
         <ul>
           <li>
-            `scopeFactory` - OPTIONAL - A function which will be called with `(account,requestedScope)` where the account is the
-            successfully authenticated account and `requstedScope` is the string that was given by the user in the request.  You must return
-            the scope(s) you wish to grant, as a single string or an array of strings.
+            `scopeFactory` - OPTIONAL - A function which will be called with `(account,requestedScopes)` where the account is the
+            successfully authenticated account and `requstedScope` is the scope(s) that the user requested, as an array of strings.  You must return
+            the scope(s) you wish to grant, as an array of strings.
           </li>
         </ul>
         <ul>
