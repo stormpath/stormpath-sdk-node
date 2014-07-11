@@ -34,7 +34,7 @@ describe('ds:', function () {
         });
         it('should set headers user agent as stormpath-sdk', function () {
           reqExec.options.headers['User-Agent'].should
-            .match(/Stormpath-NodeSDK/i);
+            .match(/stormpath-sdk-node/i);
         });
       });
 
