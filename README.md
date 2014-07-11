@@ -18,6 +18,10 @@ The Quickstart is on the front page of the [Stormpath Node.js API Documentation]
 
 ## Change Log
 
+### 0.4.1
+
+Updated User-Agent string to be spec compliant and extendable
+
 ### 0.4.0
 
 #### ID Site Functionality! ####
