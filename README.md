@@ -18,6 +18,10 @@ The Quickstart is on the front page of the [Stormpath Node.js API Documentation]
 
 ## Change Log
 
+### 0.4.3
+
+Cache fix that was preventing expanded resources from being cached
+
 ### 0.4.2
 
 Fix the Oauth authenticator to provide `requestedScopes` and `grantedScopes` as an array of strings, not a single string.
