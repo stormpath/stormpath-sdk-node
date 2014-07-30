@@ -497,6 +497,10 @@ describe('Application.authenticateApiRequest',function(){
       assert.equal(decodedAccessToken.scope,givenScope.join(' '));
     });
 
+    it('should add the scope to authResult',function(){
+      assert.equal(result[1].tokenResponse.scope,givenScope.join(' '));
+    });
+
   });
 
   describe('with a custom ttl',function(){
