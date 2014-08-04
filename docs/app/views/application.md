@@ -145,6 +145,7 @@ If you are not using a framework, you may manually construct an object literal f
 
 var requestObject = {
   url: '/oauth/token',
+  method: 'POST',
   headers:{
     'authorization': 'Basic 3HR937281K7QWC5YS37289WPE:MTdncVDALvHcdoY3sjrK+/WgYY3sj3AZx1vZx1v'
   },
@@ -182,6 +183,7 @@ application.authenticateApiRequest({ request: requestObject },function(err,authR
           <li> `request` - REQUIRED - this can be the `req` object from your framework, or an object literal with the following properties:
             <ul>
               <li>`url` - REQUIRED - the url of the reuqest, including query parameters</li>
+              <li>`method` - REQUIRED - the method of the request, GET or POST depending on the type of request</li>
               <li>`headers` - REQUIRED - an object with an optional `authorization` property</li>
               <li>`body` - OPTIONAL - an object where the properties corresponded to the form data that was posted</li>
             </ul>
