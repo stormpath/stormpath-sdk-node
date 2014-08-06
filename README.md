@@ -18,6 +18,18 @@ The Quickstart is on the front page of the [Stormpath Node.js API Documentation]
 
 ## Change Log
 
+### 0.5.0
+
+#### Breaking Changes ####
+
+* `application.authenticateApiRequest(options,cb)` now requires you to supply the request method as `options.request.method`
+* OAuth token requests must use POST, see [RFC749 3.2](http://tools.ietf.org/html/rfc6749#section-3.2)
+
+#### Fixes ####
+
+* `authenticationResult` objects now include the granted scope on the object, see [RFC749 5.1](http://tools.ietf.org/html/rfc6749#section-5.1)
+* Improve documentation of the `path` option for `application.createIdSiteUrl`
+
 ### 0.4.3
 
 Cache fix that was preventing expanded resources from being cached

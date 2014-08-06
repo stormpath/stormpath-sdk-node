@@ -145,6 +145,7 @@ If you are not using a framework, you may manually construct an object literal f
 
 var requestObject = {
   url: '/oauth/token',
+  method: 'POST',
   headers:{
     'authorization': 'Basic 3HR937281K7QWC5YS37289WPE:MTdncVDALvHcdoY3sjrK+/WgYY3sj3AZx1vZx1v'
   },
@@ -182,6 +183,7 @@ application.authenticateApiRequest({ request: requestObject },function(err,authR
           <li> `request` - REQUIRED - this can be the `req` object from your framework, or an object literal with the following properties:
             <ul>
               <li>`url` - REQUIRED - the url of the reuqest, including query parameters</li>
+              <li>`method` - REQUIRED - the method of the request, GET or POST depending on the type of request</li>
               <li>`headers` - REQUIRED - an object with an optional `authorization` property</li>
               <li>`body` - OPTIONAL - an object where the properties corresponded to the form data that was posted</li>
             </ul>
@@ -447,7 +449,9 @@ app.get('/login',function(req,res){
           <li>
             `path` - OPTIONAL - Sets the initial path in the ID Site where the user should be sent. If unspecified, this defaults to /, implying that the ID Site's landing/home page is the desired location.
 
-            Most Stormpath customers allow their ID Site's default landing page `/` to reflect a traditional 'Login or Signup' page for convenience. However, if you know that an end-user is attempting to register, and your ID Site's user registration form is located at /register, you would set the path to `/register` to send the user directly there.
+            Most Stormpath customers allow their ID Site's default landing page `/` to reflect a traditional 'Login or Signup' page for convenience.
+            However, if you know that an end-user is attempting to register, and your ID Site's user registration form is located at /register, you would set the path to `/register` to send the user directly there.
+            For example, if you are using the default ID Site provided by Stormpath, you can send the user directly to the registration page by specifying `/#/register` or the forgot password page by specifying `/#/forgot`
           </li>
           <li>
             `state` - OPTIONAL - Application-specific state that should be retained and made available to your callbackUri when the user returns from the ID Site.

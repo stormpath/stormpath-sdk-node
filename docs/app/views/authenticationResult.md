@@ -65,7 +65,8 @@ Exists if the authentication result was created for an Oauth Access Token reques
 {
   "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc ...",
   "expires_in": 3600,
-  "token_type": "bearer"
+  "token_type": "bearer",
+  "scope": "given-scope"
 }
 
 ````

@@ -50,7 +50,8 @@ describe('Application.authenticateApiRequest',function(){
           headers: {
             'authorization': 'Basic ' + new Buffer([apiKey.id,apiKey.secret].join(':')).toString('base64')
           },
-          url: '/some/resource'
+          url: '/some/resource',
+          method: 'POST'
         };
         app.authenticateApiRequest({
           request: requestObject
@@ -77,7 +78,8 @@ describe('Application.authenticateApiRequest',function(){
           headers: {
             'authorization': 'Basic ' + new Buffer(['invalid','invalid'].join(':')).toString('base64')
           },
-          url: '/some/resource'
+          url: '/some/resource',
+          method: 'POST'
         };
         app.authenticateApiRequest({
           request: requestObject
@@ -109,6 +111,7 @@ describe('Application.authenticateApiRequest',function(){
             headers: {
               'authorization': 'Basic ' + new Buffer([apiKey.id,apiKey.secret].join(':')).toString('base64')
             },
+            method: 'POST',
             url: '/some/resource?grant_type=client_credentials'
           };
           app.authenticateApiRequest({
@@ -135,6 +138,40 @@ describe('Application.authenticateApiRequest',function(){
 
       });
 
+
+    describe('with valid credentials, as a GET request',function(){
+
+        var result;
+
+        before(function(done){
+          var requestObject = {
+            headers: {
+              'authorization': 'Basic ' + new Buffer([apiKey.id,apiKey.secret].join(':')).toString('base64')
+            },
+            method: 'GET',
+            url: '/some/resource?grant_type=client_credentials'
+          };
+          app.authenticateApiRequest({
+            request: requestObject
+          },function(err,value){
+            result = [err,value];
+            done();
+          });
+        });
+
+        describe('the authentication result',function(){
+          it('should err',function(){
+            assert.instanceOf(result[0],Error);
+          });
+
+          it('should not return an instance of AuthenticationResult',function(){
+            assert.isUndefined(result[1]);
+          });
+
+        });
+
+      });
+
   });
 
   describe('with Authorization: Basic <key>:<secret> and grant_type=client_credentials in the body',function(){
@@ -147,6 +184,7 @@ describe('Application.authenticateApiRequest',function(){
           'authorization': 'Basic ' + new Buffer([apiKey.id,apiKey.secret].join(':')).toString('base64')
         },
         url: '/some/resource',
+        method: 'POST',
         body:{
           grant_type: 'client_credentials'
         }
@@ -186,7 +224,8 @@ describe('Application.authenticateApiRequest',function(){
         url: '/some/resource',
         body:{
           grant_type: 'client_credentials'
-        }
+        },
+        method: 'POST'
       };
       app.authenticateApiRequest({
         request: requestObject,
@@ -206,6 +245,7 @@ describe('Application.authenticateApiRequest',function(){
             headers: {
               'authorization': 'Bearer ' + accessToken
             },
+            method: 'GET',
             url: '/some/resource'
           };
           app.authenticateApiRequest({
@@ -235,6 +275,7 @@ describe('Application.authenticateApiRequest',function(){
             headers: {
               'authorization': 'Bearer ' + tamperedToken
             },
+            method: 'GET',
             url: '/some/resource'
           };
           app.authenticateApiRequest({
@@ -262,7 +303,8 @@ describe('Application.authenticateApiRequest',function(){
         before(function(done){
           var requestObject = {
             headers: {},
-            url: '/some/resource?access_token='+accessToken
+            url: '/some/resource?access_token='+accessToken,
+            method: 'GET'
           };
           app.authenticateApiRequest({
             request: requestObject,
@@ -285,7 +327,8 @@ describe('Application.authenticateApiRequest',function(){
         before(function(done){
           var requestObject = {
             headers: {},
-            url: '/some/resource?access_token='+accessToken
+            url: '/some/resource?access_token='+accessToken,
+            method: 'GET'
           };
           app.authenticateApiRequest({
             request: requestObject
@@ -310,6 +353,7 @@ describe('Application.authenticateApiRequest',function(){
         var requestObject = {
           headers: {},
           url: '/some/resource',
+          method: 'GET',
           body: {
             access_token: accessToken
           }
@@ -340,6 +384,7 @@ describe('Application.authenticateApiRequest',function(){
         headers: {
           'authorization': 'Basic ' + new Buffer([apiKey.id,apiKey.secret].join(':')).toString('base64')
         },
+        method: 'POST',
         url: '/some/resource',
         body:{
           grant_type: 'client_credentials'
@@ -360,6 +405,7 @@ describe('Application.authenticateApiRequest',function(){
         headers: {
           'authorization': 'Bearer ' + accessToken
         },
+        method: 'GET',
         url: '/some/resource'
       };
       app.authenticateApiRequest({
@@ -384,7 +430,8 @@ describe('Application.authenticateApiRequest',function(){
     before(function(done){
       var requestObject = {
         headers: { },
-        url: '/some/resource?grant_type=not_client_Credentials'
+        url: '/some/resource?grant_type=not_client_Credentials',
+        method: 'POST'
       };
       app.authenticateApiRequest({
           request: requestObject
@@ -409,6 +456,7 @@ describe('Application.authenticateApiRequest',function(){
         headers: {
           'authorization': 'pretty please'
         },
+        method: 'GET',
         url: '/some/resource'
       };
       app.authenticateApiRequest({
@@ -432,7 +480,8 @@ describe('Application.authenticateApiRequest',function(){
     before(function(done){
       var requestObject = {
         headers: { },
-        url: '/some/resource'
+        url: '/some/resource',
+        method: 'POST'
       };
       app.authenticateApiRequest({
           request: requestObject
@@ -463,6 +512,7 @@ describe('Application.authenticateApiRequest',function(){
         headers: {
           'authorization': 'Basic ' + new Buffer([apiKey.id,apiKey.secret].join(':')).toString('base64')
         },
+        method: 'POST',
         url: '/some/resource?grant_type=client_credentials&scope='+requestedScope
       };
       app.authenticateApiRequest({
@@ -497,6 +547,10 @@ describe('Application.authenticateApiRequest',function(){
       assert.equal(decodedAccessToken.scope,givenScope.join(' '));
     });
 
+    it('should add the scope to authResult',function(){
+      assert.equal(result[1].tokenResponse.scope,givenScope.join(' '));
+    });
+
   });
 
   describe('with a custom ttl',function(){
@@ -510,6 +564,7 @@ describe('Application.authenticateApiRequest',function(){
         headers: {
           'authorization': 'Basic ' + new Buffer([apiKey.id,apiKey.secret].join(':')).toString('base64')
         },
+        method: 'POST',
         url: '/some/resource?grant_type=client_credentials'
       };
       app.authenticateApiRequest({
@@ -547,6 +602,7 @@ describe('Application.authenticateApiRequest',function(){
           headers: {
             'authorization': 'Basic ' + new Buffer([apiKey.id,apiKey.secret].join(':')).toString('base64')
           },
+          method: 'POST',
           url: '/some/resource?grant_type=client_credentials'
         };
         app.authenticateApiRequest({
@@ -590,6 +646,7 @@ describe('Application.authenticateApiRequest',function(){
             headers: {
               'authorization': 'Basic ' + new Buffer([apiKey.id,apiKey.secret].join(':')).toString('base64')
             },
+            method: 'POST',
             url: '/some/resource?grant_type=client_credentials'
           };
           app.authenticateApiRequest({
