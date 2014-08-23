@@ -18,6 +18,10 @@ The Quickstart is on the front page of the [Stormpath Node.js API Documentation]
 
 ## Change Log
 
+### 0.5.1
+
+Fix for case where `application.getAccount()` receives an error but still tries to read the undefined `account` object
+
 ### 0.5.0
 
 #### Breaking Changes ####
