@@ -949,60 +949,36 @@ void; If an account with the specified password reset token is not found, the ca
 ---
 
 <a name="getAccount"></a>
-### <span class="member">method</span> getAccount(providerData, *[options,]* callback)
+### <span class="member">method</span> getAccount(providerOptions, *[options,]* callback)
 
-Retrieves or creates an `Account`, if `Application` have an associated `Account Store` with `Provider`
- and provides it to the specified `callback` in special format:
+Retrieves or creates an `Account` if the application has an associated `Account Store` which
+is a social provider store.  The specified `callback` is called with an error or `providerAccountResult` object.
 
-```javascript
-{
-  account: Account,
-  created: Boolean
-}
-```
-
-If `account` was created, `created` will be `true`, if `account` was created earlier, `created` will be `false`.
+For a detailed explanation of how to retrieve access tokens from Facebook or Google,
+please read [Integrating Stormpath with Facebook and Google](http://docs.stormpath.com/guides/social-integrations/)
+and review the samples folder in the SDK.
 
 #### Usage
 
-Google (you can view full usage sample in /samples/google_integration folder):
+In this example we have obtained a Google access token from the user
+and we are using it to fetch the associated account from Stormpath.
 
 ```javascript
-// required scopes: 'email profile'
-var req = {
+
+var options = {
   providerData: {
     providerId: 'google',
-    accessToken: oauth.access_token
-    //code: oauth.authorization_code
-  };
+    accessToken: 'abc1235'
+  }
+};
 
-application.getAccount(req, function(err, resp) {
+application.getAccount(options, function(err, providerAccountResult) {
 
-  if(resp.created){
+  if(providerAccountResult.created){
     console.log('Just created a new user');
   }
 
-  console.log(resp.account);
-});
-```
-
-Facebook (you can view full usage sample in /samples/facebook_integration folder):
-
-```javascript
-// required scope: 'email'
-var req = {
-  providerData: {
-    providerId: 'facebook',
-    accessToken: oauth.access_token
-  };
-
-application.getAccount(req, function(err, resp) {
-
-  if(resp.created){
-    console.log('Just created a new user');
-  }
-
-  console.log(resp.account);
+  console.log(providerAccountResult.account);
 });
 ```
 
@@ -1019,21 +995,29 @@ application.getAccount(req, function(err, resp) {
   </thead>
   <tbody>
     <tr>
-      <td>providerData</td>
+      <td>`providerOptions`</td>
       <td>`object`</td>
       <td>required</td>
-      <td>An request object with `ProviderData` inside,
-        take a look on [documentation](http://docs.stormpath.com/rest/product-guide/#accessing-accounts-with-google-authorization-codes-or-an-access-tokens) for details </td>
+      <td>
+        An object literal, with the following properties:
+        <ul>
+          <li>`providerData` - REQUIRED - an object literal with the following properties:</li>
+          <ul>
+            <li>`providerId` - REQUIRED - either 'google' or 'facebook'</li>
+            <li>`accessToken` - OPTIONAL - the access token that you have acquired from the provider.  Use this if you have not requested offline access to the user's data.</li>
+            <li>`code` - OPTIONAL - the access code that you have acquired from the provider.  Use this if you HAVE requested offline access to the user's data.</li>
+          </ul>
+        </ul>
     </tr>
     <tr>
-      <td>_`options`_</td>
+      <td>`options`</td>
       <td>`object`</td>
-      <td>_optional_</td>
+      <td>optional</td>
       <td>Name/value pairs to use as query parameters, for example, for [resource expansion](http://docs.stormpath.com/rest/product-guide/#link-expansion).</td>
     </tr>
     <tr>
       <td>`callback`</td>
-      <td>function</td>
+      <td>`function`</td>
       <td>required</td>
       <td>The callback to execute upon resource retrieval.
         The 1st parameter is an `Error` object.
@@ -1043,10 +1027,15 @@ application.getAccount(req, function(err, resp) {
   </tbody>
 </table>
 
-#### Returns
+#### *Object* providerAccountResult {}
 
-void; the retrieved `Account` resource will be provided to the `callback`
- as the callback's second parameter, in special format.
+This object represents a successful retrieval or creation of the Stormpath Account that is
+associated with the user that provided the access token.
+
+ | name | type | description |
+ | - | - | - |
+ | `account` | `object` `Account` | The account that was authenticated, this is an instance of [Account](account)
+ | `created` | `boolean` | A boolean indicating if this account was newly created
 
 ---
 
