@@ -88,6 +88,7 @@ function items() {
       anchor('createIdSiteUrl'),
       anchor('getAccounts'),
       anchor('getApiKey'),
+      anchor('getCustomData'),
       anchor('getGroups'),
       anchor('getTenant'),
       anchor('handleIdSiteCallback'),

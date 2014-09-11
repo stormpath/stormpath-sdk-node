@@ -35,47 +35,91 @@ describe('Application',function(){
 
   describe('custom data',function(){
 
-    var customDataGetResult;
+    describe('via getCustomData',function(){
+      var customData;
 
-    before(function(done){
-      app.customData.get(function(err,customData){
-        customDataGetResult = [err,customData];
-        done();
-      });
-    });
-
-    it('should be get-able',function(){
-      assert.equal(customDataGetResult[0],null); // did not error
-      assert.instanceOf(customDataGetResult[1],CustomData);
-    });
-
-    describe('when saved',function(){
-      var saveResult;
-      var property = helpers.uniqId();
       before(function(done){
-        app.customData.newProperty = property;
-        app.customData.save(function(err){
-          saveResult = [err];
+        app.getCustomData(function(err,_customData){
+          if(err){ throw err; }
+          customData = _customData;
           done();
         });
       });
-      it('should not error',function(){
-        assert.equal(saveResult[0],null);
+
+      it('should be get-able',function(){
+        assert.instanceOf(customData,CustomData);
+        assert.equal(customData.href,app.href+'/customData');
       });
 
-      describe('and re-fetched',function(){
+      describe('when saved and re-fetched',function(){
         var customDataAfterGet;
+        var propertyName = helpers.uniqId();
+        var propertyValue = helpers.uniqId();
         before(function(done){
-          app.customData.get(function(err,customData){
-            customDataAfterGet = customData;
-            done();
+          customData[propertyName] = propertyValue;
+          customData.save(function(err){
+            if(err){ throw err; }
+            app.getCustomData(function(err,customData){
+              if(err){ throw err; }
+              customDataAfterGet = customData;
+              done();
+            });
           });
         });
         it('should have the new property persisted',function(){
-          assert.equal(customDataAfterGet.newProperty,property);
+          assert.equal(customDataAfterGet[propertyName],propertyValue);
         });
       });
     });
+
+    // TODO bring back this test once the application
+    // expansion issue is fixed in the API
+
+    // describe('via resource expansion',function(){
+
+    //   function getExpandedApplication(cb){
+    //     client.getApplication(
+    //       { expand: 'customData' },
+    //       function(err, app){
+    //         if(err){ throw err; }
+    //         cb(app);
+    //       }
+    //     );
+    //   }
+
+    //   var customData;
+
+    //   before(function(done){
+    //     getExpandedApplication(function(app){
+    //       customData = app.customData;
+    //       done();
+    //     });
+    //   });
+
+    //   it('should be get-able',function(){
+    //     assert.instanceOf(customData,CustomData);
+    //     assert.equal(customData.href,app.href+'/customData');
+    //   });
+
+    //   describe('when saved and re-fetched',function(){
+    //     var customDataAfterGet;
+    //     var propertyName = helpers.uniqId();
+    //     var propertyValue = helpers.uniqId();
+    //     before(function(done){
+    //       customData[propertyName] = propertyValue;
+    //       customData.save(function(err){
+    //         if(err){ throw err; }
+    //         getExpandedApplication(function(tenant){
+    //           customDataAfterGet = tenant.customData;
+    //           done();
+    //         });
+    //       });
+    //     });
+    //     it('should have the new property persisted',function(){
+    //       assert.equal(customDataAfterGet[propertyName],propertyValue);
+    //     });
+    //   });
+    // });
   });
 
 
