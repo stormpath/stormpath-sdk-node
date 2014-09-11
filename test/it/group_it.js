@@ -5,6 +5,7 @@ var assert = common.assert;
 
 var CustomData = require('../../lib/resource/CustomData');
 var Group = require('../../lib/resource/Group');
+var Account = require('../../lib/resource/Account');
 
 describe('Group',function(){
 
@@ -92,5 +93,98 @@ describe('Group',function(){
     });
   });
 
+  describe('name',function(){
+    var saveResult, getResult;
+    var newName = 'it-group-'+helpers.uniqId();
+    before(function(done){
 
+      group.name = newName;
+      group.save(function(err){
+        saveResult = [err];
+        client.getGroup(group.href,function(err,_group){
+          getResult = [err,_group];
+          done();
+        });
+      });
+    });
+    it('should be save-sable',function(){
+      assert.equal(saveResult[0],null);
+    });
+    it('should be persisted after a save',function(){
+      assert.equal(getResult[0],null); // did not error
+      assert.equal(getResult[1].name,newName); // did not error
+    });
+  });
+
+  describe('description',function(){
+    var saveResult, getResult;
+    var newDescription = 'it-group-description'+helpers.uniqId();
+    before(function(done){
+
+      group.description = newDescription;
+      group.save(function(err){
+        saveResult = [err];
+        client.getGroup(group.href,function(err,_group){
+          getResult = [err,_group];
+          done();
+        });
+      });
+    });
+    it('should be save-sable',function(){
+      assert.equal(saveResult[0],null);
+    });
+    it('should be persisted after a save',function(){
+      assert.equal(getResult[0],null); // did not error
+      assert.equal(getResult[1].description,newDescription); // did not error
+    });
+  });
+
+  describe('accounts',function(){
+    var account, creationResult;
+    before(function(done){
+      directory.createAccount(helpers.fakeAccount(),function(err,_account){
+        if(err){
+          throw err;
+        }
+        group.addAccount(_account,function(){
+          creationResult = [err,_account];
+          account = _account;
+          done();
+        });
+      });
+    });
+    it('should be assignable as group memberships',function(){
+      assert.equal(creationResult[0],null);
+      assert.instanceOf(account,Account);
+    });
+
+    describe('through getAccounts',function(){
+      var result;
+      before(function(done){
+        group.getAccounts(function(err,accounts){
+          result = [err,accounts];
+          done();
+        });
+      });
+      it('should be found',function(){
+        assert.equal(result[0],null);
+        assert.equal(account.href,result[1].items[0].href);
+      });
+    });
+
+    describe('through getAccountMemberships',function(){
+      var result;
+      before(function(done){
+        group.getAccountMemberships(function(err,memberships){
+          result = [err,memberships];
+          done();
+        });
+      });
+      it('should be found',function(){
+        assert.equal(result[0],null);
+        assert.equal(result[1].items[0].account.href,account.href);
+      });
+    });
+
+  });
 });
