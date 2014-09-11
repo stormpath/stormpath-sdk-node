@@ -28,7 +28,7 @@ function fakeAccount(){
     surname: uniqId(),
     // username: 'jlpicard',
     email: 'uniqId()@mailinator.com',
-    password: 'Changeme1!'
+    password: 'Changeme1!' + uuid()
   };
 }
 
