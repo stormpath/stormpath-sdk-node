@@ -193,6 +193,7 @@ function items() {
       anchor('createApplication'),
       anchor('createDirectory'),
       anchor('getApplications'),
+      anchor('getCustomData'),
       anchor('getDirectories'),
       anchor('verifyAccountEmail')
     ])

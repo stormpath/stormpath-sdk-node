@@ -16,10 +16,7 @@ describe('Tenant',function(){
       client.getCurrentTenant(
         {name: helpers.uniqId()},
         function(err, _tenant) {
-          if(err){
-            throw err;
-          }
-
+          if(err){ throw err; }
           tenant = _tenant;
           done();
         }
@@ -33,44 +30,85 @@ describe('Tenant',function(){
 
   describe('custom data',function(){
 
-    var customDataGetResult;
+    describe('via getCustomData',function(){
+      var customData;
 
-    before(function(done){
-      tenant.customData.get(function(err,customData){
-        customDataGetResult = [err,customData];
-        done();
-      });
-    });
-
-    it('should be get-able',function(){
-      assert.equal(customDataGetResult[0],null); // did not error
-      assert.instanceOf(customDataGetResult[1],CustomData);
-    });
-
-    describe('when saved',function(){
-      var saveResult;
-      var property = helpers.uniqId();
       before(function(done){
-        tenant.customData.newProperty = property;
-        tenant.customData.save(function(err){
-          saveResult = [err];
+        tenant.getCustomData(function(err,_customData){
+          if(err){ throw err; }
+          customData = _customData;
           done();
         });
       });
-      it('should not error',function(){
-        assert.equal(saveResult[0],null);
+
+      it('should be get-able',function(){
+        assert.instanceOf(customData,CustomData);
+        assert.equal(customData.href,tenant.href+'/customData');
       });
 
-      describe('and re-fetched',function(){
+      describe('when saved and re-fetched',function(){
         var customDataAfterGet;
+        var propertyName = helpers.uniqId();
+        var propertyValue = helpers.uniqId();
         before(function(done){
-          tenant.customData.get(function(err,customData){
-            customDataAfterGet = customData;
-            done();
+          customData[propertyName] = propertyValue;
+          customData.save(function(err){
+            if(err){ throw err; }
+            tenant.getCustomData(function(err,customData){
+              if(err){ throw err; }
+              customDataAfterGet = customData;
+              done();
+            });
           });
         });
         it('should have the new property persisted',function(){
-          assert.equal(customDataAfterGet.newProperty,property);
+          assert.equal(customDataAfterGet[propertyName],propertyValue);
+        });
+      });
+    });
+
+    describe('via resource expansion',function(){
+
+      function getExpandedTenant(cb){
+        client.getCurrentTenant(
+          { expand: 'customData' },
+          function(err, tenant){
+            if(err){ throw err; }
+            cb(tenant);
+          }
+        );
+      }
+
+      var customData;
+
+      before(function(done){
+        getExpandedTenant(function(tenant){
+          customData = tenant.customData;
+          done();
+        });
+      });
+
+      it('should be get-able',function(){
+        assert.instanceOf(customData,CustomData);
+        assert.equal(customData.href,tenant.href+'/customData');
+      });
+
+      describe('when saved and re-fetched',function(){
+        var customDataAfterGet;
+        var propertyName = helpers.uniqId();
+        var propertyValue = helpers.uniqId();
+        before(function(done){
+          customData[propertyName] = propertyValue;
+          customData.save(function(err){
+            if(err){ throw err; }
+            getExpandedTenant(function(tenant){
+              customDataAfterGet = tenant.customData;
+              done();
+            });
+          });
+        });
+        it('should have the new property persisted',function(){
+          assert.equal(customDataAfterGet[propertyName],propertyValue);
         });
       });
     });
