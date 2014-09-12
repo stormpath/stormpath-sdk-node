@@ -34,48 +34,90 @@ describe('Directory',function(){
   });
 
   describe('custom data',function(){
+    describe('via getCustomData',function(){
+      var customData;
 
-    var customDataGetResult;
-
-    before(function(done){
-      directory.customData.get(function(err,customData){
-        customDataGetResult = [err,customData];
-        done();
-      });
-    });
-
-    it('should be get-able',function(){
-      assert.equal(customDataGetResult[0],null); // did not error
-      assert.instanceOf(customDataGetResult[1],CustomData);
-    });
-
-    describe('when saved',function(){
-      var saveResult;
-      var property = helpers.uniqId();
       before(function(done){
-        directory.customData.newProperty = property;
-        directory.customData.save(function(err){
-          saveResult = [err];
+        directory.getCustomData(function(err,_customData){
+          if(err){ throw err; }
+          customData = _customData;
           done();
         });
       });
-      it('should not error',function(){
-        assert.equal(saveResult[0],null);
+
+      it('should be get-able',function(){
+        assert.instanceOf(customData,CustomData);
+        assert.equal(customData.href,directory.href+'/customData');
       });
 
-      describe('and re-fetched',function(){
+      describe('when saved and re-fetched',function(){
         var customDataAfterGet;
+        var propertyName = helpers.uniqId();
+        var propertyValue = helpers.uniqId();
         before(function(done){
-          directory.customData.get(function(err,customData){
-            customDataAfterGet = customData;
-            done();
+          customData[propertyName] = propertyValue;
+          customData.save(function(err){
+            if(err){ throw err; }
+            directory.getCustomData(function(err,customData){
+              if(err){ throw err; }
+              customDataAfterGet = customData;
+              done();
+            });
           });
         });
         it('should have the new property persisted',function(){
-          assert.equal(customDataAfterGet.newProperty,property);
+          assert.equal(customDataAfterGet[propertyName],propertyValue);
         });
       });
     });
+
+    describe('via resource expansion',function(){
+
+      function getExpandedDirectory(cb){
+        client.getDirectory(
+          directory.href,
+          { expand: 'customData' },
+          function(err, directory){
+            if(err){ throw err; }
+            cb(directory);
+          }
+        );
+      }
+
+      var customData;
+
+      before(function(done){
+        getExpandedDirectory(function(directory){
+          customData = directory.customData;
+          done();
+        });
+      });
+
+      it('should be get-able',function(){
+        assert.instanceOf(customData,CustomData);
+        assert.equal(customData.href,directory.href+'/customData');
+      });
+
+      describe('when saved and re-fetched',function(){
+        var customDataAfterGet;
+        var propertyName = helpers.uniqId();
+        var propertyValue = helpers.uniqId();
+        before(function(done){
+          customData[propertyName] = propertyValue;
+          customData.save(function(err){
+            if(err){ throw err; }
+            getExpandedDirectory(function(directory){
+              customDataAfterGet = directory.customData;
+              done();
+            });
+          });
+        });
+        it('should have the new property persisted',function(){
+          assert.equal(customDataAfterGet[propertyName],propertyValue);
+        });
+      });
+    });
+
   });
 
 

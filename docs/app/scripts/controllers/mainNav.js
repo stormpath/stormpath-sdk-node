@@ -161,6 +161,7 @@ function items() {
       anchor('createAccount'),
       anchor('createGroup'),
       anchor('getAccounts'),
+      anchor('getCustomData'),
       anchor('getGroups'),
       anchor('getTenant'),
       anchor('getProvider')

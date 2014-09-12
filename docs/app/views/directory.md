@@ -237,6 +237,59 @@ void; the retrieved collection of `Account`s will be provided to the `callback` 
 
 ---
 
+<a name="getCustomData"></a>
+### <span class="member">method</span> getCustomData(*[options,]* callback)
+
+Retrieves the [CustomData](customData) resource of the `Directory` and provides
+it to the specified `callback`.
+
+
+#### Usage
+
+```javascript
+directory.getCustomData(function(err, customData) {
+  console.log(customData);
+});
+```
+
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><em><code>options</code></em></td>
+      <td><code>object</code></td>
+      <td><em>optional</em></td>
+      <td>An object literal of name/value pairs to use as query parameters, for example, [resource expansion](http://docs.stormpath.com/rest/product-guide/#account-retrieve).</td>
+    </tr>
+    <tr>
+      <td><code>callback</code></td>
+      <td>function</td>
+      <td>required</td>
+      <td>The callback to execute upon resource retrieval.
+       The 1st parameter is an `Error` object.
+       The 2nd parameter is the retrieved [CustomData](customData) resource.</td>
+    </tr>
+  </tbody>
+</table>
+
+
+#### Returns
+
+The retrieved `CustomData` resource will be provided to the `callback` as the
+callback's second parameter.
+
+---
+
 <a name="getGroups"></a>
 ### <span class="member">method</span> getGroups(*[options,]* callback)
 
