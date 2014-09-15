@@ -505,8 +505,8 @@ callback's second parameter.
 <a name="getCustomData"></a>
 ### <span class="member">method</span> getCustomData(*[options,]* callback)
 
-Retrieves the [CustomData](customData) resource of the `Account`'s assigned
- `CustomData` and provides it to the specified `callback`.
+Retrieves the [CustomData](customData) resource of the `Account` and provides
+it to the specified `callback`.
 
 
 #### Usage
