@@ -42,7 +42,7 @@
   "dependencies": {
     "underscore": "~1.5.2",
     "underscore.string": "~2.3.3",
-    "properties-parser": "~0.1.1",
+    "properties-parser": "~0.2.3",
     "request": "~2.40.0",
     "moment": "~2.5.1",
     "node-uuid": "~1.4.0",
