@@ -262,7 +262,7 @@ Memcached provider.
 ```javascript
 var cacheOptions = {
   store: 'memcached',
-  connection: '127.0.0.1:11212',
+  connection: '127.0.0.1:11211',
   options: {
     poolSize: 10
   },
@@ -304,7 +304,7 @@ var client = new stormpath.Client({
       </td>
       <td>optional</td>
       <td>
-        Passed to <code>new Memcached(<strong>connection</strong>, options);</code>.
+        Passed to <code>new Memcached(<strong>Server locations</strong>, options);</code>.
       </td>
     </tr>
     <tr>
@@ -312,7 +312,7 @@ var client = new stormpath.Client({
       <td><code>object</code></td>
       <td>optional</td>
       <td>
-        <p>Passed to <code>new Memcached(connection, <strong>options</strong>);</code>.</p>
+        <p>Passed to <code>new Memcached(Server locations, <strong>options</strong>);</code>.</p>
         <p>See the <a href="https://github.com/3rd-Eden/node-memcached" target="_blank">node-memcached docmenation</a> for complete option list.<p>
       </td>
     </tr>
