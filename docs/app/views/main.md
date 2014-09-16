@@ -260,9 +260,9 @@ If one of your end-users forgets their password, you can trigger the
 *"Forgot Password"* reset workflow, and we'll send the user an email:
 
 ```javascript
-var emailOrUsername = 'jlpicard';
+var email = 'jlpicard@starfleet.com';
 
-createdApp.sendPasswordResetEmail(emailOrUsername, function onEmailSent(err, token) {
+createdApp.sendPasswordResetEmail(email, function onEmailSent(err, token) {
   console.log(token);
 });
 ```
