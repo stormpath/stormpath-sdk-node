@@ -46,7 +46,7 @@ Calling this method retrieves `CustomData` resource of the parent resource.
 
 ```javascript
 
-// Parent resouce is an Account instance
+// Parent resource is an Account instance
 account.customData.get(function(err, customData){
   // customData
 });
