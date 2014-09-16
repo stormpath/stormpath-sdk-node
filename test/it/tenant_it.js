@@ -30,6 +30,43 @@ describe('Tenant',function(){
 
   describe('custom data',function(){
 
+    describe('via customData.get',function(){
+      var customData;
+
+      before(function(done){
+        tenant.customData.get(function(err,_customData){
+          if(err){ throw err; }
+          customData = _customData;
+          done();
+        });
+      });
+
+      it('should be get-able',function(){
+        assert.instanceOf(customData,CustomData);
+        assert.equal(customData.href,tenant.href+'/customData');
+      });
+
+      describe('when saved and re-fetched',function(){
+        var customDataAfterGet;
+        var propertyName = helpers.uniqId();
+        var propertyValue = helpers.uniqId();
+        before(function(done){
+          customData[propertyName] = propertyValue;
+          customData.save(function(err){
+            if(err){ throw err; }
+            tenant.customData.get(function(err,customData){
+              if(err){ throw err; }
+              customDataAfterGet = customData;
+              done();
+            });
+          });
+        });
+        it('should have the new property persisted',function(){
+          assert.equal(customDataAfterGet[propertyName],propertyValue);
+        });
+      });
+    });
+
     describe('via getCustomData',function(){
       var customData;
 
