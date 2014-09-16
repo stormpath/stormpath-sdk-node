@@ -1,22 +1,36 @@
 ## Custom Data
 
-`Account` and `Group` resources have predefined fields that are useful to many `Applications`, but you are likely to have your own custom data that you need to associate with an account or group as well.
+Stormpath resources have predefined fields that are useful to many Applications,
+but you are likely to have your own requirements and custom fields that you need
+to associate with Stormpath resources. For this reason, `Accounts`, `Groups`,
+`Applications`, `Directories` and `Tenant` resources support a linked `CustomData`
+resource that you can use for your own needs.
 
-For this reason, both the account and group resources support a linked `customData` resource that you can use for your own needs. The `customData` resource is a schema-less JSON object that allows you to specify whatever name/value pairs you wish.
+Each of those resources will have an instance of `CustomData`, attached at the
+property `customData`.
 
-Since `customData` is a linked resource, it can be obtained by `Account`'s  or `Group`'s  getCustomData function.
+NOTE:  While this instance of `CustomData` is created automatically you must
+expand `customData` when you request the parent resource.  Otherwise you will
+need to make a second call to `customData.get()`
 
-Custom data can also be expanded and retrieved by specifying the `expand` option in the query parameters
+#### Usage example (without expansion)
 
 ```javascript
 
-application.getAccounts()
-  .search({email: "some@email.com"})
-  .expand({customData: true})
-  .exec(function(err, accounts){
-    // accounts with custom data
+client.getAccount(accountHref,function(err,account){
+  account.customData.get(function(err,customData){
+    console.log('my custom property',customData.myCustomProperty);
   });
+});
+```
 
+#### Usage example (with expansion)
+
+```javascript
+
+client.getAccount(accountHref,{expand:'customData'},function(err,account){
+  console.log('my custom property',account.customData.myCustomProperty);
+});
 ```
 
 **Since**: 0.1.2
@@ -26,19 +40,14 @@ application.getAccounts()
 <a name="get"></a>
 ### <span class="member">method</span> get(callback)
 
-Calling this method retrieves `CustomData` resource.
+Calling this method retrieves `CustomData` resource of the parent resource.
 
 #### Usage
 
 ```javascript
 
-//Account
+// Parent resouce is an Account instance
 account.customData.get(function(err, customData){
-  // customData
-});
-
-//Group
-group.customData.get(function(err, customData){
   // customData
 });
 
@@ -48,8 +57,7 @@ group.customData.get(function(err, customData){
 
 | Parameter   | Type            | Presence   | Description
 |-------------|---------------- |----------- | -----------
-| *`callback`* | function | *`required`* | The callback to execute upon
- resource update. Parameters are `Error` and `CustomData` objects.
+| *`callback`* | function | *`required`* | The callback to execute upon retrieval. Parameters are `Error` and `CustomData` objects.
 
 
 #### Return
@@ -66,7 +74,7 @@ void; the callback function if specified will be called with an
 This function is used to delete the contents of an account's or group's custom data resource.
  This will delete all of the respective account's or group's custom data fields, but it leaves
  the `customData` placeholder in the account or group resource. You cannot delete the `customData`
- resource entirely – it will be automatically permanently deleted when the account or group is
+ resource entirely – it will be permanently deleted when the account or group is
  deleted.
 
 #### Usage
