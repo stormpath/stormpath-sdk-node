@@ -88,6 +88,7 @@ function items() {
       anchor('createIdSiteUrl'),
       anchor('getAccounts'),
       anchor('getApiKey'),
+      anchor('getCustomData'),
       anchor('getGroups'),
       anchor('getTenant'),
       anchor('handleIdSiteCallback'),
@@ -160,6 +161,7 @@ function items() {
       anchor('createAccount'),
       anchor('createGroup'),
       anchor('getAccounts'),
+      anchor('getCustomData'),
       anchor('getGroups'),
       anchor('getTenant'),
       anchor('getProvider')
@@ -193,6 +195,7 @@ function items() {
       anchor('createApplication'),
       anchor('createDirectory'),
       anchor('getApplications'),
+      anchor('getCustomData'),
       anchor('getDirectories'),
       anchor('verifyAccountEmail')
     ])
