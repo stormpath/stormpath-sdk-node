@@ -26,7 +26,7 @@ client.getAccount(accountHref,function(err,account){
 <a name="delete"></a>
 ### <span class="member">method</span> delete(callback)
 
-This function is used to delete the contents of resource's custom data resource.
+This function is used to delete the contents of the resource's custom data resource.
  This will delete all of the respective custom data fields, but it leaves
  the `customData` placeholder in the account or group resource. You cannot delete the `customData`
  resource entirely – it will be permanently deleted when the parent resource is deleted.
