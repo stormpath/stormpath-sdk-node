@@ -26,7 +26,7 @@ function fakeAccount(){
   return {
     givenName: uniqId(),
     surname: uniqId(),
-    // username: 'jlpicard',
+    username: uniqId(),
     email: uniqId() + '@mailinator.com',
     password: 'Changeme1!' + uuid()
   };

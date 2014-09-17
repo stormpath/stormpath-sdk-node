@@ -2,13 +2,14 @@
 var common = require('../common');
 var helpers = require('./helpers');
 var assert = common.assert;
+var async = require('async');
 
 var CustomData = require('../../lib/resource/CustomData');
 var Application = require('../../lib/resource/Application');
 
 describe('Application',function(){
 
-  var client, app, creationResult;
+  var client, app, creationResult, directory, account;
 
   before(function(done){
     helpers.getClient(function(_client){
@@ -25,12 +26,101 @@ describe('Application',function(){
   });
 
   after(function(done){
-    app.delete(done);
+    // cleanup, delete resources that were created
+    async.each([app,directory,account],function(resource,next){
+      resource.delete(function(err){
+        if(err){ throw err; }
+        next();
+      });
+    },done);
   });
 
   it('should be create-able',function(){
     assert.equal(creationResult[0],null); // did not error
     assert.instanceOf(app,Application);
+  });
+
+  describe('setDefaultAccountStore',function () {
+    before(function(done){
+      client.createDirectory(helpers.fakeDirectory(),function(err,_directory){
+        if(err){ throw err; }
+        directory = _directory;
+        done();
+      });
+    });
+    describe('with a href string property',function(){
+      var result;
+      before(function(done){
+        app.setDefaultAccountStore(directory.href,function(err){
+          result = err;
+          done();
+        });
+      });
+      it('should not err',function(){
+        assert.equal(result,null);
+      });
+    });
+    describe('with a directory object',function(){
+      var result;
+      before(function(done){
+        app.setDefaultAccountStore(directory,function(err){
+          result = err;
+          done();
+        });
+      });
+      it('should not err',function(){
+        assert.equal(result,null);
+      });
+    });
+  });
+
+  describe('authenticateAccount',function(){
+    var fakeAccount = helpers.fakeAccount();
+    before(function(done){
+      directory.createAccount(fakeAccount,function(err,_account){
+        if(err){ throw err; }
+        account = _account;
+        done();
+      });
+    });
+    describe('with username',function(){
+      var result;
+      before(function(done){
+        app.authenticateAccount({
+          username: fakeAccount.username,
+          password: fakeAccount.password
+        },function(err,authenticationResult){
+          result = [err,authenticationResult];
+          done();
+        });
+      });
+      it('should not err',function(){
+        assert.equal(result[0],null);
+      });
+      it('should expand the account',function(){
+        assert.equal(result[1].account.href,account.href);
+        assert.equal(result[1].account.username,account.username);
+      });
+    });
+    describe('with email',function(){
+      var result;
+      before(function(done){
+        app.authenticateAccount({
+          username: fakeAccount.email,
+          password: fakeAccount.password
+        },function(err,authenticationResult){
+          result = [err,authenticationResult];
+          done();
+        });
+      });
+      it('should not err',function(){
+        assert.equal(result[0],null);
+      });
+      it('should expand the account',function(){
+        assert.equal(result[1].account.href,account.href);
+        assert.equal(result[1].account.email,account.email);
+      });
+    });
   });
 
   describe('custom data',function(){
