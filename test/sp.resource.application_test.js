@@ -70,6 +70,43 @@ describe('Resources: ', function () {
 
       });
 
+
+      describe('createIdSiteUrl with logout option', function () {
+        var clientApiKeySecret = uuid();
+        var dataStore = new DataStore({apiKey: {id: '1', secret: clientApiKeySecret}});
+        var app = {
+          href:'http://api.stormpath.com/v1/applications/' + uuid()
+        };
+        var application = new Application(app, dataStore);
+        var clientState = uuid();
+
+        var redirectUrl = application.createIdSiteUrl({
+          callbackUri: 'https://stormpath.com',
+          state: clientState,
+          logout: true
+        });
+
+        var params = url.parse(redirectUrl,true).query;
+        var path = url.parse(redirectUrl).pathname;
+
+        it('should create a request to /sso/logout',function(){
+          common.assert.equal(path,'/sso/logout');
+        });
+
+        it('should create a url with a jwtRequest',function(){
+          common.assert.isNotNull(params.jwtRequest);
+        });
+        it('should create a jwtRequest that is signed with the client secret',
+          function(){
+            common.assert.equal(
+              jwt.decode(params.jwtRequest,clientApiKeySecret).state,
+              clientState
+            );
+          }
+        );
+
+      });
+
       function SsoResponseTest(options){
         var self = this;
         self.before = function(){
@@ -132,6 +169,7 @@ describe('Resources: ', function () {
         describe('with a valid jwt response',function(){
           var accountHref = uuid();
           var clientState = uuid();
+          var statusValue = uuid();
           var test = new SsoResponseTest({
             callbackUri: '/',
             state: clientState
@@ -145,7 +183,8 @@ describe('Resources: ', function () {
               state: test.jwtRequest.state,
               aud: test.clientApiKeyId,
               exp: utils.nowEpochSeconds() + 1,
-              isNewSub: false
+              isNewSub: false,
+              status: statusValue
             };
             var responseUri = '/somewhere?jwtResponse=' +
               jwt.encode(responseJwt,test.clientApiKeySecret,'HS256') + '&state=' + test.givenState;
@@ -173,6 +212,10 @@ describe('Resources: ', function () {
           it('should set the state property on the idSiteResult',function(){
             var result = test.cbSpy.args[0];
             common.assert.equal(result[1].state,clientState);
+          });
+          it('should set the status property on the idSiteResult',function(){
+            var result = test.cbSpy.args[0];
+            common.assert.equal(result[1].status,statusValue);
           });
         });
 

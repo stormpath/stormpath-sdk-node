@@ -419,6 +419,20 @@ app.get('/login',function(req,res){
   });
   res.end();
 });
+
+app.get('/logout',function(req,res){
+  var url = application.createIdSiteUrl({
+    callbackUri: 'https://www.mysite.com/home',
+    logout: true
+  });
+
+  res.writeHead(302, {
+    'Cache-Control': 'no-store',
+    'Pragma': 'no-cache',
+    'Location': url
+  });
+  res.end();
+});
 ````
 
 #### Parameters
@@ -444,7 +458,10 @@ app.get('/login',function(req,res){
             `callbackUri` - REQUIRED - the fully-qualified location where the user should be sent after they authenticate,
             e.g. *https://www.mysite.com/dashboard*.
             For security reasons, the domain *www.mysite.com* must be registered in your ID Site configuration in the Stormpath Admin Console.
-
+          </li>
+          <li>
+            `logout` - OPTIONAL - If true, the user will be logged out of their session
+            and redirected to the sepcified callbackUri.
           </li>
           <li>
             `path` - OPTIONAL - Sets the initial path in the ID Site where the user should be sent. If unspecified, this defaults to /, implying that the ID Site's landing/home page is the desired location.
@@ -454,7 +471,8 @@ app.get('/login',function(req,res){
             For example, if you are using the default ID Site provided by Stormpath, you can send the user directly to the registration page by specifying `/#/register` or the forgot password page by specifying `/#/forgot`
           </li>
           <li>
-            `state` - OPTIONAL - Application-specific state that should be retained and made available to your callbackUri when the user returns from the ID Site.
+            `state` - OPTIONAL - Application-specific state that should be retained and made available to your callbackUri when
+            the user returns from the ID Site.  See [handleIdSiteCallback](application#handleIdSiteCallback)
           </li>
         </ul>
       </td>
@@ -820,6 +838,7 @@ This object represents a successful ID Site callback and has the following prope
  | `account` | `object` `Account` | The account that was authenticated, this is an instance of [Account](account)
  | `isNew` | `boolean` | A boolean indicating if this account was newly registered at the ID Site
  | `state` | `string` | The application-specific state you you passed as an option to [createIdSiteUrl()](application#createIdSiteUrl)
+ | `status` | `string` | Indicates the user activty on the ID Site.  `AUTHENTICATED` if the user has authenticated, or `LOGOUT` if the user has logged out. |
 
 ---
 
