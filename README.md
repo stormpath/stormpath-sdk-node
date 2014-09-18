@@ -18,6 +18,42 @@ The Quickstart is on the front page of the [Stormpath Node.js API Documentation]
 
 ## Change Log
 
+### 0.6.0
+
+#### Custom Data Improvements ####
+
+Custom Data is now available on Applications, Groups, Directories, and the Tenant!  We're
+really excited about this improvment and the power it gives you for storing data on
+Stormpath resources.
+
+Simply call `getCustomData()` on any of these resources and start using the custom data
+object like you have been with Accounts.  For more information please see the
+[Custom Data documentation](http://docs.stormpath.com/nodejs/api/customData)
+
+#### ID Site Improvements ####
+
+We recently added session support to our
+[ID Site Feature](http://docs.stormpath.com/guides/using-id-site)
+and this SDK release adds
+a `logout: true` option to the `application.CreateIdSiteUrl([options],cb)` method.  When this
+option is used the user will be logged out of their session when they are redirected
+to the ID Site and then immediately redirected to the specified `callbackUri` where the
+`idSiteResult` has a new `status` property which will be the value of `'LOGOUT'`
+
+For more information see the
+[createIdSiteUrl](http://docs.stormpath.com/nodejs/api/application#createIdSiteUrl)
+and
+[handleIdSiteCallback](http://docs.stormpath.com/nodejs/api/application#handleIdSiteCallback)
+ method documentation.
+
+#### Fixes ####
+
+* Stop caching requests that have query params, fixes problems with resource
+expansions (#85)
+* Fix caching docs to show correct port and option names for Memcached (#73)
+* Upgraded modules `properties-parser`, `request`, `moment`, `node-uuid` (#93)
+
+
 ### 0.5.2
 
 Fix `authenticateApiRequest`, do not throw if the request is not GET or POST

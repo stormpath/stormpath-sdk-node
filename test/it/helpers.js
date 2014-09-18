@@ -26,9 +26,15 @@ function fakeAccount(){
   return {
     givenName: uniqId(),
     surname: uniqId(),
-    // username: 'jlpicard',
-    email: 'uniqId()@mailinator.com',
-    password: 'Changeme1!'
+    username: uniqId(),
+    email: uniqId() + '@mailinator.com',
+    password: 'Changeme1!' + uuid()
+  };
+}
+
+function fakeDirectory(){
+  return {
+    name: uniqId()
   };
 }
 
@@ -36,5 +42,6 @@ module.exports = {
   loadApiKey: loadApiKey,
   getClient: getClient,
   uniqId: uniqId,
-  fakeAccount: fakeAccount
+  fakeAccount: fakeAccount,
+  fakeDirectory: fakeDirectory
 };

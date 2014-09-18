@@ -1,6 +1,6 @@
 {
   "name": "stormpath",
-  "version": "0.5.2",
+  "version": "0.6.0",
   "main": "lib/stormpath.js",
   "description": "Official Stormpath SDK for Node.js",
   "keywords": [
@@ -42,10 +42,10 @@
   "dependencies": {
     "underscore": "~1.5.2",
     "underscore.string": "~2.3.3",
-    "properties-parser": "~0.1.1",
-    "request": "~2.33.0",
-    "moment": "~2.5.1",
-    "node-uuid": "~1.4.0",
+    "properties-parser": "~0.2.3",
+    "request": "~2.40.0",
+    "moment": "~2.8.3",
+    "node-uuid": "~1.4.1",
     "async": "~0.7.0",
     "redis": "~0.10.1",
     "memcached": "~0.2.8",
@@ -70,6 +70,7 @@
     "sinon-chai": "~2.4.0",
     "istanbul": "~0.2.4",
     "lodash": "~2.4.1",
-    "nock": "~0.27.2"
+    "nock": "~0.27.2",
+    "tmp": "0.0.24"
   }
 }

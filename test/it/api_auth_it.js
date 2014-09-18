@@ -15,10 +15,12 @@ describe('Application.authenticateApiRequest',function(){
         {name: helpers.uniqId()},
         {createDirectory:true},
         function(err, _app) {
+          if(err){ throw err; }
           app = _app;
           app.createAccount(
             helpers.fakeAccount(),
             function(err,_account){
+              if(err){ throw err; }
               account = _account;
               account.createApiKey(function(err,_apiKey){
                 apiKey = _apiKey;
