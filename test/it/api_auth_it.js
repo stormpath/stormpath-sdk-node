@@ -41,7 +41,7 @@ describe('Application.authenticateApiRequest',function(){
     });
   });
 
-  describe('with Authorization: Basic <key>:<secret>',function(){
+  describe('with Authorization: Basic <key>:<secret> (1)',function(){
 
     describe('with valid credentials',function(){
 
@@ -93,6 +93,7 @@ describe('Application.authenticateApiRequest',function(){
 
       it('should err',function(){
         assert.instanceOf(result[0],Error);
+        assert.equal(result[0].statusCode,401);
       });
 
       it('should not return an instance of AuthenticationResult',function(){
@@ -164,6 +165,7 @@ describe('Application.authenticateApiRequest',function(){
         describe('the authentication result',function(){
           it('should err',function(){
             assert.instanceOf(result[0],Error);
+            assert.equal(result[0].statusCode,400);
           });
 
           it('should not return an instance of AuthenticationResult',function(){
@@ -213,6 +215,35 @@ describe('Application.authenticateApiRequest',function(){
       });
     });
 
+  });
+
+  describe('with an invalid jwt value',function(){
+    var result;
+    before(function(done){
+
+      var requestObject = {
+        headers: {
+          'authorization': 'Bearer ' + 'this-is-not-a-valid-jwt-value'
+        },
+        method: 'GET',
+        url: '/some/resource'
+      };
+      app.authenticateApiRequest({
+        request: requestObject
+      },function(err,value){
+        result = [err,value];
+        done();
+      });
+    });
+    it('should err',function(){
+      assert.instanceOf(result[0],Error);
+      assert.equal(result[0].statusCode,401);
+      assert.equal(result[0].message,'access_token is invalid');
+    });
+
+    it('should not return an instance of AuthenticationResult',function(){
+      assert.isUndefined(result[1]);
+    });
   });
 
   describe('with a previously issued access token',function(){
@@ -272,7 +303,11 @@ describe('Application.authenticateApiRequest',function(){
       describe('and access_token is tampered with',function(){
         var result;
         before(function(done){
-          var tamperedToken = accessToken.replace(/e/,'b');
+
+          var decodedAccessToken = jwt.decode(accessToken,
+            client._dataStore.requestExecutor.options.apiKey.secret,'HS256');
+          decodedAccessToken.scope += ' things-i-cant-have';
+          var tamperedToken = jwt.encode(decodedAccessToken,'not the same key','HS256');
           var requestObject = {
             headers: {
               'authorization': 'Bearer ' + tamperedToken
@@ -289,6 +324,8 @@ describe('Application.authenticateApiRequest',function(){
         });
         it('should err',function(){
           assert.instanceOf(result[0],Error);
+          assert.equal(result[0].statusCode,401);
+          assert.equal(result[0].message,'access_token is invalid');
         });
 
         it('should not return an instance of AuthenticationResult',function(){
@@ -341,6 +378,7 @@ describe('Application.authenticateApiRequest',function(){
         });
         it('should err',function(){
           assert.instanceOf(result[0],Error);
+          assert.equal(result[0].statusCode,400);
         });
 
         it('should not return an instance of AuthenticationResult',function(){
@@ -419,6 +457,8 @@ describe('Application.authenticateApiRequest',function(){
     });
     it('should err',function(){
       assert.instanceOf(result[0],Error);
+      assert.equal(result[0].statusCode,401);
+      assert.equal(result[0].message,'Token has expired');
     });
 
     it('should not return an instance of AuthenticationResult',function(){
@@ -444,6 +484,7 @@ describe('Application.authenticateApiRequest',function(){
     });
     it('should err',function(){
       assert.instanceOf(result[0],Error);
+      assert.equal(result[0].statusCode,400);
     });
 
     it('should not return an instance of AuthenticationResult',function(){
@@ -470,6 +511,7 @@ describe('Application.authenticateApiRequest',function(){
     });
     it('should err',function(){
       assert.instanceOf(result[0],Error);
+      assert.equal(result[0].statusCode,400);
     });
 
     it('should not return an instance of AuthenticationResult',function(){
@@ -494,6 +536,7 @@ describe('Application.authenticateApiRequest',function(){
     });
     it('should err',function(){
       assert.instanceOf(result[0],Error);
+      assert.equal(result[0].statusCode,400);
     });
 
     it('should not return an instance of AuthenticationResult',function(){
@@ -618,6 +661,7 @@ describe('Application.authenticateApiRequest',function(){
 
     it('should err',function(){
       assert.instanceOf(result[0],Error);
+      assert.equal(result[0].statusCode,401);
     });
 
     it('should not return an instance of AuthenticationResult',function(){
@@ -663,6 +707,7 @@ describe('Application.authenticateApiRequest',function(){
 
     it('should err',function(){
       assert.instanceOf(result[0],Error);
+      assert.equal(result[0].statusCode,401);
     });
 
     it('should not return an instance of AuthenticationResult',function(){
