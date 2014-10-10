@@ -32,13 +32,13 @@ object like you have been with Accounts.  For more information please see the
 
 #### ID Site Improvements ####
 
-We recently added session support to our
+We recently added Single Sign On (SSO) support to our
 [ID Site Feature](http://docs.stormpath.com/guides/using-id-site)
 and this SDK release adds
-a `logout: true` option to the `application.CreateIdSiteUrl([options],cb)` method.  When this
-option is used the user will be logged out of their session when they are redirected
-to the ID Site and then immediately redirected to the specified `callbackUri` where the
-`idSiteResult` has a new `status` property which will be the value of `'LOGOUT'`
+a `logout: true` option to the ` application.CreateIdSiteUrl([options],cb)` method.  When this
+option is used  the user’s SSO cookie will be destroyed and the user will be immediately redirected
+to the specified `callbackUri` where the `idSiteResult` has a new `status` property which will
+be the value of `'LOGOUT'`
 
 For more information see the
 [createIdSiteUrl](http://docs.stormpath.com/nodejs/api/application#createIdSiteUrl)
