@@ -15,14 +15,17 @@ library gives your Node app access to all of Stormpath's features:
 - Social login with Facebook and Google OAuth.
 - Generate and manage API keys for your service.
 
-Stormpath automatically scales with your application, without the overhead of
-building and managing user infrastructure.
+If you have feedback about this library, please get in touch and share your
+thoughts! support@stormpath.com
 
-If you have questions or need help, please get in touch with us:
-[support@stormpath.com](mailto:support@stormpath.com)
+[Stormpath](https://stormpath.com) is a User Management API that reduces
+development time with instant-on, scalable user infrastructure.  Stormpath's
+intuitive API and expert support make it easy for developers to authenticate,
+manage, and secure users and roles in any application.
 
 
 ## Links
+
 + [Quickstart](http://docs.stormpath.com/nodejs/quickstart/)
 + [Stormpath Node.js API Documentation](http://docs.stormpath.com/nodejs/api)
 
