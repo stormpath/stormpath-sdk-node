@@ -4,19 +4,23 @@
 [![NPM Downloads](http://img.shields.io/npm/dm/stormpath.svg?style=flat)](https://npmjs.org/package/stormpath)
 [![Build Status](https://img.shields.io/travis/stormpath/stormpath-sdk-node.svg?style=flat)](https://travis-ci.org/stormpath/stormpath-sdk-node)
 
-[Stormpath](https://stormpath.com) is a complete user management API, with a wire range of support for Node.js Apps
+*A simple user management library for Node.js.*
 
-This SDK gives your Node app access to all of Stormpath's user features:
-•	Robust Authentication and Authorization
-•	Schemaless user data
-•	Pre-built or hosted login screens
-•	Social login with Facebook and Google OAuth
-•	Great for multi-tenant SaaS Applications
-•	Generate and manage API keys for your service
+[Stormpath](https://stormpath.com) is a complete user management API.  This
+library gives your Node app access to all of Stormpath's features:
 
-Stormpath automatically scales with your application, without the overhead of building and managing user infrastructure
+- Robust authentication and authorization.
+- Schemaless user data.
+- Pre-built or hosted login screens.
+- Social login with Facebook and Google OAuth.
+- Generate and manage API keys for your service.
 
-If you have questions or need help, please get in touch. [support@stormpath.com](mailto:support@stormpath.com)
+Stormpath automatically scales with your application, without the overhead of
+building and managing user infrastructure.
+
+If you have questions or need help, please get in touch with us:
+[support@stormpath.com](mailto:support@stormpath.com)
+
 
 ## Links
 + [Quickstart](http://docs.stormpath.com/nodejs/quickstart/)
