@@ -59,6 +59,7 @@ Below are some resources you might find useful!
 npm install stormpath
 ```
 
+
 ## Quickstart
 
 The Quickstart is on the front page of the [Stormpath Node.js API Documentation](http://docs.stormpath.com/nodejs/api).
@@ -93,10 +94,22 @@ The `grunt serve` command will build and serve the docs locally on port 9000.  Y
 view the HTML documentation by visiting http://localhost:9000/home in your browser.
 
 
-### Contributing
-In lieu of a formal styleguide, take care to maintain the existing coding style. Add unit tests for any new or changed functionality. Lint and test your code using [Grunt](http://gruntjs.com/).
+## Contributing
 
-### Copyright
+In lieu of a formal style guide, take care to maintain the existing coding
+style.  Add unit tests for any new or changed functionality.  Lint and test
+your code using [Grunt](http://gruntjs.com/).
+
+You can make your own contributions by forking the develop branch of this
+repository, making your changes, and issuing pull request on the develop branch.
+
+We regularly maintain this repository, and are quick to review pull requests and
+accept changes!
+
+We <333 contributions!
+
+
+## Copyright
 
 Copyright &copy; 2014 Stormpath, Inc. and contributors.
 
