@@ -24,23 +24,33 @@ intuitive API and expert support make it easy for developers to authenticate,
 manage, and secure users and roles in any application.
 
 
+## Documentation
+
+All of this library's documentation can be found here:
+http://docs.stormpath.com/nodejs/api/home (*It's ridiculously easy to get
+started with.*)
+
+
 ## Links
 
-+ [Quickstart](http://docs.stormpath.com/nodejs/quickstart/)
-+ [Stormpath Node.js API Documentation](http://docs.stormpath.com/nodejs/api)
+Below are some resources you might find useful!
 
-**Stormpath-Express**
-+ [Stormpath-Express Integration](https://github.com/stormpath/stormpath-express)
-+ [Stormpath-Express Docs](https://docs.stormpath.com/nodejs/express/)
-+ [15-Minute Tutorial: Build a Webapp with Node, Express, Bootstrap & Stormpath](https://stormpath.com/blog/build-nodejs-express-stormpath-app/)
-+ [Deploy Stormpath on Heroku with Express.js](https://github.com/stormpath/stormpath-heroku-express-sample)
-+ [90-second video demo](https://www.youtube.com/watch?v=58wZyVaGR2c)
+- [Quickstart](http://docs.stormpath.com/nodejs/quickstart/)
+- [Stormpath Node.js API Documentation](http://docs.stormpath.com/nodejs/api)
 
-**Stormpath-Passport**
-+ [Stormpath Passport Strategy](https://github.com/stormpath/passport-stormpath)
-+ [stormpath-passport-express Sample App repo](https://github.com/stormpath/stormpath-passport-express-sample)
-+ [Stormpath Passport Docs](https://docs.stormpath.com/nodejs/passport/)
-+ [15-Minute Tutorial: Build a Webapp With Node.js, Express, Passport and Stormpath](https://stormpath.com/blog/build-app-nodejs-express-passport-stormpath/)
+**Express-Stormpath**
+
+- [Express-Stormpath Integration](https://github.com/stormpath/stormpath-express)
+- [Express-Stormpath Docs](https://docs.stormpath.com/nodejs/express/)
+- [15-Minute Tutorial: Build a Webapp with Node, Express, Bootstrap & Stormpath](https://stormpath.com/blog/build-nodejs-express-stormpath-app/)
+- [Deploy Stormpath on Heroku with Express.js](https://github.com/stormpath/stormpath-heroku-express-sample)
+
+**Passport-Stormpath**
+
+- [Stormpath Passport Strategy](https://github.com/stormpath/passport-stormpath)
+- [stormpath-passport-express Sample App repo](https://github.com/stormpath/stormpath-passport-express-sample)
+- [Stormpath Passport Docs](https://docs.stormpath.com/nodejs/passport/)
+- [15-Minute Tutorial: Build a Webapp With Node.js, Express, Passport and Stormpath](https://stormpath.com/blog/build-app-nodejs-express-passport-stormpath/)
 
 
 ## Install
