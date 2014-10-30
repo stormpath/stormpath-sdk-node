@@ -1,4 +1,4 @@
-# Stormpath Node.js SDK 
+# Stormpath Node.js SDK
 
 [![NPM Version](https://img.shields.io/npm/v/stormpath.svg?style=flat)](https://npmjs.org/package/stormpath)
 [![NPM Downloads](http://img.shields.io/npm/dm/stormpath.svg?style=flat)](https://npmjs.org/package/stormpath)
