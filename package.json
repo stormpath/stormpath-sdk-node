@@ -1,6 +1,6 @@
 {
   "name": "stormpath",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "main": "lib/stormpath.js",
   "description": "Official Stormpath SDK for Node.js",
   "keywords": [
