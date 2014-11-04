@@ -1,6 +1,6 @@
 {
   "name": "stormpath",
-  "version": "0.6.0",
+  "version": "0.7.0",
   "main": "lib/stormpath.js",
   "description": "Official Stormpath SDK for Node.js",
   "keywords": [
@@ -47,7 +47,7 @@
     "moment": "~2.8.3",
     "node-uuid": "~1.4.1",
     "async": "~0.7.0",
-    "redis": "~0.10.1",
+    "redis": "~0.12.1",
     "memcached": "~0.2.8",
     "glob": "3",
     "jwt-simple": "~0.2.0"

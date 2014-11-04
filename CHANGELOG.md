@@ -1,5 +1,10 @@
 # stormpath-sdk-node Change Log
 
+### 0.7.0
+
+* Fixing the status codes (400 vs 401) on errors thar are returned from `authenticateApiRequest`
+* Upgrading the Redis dependency to ~0.12.1 and fixing constructor options accordingly
+
 ### 0.6.0
 
 #### Custom Data Improvements ####
