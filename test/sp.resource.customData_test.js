@@ -1,5 +1,7 @@
 /* jshint -W030 */
 var common = require('./common');
+var expect = common.expect;
+
 var sinon = common.sinon;
 
 var Group = require('../lib/resource/Group');
@@ -61,5 +63,55 @@ describe('Resources: ', function () {
 
     removeFieldTest(Account, '/custom/data/href');
     removeFieldTest(Group, '/custom/data/href/');
+
+    describe('when attached to a resource',function(){
+      var resource, dataStore, saveResourceStub, sandbox;
+
+      before(function(){
+        dataStore = new DataStore({apiKey: {id: 1, secret: 2}});
+        resource = instantiate(Account, {
+          href: common.uuid(),
+          customData:{
+            href: common.uuid()
+          }
+        }, null, dataStore);
+        sandbox = sinon.sandbox.create();
+        saveResourceStub = sandbox.stub(dataStore, 'saveResource', function () {
+          arguments[arguments.length -1]();
+        });
+
+      });
+      describe('and reserved properties are added',function(){
+        var reserverdFieldName = 'createdAt';
+        before(function(){
+          resource.customData[reserverdFieldName] = common.uuid();
+        });
+        describe('and save is called on the parent resource',function(){
+          before(function(done){
+            resource.save(done);
+          });
+          it('should remove the reserved properties before passing to the dataStore',function(){
+            var passedResource = saveResourceStub.args[0][0];
+            expect(passedResource.customData[reserverdFieldName]).to.equal(undefined);
+          });
+        });
+      });
+      describe('and non-reserved properties are added',function(){
+        var customFieldName = 'myCustomProperty';
+        var customFieldValue = common.uuid();
+        before(function(){
+          resource.customData[customFieldName] = customFieldValue;
+        });
+        describe('and save is called on the parent resource',function(){
+          before(function(done){
+            resource.save(done);
+          });
+          it('should remove the reserved properties before passing to the dataStore',function(){
+            var passedResource = saveResourceStub.args[0][0];
+            expect(passedResource.customData[customFieldName]).to.equal(customFieldValue);
+          });
+        });
+      });
+    });
   });
 });
