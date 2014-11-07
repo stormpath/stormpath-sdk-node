@@ -1,5 +1,9 @@
 # stormpath-sdk-node Change Log
 
+### 0.7.1
+
+* Remove improper use of `_.pluck` in `CustomData.prototype._hasReservedFields` (thanks [sojournerc](https://github.com/sojournerc))
+
 ### 0.7.0
 
 * Fixing the status codes (400 vs 401) on errors thar are returned from `authenticateApiRequest`
