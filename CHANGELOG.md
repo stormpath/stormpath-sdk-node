@@ -1,5 +1,10 @@
 # stormpath-sdk-node Change Log
 
+### 0.7.2
+
+* Add methods `Tenant.getAccounts()` and `Tenant.getGroups()`, use these to fetch
+all accounts or groups within your tenant.
+
 ### 0.7.1
 
 * Remove improper use of `_.pluck` in `CustomData.prototype._hasReservedFields` (thanks [sojournerc](https://github.com/sojournerc))
