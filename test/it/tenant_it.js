@@ -28,6 +28,85 @@ describe('Tenant',function(){
     assert.instanceOf(tenant,Tenant);
   });
 
+  describe('getAccounts',function(){
+    var directory, account;
+    var accounts = [];
+    var fakeAccount = helpers.fakeAccount();
+    before(function(done){
+      helpers.getClient(function(_client){
+        client = _client;
+        client.createDirectory(
+          {name: helpers.uniqId()},
+          function(err, _directory) {
+            directory = _directory;
+            directory.createAccount(
+              fakeAccount,
+              function(err,_account){
+                if(err){ throw err; }
+                account = _account;
+                tenant.getAccounts(function(err,collection){
+                  if(err){ throw err; }
+                  collection.each(function(account,next){
+                    accounts.push(account);
+                    next();
+                  },done);
+                });
+              }
+            );
+          }
+        );
+      });
+    });
+
+    it('should contain the created account',function(){
+      var found = accounts.filter(function(account){
+        return account.email === fakeAccount.email;
+      });
+      assert.equal(found.length,1);
+      assert.equal(found[0].email,fakeAccount.email);
+    });
+
+  });
+
+  describe('getGroups',function(){
+
+    var groups = [];
+    var groupName = helpers.uniqId();
+    before(function(done){
+      helpers.getClient(function(_client){
+        client = _client;
+        client.createDirectory(
+          {name: helpers.uniqId()},
+          function(err, _directory) {
+
+            _directory.createGroup(
+              {name: groupName},
+              function(err){
+                if(err){ throw err; }
+                tenant.getGroups(function(err,collection){
+                  if(err){ throw err; }
+                  collection.each(function(group,next){
+                    groups.push(group);
+                    next();
+                  },done);
+                });
+              }
+            );
+          }
+        );
+      });
+    });
+
+    it('should contain the created group',function(){
+      var found = groups.filter(function(group){
+        return group.name === groupName;
+      });
+      assert.equal(found.length,1);
+      assert.equal(found[0].name,groupName);
+    });
+
+  });
+
   describe('custom data',function(){
 
     describe('via customData.get',function(){
