@@ -81,13 +81,13 @@ describe('Cache module',function(){
       it('should use the account cache for regular account queries', function(){
           accountCache.get = sinon.spy();
           handler.get('https://api.stormpath.com/v1/accounts/Uu87kzssxEcnjmhC9uzwF', function() {});
-          expect(accountCache.get).to.have.been.called;
+          accountCache.get.should.have.been.calledOnce;
       });
 
       it('should use the account cache for custom data', function(){
           accountCache.get = sinon.spy();
           handler.get('https://api.stormpath.com/v1/accounts/Uu87kzssxEcnjmhC9uzwF/customData', function() {});
-          expect(accountCache.get).to.have.been.called;
+          accountCache.get.should.have.been.calledOnce;
       });
     });
 
@@ -109,13 +109,13 @@ describe('Cache module',function(){
       it('should use the account cache for regular account queries', function(){
           accountCache.get = sinon.spy();
           handler.get('https://api.stormpath.com/v1/accounts/Uu87kzssxEcnjmhC9uzwF', function() {});
-          expect(accountCache.get).to.have.been.called;
+          accountCache.get.should.have.been.calledOnce;
       });
 
       it('should use the disabled cache for customData queries', function(){
           accountCache.get = sinon.spy();
           handler.get('https://api.stormpath.com/v1/accounts/Uu87kzssxEcnjmhC9uzwF/customData', function() {});
-          expect(accountCache.get).to.have.not.been.called;
+          accountCache.get.should.not.have.been.called;
       });
     });
   });
