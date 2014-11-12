@@ -64,5 +64,63 @@ describe('Cache module',function(){
       });
     });
 
+    describe('With cacheCustomData enabled', function(){
+
+      var mockStore = function(opts){
+        this._options = opts;
+      };
+      var cacheOptions= {
+          store: mockStore,
+          cacheCustomData: true
+      };
+      var handler = new CacheHandler({
+        cacheOptions: cacheOptions
+      });
+      var accountCache = handler.cacheManager.caches['accounts'];
+
+      it('should use the account cache for regular account queries', function(){
+          accountCache.get = sinon.spy();
+          handler.get('https://api.stormpath.com/v1/accounts/Uu87kzssxEcnjmhC9uzwF', function() {});
+          /* jshint -W030 */
+          accountCache.get.should.have.been.calledOnce;
+      });
+
+      it('should use the account cache for custom data', function(){
+          accountCache.get = sinon.spy();
+          handler.get('https://api.stormpath.com/v1/accounts/Uu87kzssxEcnjmhC9uzwF/customData', function() {});
+          /* jshint -W030 */
+          accountCache.get.should.have.been.calledOnce;
+      });
+    });
+
+
+    describe('With cacheCustomData disabled', function(){
+
+      var mockStore = function(opts){
+        this._options = opts;
+      };
+      var cacheOptions= {
+          store: mockStore,
+          cacheCustomData: false
+      };
+      var handler = new CacheHandler({
+        cacheOptions: cacheOptions
+      });
+      var accountCache = handler.cacheManager.caches['accounts'];
+      
+      it('should use the account cache for regular account queries', function(){
+          accountCache.get = sinon.spy();
+          handler.get('https://api.stormpath.com/v1/accounts/Uu87kzssxEcnjmhC9uzwF', function() {});
+          /* jshint -W030 */
+          accountCache.get.should.have.been.calledOnce;
+      });
+
+      it('should use the disabled cache for customData queries', function(){
+          accountCache.get = sinon.spy();
+          handler.get('https://api.stormpath.com/v1/accounts/Uu87kzssxEcnjmhC9uzwF/customData', function() {});
+          /* jshint -W030 */
+          accountCache.get.should.not.have.been.called;
+      });
+    });
   });
 });
