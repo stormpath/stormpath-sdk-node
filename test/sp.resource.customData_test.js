@@ -64,6 +64,38 @@ describe('Resources: ', function () {
     removeFieldTest(Account, '/custom/data/href');
     removeFieldTest(Group, '/custom/data/href/');
 
+    describe('when fetched via resource.getCustomData',function(){
+      var resource;
+      var dataStore = new DataStore({apiKey: {id: 1, secret: 2}});
+      var sandbox = sinon.sandbox.create();
+      var cacheSpy = sinon.spy(dataStore.cacheHandler.cacheManager.caches.customData,'put');
+      var parentHref = 'http://api.stormpath.com/v1/accounts/' + common.uuid();
+        resource = instantiate(Account,{
+          href: parentHref,
+          customData: {
+            href: parentHref + '/customData'
+          }
+        }, null, dataStore);
+      var customDataObject = {
+        href: resource.customData.href,
+        hello: 'world'
+      };
+
+      before(function(done){
+
+        sandbox.stub(dataStore.requestExecutor, 'execute', function (request) {
+          // callback with a mock custom data resource
+          if(request.uri===resource.customData.href){
+            arguments[arguments.length -1](null,customDataObject);
+          }
+        });
+        resource.getCustomData(done);
+      });
+      it('should have been put in the cache',function(){
+        expect(cacheSpy.args[0][1]).to.deep.equal(customDataObject);
+      });
+    });
+
     describe('when attached to a resource',function(){
       var resource, dataStore, saveResourceStub, sandbox;
 
