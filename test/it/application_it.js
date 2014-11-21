@@ -123,6 +123,45 @@ describe('Application',function(){
     });
   });
 
+  /*
+
+  TODO bring this test in once we can configure the directory
+  workflows via the REST api.  Right now yo'll get a 6101
+  error because the diretory has not been configured for
+  verification emails
+
+  describe('resendVerificationEmail',function(){
+    var fakeAccount = helpers.fakeAccount();
+    before(function(done){
+      directory.createAccount(fakeAccount,function(err,_account){
+        if(err){ throw err; }
+        account = _account;
+        done();
+      });
+    });
+    describe('with username',function(){
+      var result;
+      before(function(done){
+        app.resendVerificationEmail({
+          login: fakeAccount.email
+        },function(err,authenticationResult){
+          console.log(err);
+          result = [err,authenticationResult];
+          done();
+        });
+      });
+      it('should not err',function(){
+        assert.equal(result[0],null);
+      });
+      it('should be an accepted response',function(){
+        assert.equal(result[1].accepted,true);
+      });
+    });
+
+  });
+
+  */
+
   describe('custom data',function(){
 
     describe('via getCustomData',function(){
