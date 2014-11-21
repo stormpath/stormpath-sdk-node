@@ -1118,6 +1118,33 @@ describe('Resources: ', function () {
       });
     });
 
+    describe('resend verification email', function () {
+      var app, createResourceStub;
+      var options = {login:uuid()};
+      var dataStore = new DataStore({apiKey: {id: 1, secret: 2}});
+      before(function (done) {
+
+        app = new Application(
+          { href: uuid() , verificationEmails: {href:uuid()} },
+          dataStore
+        );
+
+        createResourceStub = sinon.stub(dataStore,'createResource',function(){
+          var args = Array.prototype.slice.call(arguments);
+          var callback = args.pop();
+          callback();
+        });
+
+        app.resendVerificationEmail(options,done);
+      });
+
+
+      it('should pass the options to the store', function () {
+        createResourceStub.should.have.been
+            .calledWith(app.verificationEmails.href, options);
+      });
+    });
+
     describe('add account store', function () {
       var storeObj, store, appObj, app, asm, cbSpy;
       before(function (done) {
