@@ -1,5 +1,9 @@
 # stormpath-sdk-node Change Log
 
+### 0.7.4
+
+* Implement `application.resendVerificationEmail()`
+
 ### 0.7.3
 
 * Add cache region for Custom Data resources.  Thanks [alavers](https://github.com/alavers) for finding this issue.
