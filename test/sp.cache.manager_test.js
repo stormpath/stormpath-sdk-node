@@ -21,11 +21,12 @@ describe('Cache module',function(){
 
     describe('create cache',function(){
       var manager = new CacheManager();
+      var region = common.uuid();
       before(function(){
-        manager.createCache();
+        manager.createCache(region);
       });
       it('should create cache instance', function(){
-        should.exist(manager.getCache());
+        should.exist(manager.getCache(region));
       });
       it('should add stats', function (){
         should.exist(manager.stats);
@@ -34,11 +35,12 @@ describe('Cache module',function(){
 
     describe('get cache',function(){
       var manager = new CacheManager();
+      var region = common.uuid();
       before(function(){
-        manager.createCache();
+        manager.createCache(region);
       });
       it('should return cache instance', function(){
-        should.exist(manager.getCache());
+        should.exist(manager.getCache(region));
       });
     });
   });

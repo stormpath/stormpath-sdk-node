@@ -1,7 +1,7 @@
 var common = require('./common');
 var should = common.should;
 var expect = common.expect;
-var sinon = common.sinon;
+// var sinon = common.sinon;
 
 var CacheHandler = require('../lib/cache/CacheHandler');
 
@@ -10,10 +10,11 @@ function rand(){
   return parseInt(Math.random() * 1000,10);
 }
 
-describe('Cache module',function(){
+describe('CacheHandler',function(){
 
-  describe('Cache Handler class', function(){
-    describe('By default', function(){
+  describe('when constructed', function(){
+
+    describe('without options', function(){
       var handler = new CacheHandler();
       it('it should have a cache manager', function(){
         should.exist(handler.cacheManager);
@@ -21,25 +22,15 @@ describe('Cache module',function(){
       it('it should have a cache', function(){
         should.exist(handler.cacheManager.caches);
       });
-    });
-
-    describe('With a global store', function(){
-      var spy = sinon.spy();
-      var cacheOptions= {
-          store: spy
-      };
-      var handler = new CacheHandler({
-        cacheOptions: cacheOptions
-      });
       it('should create caches for each region', function(){
         expect(Object.keys(handler.cacheManager.caches))
           .to.deep.equal(CacheHandler.CACHE_REGIONS);
       });
     });
 
-    describe('With global options', function(){
+    describe('with a custom store constructor', function(){
 
-      var mockStore = function(opts){
+      var MockStore = function(opts){
         this._options = opts;
       };
       var cacheOptions= {
@@ -49,14 +40,16 @@ describe('Cache module',function(){
             a: rand(),
             b: rand()
           },
-          store: mockStore
+          store: MockStore
       };
       var handler = new CacheHandler({
         cacheOptions: cacheOptions
       });
 
-      it('should call the store with the global options', function(){
-          var options = handler.cacheManager.caches['applications'].store._options;
+      it('should construct the custom store with the global options', function(){
+          var customStoreInstance = handler.cacheManager.caches.applications.store;
+          var options = customStoreInstance._options;
+          expect(customStoreInstance instanceof MockStore).to.equal(true);
           expect(options.ttl).to.equal(cacheOptions.ttl);
           expect(options.tti).to.equal(cacheOptions.tti);
           expect(options.options.a).to.equal(cacheOptions.options.a);
