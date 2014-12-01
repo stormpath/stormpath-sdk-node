@@ -113,7 +113,6 @@ describe('CacheHandler',function(){
         acountRegionPutSpy = sandbox.spy(cacheHandler.cacheManager.caches.accounts, 'put');
         groupRegionPutSpy = sandbox.spy(cacheHandler.cacheManager.caches.groups, 'put');
         directoryRegionPutSpy = sandbox.spy(cacheHandler.cacheManager.caches.directories, 'put');
-        console.log('will delegate?',result.groups);
         cacheHandler.put(result.href,result,done);
       });
       it('should call .put() on the cache for the region of the parent resource',function() {
@@ -127,6 +126,36 @@ describe('CacheHandler',function(){
         expect(directoryRegionPutSpy.args.length).to.equal(0);
       });
     });
+
+    describe('with a collection result',function(){
+      var collectionHref = 'http://api.stormpath.com/v1/tenants/'+common.uuid()+'/groups';
+      var collectionResult = {
+        'href': collectionHref,
+        'offset': 0,
+        'limit': 50,
+        'size': 2,
+        'items': [
+          {
+            'href': 'http://api.stormpath.com/v1/groups/' + common.uuid(),
+            'name': common.uuid()
+          },
+          {
+            'href': 'http://api.stormpath.com/v1/groups/' + common.uuid(),
+            'name': common.uuid()
+          }
+        ]
+      };
+      before(function(done) {
+        cacheHandler = new CacheHandler();
+        sandbox = sinon.sandbox.create();
+        groupRegionPutSpy = sandbox.spy(cacheHandler.cacheManager.caches.groups, 'put');
+        cacheHandler.put(collectionResult.href,collectionResult,done);
+      });
+      it('should call .put() on the cache for the region of each of the resources in the collection',function() {
+        expect(groupRegionPutSpy.args[0][0]).to.equal(collectionResult.items[0].href);
+      });
+    });
+
 
     describe('with a resource result that contains an expanded resource',function(){
       var result = {
