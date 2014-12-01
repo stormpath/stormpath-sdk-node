@@ -1,7 +1,7 @@
 var common = require('./common');
 var should = common.should;
 var expect = common.expect;
-// var sinon = common.sinon;
+var sinon = common.sinon;
 
 var CacheHandler = require('../lib/cache/CacheHandler');
 
@@ -54,6 +54,101 @@ describe('CacheHandler',function(){
           expect(options.tti).to.equal(cacheOptions.tti);
           expect(options.options.a).to.equal(cacheOptions.options.a);
           expect(options.options.b).to.equal(cacheOptions.options.b);
+      });
+    });
+
+  });
+
+  describe('.put()',function(){
+    var cacheHandler,
+      sandbox,
+      acountRegionPutSpy,
+      groupRegionPutSpy,
+      directoryRegionPutSpy;
+
+    describe('with a resource result',function(){
+      var result = {
+        href: '/v1/accounts/' + common.uuid(),
+        username: common.uuid()
+      };
+
+      before(function(done) {
+        cacheHandler = new CacheHandler();
+        sandbox = sinon.sandbox.create();
+        acountRegionPutSpy = sandbox.spy(cacheHandler.cacheManager.caches.accounts, 'put');
+        cacheHandler.put(result.href,result,done);
+      });
+
+      it('should call .put() on the cache for the region of this resource',function() {
+        expect(acountRegionPutSpy.args[0][0]).to.equal(result.href);
+        expect(acountRegionPutSpy.args[0][1]).to.deep.equal(result);
+      });
+    });
+
+    describe('with a resource result that cotains an expanded collection and a linked resource',function(){
+      var parentResourceHref = '/v1/accounts/' + common.uuid();
+      var result = {
+        'href': parentResourceHref,
+        'username': common.uuid(),
+        'groups': {
+          'href': parentResourceHref + '/groups',
+          'items': [
+            {
+              'href': '/v1/groups/' + common.uuid(),
+              'name': common.uuid()
+            },
+            {
+              'href': '/v1/groups/' + common.uuid(),
+              'name': common.uuid()
+            }
+          ]
+        },
+        'directory': {
+          'href': '/v1/directories/' + common.uuid()
+        }
+      };
+      before(function(done) {
+        cacheHandler = new CacheHandler();
+        sandbox = sinon.sandbox.create();
+        acountRegionPutSpy = sandbox.spy(cacheHandler.cacheManager.caches.accounts, 'put');
+        groupRegionPutSpy = sandbox.spy(cacheHandler.cacheManager.caches.groups, 'put');
+        directoryRegionPutSpy = sandbox.spy(cacheHandler.cacheManager.caches.directories, 'put');
+        console.log('will delegate?',result.groups);
+        cacheHandler.put(result.href,result,done);
+      });
+      it('should call .put() on the cache for the region of the parent resource',function() {
+        expect(acountRegionPutSpy.args[0][0]).to.equal(result.href);
+      });
+      it('should call .put() on the cache for the region of the expanded resources, for each in the collection',function() {
+        expect(groupRegionPutSpy.args[0][0]).to.equal(result.groups.items[0].href);
+        expect(groupRegionPutSpy.args[1][0]).to.equal(result.groups.items[1].href);
+      });
+      it('should NOT call .put() on the cache for the region of the linked resource',function() {
+        expect(directoryRegionPutSpy.args.length).to.equal(0);
+      });
+    });
+
+    describe('with a resource result that contains an expanded resource',function(){
+      var result = {
+        href: '/v1/accounts/' + common.uuid(),
+        username: common.uuid(),
+        directory: {
+          href: '/v1/directories/' + common.uuid(),
+          name: common.uuid()
+        }
+      };
+      before(function(done) {
+        cacheHandler = new CacheHandler();
+        sandbox = sinon.sandbox.create();
+        acountRegionPutSpy = sandbox.spy(cacheHandler.cacheManager.caches.accounts, 'put');
+        directoryRegionPutSpy = sandbox.spy(cacheHandler.cacheManager.caches.directories, 'put');
+        cacheHandler.put(result.href,result,done);
+      });
+      it('should call .put() on the cache for the region of the parent resource',function() {
+        expect(acountRegionPutSpy.args[0][0]).to.equal(result.href);
+      });
+      it('should call .put() on the cache for the region of the expanded resource',function() {
+        expect(directoryRegionPutSpy.args[0][0]).to.equal(result.directory.href);
       });
     });
 
