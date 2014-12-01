@@ -42,65 +42,6 @@ describe('ds:', function () {
       });
     });
 
-    describe('when storing recursive response object', function () {
-      var data = {
-        'href': 'http://example.com/accounts/FOO',
-        'name': 'Foo',
-        'groups': {
-          'href': 'http://example.com/accounts/FOO/groups',
-          'items': [
-            {
-              'href': 'http://example.com/groups/G1',
-              'name': 'Foo Group 1'
-            },
-            {
-              'href': 'http://example.com/groups/G2',
-              'name': 'Foo Group 2'
-            }
-          ]
-        },
-        'directory': {
-          'href': 'http://example.com/directories/BAR',
-          'name': 'Directory'
-        }
-      };
-      var ds = new DataStore({
-        cacheOptions: {
-          store: MemoryStore,
-          accounts: {},
-          groups: {},
-          directories: {}
-        },
-        apiKey: {id: 1, secret: 2}
-      });
-
-      var cbSpy = sinon.spy();
-      var sandbox, reqExecSpy, cachePutSpy;
-
-      before(function () {
-        sandbox = sinon.sandbox.create();
-        cachePutSpy = sandbox.spy(ds.cacheHandler, 'put');
-        reqExecSpy = sandbox.stub(ds.requestExecutor, 'execute', function (req, cb) {
-          cb(null, data);
-        });
-
-        // act
-        ds.getResource(data.href, cbSpy);
-      });
-      after(function () {
-        sandbox.restore();
-      });
-
-      it('should store root entity', function () {
-        /* jshint -W030 */
-        cachePutSpy.callCount.should.be.equal(4);
-        cachePutSpy.should.have.been.calledWith(data.href);
-        cachePutSpy.should.have.been.calledWith(data.groups.items[0].href);
-        cachePutSpy.should.have.been.calledWith(data.groups.items[1].href);
-        cachePutSpy.should.have.been.calledWith(data.directory.href);
-      });
-    });
-
     describe('getResource()', function () {
       var ds = new DataStore({
         cacheOptions: { store: 'memory' },
@@ -416,7 +357,7 @@ describe('ds:', function () {
         it('should be stored in cache', function () {
           /* jshint -W030 */
           cachePutSpy.should.have.been.calledOnce;
-          cachePutSpy.should.have.been.calledWith(response.href, response, false, utils.noop);
+          cachePutSpy.should.have.been.calledWith(response.href,response,false);
         });
       });
     });

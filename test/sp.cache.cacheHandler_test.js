@@ -92,6 +92,9 @@ describe('CacheHandler',function(){
         'username': common.uuid(),
         'groups': {
           'href': parentResourceHref + '/groups',
+          'offset': 0,
+          'limit': 50,
+          'size': 2,
           'items': [
             {
               'href': '/v1/groups/' + common.uuid(),
