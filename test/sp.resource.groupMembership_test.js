@@ -30,7 +30,10 @@ describe('Resources: ', function () {
           sandbox = sinon.sandbox.create();
           grp = {groupMemberships: {href: 'boom!'}};
           opt = {};
-          groupMembership = new GroupMembership(grp, dataStore);
+          groupMembership = new GroupMembership({
+            groupMemberships: { href: 'boom!' },
+            account: new Account({ href: 'boom!', username: 'rdegges', email: 'r@rdegges.com', passsword: '0absfdgasAFDSDF!!!!', givenName: 'Randall', surname: 'Degges' }),
+          }, dataStore);
           getResourceStub = sandbox.stub(dataStore, 'getResource', function (href, options, ctor, cb) {
             cb();
           });
