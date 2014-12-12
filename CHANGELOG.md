@@ -1,5 +1,9 @@
 # stormpath-sdk-node Change Log
 
+### 0.7.5
+
+* Fixing bug with `GroupMemnberships.getAccount()`.
+
 ### 0.7.4
 
 * Implement `application.resendVerificationEmail()`
