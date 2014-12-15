@@ -208,25 +208,6 @@ var client = new stormpath.Client(options);
   </tbody>
 </table>
 
----
-
-
-<a name="customNonceStore"></a>
-### Custom Nonce Store
-
-If you are using the [ID Site Feature][] in your Stormpath implementation, the calls to
-[Application.createIdSiteUrl()](application#createIdSiteUrl) and [Application.handleIdSiteCallback()](application#handleIdSiteCallback)
-will make use of a nonce value to prevent replay attacks.  By default these nonces will be stored in a cache region in the client's data store.
-
-You may use your own Nonce Store by providing an interface object that we can use to communicate with it.  Your interface object must have these two methods:
-
-* `getNonce(nonceStringValue,callback)` - It will search your nonce store for the nonce value and then call the callback with with the `(err,value)` pattern, where `err` indicates a problem with the store and `value` is the found nonce or `null`
-* `putNonce(nonceStringValue,callback)` - It should place the nonce value in your nonce store and then call the callback with `(err)` where `err` is a store error or `null`
-
-You then pass this object to the stormpath client constructor as the `nonceStore` option.
-
----
-
 <a name="memory"></a>
 ### In Memory Cache
 
@@ -360,6 +341,15 @@ var cacheOptions = {
   tti: 300
 };
 
+// Or with an existing RedisClient connection:
+
+var cacheOptions = {
+  store: 'redis',
+  existingCache: <previously instantiated redis object>
+  ttl: 300,
+  tti: 300
+};
+
 var client = new stormpath.Client({
   apiKey: apiKey,
   cacheOptions: cacheOptions
@@ -383,7 +373,14 @@ var client = new stormpath.Client({
       <td><code>store</code></td>
       <td><code>string|function</code></td>
       <td>optional</td>
-      <td> Should be equal to string `'redis'` or reference to `RedisStore` constructor function.
+      <td> Should be equal to string `'redis'` or reference to `RedisStore` constructor function. Note - <b>required</b> with <code>existingCache</code>.
+      </td>
+    </tr>
+    <tr>
+      <td><code>existingCache</code></td>
+      <td><code>object</code></td>
+      <td>optional</td>
+      <td>An existing redis connection object created using the <a href="https://github.com/mranney/node_redis" target="_blank">node-redis</a> client. This parameter allows you to reuse an existing Redis connection from elsewhere in your application. <code>Connection</code> and <code>options</code> parameters will be ignored if this parameter is set. <code>Store</code> parameter must be set to `'redis'` if using this option.
       </td>
     </tr>
     <tr>
@@ -423,6 +420,23 @@ var client = new stormpath.Client({
     </tr>
   </tbody>
 </table>
+
+---
+
+
+<a name="customNonceStore"></a>
+### Custom Nonce Store
+
+If you are using the [ID Site Feature][] in your Stormpath implementation, the calls to
+[Application.createIdSiteUrl()](application#createIdSiteUrl) and [Application.handleIdSiteCallback()](application#handleIdSiteCallback)
+will make use of a nonce value to prevent replay attacks.  By default these nonces will be stored in a cache region in the client's data store.
+
+You may use your own Nonce Store by providing an interface object that we can use to communicate with it.  Your interface object must have these two methods:
+
+* `getNonce(nonceStringValue,callback)` - It will search your nonce store for the nonce value and then call the callback with with the `(err,value)` pattern, where `err` indicates a problem with the store and `value` is the found nonce or `null`
+* `putNonce(nonceStringValue,callback)` - It should place the nonce value in your nonce store and then call the callback with `(err)` where `err` is a store error or `null`
+
+You then pass this object to the stormpath client constructor as the `nonceStore` option.
 
 ---
 
