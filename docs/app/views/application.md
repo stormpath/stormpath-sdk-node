@@ -22,7 +22,7 @@ Authenticate your application user accounts with a simple username/password pair
 ```javascript
 var authcRequest = {
   username: 'jlpicard', //username can be an email address too
-  password 'RawPassw0rd!'
+  password: 'RawPassw0rd!'
 };
 
 application.authenticateAccount(authcRequest, function onAuthcResult(err, result) {
