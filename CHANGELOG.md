@@ -1,5 +1,19 @@
 # stormpath-sdk-node Change Log
 
+### 0.8.0
+
+Fixed these caching problems:
+
+* Touching items in the cache when we don't need to (thanks [philipatkinson](https://github.com/philipatkinson))
+* When requesting a collection the individual resources in the collection were not being put into their respective cache regions
+* When requesting a resource with expanded resources, the expansions were not being cached
+* When requesting a resource with an expanded collection, the resources in the collection were not being cached
+
+Improvements:
+
+* Support the passing of client instances for Redis and Memcached, this allows you to share
+one connection to your store for all Stormpath cache regions (thanks [philipatkinson](https://github.com/philipatkinson))
+
 ### 0.7.5
 
 * Fixing bug with `GroupMemnberships.getAccount()`.
