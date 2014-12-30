@@ -40,6 +40,10 @@ function items() {
     item('Client', null, [
       anchor('Overview', 'top'),
       anchor('Client', 'ctor'),
+      anchor('Caching','caching'),
+      anchor('Caching (In-Memory)','memory'),
+      anchor('Caching (Memcached)','memcached'),
+      anchor('Caching (Redis)','redis'),
       anchor('createApplication'),
       anchor('createDirectory'),
       anchor('getAccount'),
