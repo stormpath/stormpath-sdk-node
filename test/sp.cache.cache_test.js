@@ -53,10 +53,22 @@ describe('Cache module', function () {
       describe('if entry exists', function () {
         var sandbox, entry, hitsCounter;
         var key = 'key' + random();
+        var key2 = 'key' + random();
         var data = 'entry' + random();
         var initialTime = 100500;
         var tickDelta = 150;
         before(function (done) {
+          function createCacheWithDifferentTTL(cache, done) {
+            cache.ttl = 300;
+            cache.tti = 200;
+            cache.put(key2, data, function () {
+              clock.tick(tickDelta);
+              cache.get(key2, function (err, ent) {
+                entry = ent;
+                done();
+              });
+            });
+          }
           sandbox = sinon.sandbox.create();
           var clock = sandbox.useFakeTimers(initialTime, 'Date');
           hitsCounter = cache.stats.hits;
@@ -64,7 +76,7 @@ describe('Cache module', function () {
             clock.tick(tickDelta);
             cache.get(key, function (err, ent) {
               entry = ent;
-              done();
+              createCacheWithDifferentTTL(cache, done);
             });
           });
         });
@@ -76,12 +88,19 @@ describe('Cache module', function () {
           entry.should.be.equal(data);
         });
         it('should increase hit counter', function () {
-          cache.stats.hits.should.be.equal(hitsCounter + 1);
+          cache.stats.hits.should.be.equal(hitsCounter + 2);
         });
-        it('should reset entry idle time', function (done) {
-          cache.store.get(key, function (err, cache_entry) {
-            cache_entry.lastAccessedAt.should.be
-              .equal(cache_entry.createdAt + tickDelta);
+        it('should reset entry idle time if tti is less than ttl', function (done) {
+          cache.store.get(key2, function (err, c_e) {
+            c_e.lastAccessedAt.should.be
+              .equal(c_e.createdAt + tickDelta);
+            done();
+          });
+        });
+        it('should not reset entry idle time if tti is equal to ttl', function (done) {
+          cache.store.get(key, function (err, c_e) {
+            c_e.lastAccessedAt.should.be
+              .equal(c_e.createdAt);
             done();
           });
         });
