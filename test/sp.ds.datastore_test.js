@@ -1,6 +1,5 @@
 var common = require('./common');
 var sinon = common.sinon;
-var should = common.should;
 var utils = require('../lib/utils');
 
 var DataStore = require('../lib/ds/DataStore');
@@ -15,26 +14,19 @@ function random() {
 describe('ds:', function () {
   describe('DataStore:', function () {
 
-    describe('constructor', function () {
-      describe('if request executor not provided in config', function () {
+    describe('when constructed', function () {
+      describe('and request executor not provided in config', function () {
         var ds = new DataStore({apiKey: {id: 1, secret: 2}});
         it('should create instance of default RequestExecutor', function () {
           ds.requestExecutor.should.be.an.instanceof(RequestExecutor);
         });
       });
 
-      describe('if request executor was provided in config', function () {
+      describe('and request executor was provided in config', function () {
         var reqExec = new RequestExecutor({apiKey: {id: 1, secret: 2}});
         var ds = new DataStore({requestExecutor: reqExec});
         it('should reuse provided request executor instance', function () {
           ds.requestExecutor.should.be.equal(reqExec);
-        });
-      });
-
-      describe('if cache options was not provided', function () {
-        var ds = new DataStore({apiKey: {id: 1, secret: 2}});
-        it('should not create cache', function () {
-          should.not.exist(ds.cache);
         });
       });
 
@@ -50,72 +42,13 @@ describe('ds:', function () {
       });
     });
 
-    describe('storing recursive response object', function () {
-      var data = {
-        'href': 'http://example.com/accounts/FOO',
-        'name': 'Foo',
-        'groups': {
-          'href': 'http://example.com/accounts/FOO/groups',
-          'items': [
-            {
-              'href': 'http://example.com/groups/G1',
-              'name': 'Foo Group 1'
-            },
-            {
-              'href': 'http://example.com/groups/G2',
-              'name': 'Foo Group 2'
-            }
-          ]
-        },
-        'directory': {
-          'href': 'http://example.com/directories/BAR',
-          'name': 'Directory'
-        }
-      };
-      var ds = new DataStore({
-        cacheOptions: {
-          store: MemoryStore,
-          accounts: {},
-          groups: {},
-          directories: {}
-        },
-        apiKey: {id: 1, secret: 2}
-      });
-
-      var cbSpy = sinon.spy();
-      var sandbox, reqExecSpy, cachePutSpy;
-
-      before(function () {
-        sandbox = sinon.sandbox.create();
-        cachePutSpy = sandbox.spy(ds.cacheHandler, 'put');
-        reqExecSpy = sandbox.stub(ds.requestExecutor, 'execute', function (req, cb) {
-          cb(null, data);
-        });
-
-        // act
-        ds.getResource(data.href, cbSpy);
-      });
-      after(function () {
-        sandbox.restore();
-      });
-
-      it('should store root entity', function () {
-        /* jshint -W030 */
-        cachePutSpy.callCount.should.be.equal(4);
-        cachePutSpy.should.have.been.calledWith(data.href);
-        cachePutSpy.should.have.been.calledWith(data.groups.items[0].href);
-        cachePutSpy.should.have.been.calledWith(data.groups.items[1].href);
-        cachePutSpy.should.have.been.calledWith(data.directory.href);
-      });
-    });
-
-    describe('get resource', function () {
+    describe('getResource()', function () {
       var ds = new DataStore({
         cacheOptions: { store: 'memory' },
         apiKey: {id: 1, secret: 2}
       });
 
-      describe('required params', function () {
+      describe('without required params', function () {
         it('should throw error if href is not defined', function () {
           ds.getResource.should.throw();
         });
@@ -125,9 +58,12 @@ describe('ds:', function () {
         });
       });
 
-      describe('if href already cached', function () {
-        var href = '/tenants/1' + random();
-        var data = {data: random()};
+      describe('when resource is already cached', function () {
+
+        var resource = {
+          href: '/tenants/' + common.uuid(),
+          data: common.uuid()
+        };
         var cbSpy = sinon.spy();
         var sandbox, cacheGetSpy, reqExecSpy;
         before(function (done) {
@@ -135,18 +71,17 @@ describe('ds:', function () {
           reqExecSpy = sandbox.spy(ds.requestExecutor, 'execute');
           var cache = ds.cacheHandler.cacheManager.getCache('tenants');
           cacheGetSpy = sandbox.spy(cache, 'get');
-          cache.put(href, data, true, done);
+          cache.put(resource.href, resource, true, done);
         });
         after(function () {
           sandbox.restore();
         });
 
-        it('should return entry from cache', function () {
-          ds.getResource(href, cbSpy);
-
+        it('should call the cache and not the resource executor', function () {
+          ds.getResource(resource.href, cbSpy);
           /* jshint -W030 */
           cacheGetSpy.should.have.been.calledOnce;
-          cacheGetSpy.should.have.been.calledWith(href);
+          cacheGetSpy.should.have.been.calledWith(resource.href);
 
           reqExecSpy.should.not.been.called;
 
@@ -160,11 +95,11 @@ describe('ds:', function () {
        it('should ignore cache');
        });*/
 
-      describe('if href not found in cache', function () {
-        var href = '/tenants/2' + random();
-        var data = {
-          href: href,
-          data: random()};
+      describe('when resource is not in cache', function () {
+        var resource = {
+          href: '/tenants/' + common.uuid(),
+          data: common.uuid()
+        };
         var cbSpy = sinon.spy();
         var sandbox, cacheGetSpy, cachePutSpy, reqExecStub;
         before(function () {
@@ -173,11 +108,11 @@ describe('ds:', function () {
           cacheGetSpy = sandbox.spy(cache, 'get');
           cachePutSpy = sandbox.spy(cache, 'put');
           reqExecStub = sandbox.stub(ds.requestExecutor, 'execute', function (req, cb) {
-            cb(null, data);
+            cb(null, resource);
           });
 
           //act
-          ds.getResource(href, {}, InstanceResource, cbSpy);
+          ds.getResource(resource.href, {}, InstanceResource, cbSpy);
         });
         after(function () {
           sandbox.restore();
@@ -185,7 +120,7 @@ describe('ds:', function () {
         it('request executor should be called once', function () {
           /* jshint -W030 */
           cacheGetSpy.should.have.been.calledOnce;
-          cacheGetSpy.should.have.been.calledWith(href);
+          cacheGetSpy.should.have.been.calledWith(resource.href);
 
           reqExecStub.should.have.been.called;
 
@@ -194,7 +129,7 @@ describe('ds:', function () {
         it('and result should be stored in cache', function () {
           /* jshint -W030 */
           cachePutSpy.should.have.been.calledOnce;
-          cachePutSpy.should.have.been.calledWith(href, data);
+          cachePutSpy.should.have.been.calledWith(resource.href, resource);
         });
       });
 
@@ -422,7 +357,7 @@ describe('ds:', function () {
         it('should be stored in cache', function () {
           /* jshint -W030 */
           cachePutSpy.should.have.been.calledOnce;
-          cachePutSpy.should.have.been.calledWith(response.href, response, false, utils.noop);
+          cachePutSpy.should.have.been.calledWith(response.href,response,false);
         });
       });
     });
