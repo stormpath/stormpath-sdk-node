@@ -47,52 +47,6 @@ You can do this in one of two ways:
 
 ---
 
-
-### Caching
-
-The caching mechanism enables you to store the state of an already accessed
-resource in a cache store.
-
-If you access the resource again and the data inside the cache hasn't yet
-expired, you would get the resource directly from the cache store.
-
-By doing so, you can reduce network traffic and still have access to some of
-the resources even if there is a connectivity problem with `Stormpath`.
-
-Be aware, however, that when using a persistent cache store like [Redis][],
-if the data changes quickly on `Stormpath` and the `TTL` and `TTI` are set to
-a large value, you may get resources with attributes that don't reflect the
-actual state.
-
-If this edge case won't affect your data consistency, you can use the caching
-mechanism by providing an additional parameter when creating the `Client`
-instance:
-
-```javascript
-var cacheOptions = {
-  store: 'redis',
-  connection: {
-    host: 'localhost',
-    port: 6379,
-  },
-  options: {
-    // redis client options (username, password, etc.)
-  },
-  ttl: 300,
-  tti: 300
-};
-
-var client = new stormpath.Client({
-  apiKey: apiKey,
-  cacheOptions: cacheOptions
-});
-```
-
-**Since**: 0.1.2
-
----
-
-
 <a name="ctor"></a>
 ### <span class="member">constructor</span> Client(options)
 
@@ -153,6 +107,47 @@ var client = new stormpath.Client(options);
 ---
 
 
+
+### Caching
+
+The caching mechanism enables you to store the state of an already accessed
+resource in a cache store.
+
+If you access the resource again and the data inside the cache hasn't yet
+expired, you would get the resource directly from the cache store.
+
+By doing so, you can reduce network traffic and still have access to some of
+the resources even if there is a connectivity problem with `Stormpath`.
+
+Be aware, however, that when using a persistent cache store like [Redis][],
+if the data changes quickly on `Stormpath` and the `TTL` and `TTI` are set to
+a large value, you may get resources with attributes that don't reflect the
+actual state.
+
+If this edge case won't affect your data consistency, you can use the caching
+mechanism by providing an additional parameter when creating the `Client`
+instance:
+
+```javascript
+var cacheOptions = {
+  store: 'redis',
+  connection: {
+    host: 'localhost',
+    port: 6379,
+  },
+  options: {
+    // redis client options (username, password, etc.)
+  },
+  ttl: 300,
+  tti: 300
+};
+
+var client = new stormpath.Client({
+  apiKey: apiKey,
+  cacheOptions: cacheOptions
+});
+```
+
 ### Cache options Parameters
 
 <table class="table table-striped table-hover table-curved">
@@ -210,27 +205,12 @@ var client = new stormpath.Client(options);
 
 ---
 
-
-<a name="customNonceStore"></a>
-### Custom Nonce Store
-
-If you are using the [ID Site Feature][] in your Stormpath implementation, the calls to
-[Application.createIdSiteUrl()](application#createIdSiteUrl) and [Application.handleIdSiteCallback()](application#handleIdSiteCallback)
-will make use of a nonce value to prevent replay attacks.  By default these nonces will be stored in a cache region in the client's data store.
-
-You may use your own Nonce Store by providing an interface object that we can use to communicate with it.  Your interface object must have these two methods:
-
-* `getNonce(nonceStringValue,callback)` - It will search your nonce store for the nonce value and then call the callback with with the `(err,value)` pattern, where `err` indicates a problem with the store and `value` is the found nonce or `null`
-* `putNonce(nonceStringValue,callback)` - It should place the nonce value in your nonce store and then call the callback with `(err)` where `err` is a store error or `null`
-
-You then pass this object to the stormpath client constructor as the `nonceStore` option.
-
----
-
 <a name="memory"></a>
 ### In Memory Cache
 
-In memory cache provider, this is the defaut provider.  Supported options: `ttl`, `tti`
+In memory cache provider, this is the defaut provider.  This will use the available memory
+in the javascript runtime.  This should only be used if your applcation is using a single
+Node.JS process.
 
 
 #### Usage
@@ -248,13 +228,53 @@ var client = new stormpath.Client({
 });
 ```
 
+#### In-memory options
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>store</code></td>
+      <td><code>string</code></td>
+      <td>**required**</td>
+      <td>String that must equal `memory`</td>
+    </tr>
+
+    <tr>
+      <td><code>ttl</code></td>
+      <td><code>number</code></td>
+      <td>optional</td>
+      <td>Time To Live. The amount of time (<i>in seconds</i>) after which the stored resource data will be considered expired.
+        By default, if not set, will be equal to 300 seconds.
+      </td>
+    </tr>
+    <tr>
+      <td><code>tti</code></td>
+      <td><code>number</code></td>
+      <td>optional</td>
+      <td>Time To Interact. If this amount of time has passed after the resource was last accessed, it will be considered expired.
+        By default, if not set, will be equal to 300 seconds.
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+---
+
 ---
 
 
 <a name="memcached"></a>
 ### Memcached
 
-Memcached provider.
+Memcached provider, use this option if you wish to use Memcahed as your cache storage.
 
 
 #### Usage
@@ -263,6 +283,7 @@ Memcached provider.
 var cacheOptions = {
   store: 'memcached',
   connection: '127.0.0.1:11211',
+  client: { /* optional - pass your own Memcached client instance */},
   options: {
     poolSize: 10
   },
@@ -277,7 +298,7 @@ var client = new stormpath.Client({
 ```
 
 
-#### Cache options Parameters
+#### Memcached options
 
 <table class="table table-striped table-hover table-curved">
   <thead>
@@ -292,9 +313,19 @@ var client = new stormpath.Client({
     <tr>
       <td><code>store</code></td>
       <td><code>string|function</code></td>
-      <td>optional</td>
+      <td>**required**</td>
       <td> Should be equal to string `'memcached'`
         or reference to `MemcachedStore` constructor function.
+      </td>
+    </tr>
+    <tr>
+      <td><code>client</code></td>
+      <td>
+        `object`
+      </td>
+      <td>optional</td>
+      <td>
+        An instnace of `Memcached`, useful if you want to use an already-instantiated Memcached client
       </td>
     </tr>
     <tr>
@@ -341,7 +372,7 @@ var client = new stormpath.Client({
 <a name="redis"></a>
 ### Redis
 
-Redis provider.
+Redis provider, use this option if you wish to use Redis as your cache storage.
 
 
 #### Usage
@@ -349,6 +380,7 @@ Redis provider.
 ```javascript
 var cacheOptions = {
   store: 'redis',
+  client: { /* optional - pass your own Redis client instance */},
   connection: {
     host: 'localhost',
     port: 6379
@@ -382,8 +414,18 @@ var client = new stormpath.Client({
     <tr>
       <td><code>store</code></td>
       <td><code>string|function</code></td>
-      <td>optional</td>
+      <td>**required**</td>
       <td> Should be equal to string `'redis'` or reference to `RedisStore` constructor function.
+      </td>
+    </tr>
+    <tr>
+      <td><code>client</code></td>
+      <td>
+        `object`
+      </td>
+      <td>optional</td>
+      <td>
+        An instnace of a Redis client, useful if you want to use an already-instantiated Redis client
       </td>
     </tr>
     <tr>
@@ -423,6 +465,22 @@ var client = new stormpath.Client({
     </tr>
   </tbody>
 </table>
+
+---
+
+<a name="customNonceStore"></a>
+### Custom Nonce Store
+
+If you are using the [ID Site Feature][] in your Stormpath implementation, the calls to
+[Application.createIdSiteUrl()](application#createIdSiteUrl) and [Application.handleIdSiteCallback()](application#handleIdSiteCallback)
+will make use of a nonce value to prevent replay attacks.  By default these nonces will be stored in a cache region in the client's data store.
+
+You may use your own Nonce Store by providing an interface object that we can use to communicate with it.  Your interface object must have these two methods:
+
+* `getNonce(nonceStringValue,callback)` - It will search your nonce store for the nonce value and then call the callback with with the `(err,value)` pattern, where `err` indicates a problem with the store and `value` is the found nonce or `null`
+* `putNonce(nonceStringValue,callback)` - It should place the nonce value in your nonce store and then call the callback with `(err)` where `err` is a store error or `null`
+
+You then pass this object to the stormpath client constructor as the `nonceStore` option.
 
 ---
 
