@@ -5,11 +5,9 @@ var random = common.random;
 var Cache = require('../../lib/cache/Cache');
 var RedisStore = require('../../lib/cache/RedisStore');
 
-describe('Cache module - live', function () {
+var redis = require('redis');
 
-  describe('Redis cache store', function () {
-    var redisStore = new Cache(RedisStore);
-
+var redisActionTests = function(redisStore) {
     describe('set entry', function () {
       var key = 'key' + random();
       var val = 'val' + random();
@@ -107,6 +105,18 @@ describe('Cache module - live', function () {
         });
       });
     });
+};
 
+describe('Redis cache', function () {
+  describe('without a predefined redis client', function () {
+    var redisStore = new Cache(RedisStore);
+    redisActionTests(redisStore);
+  });
+  describe('with a predefined redis client', function () {
+    var redisStore = new Cache({
+      store: RedisStore,
+      client: redis.createClient()
+    });
+    redisActionTests(redisStore);
   });
 });

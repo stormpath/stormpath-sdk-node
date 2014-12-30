@@ -1,14 +1,11 @@
 var common = require('../common');
 var should = common.should;
 var random = common.random;
-
+var Memcached = require("memcached");
 var MemcachedStore = require('../../lib/cache/MemcachedStore');
 var Cache = require('../../lib/cache/Cache');
 
-describe('Cache module - live', function () {
-
-  describe('Memcached store', function () {
-    var memcachedStore = new Cache(MemcachedStore);
+var memcachedActionTests = function(memcachedStore) {
 
     describe('set entry', function () {
       var key = 'key' + random();
@@ -107,6 +104,18 @@ describe('Cache module - live', function () {
         });
       });
     });
+};
 
+describe('Memcached cache', function () {
+  describe('without a predefined memcached client', function () {
+    var memcachedStore = new Cache(MemcachedStore);
+    memcachedActionTests(memcachedStore);
+  });
+  describe('with a predefined memcached client', function () {
+    var memcachedStore = new Cache({
+      store: MemcachedStore,
+      client: new Memcached()
+    });
+    memcachedActionTests(memcachedStore);
   });
 });
