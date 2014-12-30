@@ -64,7 +64,8 @@ describe('CacheHandler',function(){
       sandbox,
       acountRegionPutSpy,
       groupRegionPutSpy,
-      directoryRegionPutSpy;
+      directoryRegionPutSpy,
+      customDataRegionPutSpy;
 
     describe('with a resource result',function(){
       var result = {
@@ -156,6 +157,51 @@ describe('CacheHandler',function(){
       });
       it('should call .put() on the cache for the region of each of the resources in the collection',function() {
         expect(groupRegionPutSpy.args[0][0]).to.equal(collectionResult.items[0].href);
+      });
+    });
+
+    describe('with a collection result where the collection items have expansions',function(){
+      var collectionHref = 'http://api.stormpath.com/v1/tenants/'+common.uuid()+'/groups?expand=customData';
+      var groupId1 = common.uuid();
+      var groupId2 = common.uuid();
+      var collectionResult = {
+        'href': collectionHref,
+        'offset': 0,
+        'limit': 50,
+        'size': 2,
+        'items': [
+          {
+            'href': 'http://api.stormpath.com/v1/groups/' + groupId1,
+            'name': common.uuid(),
+            'customData': {
+              'href': 'http://api.stormpath.com/v1/groups/' + groupId1 + '/customData',
+              'createdAt': new Date().toISOString()
+            }
+          },
+          {
+            'href': 'http://api.stormpath.com/v1/groups/' + groupId2,
+            'name': common.uuid(),
+            'customData': {
+              'href': 'http://api.stormpath.com/v1/groups/' + groupId2 + '/customData',
+              'createdAt': new Date().toISOString()
+            }
+          }
+        ]
+      };
+      before(function(done) {
+        cacheHandler = new CacheHandler();
+        sandbox = sinon.sandbox.create();
+        groupRegionPutSpy = sandbox.spy(cacheHandler.cacheManager.caches.groups, 'put');
+        customDataRegionPutSpy = sandbox.spy(cacheHandler.cacheManager.caches.customData, 'put');
+        cacheHandler.put(collectionResult.href,collectionResult,done);
+      });
+      it('should call .put() on the cache for the region of each of the resources in the collection',function() {
+        expect(groupRegionPutSpy.args[0][0]).to.equal(collectionResult.items[0].href);
+        expect(groupRegionPutSpy.args[1][0]).to.equal(collectionResult.items[1].href);
+      });
+      it('should call .put() on the cache for the region of each of the expanded resources of the collection items',function() {
+        expect(customDataRegionPutSpy.args[0][0]).to.equal(collectionResult.items[0].customData.href);
+        expect(customDataRegionPutSpy.args[1][0]).to.equal(collectionResult.items[1].customData.href);
       });
     });
 
