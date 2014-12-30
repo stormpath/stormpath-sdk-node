@@ -2,14 +2,11 @@ var common = require('../common');
 var should = common.should;
 var random = common.random;
 
+var Redis = require('redis');
 var Cache = require('../../lib/cache/Cache');
 var RedisStore = require('../../lib/cache/RedisStore');
 
-describe('Cache module - live', function () {
-
-  describe('Redis cache store', function () {
-    var redisStore = new Cache(RedisStore);
-
+var redisActionTests = function(redisStore) {
     describe('set entry', function () {
       var key = 'key' + random();
       var val = 'val' + random();
@@ -107,6 +104,42 @@ describe('Cache module - live', function () {
         });
       });
     });
+};
 
+describe('Cache module - live', function () {
+
+  describe('Redis cache store', function () {
+    var redisStore = new Cache(RedisStore);
+
+    redisActionTests(redisStore);
+  });
+});
+
+describe('Cache module - live (existing redis instance)', function () {
+
+  describe('Redis cache store (existing instance)', function () {
+    var redis = Redis.createClient();
+    var options = {
+      store: RedisStore,
+      existingCache: redis
+    };
+    var incorrectOptions = {
+      store: RedisStore,
+      existingCache: 'not a redis instance'
+    };
+    var redisStore = new Cache(options);
+
+    redisActionTests(redisStore);
+
+    function createIncorrectRedisStore() {
+      var storeInstance = new Cache(incorrectOptions);
+      return storeInstance;  
+    }
+
+    it('should throw an error if passed an invalid redis instance', function (done) {
+      createIncorrectRedisStore.should.throw('Expecting an instance of RedisClient');
+      done();
+    });
+    
   });
 });
