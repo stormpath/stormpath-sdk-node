@@ -228,6 +228,10 @@ describe('CacheHandler',function(){
       it('should call .put() on the cache for the region of the expanded resource',function() {
         expect(directoryRegionPutSpy.args[0][0]).to.equal(result.directory.href);
       });
+      it('should preserve the hrefs, but not the propeties, of the linked resources',function(){
+        expect(acountRegionPutSpy.args[0][1].directory.href).to.equal(result.directory.href);
+        expect(acountRegionPutSpy.args[0][1].directory.name).to.equal(undefined);
+      });
     });
 
   });
