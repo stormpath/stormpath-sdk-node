@@ -1,5 +1,10 @@
 # stormpath-sdk-node Change Log
 
+### 0.8.1
+
+Cache fix: preserve hrefs of linked resources in the cache entity, but not the properties.
+This allows getter methods to resolve the linked resource at a later time.
+
 ### 0.8.0
 
 Fixed these caching problems:
