@@ -1,5 +1,17 @@
 # stormpath-sdk-node Change Log
 
+### 0.9.0
+
+Add these methods to `AuthenticationResult` to support token creation for Api Keys or Accounts:
+
+* `getJwt()` - returns a `Jwt` instance with a pre-configured body that is set to the appropriate defaults.  Also sets the signing key to the api key secret of the current Stormpath client.
+
+* `getAccessToken([jwt])` - calls `jwt.compact()` on the given `jwt`, or a default `jwt` constructed by `getJwt()`
+
+* `getAccessTokenResponse([jwt])` - constructs an Oauth-compatible response body from the given `jwt`, or a default `jwt` constructed with `getJwt()`
+
+The `Jwt` instances are provided by the [nJwt Library](https://github.com/jwtk/njwt)
+
 ### 0.8.1
 
 Cache fix: preserve hrefs of linked resources in the cache entity, but not the properties.
