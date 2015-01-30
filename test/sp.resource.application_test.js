@@ -382,7 +382,7 @@ describe('Resources: ', function () {
           createResourceStub = sandbox
             .stub(dataStore, 'createResource', function () {
               var cb = Array.prototype.slice.call(arguments).pop();
-              cb();
+              cb(null, new AuthenticationResult());
             });
           cbSpy = sandbox.spy();
 
@@ -414,11 +414,11 @@ describe('Resources: ', function () {
           // call without optional param
           createResourceStub.should.have.been
             .calledWith(app.loginAttempts.href, {expand: 'account'}, expectedLoginAttempt1,
-            AuthenticationResult, cbSpy);
+            AuthenticationResult);
           // call with optional param
           createResourceStub.should.have.been
             .calledWith(app.loginAttempts.href, {expand: 'account'}, expectedLoginAttempt2,
-            AuthenticationResult, cbSpy);
+            AuthenticationResult);
         });
       });
 
