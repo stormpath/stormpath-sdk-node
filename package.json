@@ -50,7 +50,8 @@
     "redis": "~0.12.1",
     "memcached": "~0.2.8",
     "glob": "3",
-    "jwt-simple": "~0.2.0"
+    "jwt-simple": "~0.2.0",
+    "njwt": "0.0.1"
   },
   "devDependencies": {
     "grunt": "~0.4.2",

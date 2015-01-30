@@ -378,7 +378,7 @@ describe('Application.authenticateApiRequest',function(){
         });
         it('should err',function(){
           assert.instanceOf(result[0],Error);
-          assert.equal(result[0].statusCode,400);
+          assert.equal(result[0].statusCode,401);
         });
 
         it('should not return an instance of AuthenticationResult',function(){
@@ -536,7 +536,7 @@ describe('Application.authenticateApiRequest',function(){
     });
     it('should err',function(){
       assert.instanceOf(result[0],Error);
-      assert.equal(result[0].statusCode,400);
+      assert.equal(result[0].statusCode,401);
     });
 
     it('should not return an instance of AuthenticationResult',function(){
