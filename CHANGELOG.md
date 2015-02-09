@@ -1,5 +1,9 @@
 # stormpath-sdk-node Change Log
 
+### 0.9.1
+
+Add `.npmignore` to exclude docs, samples, and test from the npm distribution.  Thanks @coreybutler
+
 ### 0.9.0
 
 Add these methods to `AuthenticationResult` to support token creation for Api Keys or Accounts:
