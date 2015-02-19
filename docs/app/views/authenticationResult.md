@@ -52,6 +52,78 @@ result.getAccount(function(err, account) {
 
 void; the retrieved [Account](account) resource will be provided to the `callback` as the callback's second parameter.
 
+
+---
+
+<a name="getAccessToken"></a>
+### <span class="member">method</span> getAccessToken()
+
+Use this method to get a compacted JSON Web Token.  This token can be given to the
+client who has authenticated, and can be used for subsequent autentication attempts.
+
+The token is tied to the application which generated the authentication result and
+contains a `sub` field that indicates if this token was created by an API Key exchange (the sub
+will be the href of the API key)
+or a username/password exchange (the sub will be the account href)
+
+By default the token is valid for one hour.  If you need to change this value you
+should use the `getJwt()` method and configure the JWT before compacting it.
+
+**Example**:
+
+````javascript
+// Get the compacted JWT as a base64 encoded token
+
+var accessToken = authenticationResult.getAccessToken();
+````
+
+
+---
+
+<a name="getAccessTokenResponse"></a>
+### <span class="member">method</span> getAccessTokenResponse([jwt])
+
+Use this method to generate an Oauth-compatible response body.
+
+You may pass an existing JWT instance, or allow it to create a JWT with
+the same claims as `getAccessToken()`.  It will return a JSON object that
+can be devliered as an HTTP response.  The format of the object is
+`tokenResponse`, see below.
+
+**Example**:
+
+````javascript
+// Get the compacted JWT as a base64 encoded token
+
+var responseBody = authenticationResult.getAccessTokenResponse();
+````
+
+
+---
+
+<a name="getJwt"></a>
+### <span class="member">method</span> getJwt()
+
+This method returns a JWT instance (from the [nJwt](https://github.com/jwtk/njwt) library) which is pre-configured with the
+same claims that you would get from calling `getAccessToken()`.  This method exists
+in case you need to make more modifications to the JWT before you compact it to an access
+token
+
+**Example**:
+
+````javascript
+var jwt = authenticationResult.getJwt();
+
+// Modify the default TTL (one week in seconds)
+
+jwt.setTtl(604800);
+
+// Compact the JWT to a base64 encoded token
+
+var accessToken = jwt.compact();
+````
+
+
 ---
 
 <a name="tokenResponse"></a>

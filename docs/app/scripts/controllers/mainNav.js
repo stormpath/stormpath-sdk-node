@@ -111,7 +111,10 @@ function items() {
 
     item('AuthenticationResult', 'authenticationResult', [
       anchor('Overview', 'top'),
-      anchor('getAccount')
+      anchor('getAccount'),
+      anchor('getAccessToken'),
+      anchor('getAccessTokenResponse'),
+      anchor('getJwt')
     ]),
 
     item('Cache', 'cache', [
