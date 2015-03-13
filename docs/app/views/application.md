@@ -22,7 +22,9 @@ Authenticate your application user accounts with a simple username/password pair
 ```javascript
 var authcRequest = {
   username: 'jlpicard', //username can be an email address too
-  password 'RawPassw0rd!'
+  password 'RawPassw0rd!',
+  //optional href to an account store to target the authentication 
+  accountStore: "https://api.stormpath.com/v1/directories/2Egd5pbwBprX7ee02DvZCC" 
 };
 
 application.authenticateAccount(authcRequest, function onAuthcResult(err, result) {
@@ -51,7 +53,13 @@ application.authenticateAccount(authcRequest, function onAuthcResult(err, result
       <td>`authenticationRequest`</td>
       <td>`object`</td>
       <td>required</td>
-      <td>Object with two required name/value pairs: `username` and `password` and one optional `accountStore`.  `username` can be either a username or email address. `password` is the _raw_ password submitted directly by your application user.  Stormpath hashes and encrypts this value securely automatically - you don't have to do anything special before submitting to Stormpath. If you desire to target a specific `accountStore`, then provide reference to the `accountStore` in options.</td>
+      <td>An object literal, with the following properties: 
+      <ul>
+        <li>`username` - REQUIRED -  the username or email address for the account attempting to login </li>
+        <li>`password` - REQUIRED - the _raw_ password submitted directly by your user.  Stormpath hashes and encrypts this value automatically during transit. </li>
+        <li>`accountStore` - OPTIONAL - an href to an application's account store.  This href must match an account store that is a part of the application's account store mapping.  Set this property when you want to attempt the login against a particular account store</li>
+      </ul>
+      </td>
     </tr>
     <tr>
       <td>`callback`</td>
