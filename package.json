@@ -41,7 +41,7 @@
   },
   "dependencies": {
     "underscore": "~1.8.3",
-    "underscore.string": "~2.3.3",
+    "underscore.string": "~3.0.3",
     "properties-parser": "~0.2.3",
     "request": "~2.40.0",
     "moment": "~2.8.3",
