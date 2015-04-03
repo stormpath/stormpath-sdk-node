@@ -44,7 +44,7 @@
     "underscore.string": "~3.0.3",
     "properties-parser": "~0.2.3",
     "request": "~2.40.0",
-    "moment": "~2.8.3",
+    "moment": "~2.9.0",
     "node-uuid": "~1.4.1",
     "async": "~0.7.0",
     "redis": "~0.12.1",
