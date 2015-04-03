@@ -69,7 +69,7 @@
     "mocha-sinon": "~1.1.4",
     "sinon-chai": "~2.7.0",
     "istanbul": "~0.3.13",
-    "lodash": "~2.4.1",
+    "lodash": "~3.6.0",
     "nock": "~0.27.2",
     "tmp": "0.0.24"
   }
