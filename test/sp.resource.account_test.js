@@ -339,7 +339,7 @@ describe('Resources: ', function () {
 
         it('should call cb without options', function () {
           cbSpy.should.have.been.calledOnce;
-          cbSpy.should.have.been.calledWith(undefined, undefined);
+          cbSpy.calledWith(undefined, undefined);
         });
       });
     });
