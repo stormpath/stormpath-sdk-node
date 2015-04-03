@@ -45,7 +45,7 @@
     "properties-parser": "~0.2.3",
     "request": "~2.40.0",
     "moment": "~2.9.0",
-    "node-uuid": "~1.4.1",
+    "node-uuid": "~1.4.3",
     "async": "~0.7.0",
     "redis": "~0.12.1",
     "memcached": "~0.2.8",
