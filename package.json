@@ -40,7 +40,7 @@
     "coverage": "node ./node_modules/istanbul/lib/cli cover ./node_modules/mocha/bin/_mocha"
   },
   "dependencies": {
-    "underscore": "~1.5.2",
+    "underscore": "~1.8.3",
     "underscore.string": "~2.3.3",
     "properties-parser": "~0.2.3",
     "request": "~2.40.0",
