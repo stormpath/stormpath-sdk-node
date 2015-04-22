@@ -111,6 +111,6 @@ We <333 contributions!
 
 ## Copyright
 
-Copyright &copy; 2014 Stormpath, Inc. and contributors.
+Copyright &copy; 2015 Stormpath, Inc. and contributors.
 
 This project is open-source via the [Apache 2.0 License](http://www.apache.org/licenses/LICENSE-2.0).
