@@ -1,5 +1,14 @@
 # stormpath-sdk-node Change Log
 
+### 0.9.3
+
+Fixed `Application.authenticateApiRequest` to also accept access tokens where
+the subject is an Account, rather than an API Key.
+
+### 0.9.2
+
+Fixed: do not cause exceptions when error response body is null.
+
 ### 0.9.1
 
 Add `.npmignore` to exclude docs, samples, and test from the npm distribution.  Thanks @coreybutler
