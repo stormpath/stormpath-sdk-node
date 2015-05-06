@@ -6,11 +6,9 @@ var assert = common.assert;
 
 describe('Client Credential Authentication',function(){
 
-  var app, account, disabledAccount, client, fakeAccount, fakeAccount2,jwsClaimsParser, accessToken;
+  var app, account, client, fakeAccount, jwsClaimsParser, accessToken;
 
   fakeAccount = helpers.fakeAccount();
-  fakeAccount2 = helpers.fakeAccount();
-  fakeAccount2.status = 'DISABLED';
 
   before(function(done){
     helpers.getClient(function(_client){
@@ -28,11 +26,7 @@ describe('Client Credential Authentication',function(){
             function(err,_account){
               if(err){ throw err; }
               account = _account;
-              app.createAccount(fakeAccount2,function(err,_account){
-                if(err){ throw err; }
-                disabledAccount = _account;
-                done();
-              });
+              done();
             }
           );
         }
@@ -41,13 +35,13 @@ describe('Client Credential Authentication',function(){
   });
 
   after(function(done){
-    disabledAccount.delete(function(){
-      account.delete(function(){
-        app.delete(function(){
-          done();
-        });
+
+    account.delete(function(){
+      app.delete(function(){
+        done();
       });
     });
+
   });
 
   describe('AuthenticationResult.getAccessToken()',function(){
@@ -77,11 +71,11 @@ describe('Client Credential Authentication',function(){
 
   describe('Application.authenticateApiRequest',function(){
 
-    var result;
+    var result, result2, result3;
     before(function(done){
 
       app.authenticateAccount({
-        username: fakeAccount.username,
+        username: account.username,
         password: fakeAccount.password
       },function(err,authenticationResult){
         if(err){ throw err; }
@@ -98,13 +92,48 @@ describe('Client Credential Authentication',function(){
           request: requestObject
         },function(err,value){
           result = [err,value];
-          done();
+
+          account.status = 'DISABLED';
+          account.save(function(err){
+            if(err){ throw err; }
+            var requestObject = {
+              headers: {
+                'authorization': 'Bearer ' + authenticationResult.getAccessToken()
+              },
+              url: '/some/resource',
+              method: 'POST'
+            };
+            app.authenticateApiRequest({
+              request: requestObject
+            },function(err,value){
+              result2 = [err,value];
+              // done();
+              account.delete(function(err){
+                if(err){ throw err; }
+                app.authenticateApiRequest({
+                  request: requestObject
+                },function(err,value){
+                  result3 = [err,value];
+                  done();
+                });
+              });
+
+            });
+          });
         });
       });
     });
     it('should validate tokens where the account is the subject',function(){
       assert.equal(result[0],null);
       assert.equal(result[1].account.href,account.href);
+    });
+    it('should not validate tokens where the account is the subject and the account is disabled',function(){
+      assert.isObject(result2[0]);
+      assert.equal(result2[0].statusCode,401);
+    });
+    it('should not validate tokens where the account is the subject and the account has been deleted',function(){
+      assert.isObject(result3[0]);
+      assert.equal(result3[0].statusCode,401);
     });
 
   });
