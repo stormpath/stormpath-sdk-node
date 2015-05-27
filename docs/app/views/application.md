@@ -843,20 +843,27 @@ This object represents a successful ID Site callback and has the following prope
 ---
 
 <a name="sendPasswordResetEmail"></a>
-### <span class="member">method</span> sendPasswordResetEmail(email, callback)
+### <span class="member">method</span> sendPasswordResetEmail(options, callback)
 
-Triggers the [password reset workflow](http://docs.stormpath.com/rest/product-guide/#application-password-reset) for an application account matching the specified `email` (and of course, sends an email to that account's email address).  This will result in a newly created `PasswordResetToken` resource which will be provided to the specified `callback`.  The corresponding account is accessible as a field on the provided `PasswordResetToken` object.
+Triggers the [password reset workflow](http://docs.stormpath.com/rest/product-guide/#application-password-reset)
+by sending an email to the account matching the specified `email` property.
+This will result in a newly created `PasswordResetToken` resource which will be provided to the specified `callback`.
+The corresponding account can be retrieved, using the account HREF that is provided on the `PasswordResetToken` object.
 
 #### Usage
 
 ```javascript
-application.sendPasswordResetEmail(email, function(err, passwordResetToken) {
+application.sendPasswordResetEmail({email: 'foo@bar.com'}, function(err, passwordResetToken) {
 
-  console.log(passwordResetToken);
+  // The token is the last part of the HREF
 
-  //the passwordResetToken indicates to which account the email was sent:
+  console.log(passwordResetToken.href.split('/').pop());
 
-  console.log(passwordResetToken.account);
+  // The account can be retrieved by using the account href on the result
+
+  client.getAccount(passwordResetToken.account.href,function(err,account){
+    console.log(account);
+  });
 });
 ```
 
@@ -873,30 +880,37 @@ application.sendPasswordResetEmail(email, function(err, passwordResetToken) {
   </thead>
   <tbody>
     <tr>
-      <td>`email`</td>
+      <td>`options`</td>
       <td>`string`</td>
       <td>required</td>
-      <td>The email address of an account that may login to the application.</td>
+      <td>
+        An object literal with the following properties:
+        <li>`email` - REQUIRED - the email of the account that you wish to reset the password for</li>
+        <li>`accountStore` - OPTIONAL - for specifying the account store to find the account in, e.g. `{ accountStore: { href: 'HREF_OF_STORE' }}`</li>
+      </td>
     </tr>
     <tr>
       <td>`callback`</td>
       <td>function</td>
       <td>required</td>
-      <td>The callback to execute upon server response. The 1st parameter is an [error](resourceError).  The 2nd parameter is an `PasswordResetToken` that references the emailed account via its `account` field, for example, `passwordResetToken.account`.</td>
+      <td>
+        The callback to execute upon server response. The 1st parameter is an [error](resourceError) (e.g. if an account was not found).
+        The 2nd parameter is an `PasswordResetToken` that references the emailed account via its `account` field, for example, `passwordResetToken.account.href`.
+      </td>
     </tr>
   </tbody>
 </table>
-
-#### Returns
-
-void; If an account with the specified email is not found, the callback's first parameter (`err`) will report the failure.  If the account is found, the passwordResetToken result will be provided to the `callback` as the callback's second parameter.  The emailed account may be obtained via the passwordResetToken's `account` field, for example `passwordResetToken.account`.
 
 ---
 
 <a name="verifyPasswordResetToken"></a>
 ### <span class="member">method</span> verifyPasswordResetToken(token, callback)
 
-Continues the [password reset workflow](http://docs.stormpath.com/rest/product-guide/#application-password-reset) by verifying a token discovered in a URL clicked by an application end-user in an email.  If the token is valid, the associated Stormpath account will be retrieved.  After retrieving the account, you collect a new password from the end-user and relay that password back to Stormpath.
+Use this method to verify a passowrd reset token.  If you do not get an error, the token is valid
+and can be used with the [resetPassword](application#resetPassword) method to set a new password
+for the user.
+
+Use this method if you want to verify the token before you ask the user to submit a new password.
 
 #### Usage
 
@@ -906,15 +920,15 @@ var sptoken = request.query.sptoken; // get the sptoken from the request URL
 
 application.verifyPasswordResetToken(sptoken, function(err, verificationResponse) {
 
-  /*
-    If the token is valid and exists (there is no err), you can set the new
-    password on this response and call save().  This will consume the token (it
-    can't be used again) and will send the user an email, confirming that their
-    password has been changed.
-  */
+  if(err){
+    // The token has been used or is expired, have user request a new token
+  }else{
+    // Show the user a form which allows them to reset their password
+    client.getAccount(verificationResponse.account.href,function(err,account){
+      console.log(account);
+    });
+  }
 
-  verificationResponse.password = 'a new password';
-  verificationResponse.save();
 });
 ```
 
@@ -956,16 +970,18 @@ This object represents a found password reset token and the account that it was 
  | - | - | - |
  | `account` | `object` | Contains an `href` property which indicates the account which this token is for
  | `email` | `string` | The email address which received this password reset token
- | `password` | `string` | Initially null, set this to a string to indicate a new password
- | `save()` | `function` | The method to call after you set a new password, using the `password` property
-
 
 ---
 
 <a name="resetPassword"></a>
 ### <span class="member">method</span> resetPassword(token, password, callback)
 
-Continues the [password reset workflow](http://docs.stormpath.com/rest/product-guide/#application-password-reset) by setting a new password for an account. On success, the response will include a link to the account that the password was reset on. This call on success will send the password change confirmation email that was configured in the Administrator Console to the email account associated with the account.
+Completes the [password reset workflow](http://docs.stormpath.com/rest/product-guide/#application-password-reset)
+by setting a new password for an account. On success, the response will include a link to the account that the
+password was reset on. This call on success will send the password change confirmation email that was configured
+in the Administrator Console to the email account associated with the account.
+
+This call will "consume" the token, and it will no longer be valid.
 
 #### Usage
 
@@ -974,9 +990,16 @@ Continues the [password reset workflow](http://docs.stormpath.com/rest/product-g
 var token = req.body.token;
 var password = req.body.password;
 
-application.resetPassword(token, password, function(err, account) {
-    // link to the account, which is associated with this password reset workflow
-    console.log(account);
+application.resetPassword(token, password, function(err, result) {
+
+  if(err){
+    // The token has been used or is expired, have user request a new token
+  }
+
+  // The response contains a link to the account which is associated
+  // with this password reset workflow:
+
+  console.log(result.account.href);
 });
 
 ```
@@ -1009,14 +1032,14 @@ application.resetPassword(token, password, function(err, account) {
       <td>`callback`</td>
       <td>function</td>
       <td>required</td>
-      <td>The callback to execute upon server response. The 1st parameter is an [error](resourceError).  The 2nd parameter is the account associated with the reset token.</td>
+      <td>
+        The callback to execute upon server response. The 1st parameter is an [error](resourceError).  The 2nd parameter is a result which contains a link
+        to the account that is associated with this password reset token.
+      </td>
     </tr>
   </tbody>
 </table>
 
-#### Returns
-
-void; If an account with the specified password reset token is not found, the callback's first parameter (`err`) will report the failure.  If the account is found, new `password` will be set and it will be provided to the `callback` as the callback's second parameter.
 
 ---
 
