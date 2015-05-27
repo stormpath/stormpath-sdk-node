@@ -2,11 +2,86 @@ var stormpath = require('../');
 var uuid = require('node-uuid');
 var base64 = require('../lib/utils').base64;
 var Benchmark = require('benchmark');
+var async = require('async');
 
-console.log('Construct Clients');
+function invoke(app,apiKey,cb){
+  app.authenticateApiRequest({
+    request:{
+      method: 'GET',
+      url: '/',
+      headers:{
+        'authorization': 'Basic '+ base64.encode(apiKey.id+':'+apiKey.secret)
+      }
+    }
+  },cb);
+}
 
-// First client is used to create our dummy account, and use
-// the default encryption options
+function addTestRunner(apiKey,test,suite,done){
+  var client = new stormpath.Client({
+    apiKey: new stormpath.ApiKey(
+      process.env['STORMPATH_API_KEY_ID'],
+      process.env['STORMPATH_API_KEY_SECRET']
+    ),
+    apiKeyEncryptionOptions: test.apiKeyEncryptionOptions
+  });
+
+  client.getApplication(process.env['STORMPATH_APP_HREF'],function(err,app) {
+
+    if(err){ throw err; }
+
+    // Make an initial invocation to warm the cache
+
+    invoke(app,apiKey,function(err){
+      if(err){ throw err; }
+      suite.add(test.title, {
+        defer: true,
+        fn: function(deferred){
+          invoke(app,apiKey,function(err){
+            if(err){
+              throw err;
+            }else{
+              deferred.resolve();
+            }
+          });
+        }
+      });
+      done();
+    });
+  });
+}
+
+
+
+var tests = [
+  {
+    title: 'With encryption DISABLED (encryptSecret: false)  ',
+    apiKeyEncryptionOptions: {
+      encryptSecret: false
+    }
+  },
+  {
+    title: 'With encryption ENABLED (default options)        '
+  },
+  {
+    title: 'With light encryption (128 key size, iterations) ',
+    apiKeyEncryptionOptions: {
+      encryptionKeySize: 128,
+      encryptionKeyIterations: 128
+    }
+  },
+  {
+    title: 'With medium encryption (128 key size, iterations)',
+    apiKeyEncryptionOptions: {
+      encryptionKeySize: 256,
+      encryptionKeyIterations: 512
+    }
+  }
+];
+
+
+console.log('Construct Client');
+
+// First client is used to create our dummy account
 
 var client1 = new stormpath.Client({
   apiKey: new stormpath.ApiKey(
@@ -15,33 +90,8 @@ var client1 = new stormpath.Client({
   )
 });
 
-// Second client will use default options, Api Key encryption will be enabled
-
-var client2 = new stormpath.Client({
-  apiKey: new stormpath.ApiKey(
-    process.env['STORMPATH_API_KEY_ID'],
-    process.env['STORMPATH_API_KEY_SECRET']
-  ),
-  apiKeyEncryptionOptions:{
-    encryptSecret: false
-  }
-});
-
-// Third client will disable api key encryption
-
-var client3 = new stormpath.Client({
-  apiKey: new stormpath.ApiKey(
-    process.env['STORMPATH_API_KEY_ID'],
-    process.env['STORMPATH_API_KEY_SECRET']
-  ),
-  apiKeyEncryptionOptions: {
-    encryptionKeySize: 128,
-    encryptionKeyIterations: 128
-  }
-});
 
 var account;
-
 
 
 var suite = new Benchmark.Suite('api auth')
@@ -58,18 +108,6 @@ var suite = new Benchmark.Suite('api auth')
       console.log('Deleted account');
     });
   });
-
-function invoke(app,apiKey,cb){
-  app.authenticateApiRequest({
-    request:{
-      method: 'GET',
-      url: '/',
-      headers:{
-        'authorization': 'Basic '+ base64.encode(apiKey.id+':'+apiKey.secret)
-      }
-    }
-  },cb);
-}
 
 
 client1.getApplication(process.env['STORMPATH_APP_HREF'],function(err,app1) {
@@ -91,68 +129,15 @@ client1.getApplication(process.env['STORMPATH_APP_HREF'],function(err,app1) {
 
     account.createApiKey(function(err,apiKey){
 
-      suite.add('With encryption ENABLED (default options)       ', {
-        defer: true,
-        fn: function(deferred){
-          invoke(app1,apiKey,function(err){
-            if(err){
-              throw err;
-            }else{
-              deferred.resolve();
-            }
-          });
-        }
-      });
+      if(err){ throw err; }
 
-      client2.getApplication(process.env['STORMPATH_APP_HREF'],function(err,app2) {
-
-        if(err){ throw err; }
-
-        // Make an initial invocation to warm the cache
-
-        invoke(app2,apiKey,function(err){
-
+        async.parallel(tests.map(function(test){
+          return addTestRunner.bind(null,apiKey,test,suite);
+        }),function(err){
           if(err){ throw err; }
-          suite.add('With encryption DISABLED (encryptSecret: false) ', {
-
-            defer: true,
-            fn: function(deferred){
-              invoke(app2,apiKey,function(err){
-                if(err){
-                  throw err;
-                }else{
-                  deferred.resolve();
-                }
-              });
-            }
-          });
+          suite.run({async:true});
         });
 
-        client3.getApplication(process.env['STORMPATH_APP_HREF'],function(err,app3) {
-
-          if(err){ throw err; }
-
-          // Make an initial invocation to warm the cache
-
-          invoke(app3,apiKey,function(err){
-            if(err){ throw err; }
-            suite.add('With light encryption (128 key size, iterations)', {
-
-              defer: true,
-              fn: function(deferred){
-                invoke(app3,apiKey,function(err){
-                  if(err){
-                    throw err;
-                  }else{
-                    deferred.resolve();
-                  }
-                });
-              }
-            });
-            suite.run({ 'async': true });
-          });
-        });
-      });
     });
   });
 });
