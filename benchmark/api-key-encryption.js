@@ -5,7 +5,8 @@ var Benchmark = require('benchmark');
 
 console.log('Construct Clients');
 
-// First client is used to create our dummy account
+// First client is used to create our dummy account, and use
+// the default encryption options
 
 var client1 = new stormpath.Client({
   apiKey: new stormpath.ApiKey(
@@ -20,7 +21,10 @@ var client2 = new stormpath.Client({
   apiKey: new stormpath.ApiKey(
     process.env['STORMPATH_API_KEY_ID'],
     process.env['STORMPATH_API_KEY_SECRET']
-  )
+  ),
+  apiKeyEncryptionOptions:{
+    encryptSecret: false
+  }
 });
 
 // Third client will disable api key encryption
@@ -31,7 +35,8 @@ var client3 = new stormpath.Client({
     process.env['STORMPATH_API_KEY_SECRET']
   ),
   apiKeyEncryptionOptions: {
-    encryptSecret: false
+    encryptionKeySize: 128,
+    encryptionKeyIterations: 128
   }
 });
 
@@ -47,7 +52,7 @@ var suite = new Benchmark.Suite('api auth')
     console.log(String(event.target));
   })
   .on('complete', function() {
-    console.log('\nFastest is ' + this.filter('fastest').pluck('name')+'\n');
+    console.log('\nFastest is: ' + this.filter('fastest').pluck('name')+'\n');
     account.delete(function(err){
       if(err){ throw err; }
       console.log('Deleted account');
@@ -67,13 +72,13 @@ function invoke(app,apiKey,cb){
 }
 
 
-client1.getApplication(process.env['STORMPATH_APP_HREF'],function(err,app) {
+client1.getApplication(process.env['STORMPATH_APP_HREF'],function(err,app1) {
 
   if(err){ throw err; }
 
   console.log('Create test account');
 
-  app.createAccount({
+  app1.createAccount({
     email: uuid()+'@stormpath.com',
     password: uuid() + 'ABC1',
     givenName: uuid(),
@@ -86,6 +91,19 @@ client1.getApplication(process.env['STORMPATH_APP_HREF'],function(err,app) {
 
     account.createApiKey(function(err,apiKey){
 
+      suite.add('With encryption ENABLED (default options)       ', {
+        defer: true,
+        fn: function(deferred){
+          invoke(app1,apiKey,function(err){
+            if(err){
+              throw err;
+            }else{
+              deferred.resolve();
+            }
+          });
+        }
+      });
+
       client2.getApplication(process.env['STORMPATH_APP_HREF'],function(err,app2) {
 
         if(err){ throw err; }
@@ -95,8 +113,8 @@ client1.getApplication(process.env['STORMPATH_APP_HREF'],function(err,app) {
         invoke(app2,apiKey,function(err){
 
           if(err){ throw err; }
+          suite.add('With encryption DISABLED (encryptSecret: false) ', {
 
-          suite.add('With encryption ENABLED (default options)      ', {
             defer: true,
             fn: function(deferred){
               invoke(app2,apiKey,function(err){
@@ -118,7 +136,8 @@ client1.getApplication(process.env['STORMPATH_APP_HREF'],function(err,app) {
 
           invoke(app3,apiKey,function(err){
             if(err){ throw err; }
-            suite.add('With encryption DISABLED (encryptSecret: false)', {
+            suite.add('With light encryption (128 key size, iterations)', {
+
               defer: true,
               fn: function(deferred){
                 invoke(app3,apiKey,function(err){
