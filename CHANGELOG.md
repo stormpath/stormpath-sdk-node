@@ -1,5 +1,15 @@
 # stormpath-sdk-node Change Log
 
+### 0.10.0
+
+* The client constructor now allows you to specify the `apiKeyEncryptionOptions` option.
+This allows you to configure how Account API Keys are encrypted before being stored
+in the local cache.
+
+* Updated `application.sendPasswordResetEmail()` to to accept an `accountStore` property,
+for defining which account store to search for the given `email`
+
+
 ### 0.9.3
 
 Fixed `Application.authenticateApiRequest` to also accept access tokens where
