@@ -1,0 +1,109 @@
+{
+  "client": {
+    "apiKey": {
+      "file": null,
+      "id": null,
+      "secret": null
+    },
+    "cacheManager": {
+      "defaultTtl": 300,
+      "defaultTti": 300,
+      "caches": {
+        "account": {
+          "ttl": 300,
+          "tti": 300
+        }
+      }
+    },
+    "baseUrl": "https://api.stormpath.com/v1",
+    "connectionTimeout": 30,
+    "authenticationScheme": "SAUTHC1",
+    "proxy": {
+      "port": null,
+      "host": null,
+      "username": null,
+      "password": null
+    }
+  },
+  "application": {
+    "name": null,
+    "href": null
+  },
+  "web": {
+    "oauth2":{
+      "enabled": false,
+      "uri": "/oauth/token",
+      "password": {
+        "enabled": true,
+        "accessToken": {
+          "ttl": 3600
+        }
+      },
+      "client_credentials": {
+        "enabled": true,
+        "accessToken": {
+          "ttl": 3600
+        }
+      }
+    },
+    "register": {
+      "enabled": false,
+      "uri": "/register",
+      "nextUri": "/",
+      "autoAuthorize": false,
+      "fields": [
+        {
+          "name": "givenName",
+          "required": true
+        },
+        {
+          "name": "surname",
+          "required": true
+        },
+        {
+          "name": "email",
+          "required": true,
+          "type": "email"
+        },
+        {
+          "name": "password",
+          "required": true,
+          "type": "password"
+        }
+      ]
+    },
+    "verifyEmail": {
+      "autoLogin": true,
+      "uri": "/verify",
+      "nextUri": "/"
+    },
+    "login": {
+      "enabled": false,
+      "autoLogin": true,
+      "uri": "/login",
+      "nextUri": "/"
+    },
+    "logout": {
+      "enabled": false,
+      "uri": "/logout",
+      "nextUri": "/"
+    },
+    "forgotPassword": {
+      "enabled": false,
+      "uri": "/forgot"
+    },
+    "changePassword": {
+      "enabled": false,
+      "autoLogin": true,
+      "uri": "/change",
+      "nextUri": "/"
+    },
+    "idSite": {
+      "enabled": false,
+      "uri": "/idSiteResult",
+      "loginUri": "",
+      "forgotUri": "/#/forgot",
+      "registerUri": "/#/register"
+    }
+  }
+}
