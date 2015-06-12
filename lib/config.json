@@ -46,6 +46,15 @@
         }
       }
     },
+    "accessTokenCookie":{
+      "name": "access_token",
+      "ttl": 3600,
+      "tti": 900,
+      "httpOnly": true,
+      "secure": null,
+      "path": "/",
+      "domain": null
+    },
     "register": {
       "enabled": false,
       "uri": "/register",
@@ -70,18 +79,21 @@
           "required": true,
           "type": "password"
         }
-      ]
+      ],
+      "view": "register"
     },
     "verifyEmail": {
       "autoLogin": true,
       "uri": "/verify",
-      "nextUri": "/"
+      "nextUri": "/",
+      "view": "verify"
     },
     "login": {
       "enabled": false,
       "autoLogin": true,
       "uri": "/login",
-      "nextUri": "/"
+      "nextUri": "/",
+      "view": "login"
     },
     "logout": {
       "enabled": false,
@@ -90,13 +102,15 @@
     },
     "forgotPassword": {
       "enabled": false,
-      "uri": "/forgot"
+      "uri": "/forgot",
+      "view": "forgot"
     },
     "changePassword": {
       "enabled": false,
       "autoLogin": true,
       "uri": "/change",
-      "nextUri": "/"
+      "nextUri": "/",
+      "view": "change"
     },
     "idSite": {
       "enabled": false,
