@@ -1,4 +1,7 @@
 var common = require('./common');
+var tmp = require('tmp');
+var fs = require('fs');
+var assert = common.assert;
 var sinon = common.sinon;
 var expect = common.expect;
 
@@ -25,6 +28,51 @@ describe('Client', function () {
       /* jshint -W030 */
       expect(client._currentTenant).to.be.null;
       /* jshint +W030 */
+    });
+  });
+
+  describe('default constructor', function () {
+    it('should throw if it\'s a bunk filename', function () {
+      var filename = 'foo.bar';
+      assert.throws(function(){
+        new Client({
+          client:{
+            apiKey:{
+              file: filename
+            }
+          }
+        });
+      },new RegExp('Client API key file not found: ' + filename));
+    });
+    it('should throw if it\'s an invalid properties file', function () {
+      var tmpobj = tmp.fileSync();
+      fs.writeSync(tmpobj.fd,'yo');
+      fs.closeSync(tmpobj.fd);
+      assert.throws(function(){
+        new Client({
+          client:{
+            apiKey:{
+              file: tmpobj.name
+            }
+          }
+        });
+      },new RegExp('Unable to read properties file: '+tmpobj.name));
+    });
+    it('should populate api key id secret on the config object', function(){
+      var tmpobj = tmp.fileSync();
+      fs.writeSync(tmpobj.fd,'id=1\nsecret=2');
+      fs.closeSync(tmpobj.fd);
+
+      var client = new Client({
+        client:{
+          apiKey:{
+            file: tmpobj.name
+          }
+        }
+      });
+      assert.equal(client.config.apiKey.id,'1');
+      assert.equal(client.config.apiKey.secret,'2');
+
     });
   });
 
