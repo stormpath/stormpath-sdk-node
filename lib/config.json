@@ -103,14 +103,16 @@
     "forgotPassword": {
       "enabled": false,
       "uri": "/forgot",
-      "view": "forgot"
+      "view": "forgot",
+      "nextUri": "/login?status=forgot"
     },
     "changePassword": {
       "enabled": false,
-      "autoLogin": true,
-      "uri": "/change",
-      "nextUri": "/",
-      "view": "change"
+      "autoLogin": false,
+      "uri": "/reset",
+      "nextUri": "/login?status=reset",
+      "view": "reset",
+      "errorUri": "/forgot?status=invalid_sptoken"
     },
     "idSite": {
       "enabled": false,
