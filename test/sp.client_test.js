@@ -14,6 +14,20 @@ var Tenant = require('../lib/resource/Tenant');
 var Application = require('../lib/resource/Application');
 var DataStore = require('../lib/ds/DataStore');
 
+function clearEnvVars(){
+  var args = Array.prototype.slice.call(arguments);
+  var saved = args.reduce(function(saved,arg){
+    saved[arg] = process.env[arg];
+    delete process.env[arg];
+    return saved;
+  },{});
+  return function(){
+    args.forEach(function(arg){
+      process.env[arg] = saved[arg];
+    });
+  };
+}
+
 describe('Client', function () {
   var apiKey = {id: 1, secret: 2};
   describe('constructor', function () {
@@ -31,9 +45,11 @@ describe('Client', function () {
     });
   });
 
+
   describe('default constructor', function () {
-    it('should throw if it\'s a bunk filename', function () {
+    it('should throw if it\'s a bunk filename and env does not provide id or secret', function () {
       var filename = 'foo.bar';
+      var resetEnvVars = clearEnvVars('STORMPATH_CLIENT_APIKEY_ID','STORMPATH_CLIENT_APIKEY_SECRET');
       assert.throws(function(){
         new Client({
           client:{
@@ -43,8 +59,10 @@ describe('Client', function () {
           }
         });
       },new RegExp('Client API key file not found: ' + filename));
+      resetEnvVars();
     });
     it('should throw if it\'s an invalid properties file', function () {
+      var resetEnvVars = clearEnvVars('STORMPATH_CLIENT_APIKEY_ID','STORMPATH_CLIENT_APIKEY_SECRET');
       var tmpobj = tmp.fileSync();
       fs.writeSync(tmpobj.fd,'yo');
       fs.closeSync(tmpobj.fd);
@@ -57,8 +75,10 @@ describe('Client', function () {
           }
         });
       },new RegExp('Unable to read properties file: '+tmpobj.name));
+      resetEnvVars();
     });
     it('should populate api key id secret on the config object', function(){
+      var resetEnvVars = clearEnvVars('STORMPATH_CLIENT_APIKEY_ID','STORMPATH_CLIENT_APIKEY_SECRET');
       var tmpobj = tmp.fileSync();
       fs.writeSync(tmpobj.fd,'id=1\nsecret=2');
       fs.closeSync(tmpobj.fd);
@@ -72,9 +92,114 @@ describe('Client', function () {
       });
       assert.equal(client.config.apiKey.id,'1');
       assert.equal(client.config.apiKey.secret,'2');
-
+      resetEnvVars();
     });
   });
+
+  describe('with an app href that has a valid default account store with email verification enabled',function(){
+    var application, directory;
+    before(function(done){
+      new Client().createApplication(
+        {name:common.uuid()},
+        {createDirectory: true},
+        function(err,app){
+          if(err){
+            throw err;
+          }else{
+            application = app;
+            app.getDefaultAccountStore(function(err,accountStoreMapping){
+              if(err){
+                throw err;
+              }else{
+                accountStoreMapping.getAccountStore(function(err,dir){
+                  directory = dir;
+                  if(err){
+                    throw err;
+                  }
+                  else{
+                    dir.getAccountCreationPolicy(function(err,policy){
+                      if(err){
+                        throw err;
+                      }else{
+                        policy.verificationEmailStatus = 'ENABLED';
+                        policy.save(done);
+                      }
+                    });
+                  }
+                });
+              }
+            });
+
+          }
+        }
+      );
+    });
+    after(function(done){
+      application.delete(function(){
+        directory.delete(done);
+      });
+    });
+    it('should apply the account store policies to the config',function(done){
+      var client = new Client({
+        application:{
+          href: application.href
+        }
+      });
+      client.on('ready',function(){
+        assert.equal(client.config.web.verifyEmail.enabled,true);
+        done();
+      });
+    });
+
+  });
+
+  describe('with an app href that DOES NOT have a valid default account store',function(){
+    var application;
+    before(function(done){
+      new Client().createApplication(
+        {name:common.uuid()},
+        {createDirectory: true},
+        function(err,app){
+          if(err){
+            throw err;
+          }else{
+            application = app;
+            done();
+          }
+        }
+      );
+    });
+    after(function(done){
+      application.delete(done);
+    });
+    it('should disable the email verification and password reset features',function(done){
+      var client = new Client({
+        application:{
+          href: application.href
+        }
+      });
+      client.on('ready',function(){
+        assert.equal(client.config.web.verifyEmail.enabled,false);
+        done();
+      });
+    });
+  });
+
+  describe('with an invalid app href',function(){
+
+    it('should fail',function(done){
+      var client = new Client({
+        application:{
+          href: 'https://api.stormpath.com/v1/applications/blah'
+        }
+      });
+      client.on('error',function(err){
+        assert.equal(err.status,404);
+        done();
+      });
+    });
+  });
+
 
   describe('call get current tenant', function () {
     describe('fist call should get resource', function () {

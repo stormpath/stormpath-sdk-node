@@ -83,6 +83,7 @@
       "view": "register"
     },
     "verifyEmail": {
+      "enabled": false,
       "autoLogin": true,
       "uri": "/verify",
       "nextUri": "/",

@@ -11,7 +11,11 @@ module.exports = function (grunt) {
   grunt.initConfig({
     mochaTest: {
       test: {
-        src: ['test/**/*_test.js']
+        src: ['test/**/*_test.js'],
+        options: {
+          timeout: 20000
+        }
+
       },
       live: {
         src: ['test/**/*_live.js']
