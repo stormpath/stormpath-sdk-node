@@ -26,6 +26,14 @@ describe('Client', function () {
       expect(client._currentTenant).to.be.null;
       /* jshint +W030 */
     });
+    it('should use the public api as the base url',function(){
+      expect(client._dataStore.requestExecutor.baseUrl).to.equal('https://api.stormpath.com/v1');
+    });
+    it('should allow me to change the base url',function(){
+      var url = 'http://api.mydomain.com/';
+      var client = new Client({apiKey: apiKey, baseUrl: url});
+      expect(client._dataStore.requestExecutor.baseUrl).to.equal(url);
+    });
   });
 
   describe('call get current tenant', function () {
