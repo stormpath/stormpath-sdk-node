@@ -96,61 +96,45 @@ describe('Client', function () {
     });
   });
 
-  describe('with an app href that has a valid default account store with email verification enabled',function(){
+  describe('with an app href that has a valid default account store with email verification enabled', function() {
     var application, directory;
-    before(function(done){
-      new Client().createApplication(
-        {name:common.uuid()},
-        {createDirectory: true},
-        function(err,app){
-          if(err){
-            throw err;
-          }else{
-            application = app;
-            app.getDefaultAccountStore(function(err,accountStoreMapping){
-              if(err){
-                throw err;
-              }else{
-                accountStoreMapping.getAccountStore(function(err,dir){
-                  directory = dir;
-                  if(err){
-                    throw err;
-                  }
-                  else{
-                    dir.getAccountCreationPolicy(function(err,policy){
-                      if(err){
-                        throw err;
-                      }else{
-                        policy.verificationEmailStatus = 'ENABLED';
-                        policy.save(done);
-                      }
-                    });
-                  }
-                });
-              }
-            });
 
-          }
-        }
-      );
+    before(function(done) {
+      new Client().createApplication({ name:common.uuid() }, { createDirectory: true }, function(err, app) {
+        if (err) { throw err; }
+
+        application = app;
+        application.getDefaultAccountStore(function(err, accountStoreMapping) {
+          if (err) { throw err; }
+
+          accountStoreMapping.getAccountStore(function(err, dir) {
+            if (err) { throw err; }
+
+            directory = dir;
+            directory.getAccountCreationPolicy(function(err, policy) {
+              if (err) { throw err; }
+
+              policy.verificationEmailStatus = 'ENABLED';
+              policy.save(done);
+            });
+          });
+        });
+      });
     });
-    after(function(done){
-      application.delete(function(){
+
+    after(function(done) {
+      application.delete(function() {
         directory.delete(done);
       });
     });
-    it('should apply the account store policies to the config',function(done){
-      var client = new Client({
-        application:{
-          href: application.href
-        }
-      });
-      client.on('ready',function(){
-        assert.equal(client.config.web.verifyEmail.enabled,true);
+
+    it('should apply the account store policies to the config', function(done) {
+      var client = new Client({ application: { href: application.href } });
+      client.on('ready', function() {
+        assert.equal(client.config.web.verifyEmail.enabled, true);
         done();
       });
     });
-
   });
 
   describe('with an app href that DOES NOT have a valid default account store',function(){
