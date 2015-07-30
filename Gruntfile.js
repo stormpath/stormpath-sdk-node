@@ -27,7 +27,7 @@ module.exports = function (grunt) {
         options: {
           mask: '**/*_test.js',
           require: ['test/common.js'],
-          timeout: 4000
+          timeout: 20000
         }
       },
       it: {
