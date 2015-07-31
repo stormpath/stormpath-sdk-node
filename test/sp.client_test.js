@@ -670,7 +670,7 @@ describe('Client', function () {
     it('should return error', function(){
       returnError = true;
       client.createDirectory(app, cbSpy);
-      cbSpy.should.have.been.calledWith(err, null);
+      cbSpy.should.have.been.calledWith(err);
       /* jshint -W030 */
       getCurrentTenantStub.should.have.been.calledThrice;
       createTenantDirectory.should.have.been.calledTwice;
