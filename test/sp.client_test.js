@@ -401,7 +401,7 @@ describe('Client', function () {
       sandbox.restore();
     });
 
-    it('should call tenant get applications', function() {
+    it('should call tenant get accounts', function() {
       client.getAccounts(cbSpy);
       client.getAccounts({}, cbSpy);
 
@@ -423,6 +423,61 @@ describe('Client', function () {
       /* jshint -W030 */
       getCurrentTenantStub.should.have.been.calledThrice;
       getTenantAccounts.should.have.been.calledTwice;
+      /* jshint +W030 */
+    });
+  });
+
+  describe('call to get groups', function() {
+    var cbSpy, client, err, sandbox, tenant;
+    var getCurrentTenantStub, getTenantGroups;
+    var returnError = false;
+
+    before(function() {
+      sandbox = sinon.sandbox.create();
+      err = {error: 'boom!'};
+      client = new Client({ apiKey: apiKey });
+      tenant = new Tenant({ href: 'boom!' }, client._dataStore);
+      cbSpy = sandbox.spy();
+
+      getCurrentTenantStub = sandbox.stub(client, 'getCurrentTenant', function(cb) {
+        if (returnError) {
+          return cb(err);
+        }
+
+        return cb(null, tenant);
+      });
+
+      getTenantGroups = sandbox.stub(tenant, 'getGroups', function(options, cb) {
+        cb();
+      });
+    });
+
+    after(function() {
+      sandbox.restore();
+    });
+
+    it('should call tenant get groups', function() {
+      client.getGroups(cbSpy);
+      client.getGroups({}, cbSpy);
+
+      getTenantGroups.should.have.been.calledWith(null, cbSpy);
+      getTenantGroups.should.have.been.calledWith({}, cbSpy);
+
+      /* jshint -W030 */
+      getCurrentTenantStub.should.have.been.calledTwice;
+      getTenantGroups.should.have.been.calledTwice;
+      /* jshint +W030 */
+    });
+
+    it('should return error', function() {
+      returnError = true;
+
+      client.getGroups(cbSpy);
+      cbSpy.should.have.been.calledWith(err);
+
+      /* jshint -W030 */
+      getCurrentTenantStub.should.have.been.calledThrice;
+      getTenantGroups.should.have.been.calledTwice;
       /* jshint +W030 */
     });
   });
