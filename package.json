@@ -36,8 +36,9 @@
     "url": "git://github.com/stormpath/stormpath-sdk-node.git"
   },
   "scripts": {
-    "test": "grunt",
-    "coverage": "node ./node_modules/istanbul/lib/cli cover ./node_modules/mocha/bin/_mocha"
+    "coverage": "node ./node_modules/istanbul/lib/cli cover ./node_modules/mocha/bin/_mocha",
+    "docs": "jsdoc -d ./apidocs/ -P ./package.json -r .",
+    "test": "grunt"
   },
   "dependencies": {
     "underscore": "~1.5.2",
