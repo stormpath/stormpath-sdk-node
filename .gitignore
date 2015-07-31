@@ -1,5 +1,6 @@
 /node_modules/
 /coverage
+apidocs
 npm-debug.log
 *.ipr
 *.iws
