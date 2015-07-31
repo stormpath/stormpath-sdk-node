@@ -413,7 +413,7 @@ describe('Client', function () {
     it('should return error', function(){
       returnError = true;
       client.getApplications(cbSpy);
-      cbSpy.should.have.been.calledWith(err, null);
+      cbSpy.should.have.been.calledWith(err);
       /* jshint -W030 */
       getCurrentTenantStub.should.have.been.calledThrice;
       getTenantApplications.should.have.been.calledTwice;
@@ -462,7 +462,7 @@ describe('Client', function () {
     it('should return error', function(){
       returnError = true;
       client.createApplication(app, cbSpy);
-      cbSpy.should.have.been.calledWith(err, null);
+      cbSpy.should.have.been.calledWith(err);
       /* jshint -W030 */
       getCurrentTenantStub.should.have.been.calledThrice;
       createTenantApplication.should.have.been.calledTwice;
@@ -511,7 +511,7 @@ describe('Client', function () {
     it('should return error', function(){
       returnError = true;
       client.getDirectories(cbSpy);
-      cbSpy.should.have.been.calledWith(err, null);
+      cbSpy.should.have.been.calledWith(err);
       /* jshint -W030 */
       getCurrentTenantStub.should.have.been.calledThrice;
       getTenantDirectories.should.have.been.calledTwice;
