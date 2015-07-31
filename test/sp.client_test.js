@@ -372,6 +372,61 @@ describe('Client', function () {
     });
   });
 
+  describe('call to get accounts', function() {
+    var cbSpy, client, err, sandbox, tenant;
+    var getCurrentTenantStub, getTenantAccounts;
+    var returnError = false;
+
+    before(function() {
+      sandbox = sinon.sandbox.create();
+      err = {error: 'boom!'};
+      client = new Client({ apiKey: apiKey });
+      tenant = new Tenant({ href: 'boom!' }, client._dataStore);
+      cbSpy = sandbox.spy();
+
+      getCurrentTenantStub = sandbox.stub(client, 'getCurrentTenant', function(cb) {
+        if (returnError) {
+          return cb(err);
+        }
+
+        return cb(null, tenant);
+      });
+
+      getTenantAccounts = sandbox.stub(tenant, 'getAccounts', function(options, cb) {
+        cb();
+      });
+    });
+
+    after(function() {
+      sandbox.restore();
+    });
+
+    it('should call tenant get applications', function() {
+      client.getAccounts(cbSpy);
+      client.getAccounts({}, cbSpy);
+
+      getTenantAccounts.should.have.been.calledWith(null, cbSpy);
+      getTenantAccounts.should.have.been.calledWith({}, cbSpy);
+
+      /* jshint -W030 */
+      getCurrentTenantStub.should.have.been.calledTwice;
+      getTenantAccounts.should.have.been.calledTwice;
+      /* jshint +W030 */
+    });
+
+    it('should return error', function() {
+      returnError = true;
+
+      client.getAccounts(cbSpy);
+      cbSpy.should.have.been.calledWith(err);
+
+      /* jshint -W030 */
+      getCurrentTenantStub.should.have.been.calledThrice;
+      getTenantAccounts.should.have.been.calledTwice;
+      /* jshint +W030 */
+    });
+  });
+
   describe('call to get applications', function () {
     var sandbox, client, getCurrentTenantStub, getTenantApplications,
       cbSpy, err, tenant;
