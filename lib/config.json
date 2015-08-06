@@ -33,12 +33,6 @@
     "oauth2":{
       "enabled": false,
       "uri": "/oauth/token",
-      "password": {
-        "enabled": true,
-        "accessToken": {
-          "ttl": 3600
-        }
-      },
       "client_credentials": {
         "enabled": true,
         "accessToken": {
@@ -48,8 +42,6 @@
     },
     "accessTokenCookie":{
       "name": "access_token",
-      "ttl": 3600,
-      "tti": 900,
       "httpOnly": true,
       "secure": null,
       "path": "/",
@@ -60,31 +52,18 @@
       "uri": "/register",
       "nextUri": "/",
       "autoAuthorize": false,
-      "fields": [
-        {
-          "name": "givenName",
-          "required": true
-        },
-        {
-          "name": "surname",
-          "required": true
-        },
-        {
-          "name": "email",
-          "required": true,
-          "type": "email"
-        },
-        {
-          "name": "password",
-          "required": true,
-          "type": "password"
-        }
-      ],
+      "fields": {
+        "givenName": { "required": true },
+        "middleName": { "required": false },
+        "surname": { "required": true },
+        "email": { "required": true, "type": "email" },
+        "password": { "required": true, "type": "password" },
+        "passwordConfirm": { "required": false, "type": "password" }
+      },
+      "fieldOrder": [ "givenName", "middleName", "surname", "email", "password", "passwordConfirm" ],
       "view": "register"
     },
     "verifyEmail": {
-      "enabled": false,
-      "autoLogin": true,
       "uri": "/verify",
       "nextUri": "/",
       "view": "verify"
@@ -104,15 +83,15 @@
     "forgotPassword": {
       "enabled": false,
       "uri": "/forgot",
-      "view": "forgot",
+      "view": "forgot-password",
       "nextUri": "/login?status=forgot"
     },
     "changePassword": {
       "enabled": false,
       "autoLogin": false,
-      "uri": "/reset",
+      "uri": "/change",
       "nextUri": "/login?status=reset",
-      "view": "reset",
+      "view": "change-password",
       "errorUri": "/forgot?status=invalid_sptoken"
     },
     "idSite": {
@@ -121,6 +100,10 @@
       "loginUri": "",
       "forgotUri": "/#/forgot",
       "registerUri": "/#/register"
+    },
+    "me": {
+      "enabled": false,
+      "uri": "/me"
     }
   }
 }
