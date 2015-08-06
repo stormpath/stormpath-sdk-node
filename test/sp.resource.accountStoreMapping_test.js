@@ -82,7 +82,11 @@ describe('Resources: ', function () {
                   cb();
                 });
               }
-            ], done);
+            ], function(a,b){
+
+              done(a,b);
+
+            });
 
           });
 

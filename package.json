@@ -36,8 +36,9 @@
     "url": "git://github.com/stormpath/stormpath-sdk-node.git"
   },
   "scripts": {
-    "test": "grunt",
-    "coverage": "node ./node_modules/istanbul/lib/cli cover ./node_modules/mocha/bin/_mocha"
+    "coverage": "node ./node_modules/istanbul/lib/cli cover ./node_modules/mocha/bin/_mocha",
+    "docs": "jsdoc -d ./apidocs/ -P ./package.json -r .",
+    "test": "grunt"
   },
   "dependencies": {
     "underscore": "~1.5.2",
@@ -51,7 +52,9 @@
     "memcached": "~0.2.8",
     "glob": "3",
     "jwt-simple": "~0.2.0",
-    "njwt": "0.0.1"
+    "njwt": "0.0.1",
+    "deep-extend": "^0.4.0",
+    "flat": "^1.6.0"
   },
   "devDependencies": {
     "grunt": "~0.4.2",
@@ -72,7 +75,7 @@
     "istanbul": "~0.2.4",
     "lodash": "~2.4.1",
     "nock": "~0.27.2",
-    "tmp": "0.0.24",
+    "tmp": "0.0.26",
     "benchmark": "^1.0.0"
   }
 }
