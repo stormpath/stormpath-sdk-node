@@ -10,9 +10,13 @@ var nJwt = require('nJwt');
 
 var OAuthAuthenticationResult = require('../../lib/authc/OAuthAuthenticationResult');
 
-function assertPasswordGrantResponse(response){
-  assert.isDefined(response.access_token);
-  assert.isDefined(response.refresh_token);
+function assertPasswordGrantResponse(done){
+  return function(err,response){
+    assert.isNull(err);
+    assert.isDefined(response.access_token);
+    assert.isDefined(response.refresh_token);
+    done();
+  };
 }
 
 function assertUnauthenticatedResponse(done){
@@ -33,7 +37,7 @@ function assertOAuthAuthenticationResult(done){
   };
 }
 
-describe('OAuth Authenticators',function(){
+describe.only('OAuth Authenticators',function(){
 
   var application, passwordGrantResponse;
 
@@ -78,18 +82,14 @@ describe('OAuth Authenticators',function(){
         username: newAccount.username,
         password: newAccount.password
       },function(err,result){
-        assert.isNull(err);
-        assertPasswordGrantResponse(result);
+        assertPasswordGrantResponse(done)(err,result);
         passwordGrantResponse = result;
-
-        done();
       });
     });
   });
 
 
   describe('OAuthAuthenticator',function(){
-
 
     it('should be constructable with new operator',function(){
       var authenticator = new stormpath.OAuthAuthenticator(application);
@@ -104,6 +104,19 @@ describe('OAuth Authenticators',function(){
     it('should throw if not called with a request and callback',function(){
       var authenticator = stormpath.OAuthAuthenticator(application);
       assert.throws(authenticator.authenticate);
+    });
+
+    it('should be able to issue tokens for password grant requests', function(done){
+      var authenticator = stormpath.OAuthAuthenticator(application);
+      authenticator.authenticate({
+        params:{
+          grant_type: 'password'
+        },
+        body: {
+          username: newAccount.username,
+          password: newAccount.password
+        }
+      },assertPasswordGrantResponse(done));
     });
 
     it('should return 401 if no auth information is given',function(done){
