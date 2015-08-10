@@ -25,6 +25,15 @@ function random(){
   return '' + Math.random()*Date.now();
 }
 
+function assertPasswordGrantResponse(done){
+  return function(err,response){
+    assert.isNull(err);
+    assert.isDefined(response.access_token);
+    assert.isDefined(response.refresh_token);
+    done();
+  };
+}
+
 
 module.exports = {
   _: _,
@@ -39,5 +48,6 @@ module.exports = {
   moment: moment,
   Stormpath: Stormpath,
   random: random,
-  uuid: uuid
+  uuid: uuid,
+  assertPasswordGrantResponse: assertPasswordGrantResponse
 };
