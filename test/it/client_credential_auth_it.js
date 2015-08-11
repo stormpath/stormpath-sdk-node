@@ -6,14 +6,15 @@ var assert = common.assert;
 
 describe('Client Credential Authentication',function(){
 
-  var app, account, client, fakeAccount, accessToken;
+  var app, account, client, fakeAccount, jwsClaimsParser, accessToken;
 
   fakeAccount = helpers.fakeAccount();
 
   before(function(done){
     helpers.getClient(function(_client){
       client = _client;
-
+      jwsClaimsParser =
+        nJwt.Parser().setSigningKey(client._dataStore.requestExecutor.options.apiKey.secret);
       client.createApplication(
         {name: helpers.uniqId()},
         {createDirectory:true},
@@ -59,8 +60,7 @@ describe('Client Credential Authentication',function(){
 
     it('should generate an access token where the subject is the account',function(done){
       assert.isString(accessToken);
-      var secret = client._dataStore.requestExecutor.options.apiKey.secret;
-      nJwt.verify(accessToken,secret,function(err,jwt){
+      jwsClaimsParser.parseClaimsJws(accessToken,function(err,jwt){
         if(err){ throw err; }
         assert.equal(jwt.body.sub,account.href);
         done();

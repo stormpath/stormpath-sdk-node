@@ -25,19 +25,6 @@ function random(){
   return '' + Math.random()*Date.now();
 }
 
-function assertPasswordGrantResponse(done){
-  return function(err,response){
-    assert.isNull(err);
-    assert.instanceOf(response,Stormpath.OauthPasswordGrantAuthenticationResult);
-    assert.isDefined(response.accessTokenResponse);
-    assert.isDefined(response.accessTokenResponse.access_token);
-    assert.isDefined(response.accessTokenResponse.refresh_token);
-    assert.isDefined(response.accessToken);
-    assert.isDefined(response.refreshToken);
-    done();
-  };
-}
-
 
 module.exports = {
   _: _,
@@ -52,6 +39,5 @@ module.exports = {
   moment: moment,
   Stormpath: Stormpath,
   random: random,
-  uuid: uuid,
-  assertPasswordGrantResponse: assertPasswordGrantResponse
+  uuid: uuid
 };

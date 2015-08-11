@@ -44,24 +44,6 @@ function fakeAccount(){
   };
 }
 
-/**
- * Create a new Stormpath Application for usage in tests.
- *
- * @function
- *
- * @param {Function} callback - A callback to run when done.
- */
-function createApplication(callback) {
-  var prefix = uuid.v4();
-  var appData = { name: prefix };
-  var opts = { createDirectory: true };
-
-  getClient(function(client){
-    client.createApplication(appData, opts, callback);
-  });
-}
-
-
 function fakeDirectory(){
   return {
     name: uniqId()
@@ -69,7 +51,6 @@ function fakeDirectory(){
 }
 
 module.exports = {
-  createApplication: createApplication,
   loadApiKey: loadApiKey,
   getClient: getClient,
   uniqId: uniqId,
