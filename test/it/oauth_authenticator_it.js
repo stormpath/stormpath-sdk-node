@@ -115,7 +115,7 @@ describe('OAuthAuthenticator',function(){
 
       authenticator.authenticate({
         headers: {
-          authorization: 'Bearer ' + passwordGrantResponse.access_token
+          authorization: 'Bearer ' + passwordGrantResponse.accessToken
         }
       },assertOAuthAuthenticationResult(done));
     });
@@ -139,7 +139,7 @@ describe('OAuthAuthenticator',function(){
     it('should be able to read the access token from the default cookie location',function(done){
       authenticator.authenticate({
         cookies: {
-          access_token: passwordGrantResponse.access_token
+          access_token: passwordGrantResponse.accessToken
         }
       },assertOAuthAuthenticationResult(done));
     });
@@ -148,7 +148,7 @@ describe('OAuthAuthenticator',function(){
       authenticator.withCookie('customCookieName');
       authenticator.authenticate({
         cookies: {
-          customCookieName: passwordGrantResponse.access_token
+          customCookieName: passwordGrantResponse.accessToken
         }
       },assertOAuthAuthenticationResult(done));
     });
@@ -181,7 +181,7 @@ describe('OAuthAuthenticator',function(){
     it('should validate access tokens from the password grant flow and return the API response',function(done){
       authenticator.authenticate({
         headers: {
-          authorization: 'Bearer ' + passwordGrantResponse.access_token
+          authorization: 'Bearer ' + passwordGrantResponse.accessToken
         }
       },assertOAuthAuthenticationResult(done));
     });

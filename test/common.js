@@ -29,8 +29,11 @@ function assertPasswordGrantResponse(done){
   return function(err,response){
     assert.isNull(err);
     assert.instanceOf(response,Stormpath.OauthPasswordGrantAuthenticationResult);
-    assert.isDefined(response.access_token);
-    assert.isDefined(response.refresh_token);
+    assert.isDefined(response.accessTokenResponse);
+    assert.isDefined(response.accessTokenResponse.access_token);
+    assert.isDefined(response.accessTokenResponse.refresh_token);
+    assert.isDefined(response.accessToken);
+    assert.isDefined(response.refreshToken);
     done();
   };
 }
