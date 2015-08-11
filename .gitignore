@@ -1,9 +1,10 @@
 /node_modules/
 /coverage
+apidocs
 npm-debug.log
 *.ipr
 *.iws
 *.iml
 .idea
 .DS_Store
-
+.env

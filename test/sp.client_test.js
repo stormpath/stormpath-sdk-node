@@ -1,4 +1,7 @@
 var common = require('./common');
+var tmp = require('tmp');
+var fs = require('fs');
+var assert = common.assert;
 var sinon = common.sinon;
 var expect = common.expect;
 
@@ -10,6 +13,20 @@ var Directory = require('../lib/resource/Directory');
 var Tenant = require('../lib/resource/Tenant');
 var Application = require('../lib/resource/Application');
 var DataStore = require('../lib/ds/DataStore');
+
+function clearEnvVars(){
+  var args = Array.prototype.slice.call(arguments);
+  var saved = args.reduce(function(saved,arg){
+    saved[arg] = process.env[arg];
+    delete process.env[arg];
+    return saved;
+  },{});
+  return function(){
+    args.forEach(function(arg){
+      process.env[arg] = saved[arg];
+    });
+  };
+}
 
 describe('Client', function () {
   var apiKey = {id: 1, secret: 2};
@@ -26,7 +43,193 @@ describe('Client', function () {
       expect(client._currentTenant).to.be.null;
       /* jshint +W030 */
     });
+    it('should use the public api as the base url',function(){
+      expect(client._dataStore.requestExecutor.baseUrl).to.equal('https://api.stormpath.com/v1');
+    });
+    it('should allow me to change the base url',function(){
+      var url = 'http://api.mydomain.com/';
+      var client = new Client({apiKey: apiKey, baseUrl: url});
+      expect(client._dataStore.requestExecutor.baseUrl).to.equal(url);
+    });
   });
+
+
+  describe('default constructor', function () {
+    it('should throw if it\'s a bunk filename and env does not provide id or secret', function () {
+      var filename = 'foo.bar';
+      var resetEnvVars = clearEnvVars('STORMPATH_CLIENT_APIKEY_ID','STORMPATH_CLIENT_APIKEY_SECRET');
+      assert.throws(function(){
+        new Client({
+          client:{
+            apiKey:{
+              file: filename
+            }
+          }
+        });
+      },new RegExp('Client API key file not found: ' + filename));
+      resetEnvVars();
+    });
+    it('should throw if it\'s an invalid properties file', function () {
+      var resetEnvVars = clearEnvVars('STORMPATH_CLIENT_APIKEY_ID','STORMPATH_CLIENT_APIKEY_SECRET');
+      var tmpobj = tmp.fileSync();
+      fs.writeSync(tmpobj.fd,'yo');
+      fs.closeSync(tmpobj.fd);
+      assert.throws(function(){
+        new Client({
+          client:{
+            apiKey:{
+              file: tmpobj.name
+            }
+          }
+        });
+      },new RegExp('Unable to read properties file: '+tmpobj.name));
+      resetEnvVars();
+    });
+    it('should populate api key id secret on the config object', function(){
+      var resetEnvVars = clearEnvVars('STORMPATH_CLIENT_APIKEY_ID','STORMPATH_CLIENT_APIKEY_SECRET');
+      var tmpobj = tmp.fileSync();
+      fs.writeSync(tmpobj.fd,'id=1\nsecret=2');
+      fs.closeSync(tmpobj.fd);
+
+      var client = new Client({
+        client:{
+          apiKey:{
+            file: tmpobj.name
+          }
+        }
+      });
+      assert.equal(client.config.apiKey.id,'1');
+      assert.equal(client.config.apiKey.secret,'2');
+      resetEnvVars();
+    });
+  });
+
+  describe('with an app href that has a valid default account store with email verification enabled', function() {
+    var application, directory;
+
+    before(function(done) {
+      new Client().createApplication({ name:common.uuid() }, { createDirectory: true }, function(err, app) {
+        if (err) { throw err; }
+
+        application = app;
+        application.getDefaultAccountStore(function(err, accountStoreMapping) {
+          if (err) { throw err; }
+
+          accountStoreMapping.getAccountStore(function(err, dir) {
+            if (err) { throw err; }
+
+            directory = dir;
+            directory.getAccountCreationPolicy(function(err, policy) {
+              if (err) { throw err; }
+
+              policy.verificationEmailStatus = 'ENABLED';
+              policy.save(done);
+            });
+          });
+        });
+      });
+    });
+
+    after(function(done) {
+      application.delete(function() {
+        directory.delete(done);
+      });
+    });
+
+    it('should apply the account store policies to the config', function(done) {
+      var client = new Client({ application: { href: application.href } });
+      client.on('ready', function() {
+        assert.equal(client.config.web.verifyEmail.enabled, true);
+        done();
+      });
+    });
+  });
+
+  describe('with an app href that DOES NOT have a valid default account store',function(){
+    var application;
+    before(function(done){
+      new Client().createApplication(
+        {name:common.uuid()},
+        {createDirectory: true},
+        function(err,app){
+          if(err){
+            throw err;
+          }else{
+            application = app;
+            done();
+          }
+        }
+      );
+    });
+    after(function(done){
+      application.delete(done);
+    });
+    it('should disable the email verification and password reset features',function(done){
+      var client = new Client({
+        application:{
+          href: application.href
+        }
+      });
+      client.on('ready',function(){
+        assert.equal(client.config.web.verifyEmail.enabled,false);
+        done();
+      });
+    });
+  });
+
+  describe('with an invalid app href',function(){
+
+    it('should fail',function(done){
+      var client = new Client({
+        application:{
+          href: 'https://api.stormpath.com/v1/applications/blah'
+        }
+      });
+      client.on('error',function(err){
+        assert.equal(err.status,404);
+        done();
+      });
+    });
+  });
+
+
+  //
+  //  TODO bring this test back when i figure out why nock
+  //  is interfering with the application call
+  //
+  // describe('with an application name',function(){
+
+  //   var application;
+  //   before(function(done){
+  //     new Client().createApplication(
+  //       {name:common.uuid()},
+  //       {createDirectory: true},
+  //       function(err,app){
+  //         if(err){
+  //           throw err;
+  //         }else{
+  //           application = app;
+  //           done();
+  //         }
+  //       }
+  //     );
+  //   });
+  //   after(function(done){
+  //     application.delete(done);
+  //   });
+
+  //   it('should fail',function(done){
+  //     var client = new Client({
+  //       application:{
+  //         name: application.name
+  //       }
+  //     });
+  //     client.on('ready',function(){
+  //       assert.equal(client.config.application.href,application.href);
+  //       done();
+  //     });
+  //   });
+  // });
 
   describe('call get current tenant', function () {
     describe('fist call should get resource', function () {
@@ -177,6 +380,116 @@ describe('Client', function () {
     });
   });
 
+  describe('call to get accounts', function() {
+    var cbSpy, client, err, sandbox, tenant;
+    var getCurrentTenantStub, getTenantAccounts;
+    var returnError = false;
+
+    before(function() {
+      sandbox = sinon.sandbox.create();
+      err = {error: 'boom!'};
+      client = new Client({ apiKey: apiKey });
+      tenant = new Tenant({ href: 'boom!' }, client._dataStore);
+      cbSpy = sandbox.spy();
+
+      getCurrentTenantStub = sandbox.stub(client, 'getCurrentTenant', function(cb) {
+        if (returnError) {
+          return cb(err);
+        }
+
+        return cb(null, tenant);
+      });
+
+      getTenantAccounts = sandbox.stub(tenant, 'getAccounts', function(options, cb) {
+        cb();
+      });
+    });
+
+    after(function() {
+      sandbox.restore();
+    });
+
+    it('should call tenant get accounts', function() {
+      client.getAccounts(cbSpy);
+      client.getAccounts({}, cbSpy);
+
+      getTenantAccounts.should.have.been.calledWith(null, cbSpy);
+      getTenantAccounts.should.have.been.calledWith({}, cbSpy);
+
+      /* jshint -W030 */
+      getCurrentTenantStub.should.have.been.calledTwice;
+      getTenantAccounts.should.have.been.calledTwice;
+      /* jshint +W030 */
+    });
+
+    it('should return error', function() {
+      returnError = true;
+
+      client.getAccounts(cbSpy);
+      cbSpy.should.have.been.calledWith(err);
+
+      /* jshint -W030 */
+      getCurrentTenantStub.should.have.been.calledThrice;
+      getTenantAccounts.should.have.been.calledTwice;
+      /* jshint +W030 */
+    });
+  });
+
+  describe('call to get groups', function() {
+    var cbSpy, client, err, sandbox, tenant;
+    var getCurrentTenantStub, getTenantGroups;
+    var returnError = false;
+
+    before(function() {
+      sandbox = sinon.sandbox.create();
+      err = {error: 'boom!'};
+      client = new Client({ apiKey: apiKey });
+      tenant = new Tenant({ href: 'boom!' }, client._dataStore);
+      cbSpy = sandbox.spy();
+
+      getCurrentTenantStub = sandbox.stub(client, 'getCurrentTenant', function(cb) {
+        if (returnError) {
+          return cb(err);
+        }
+
+        return cb(null, tenant);
+      });
+
+      getTenantGroups = sandbox.stub(tenant, 'getGroups', function(options, cb) {
+        cb();
+      });
+    });
+
+    after(function() {
+      sandbox.restore();
+    });
+
+    it('should call tenant get groups', function() {
+      client.getGroups(cbSpy);
+      client.getGroups({}, cbSpy);
+
+      getTenantGroups.should.have.been.calledWith(null, cbSpy);
+      getTenantGroups.should.have.been.calledWith({}, cbSpy);
+
+      /* jshint -W030 */
+      getCurrentTenantStub.should.have.been.calledTwice;
+      getTenantGroups.should.have.been.calledTwice;
+      /* jshint +W030 */
+    });
+
+    it('should return error', function() {
+      returnError = true;
+
+      client.getGroups(cbSpy);
+      cbSpy.should.have.been.calledWith(err);
+
+      /* jshint -W030 */
+      getCurrentTenantStub.should.have.been.calledThrice;
+      getTenantGroups.should.have.been.calledTwice;
+      /* jshint +W030 */
+    });
+  });
+
   describe('call to get applications', function () {
     var sandbox, client, getCurrentTenantStub, getTenantApplications,
       cbSpy, err, tenant;
@@ -218,7 +531,7 @@ describe('Client', function () {
     it('should return error', function(){
       returnError = true;
       client.getApplications(cbSpy);
-      cbSpy.should.have.been.calledWith(err, null);
+      cbSpy.should.have.been.calledWith(err);
       /* jshint -W030 */
       getCurrentTenantStub.should.have.been.calledThrice;
       getTenantApplications.should.have.been.calledTwice;
@@ -267,7 +580,7 @@ describe('Client', function () {
     it('should return error', function(){
       returnError = true;
       client.createApplication(app, cbSpy);
-      cbSpy.should.have.been.calledWith(err, null);
+      cbSpy.should.have.been.calledWith(err);
       /* jshint -W030 */
       getCurrentTenantStub.should.have.been.calledThrice;
       createTenantApplication.should.have.been.calledTwice;
@@ -316,7 +629,7 @@ describe('Client', function () {
     it('should return error', function(){
       returnError = true;
       client.getDirectories(cbSpy);
-      cbSpy.should.have.been.calledWith(err, null);
+      cbSpy.should.have.been.calledWith(err);
       /* jshint -W030 */
       getCurrentTenantStub.should.have.been.calledThrice;
       getTenantDirectories.should.have.been.calledTwice;
@@ -365,7 +678,7 @@ describe('Client', function () {
     it('should return error', function(){
       returnError = true;
       client.createDirectory(app, cbSpy);
-      cbSpy.should.have.been.calledWith(err, null);
+      cbSpy.should.have.been.calledWith(err);
       /* jshint -W030 */
       getCurrentTenantStub.should.have.been.calledThrice;
       createTenantDirectory.should.have.been.calledTwice;

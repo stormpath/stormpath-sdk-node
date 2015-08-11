@@ -1,5 +1,10 @@
 # stormpath-sdk-node Change Log
 
+### 0.10.1
+
+Client constructor now accepts `baseUrl` as an option, allowing you to change
+the base URL from `'https://api.stormpath.com/v1'` to a custom value.
+
 ### 0.10.0
 
 * The client constructor now allows you to specify the `apiKeyEncryptionOptions` option.
