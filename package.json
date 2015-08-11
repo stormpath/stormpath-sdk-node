@@ -52,7 +52,7 @@
     "memcached": "~0.2.8",
     "glob": "3",
     "jwt-simple": "~0.2.0",
-    "njwt": "^0.2.1",
+    "njwt": "0.0.1",
     "deep-extend": "^0.4.0",
     "flat": "^1.6.0"
   },
