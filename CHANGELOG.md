@@ -3,6 +3,8 @@
 ### 0.10.2
 
 * Ignoring `.env` files so they don't end up in the npm artifacts.
+* Adding new config parsing logic.  This will parse a `config.json` file.  This
+  will be used in the upcoming major release, to supply options in a new manner.
 
 ### 0.10.1
 
