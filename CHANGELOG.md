@@ -1,5 +1,9 @@
 # stormpath-sdk-node Change Log
 
+### 0.10.2
+
+* Ignoring `.env` files so they don't end up in the npm artifacts.
+
 ### 0.10.1
 
 Client constructor now accepts `baseUrl` as an option, allowing you to change
