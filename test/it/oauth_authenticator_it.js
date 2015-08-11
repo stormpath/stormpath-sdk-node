@@ -8,7 +8,7 @@ var stormpath = require('../../');
 
 var nJwt = require('nJwt');
 
-var OAuthAuthenticationResult = require('../../lib/authc/OAuthAuthenticationResult');
+var OAuthAuthenticationResult = require('../../lib/oauth/authentication-result');
 
 function assertUnauthenticatedResponse(done){
   return function(err){
