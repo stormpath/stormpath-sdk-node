@@ -76,10 +76,8 @@ describe('OAuthAuthenticator',function(){
   it('should be able to issue tokens for password grant requests', function(done){
     var authenticator = stormpath.OAuthAuthenticator(application);
     authenticator.authenticate({
-      params:{
-        grant_type: 'password'
-      },
       body: {
+        grant_type: 'password',
         username: newAccount.username,
         password: newAccount.password
       }
