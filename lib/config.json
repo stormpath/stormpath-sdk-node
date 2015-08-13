@@ -47,6 +47,13 @@
       "path": "/",
       "domain": null
     },
+    "refreshTokenCookie":{
+      "name": "refresh_token",
+      "httpOnly": true,
+      "secure": null,
+      "path": "/",
+      "domain": null
+    },
     "register": {
       "enabled": false,
       "uri": "/register",
