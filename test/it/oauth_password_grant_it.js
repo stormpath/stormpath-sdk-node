@@ -14,11 +14,12 @@ describe('OAuthPasswordGrantRequestAuthenticator',function(){
   before(function(done){
     helpers.createApplication(function(err,app){
       application = app;
-
-
       application.createAccount(newAccount,done);
-
     });
+  });
+
+  after(function(done){
+    application.delete(done);
   });
 
   it('should be constructable with new operator',function(){

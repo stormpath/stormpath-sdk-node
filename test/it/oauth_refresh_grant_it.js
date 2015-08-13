@@ -40,6 +40,10 @@ describe('OAuthRefreshTokenGrantRequestAuthenticator',function(){
     });
   });
 
+  after(function(done){
+    application.delete(done);
+  });
+
   it('should be constructable with new operator',function(){
     var authenticator = new stormpath.OAuthRefreshTokenGrantRequestAuthenticator(application);
     assert.instanceOf(authenticator,stormpath.OAuthRefreshTokenGrantRequestAuthenticator);

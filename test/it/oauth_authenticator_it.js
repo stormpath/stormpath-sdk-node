@@ -31,14 +31,17 @@ function assertOAuthAuthenticationResult(done){
 
 describe('OAuthAuthenticator',function(){
 
-  var application, passwordGrantResponse;
+  var application, application2, passwordGrantResponse;
 
   var newAccount = helpers.fakeAccount();
 
   var unsignedToken = nJwt.create({hello:'world'},'not a secret').compact();
 
   var expiredToken;
-
+  /*
+    Create two applications, one with an oauth policy that
+    has a very short access token ttl - for testing token expiration
+   */
   before(function(done){
     helpers.createApplication(function(err,app){
       if(err){
@@ -52,10 +55,45 @@ describe('OAuthAuthenticator',function(){
           ).setExpiration(new Date().getTime())
           .compact();
 
-        application.createAccount(newAccount,done);
+        application.createAccount(newAccount,function(err){
+          if(err){
+            done(err);
+          }else{
+
+            helpers.createApplication(function(err,app2){
+              if(err){
+                done(err);
+              }else{
+                application2 = app2;
+                /*
+                  We are setting the token ttl to 2 seconds, beacuse
+                  we want to test expired tokens in this test
+                 */
+                application2.getOAuthPolicy(function(err,policy){
+                  if(err){
+                    done(err);
+                  }else{
+                    policy.accessTokenTtl = 'PT2S';
+                    policy.save(function(err){
+                      if(err){
+                        done(err);
+                      }else{
+                        application2.createAccount(newAccount,done);
+                      }
+                    });
+                  }
+                });
+              }
+            });
+          }
+        });
       }
 
     });
+  });
+
+  after(function(done){
+    application.delete(done);
   });
 
   it('should be constructable with new operator',function(){
@@ -99,6 +137,29 @@ describe('OAuthAuthenticator',function(){
         authorization: 'Basic abc'
       }
     },assertUnauthenticatedResponse(done));
+  });
+
+  it('should reject expired tokens',function(done){
+
+    new stormpath.OAuthPasswordGrantRequestAuthenticator(application2)
+      .authenticate({
+        username: newAccount.username,
+        password: newAccount.password
+      },function(err,passwordGrantResponse){
+        if(err){
+          done(err);
+        }else{
+          setTimeout(function(){
+            new stormpath.OAuthAuthenticator(application2)
+              .authenticate({
+                headers: {
+                  authorization: 'Bearer ' + passwordGrantResponse.accessToken.toString()
+                }
+              },assertUnauthenticatedResponse(done));
+          },5000);
+        }
+      });
+
   });
 
   describe('with local authentication',function(){
