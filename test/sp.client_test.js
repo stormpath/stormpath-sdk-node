@@ -145,6 +145,48 @@ describe('Client', function () {
     });
   });
 
+  describe('with an app href that has a valid default account store with password reset enabled', function() {
+    var application, directory;
+
+    before(function(done) {
+      new Client().createApplication({ name:common.uuid() }, { createDirectory: true }, function(err, app) {
+        if (err) { throw err; }
+
+        application = app;
+        application.getDefaultAccountStore(function(err, accountStoreMapping) {
+          if (err) { throw err; }
+
+          accountStoreMapping.getAccountStore(function(err, dir) {
+            if (err) { throw err; }
+
+            directory = dir;
+            directory.getPasswordPolicy(function(err, policy) {
+              if (err) { throw err; }
+
+              policy.resetEmailStatus = 'ENABLED';
+              policy.save(done);
+            });
+          });
+        });
+      });
+    });
+
+    after(function(done) {
+      application.delete(function() {
+        directory.delete(done);
+      });
+    });
+
+    it('should apply the account store policies to the config', function(done) {
+      var client = new Client({ application: { href: application.href } });
+      client.on('ready', function() {
+        assert.equal(client.config.web.forgotPassword.enabled, true);
+        assert.equal(client.config.web.changePassword.enabled, true);
+        done();
+      });
+    });
+  });
+
   describe('with an app href that DOES NOT have a valid default account store',function(){
     var application;
     before(function(done){
