@@ -69,6 +69,56 @@ describe('Client', function () {
       },new RegExp('Client API key file not found: ' + filename));
       resetEnvVars();
     });
+
+    it('should apply the default config.json to the client.config object', function(done) {
+      var client = new Client({
+        client: {
+          apiKey: {
+            id: '1',
+            secret: '1'
+          }
+        }
+      });
+
+      assert(client.config.web.register.fieldOrder);
+      done();
+    });
+
+    it('should emit a ready event with the client itself as the value', function(done) {
+      var client = new Client({
+        client: {
+          apiKey: { id: '1', secret: '2' }
+        }
+      });
+
+      client.on('ready', function(c) {
+        assert.deepEqual(client.config.client, c.config.client);
+        done();
+      });
+    });
+
+    it('should override custom config options on the client.config object', function(done) {
+      var client = new Client({
+        client: {
+          apiKey: {
+            id: '1',
+            secret: '1'
+          }
+        },
+        web: {
+          register: {
+            enabled: true,
+            fieldOrder: ['email', 'password']
+          }
+        }
+      });
+
+      assert.equal(client.config.web.register.fieldOrder.length, 2);
+      assert.equal(client.config.web.register.fieldOrder[0], 'email');
+      assert.equal(client.config.web.register.fieldOrder[1], 'password');
+      done();
+    });
+
     it('should throw if it\'s an invalid properties file', function () {
       var resetEnvVars = clearEnvVars('STORMPATH_CLIENT_APIKEY_ID','STORMPATH_CLIENT_APIKEY_SECRET');
       var tmpobj = tmp.fileSync();
