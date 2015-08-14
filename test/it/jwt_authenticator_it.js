@@ -8,7 +8,7 @@ var stormpath = require('../../');
 
 var nJwt = require('nJwt');
 
-var OAuthAuthenticationResult = require('../../lib/oauth/authentication-result');
+var JwtAuthenticationResult = require('../../lib/oauth/jwt-authentication-result');
 
 function assertUnauthenticatedResponse(done){
   return function(err){
@@ -18,10 +18,10 @@ function assertUnauthenticatedResponse(done){
   };
 }
 
-function assertOAuthAuthenticationResult(done){
+function assertJwtAuthenticationResult(done){
   return function(err,response){
     assert.isNull(err);
-    assert.instanceOf(response, OAuthAuthenticationResult);
+    assert.instanceOf(response, JwtAuthenticationResult);
     assert.isDefined(response, 'jwt');
     assert.isDefined(response, 'expandedJwt');
     done();
@@ -29,7 +29,7 @@ function assertOAuthAuthenticationResult(done){
 }
 
 
-describe('OAuthAuthenticator',function(){
+describe('JwtAuthenticator',function(){
 
   var application, application2, passwordGrantResponse;
 
@@ -97,22 +97,24 @@ describe('OAuthAuthenticator',function(){
   });
 
   it('should be constructable with new operator',function(){
-    var authenticator = new stormpath.OAuthAuthenticator(application);
-    assert.instanceOf(authenticator,stormpath.OAuthAuthenticator);
+    var authenticator = new stormpath.JwtAuthenticator(application);
+    assert.instanceOf(authenticator,stormpath.JwtAuthenticator);
   });
 
   it('should be constructable without new operator',function(){
-    var authenticator = stormpath.OAuthAuthenticator(application);
-    assert.instanceOf(authenticator,stormpath.OAuthAuthenticator);
+    var authenticator = stormpath.JwtAuthenticator(application);
+    assert.instanceOf(authenticator,stormpath.JwtAuthenticator);
   });
 
   it('should throw if not called with a request and callback',function(){
-    var authenticator = stormpath.OAuthAuthenticator(application);
+    var authenticator = stormpath.JwtAuthenticator(application);
     assert.throws(authenticator.authenticate);
   });
 
+  /* this needs to be moved to an oauth authenticator */
+
   it('should be able to issue tokens for password grant requests', function(done){
-    var authenticator = stormpath.OAuthAuthenticator(application);
+    var authenticator = stormpath.JwtAuthenticator(application);
     authenticator.authenticate({
       body: {
         grant_type: 'password',
@@ -126,12 +128,12 @@ describe('OAuthAuthenticator',function(){
   });
 
   it('should return 401 if no auth information is given',function(done){
-    var authenticator = stormpath.OAuthAuthenticator(application);
+    var authenticator = stormpath.JwtAuthenticator(application);
     authenticator.authenticate({},assertUnauthenticatedResponse(done));
   });
 
   it('should return 401 if the Authorization header is not Bearer',function(done){
-    var authenticator = stormpath.OAuthAuthenticator(application);
+    var authenticator = stormpath.JwtAuthenticator(application);
     authenticator.authenticate({
       headers: {
         authorization: 'Basic abc'
@@ -150,7 +152,7 @@ describe('OAuthAuthenticator',function(){
           done(err);
         }else{
           setTimeout(function(){
-            new stormpath.OAuthAuthenticator(application2)
+            new stormpath.JwtAuthenticator(application2)
               .authenticate({
                 headers: {
                   authorization: 'Bearer ' + passwordGrantResponse.accessToken.toString()
@@ -167,16 +169,16 @@ describe('OAuthAuthenticator',function(){
     var authenticator;
 
     before(function(){
-      authenticator = new stormpath.OAuthAuthenticator(application).withLocalValidation();
+      authenticator = new stormpath.JwtAuthenticator(application).withLocalValidation();
     });
 
-    it('should validate access tokens, created via password grant flow, and return an OAuth authentication result',function(done){
+    it('should validate access tokens from Bearer header and return a JwtAuthenticationResult',function(done){
 
       authenticator.authenticate({
         headers: {
           authorization: 'Bearer ' + passwordGrantResponse.accessToken
         }
-      },assertOAuthAuthenticationResult(done));
+      },assertJwtAuthenticationResult(done));
     });
 
     it('should return 401 if the access token is not signed by the application',function(done){
@@ -195,21 +197,21 @@ describe('OAuthAuthenticator',function(){
       },assertUnauthenticatedResponse(done));
     });
 
-    it('should be able to read the access token from the default cookie location',function(done){
+    it('should validate access tokens from default cookie location and return a JwtAuthenticationResult',function(done){
       authenticator.authenticate({
         cookies: {
           access_token: passwordGrantResponse.accessToken.toString()
         }
-      },assertOAuthAuthenticationResult(done));
+      },assertJwtAuthenticationResult(done));
     });
 
-    it('should be able to read the access token from a custom cookie location',function(done){
+    it('should validate access tokens from custom cookie location and return a JwtAuthenticationResult',function(done){
       authenticator.withCookie('customCookieName');
       authenticator.authenticate({
         cookies: {
           customCookieName: passwordGrantResponse.accessToken.toString()
         }
-      },assertOAuthAuthenticationResult(done));
+      },assertJwtAuthenticationResult(done));
     });
   });
 
@@ -218,7 +220,7 @@ describe('OAuthAuthenticator',function(){
     var authenticator;
 
     before(function(){
-      authenticator = new stormpath.OAuthAuthenticator(application);
+      authenticator = new stormpath.JwtAuthenticator(application);
     });
 
     it('should return 401 if the access token is not signed by the application',function(done){
@@ -237,12 +239,12 @@ describe('OAuthAuthenticator',function(){
       },assertUnauthenticatedResponse(done));
     });
 
-    it('should validate access tokens from the password grant flow and return the API response',function(done){
+    it('should validate access tokens and return a JwtAuthenticationResult',function(done){
       authenticator.authenticate({
         headers: {
           authorization: 'Bearer ' + passwordGrantResponse.accessToken.toString()
         }
-      },assertOAuthAuthenticationResult(done));
+      },assertJwtAuthenticationResult(done));
     });
   });
 
