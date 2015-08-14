@@ -29,7 +29,7 @@ function assertJwtAuthenticationResult(done){
 }
 
 
-describe('JwtAuthenticator',function(){
+describe('OAuthAuthenticator',function(){
 
   var application, application2, passwordGrantResponse;
 
@@ -59,13 +59,6 @@ describe('JwtAuthenticator',function(){
           if(err){
             done(err);
           }else{
-            new stormpath.OAuthPasswordGrantRequestAuthenticator(application)
-              .authenticate({
-                username: newAccount.email,
-                password: newAccount.password
-              },function(err,accessTokenResponse){
-                passwordGrantResponse = accessTokenResponse;
-              });
 
             helpers.createApplication(function(err,app2){
               if(err){
@@ -104,27 +97,43 @@ describe('JwtAuthenticator',function(){
   });
 
   it('should be constructable with new operator',function(){
-    var authenticator = new stormpath.JwtAuthenticator(application);
-    assert.instanceOf(authenticator,stormpath.JwtAuthenticator);
+    var authenticator = new stormpath.OAuthAuthenticator(application);
+    assert.instanceOf(authenticator,stormpath.OAuthAuthenticator);
   });
 
   it('should be constructable without new operator',function(){
-    var authenticator = stormpath.JwtAuthenticator(application);
-    assert.instanceOf(authenticator,stormpath.JwtAuthenticator);
+    var authenticator = stormpath.OAuthAuthenticator(application);
+    assert.instanceOf(authenticator,stormpath.OAuthAuthenticator);
   });
 
   it('should throw if not called with a request and callback',function(){
-    var authenticator = stormpath.JwtAuthenticator(application);
+    var authenticator = stormpath.OAuthAuthenticator(application);
     assert.throws(authenticator.authenticate);
   });
 
+  /* this needs to be moved to an oauth authenticator */
+
+  it('should be able to issue tokens for password grant requests', function(done){
+    var authenticator = stormpath.OAuthAuthenticator(application);
+    authenticator.authenticate({
+      body: {
+        grant_type: 'password',
+        username: newAccount.username,
+        password: newAccount.password
+      }
+    },function(err,result){
+      common.assertPasswordGrantResponse(done)(err,result);
+      passwordGrantResponse = result;
+    });
+  });
+
   it('should return 401 if no auth information is given',function(done){
-    var authenticator = stormpath.JwtAuthenticator(application);
+    var authenticator = stormpath.OAuthAuthenticator(application);
     authenticator.authenticate({},assertUnauthenticatedResponse(done));
   });
 
   it('should return 401 if the Authorization header is not Bearer',function(done){
-    var authenticator = stormpath.JwtAuthenticator(application);
+    var authenticator = stormpath.OAuthAuthenticator(application);
     authenticator.authenticate({
       headers: {
         authorization: 'Basic abc'
@@ -143,7 +152,7 @@ describe('JwtAuthenticator',function(){
           done(err);
         }else{
           setTimeout(function(){
-            new stormpath.JwtAuthenticator(application2)
+            new stormpath.OAuthAuthenticator(application2)
               .authenticate({
                 headers: {
                   authorization: 'Bearer ' + passwordGrantResponse.accessToken.toString()
@@ -160,21 +169,34 @@ describe('JwtAuthenticator',function(){
     var authenticator;
 
     before(function(){
-      authenticator = new stormpath.JwtAuthenticator(application).withLocalValidation();
+      authenticator = new stormpath.OAuthAuthenticator(application).withLocalValidation();
     });
 
     it('should validate access tokens from Bearer header and return a JwtAuthenticationResult',function(done){
 
-      authenticator.authenticate(passwordGrantResponse.accessToken.toString(),assertJwtAuthenticationResult(done));
+      authenticator.authenticate({
+        headers: {
+          authorization: 'Bearer ' + passwordGrantResponse.accessToken
+        }
+      },assertJwtAuthenticationResult(done));
     });
 
     it('should return 401 if the access token is not signed by the application',function(done){
-      authenticator.authenticate(unsignedToken,assertUnauthenticatedResponse(done));
+      authenticator.authenticate({
+        headers: {
+          authorization: 'Bearer ' + unsignedToken
+        }
+      },assertUnauthenticatedResponse(done));
     });
 
     it('should return 401 if the token is expired',function(done){
-      authenticator.authenticate(expiredToken,assertUnauthenticatedResponse(done));
+      authenticator.authenticate({
+        headers: {
+          authorization: 'Bearer ' + expiredToken
+        }
+      },assertUnauthenticatedResponse(done));
     });
+
   });
 
   describe('with remote authentication',function(){
@@ -182,19 +204,31 @@ describe('JwtAuthenticator',function(){
     var authenticator;
 
     before(function(){
-      authenticator = new stormpath.JwtAuthenticator(application);
+      authenticator = new stormpath.OAuthAuthenticator(application);
     });
 
     it('should return 401 if the access token is not signed by the application',function(done){
-      authenticator.authenticate(unsignedToken,assertUnauthenticatedResponse(done));
+      authenticator.authenticate({
+        headers: {
+          authorization: 'Bearer ' + unsignedToken
+        }
+      },assertUnauthenticatedResponse(done));
     });
 
     it('should return 401 if the token is expired',function(done){
-      authenticator.authenticate(expiredToken,assertUnauthenticatedResponse(done));
+      authenticator.authenticate({
+        headers: {
+          authorization: 'Bearer ' + expiredToken
+        }
+      },assertUnauthenticatedResponse(done));
     });
 
     it('should validate access tokens and return a JwtAuthenticationResult',function(done){
-      authenticator.authenticate(passwordGrantResponse.accessToken.toString(),assertJwtAuthenticationResult(done));
+      authenticator.authenticate({
+        headers: {
+          authorization: 'Bearer ' + passwordGrantResponse.accessToken.toString()
+        }
+      },assertJwtAuthenticationResult(done));
     });
   });
 
