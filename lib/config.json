@@ -134,6 +134,7 @@
     "idSite": {
       "enabled": false,
       "uri": "/idSiteResult",
+      "nextUri": "/",
       "loginUri": "",
       "forgotUri": "/#/forgot",
       "registerUri": "/#/register"
