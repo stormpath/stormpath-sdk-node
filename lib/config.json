@@ -103,7 +103,7 @@
           "type": "password"
         }
       },
-      "fieldOrder": [ "username", givenName", "middleName", "surname", "email", "password", "passwordConfirm" ],
+      "fieldOrder": [ "username", "givenName", "middleName", "surname", "email", "password", "passwordConfirm" ],
       "view": "register"
     },
     "verifyEmail": {
