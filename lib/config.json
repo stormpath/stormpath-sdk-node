@@ -60,6 +60,12 @@
       "nextUri": "/",
       "autoAuthorize": false,
       "fields": {
+        "username": {
+          "name": "username",
+          "placeholder": "Username",
+          "required": false,
+          "type": "text"
+        },
         "givenName": {
           "name": "givenName",
           "placeholder": "First Name",
@@ -97,7 +103,7 @@
           "type": "password"
         }
       },
-      "fieldOrder": [ "givenName", "middleName", "surname", "email", "password", "passwordConfirm" ],
+      "fieldOrder": [ "username", givenName", "middleName", "surname", "email", "password", "passwordConfirm" ],
       "view": "register"
     },
     "verifyEmail": {
