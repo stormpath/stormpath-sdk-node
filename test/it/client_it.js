@@ -113,24 +113,27 @@ describe('Client', function() {
   });
 
   describe('getCurrentTenant', function() {
-    var result;
     var Tenant = require('../../lib/resource/Tenant');
 
-    before(function(done) {
+    it('should not err', function(done) {
       helpers.getClient(function(client) {
-        client.getCurrentTenant(function(err, tenant) {
-          result = [err, tenant];
+        client.getCurrentTenant(function(err) {
+          assert.equal(err, null);
           done();
         });
       });
     });
 
-    it('should not err', function() {
-      assert.equal(result[0], null);
-    });
+    it('should return a tenant instance', function(done) {
+      helpers.getClient(function(client) {
+        client.getCurrentTenant(function(err, tenant) {
+          if (err) {
+            return done(err);
+          }
 
-    it('should return a tenant instance', function() {
-      assert.instanceOf(result[1], Tenant);
+          assert(tenant instanceof Tenant);
+        });
+      });
     });
   });
 });
