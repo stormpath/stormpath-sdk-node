@@ -100,7 +100,9 @@ describe('Client', function() {
               return done(err);
             }
 
-            assert.equal(client.config.socialProviders.length, 1);
+            assert.equal(client.config.socialProviders.facebook.providerId, 'facebook');
+            assert.equal(client.config.socialProviders.facebook.clientId, 'xxx');
+            assert.equal(client.config.socialProviders.facebook.clientSecret, 'yyy');
             done();
           });
         });
@@ -132,6 +134,7 @@ describe('Client', function() {
           }
 
           assert(tenant instanceof Tenant);
+          done();
         });
       });
     });
