@@ -29,6 +29,16 @@
     "name": null,
     "href": null
   },
+  "socialProviders":{
+    "google": {
+      "enabled": false,
+      "callbackUri": "/callbacks/google"
+    },
+    "facebook": {
+      "enabled": false,
+      "callbackUri": "/callbacks/facebook"
+    }
+  },
   "web": {
     "oauth2":{
       "enabled": false,
@@ -47,20 +57,63 @@
       "path": "/",
       "domain": null
     },
+    "refreshTokenCookie":{
+      "name": "refresh_token",
+      "httpOnly": true,
+      "secure": null,
+      "path": "/",
+      "domain": null
+    },
     "register": {
       "enabled": false,
       "uri": "/register",
       "nextUri": "/",
       "autoAuthorize": false,
       "fields": {
-        "givenName": { "required": true },
-        "middleName": { "required": false },
-        "surname": { "required": true },
-        "email": { "required": true, "type": "email" },
-        "password": { "required": true, "type": "password" },
-        "passwordConfirm": { "required": false, "type": "password" }
+        "username": {
+          "name": "username",
+          "placeholder": "Username",
+          "required": false,
+          "type": "text"
+        },
+        "givenName": {
+          "name": "givenName",
+          "placeholder": "First Name",
+          "required": true,
+          "type": "text"
+        },
+        "middleName": {
+          "name": "middleName",
+          "placeholder": "Middle Name",
+          "required": false,
+          "type": "text"
+        },
+        "surname": {
+          "name": "surname",
+          "placeholder": "Last Name",
+          "required": true,
+          "type": "text"
+        },
+        "email": {
+          "name": "email",
+          "placeholder": "Email",
+          "required": true,
+          "type": "email"
+        },
+        "password": {
+          "name": "password",
+          "placeholder": "Password",
+          "required": true,
+          "type": "password"
+        },
+        "passwordConfirm": {
+          "name": "passwordConfirm",
+          "placeholder": "Confirm Password",
+          "required": false,
+          "type": "password"
+        }
       },
-      "fieldOrder": [ "givenName", "middleName", "surname", "email", "password", "passwordConfirm" ],
+      "fieldOrder": [ "username", "givenName", "middleName", "surname", "email", "password", "passwordConfirm" ],
       "view": "register"
     },
     "verifyEmail": {
@@ -97,6 +150,7 @@
     "idSite": {
       "enabled": false,
       "uri": "/idSiteResult",
+      "nextUri": "/",
       "loginUri": "",
       "forgotUri": "/#/forgot",
       "registerUri": "/#/register"
