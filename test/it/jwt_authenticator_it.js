@@ -73,14 +73,14 @@ describe('JwtAuthenticator',function(){
               }else{
                 application2 = app2;
                 /*
-                  We are setting the token ttl to 2 seconds, beacuse
+                  We are setting the token ttl to 10 seconds, beacuse
                   we want to test expired tokens in this test
                  */
                 application2.getOAuthPolicy(function(err,policy){
                   if(err){
                     done(err);
                   }else{
-                    policy.accessTokenTtl = 'PT2S';
+                    policy.accessTokenTtl = 'PT10S';
                     policy.save(function(err){
                       if(err){
                         done(err);
@@ -149,7 +149,7 @@ describe('JwtAuthenticator',function(){
                   authorization: 'Bearer ' + passwordGrantResponse.accessToken.toString()
                 }
               },assertUnauthenticatedResponse(done));
-          },5000);
+          },10000);
         }
       });
 
