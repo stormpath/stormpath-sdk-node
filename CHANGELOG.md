@@ -1,5 +1,11 @@
 # stormpath-sdk-node Change Log
 
+### 0.11.0
+
+* Supporting OAuth Password Grant flow, using api.stormpath.com as the data store
+
+* Supporting new configuration format, for web framework integrations
+
 ### 0.10.2
 
 * Ignoring `.env` files so they don't end up in the npm artifacts.
