@@ -29,6 +29,16 @@
     "name": null,
     "href": null
   },
+  "socialProviders":{
+    "google": {
+      "enabled": false,
+      "callbackUri": "/callbacks/google"
+    },
+    "facebook": {
+      "enabled": false,
+      "callbackUri": "/callbacks/facebook"
+    }
+  },
   "web": {
     "oauth2":{
       "enabled": false,
