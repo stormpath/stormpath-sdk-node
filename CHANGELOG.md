@@ -1,5 +1,10 @@
 # stormpath-sdk-node Change Log
 
+### 0.11.1
+
+Adding configuration options `web` and `api`.  These are to be consumed
+by a framework integration, and indicate which features to enable by default
+
 ### 0.11.0
 
 * Supporting OAuth Password Grant flow, using api.stormpath.com as the data store
