@@ -84,6 +84,39 @@ describe('Client', function () {
       done();
     });
 
+    it('should enable all web routes if the website config option is specified', function(done) {
+      var client = new Client({
+        client: {
+          apiKey: {
+            id: '1',
+            secret: '1'
+          }
+        },
+        website: true
+      });
+
+      assert(client.config.web.register.enabled);
+      assert(client.config.web.login.enabled);
+      assert(client.config.web.logout.enabled);
+
+      done();
+    });
+
+    it('should enable all oauth2 routes if the api config option is specified', function(done) {
+      var client = new Client({
+        client: {
+          apiKey: {
+            id: '1',
+            secret: '1'
+          }
+        },
+        api: true
+      });
+
+      assert(client.config.web.oauth2.enabled);
+      done();
+    });
+
     it('should emit a ready event with the client itself as the value', function(done) {
       var client = new Client({
         client: {
