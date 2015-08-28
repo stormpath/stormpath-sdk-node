@@ -7,5 +7,5 @@ before_install: travis_retry npm install -g npm@'=1.4.3'
 script: travis_retry npm test
 env:
   global:
-    - secure: Us1Ti22sb1n8tDbVlV9W0nVEVZIRGskDTirk6q+G1W+XwL+8LyV++pkxZjiWmnjmGEkaSxZmjt8vdN9WbnqhYqFA4QeeNY9VlcnN3wFN1vWD3u0K2zE9mKFLBXjKlWxp75BgJnL/1Y+j3Vx/0sKniYK1zTtKwI6oEUrDIVA3LjY=
-    - secure: W03n0vCsdL9bWsSs+NMF31R3O/WcXw7NubFjOUj8Khu6R1kT6xghgN3aI2rPSgQGmLSg/kz9giE+Zq3iqWZvABuIssSGw2qh2YtonIqFMm7pI6Kv++T4Y6fyWStzKl3PhdmfUyzuWLeCNRux6owaOBb9RryvM6+Nh9VsK+1NLVE=
+    - secure: WCgB7V49Zfq7gRRUgzHyZ5xDjlmlphl353/9hxI8nsxYxZHtu6SDvmZyA3TPQXECpIaGNTC/7KwaK4saYughdx9uvFmUOtn9+zmoseKas1N++NWLNG6mLywfBMdOalGjbp4Tbh5XrcPbA86JHwU0Kymj0e20YfZOhzfrcIWF03g=
+    - secure: dKXd0+zTZELr4jHAlrdLrXzQ25CcX1SCTlOFlaZ6JtMYHZDt26EzBTPcdFbfpAADuK5h4vYRBjWeoQc7q4cAgTIvFtHdQHlGzLD4Nyyz96bV4TcT4PBKr3m8XD96N0syZRJM45WCuayELt8ivx2EPcrSpgFK6zE3MNzU6GSm5hY=
