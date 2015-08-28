@@ -80,5 +80,5 @@ module.exports = function (grunt) {
   grunt.registerTask('it', ['jshint','mocha_istanbul:it']);
   grunt.registerTask('live', ['mochaTest:live']);
   grunt.registerTask('coverage', ['mocha_istanbul:coverage']);
-  grunt.registerTask('default', ['jshint', 'coverage']);
+  grunt.registerTask('default', ['jshint', 'coverage', 'it']);
 };
