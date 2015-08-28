@@ -5,5 +5,5 @@ node_js:
 before_install: npm install -g npm@'=1.4.3'
 env:
   global:
-    - secure: f5W6I7I7CkXxoQ/OiyR/jg2smhrHkbcOKTEthYZaXRQnkVZvPnhTl6GKfQi+WS6+BUcIcnUCAvHVTYskAbBiQnjKyCXSeOfdUY8NEmAmRU+crLVxCuwntOPnsEtP+kPIgqVIkdGehhE2tZxBAFoDNEbqDJqi+mmdA4Z5W8tHXOU=
-    - secure: SY+aIBwso5oUqm5JGyAlLSvuB3kQbfQnJak2hv18cFRraSc0z9eSAR0m+W0pzSG0XfvtvGhmAcEIFHMruXOnOIE61ArSqD9nqWFCjow7+3L7Vt9Qzd4e8a3Wivk0nEaAmVr5Qm3Ef9oGob0O4qJrgeIR4EotUKsBeijhXxys38k=
+    - secure: Us1Ti22sb1n8tDbVlV9W0nVEVZIRGskDTirk6q+G1W+XwL+8LyV++pkxZjiWmnjmGEkaSxZmjt8vdN9WbnqhYqFA4QeeNY9VlcnN3wFN1vWD3u0K2zE9mKFLBXjKlWxp75BgJnL/1Y+j3Vx/0sKniYK1zTtKwI6oEUrDIVA3LjY=
+    - secure: W03n0vCsdL9bWsSs+NMF31R3O/WcXw7NubFjOUj8Khu6R1kT6xghgN3aI2rPSgQGmLSg/kz9giE+Zq3iqWZvABuIssSGw2qh2YtonIqFMm7pI6Kv++T4Y6fyWStzKl3PhdmfUyzuWLeCNRux6owaOBb9RryvM6+Nh9VsK+1NLVE=
