@@ -1,9 +1,7 @@
 language: node_js
 node_js:
   - '0.10'
-  - '0.8'
 sudo: false
-before_install: travis_retry npm install -g npm@'=1.4.3'
 script: travis_retry npm test
 env:
   global:
