@@ -8,8 +8,8 @@ function loadApiKey(cb){
 
 
 
-  var id = process.env['STORMPATH_API_KEY_ID'];
-  var secret = process.env['STORMPATH_API_KEY_SECRET'];
+  var id = process.env['STORMPATH_CLIENT_APIKEY_ID'];
+  var secret = process.env['STORMPATH_CLIENT_APIKEY_SECRET'];
 
   if(id && secret){
     process.nextTick(function(){
