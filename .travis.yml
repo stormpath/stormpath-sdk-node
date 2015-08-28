@@ -3,6 +3,7 @@ node_js:
   - '0.10'
   - '0.8'
 before_install: npm install
+sudo: false
 env:
   global:
     - secure: Us1Ti22sb1n8tDbVlV9W0nVEVZIRGskDTirk6q+G1W+XwL+8LyV++pkxZjiWmnjmGEkaSxZmjt8vdN9WbnqhYqFA4QeeNY9VlcnN3wFN1vWD3u0K2zE9mKFLBXjKlWxp75BgJnL/1Y+j3Vx/0sKniYK1zTtKwI6oEUrDIVA3LjY=
