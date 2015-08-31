@@ -1,5 +1,10 @@
 # stormpath-sdk-node Change Log
 
+### 0.11.2
+
+Modifying our test runner.  If you run `npm test`, all tests will be ran -- not
+just the mocks.
+
 ### 0.11.1
 
 Adding configuration options `web` and `api`.  These are to be consumed
