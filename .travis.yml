@@ -5,5 +5,5 @@ sudo: false
 script: travis_retry npm test
 env:
   global:
-    - secure: WCgB7V49Zfq7gRRUgzHyZ5xDjlmlphl353/9hxI8nsxYxZHtu6SDvmZyA3TPQXECpIaGNTC/7KwaK4saYughdx9uvFmUOtn9+zmoseKas1N++NWLNG6mLywfBMdOalGjbp4Tbh5XrcPbA86JHwU0Kymj0e20YfZOhzfrcIWF03g=
-    - secure: dKXd0+zTZELr4jHAlrdLrXzQ25CcX1SCTlOFlaZ6JtMYHZDt26EzBTPcdFbfpAADuK5h4vYRBjWeoQc7q4cAgTIvFtHdQHlGzLD4Nyyz96bV4TcT4PBKr3m8XD96N0syZRJM45WCuayELt8ivx2EPcrSpgFK6zE3MNzU6GSm5hY=
+    - secure: Rcas3twM7Kj9Hoau73JA8ebDhjeh4F3ldaYPKYuWqITRAQoinaU6IoPXD9+DQoGMkZZ7AXQ9GaIcTXvMon1+rkbPRu/c/VHIpKbFdVMKVOe8BBmcqvrE7+xUTYJjI1pEwaZ7DZRE9Od5N1DoCkypzzq7+ykrQRcL6WGNZLnIp9k=
+    - secure: P/k68KjN+lPnKEguSdOt/6k7AWKFZY1EzdkcFtGAtekn+YVnNzUgmDO4d5B6B4YvyIejvd86T/qsE4dECubtaqlWsj/Afi0n08zq8USRDPJQkawe/cifUeolHA5OZoZJx6jYaH/4ybUIM3158d8EwLLTpayxVnybjEPsXiqHL/0=
