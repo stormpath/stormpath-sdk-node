@@ -6,7 +6,7 @@ var assert = common.assert;
 var stormpath = require('../../');
 
 
-var nJwt = require('nJwt');
+var nJwt = require('njwt');
 
 var JwtAuthenticationResult = require('../../lib/jwt/jwt-authentication-result');
 
