@@ -22,6 +22,13 @@ module.exports = function (grunt) {
       }
     },
     mocha_istanbul: {
+      test: {
+        src: ['test/it/*_it.js', 'test/**/*_test.js'],
+        options: {
+          require: ['test/common.js'],
+          timeout: 30000
+        }
+      },
       coverage: {
         src: 'test', // the folder, not the files,
         options: {
@@ -80,5 +87,5 @@ module.exports = function (grunt) {
   grunt.registerTask('it', ['jshint','mocha_istanbul:it']);
   grunt.registerTask('live', ['mochaTest:live']);
   grunt.registerTask('coverage', ['mocha_istanbul:coverage']);
-  grunt.registerTask('default', ['jshint', 'coverage', 'it']);
+  grunt.registerTask('default', ['jshint', 'mocha_istanbul:test']);
 };
