@@ -1,5 +1,10 @@
 # stormpath-sdk-node Change Log
 
+### 0.11.3
+
+- Fixing issue with null request bodies when using our `AuthRequestParser`
+  class.
+
 ### 0.11.2
 
 - Modifying our test runner.  If you run `npm test`, all tests will be ran --
