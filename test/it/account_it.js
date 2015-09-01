@@ -1,8 +1,8 @@
 'use strict';
 
-var common = require('../common');
+var assert = require('assert');
+
 var helpers = require('./helpers');
-var assert = common.assert;
 
 var Account = require('../../lib/resource/Account');
 var CustomData = require('../../lib/resource/CustomData');
@@ -38,7 +38,7 @@ describe('Account', function() {
 
   it('should be create-able from a directory instance', function() {
     assert.equal(creationResult[0], null); // did not error
-    assert.instanceOf(account, Account);
+    assert(account instanceof Account);
   });
 
   describe('customData', function() {
@@ -57,7 +57,7 @@ describe('Account', function() {
       });
 
       it('should be get-able', function() {
-        assert.instanceOf(customData, CustomData);
+        assert(customData instanceof CustomData);
         assert.equal(customData.href, account.href + '/customData');
       });
 
@@ -106,7 +106,7 @@ describe('Account', function() {
       });
 
       it('should be get-able', function() {
-        assert.instanceOf(customData, CustomData);
+        assert(customData instanceof CustomData);
         assert.equal(customData.href, account.href + '/customData');
       });
 
@@ -161,7 +161,7 @@ describe('Account', function() {
       });
 
       it('should be get-able', function() {
-        assert.instanceOf(customData, CustomData);
+        assert(customData instanceof CustomData);
         assert.equal(customData.href, account.href + '/customData');
       });
 
