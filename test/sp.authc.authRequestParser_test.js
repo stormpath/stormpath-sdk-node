@@ -14,11 +14,9 @@ describe('AuthRequestParser', function() {
   it('should throw an error if locationsToSearch is not an array', function() {
     assert.throws(function() {
       new AuthRequestParser({
-        request: {
-          body: null,
-          headers: {},
-          method: 'get'
-        }
+        body: null,
+        headers: {},
+        method: 'get'
       }, 'woo');
     }, Error);
   });
@@ -37,13 +35,11 @@ describe('AuthRequestParser', function() {
 
   it('should allow the request.body to be null', function() {
     var parser = new AuthRequestParser({
-      request: {
-        body: null,
-        headers: {
-          some: 'header'
-        },
-        method: 'get'
-      }
+      body: null,
+      headers: {
+        some: 'header'
+      },
+      method: 'get'
     }, ['body']);
 
     assert.equal(Object.keys(parser.body).length, 0);
