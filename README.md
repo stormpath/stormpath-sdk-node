@@ -3,6 +3,7 @@
 [![NPM Version](https://img.shields.io/npm/v/stormpath.svg?style=flat)](https://npmjs.org/package/stormpath)
 [![NPM Downloads](http://img.shields.io/npm/dm/stormpath.svg?style=flat)](https://npmjs.org/package/stormpath)
 [![Build Status](https://img.shields.io/travis/stormpath/stormpath-sdk-node.svg?style=flat)](https://travis-ci.org/stormpath/stormpath-sdk-node)
+[![Coverage Status](https://coveralls.io/repos/stormpath/stormpath-sdk-node/badge.svg?branch=master&service=github)](https://coveralls.io/github/stormpath/stormpath-sdk-node?branch=master)
 
 *A simple user management library for Node.js.*
 
