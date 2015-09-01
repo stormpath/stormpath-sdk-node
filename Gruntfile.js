@@ -25,6 +25,7 @@ module.exports = function (grunt) {
       test: {
         src: ['test/it/*_it.js', 'test/**/*_test.js'],
         options: {
+          coverage: true,
           require: ['test/common.js'],
           timeout: 30000
         }
@@ -88,4 +89,12 @@ module.exports = function (grunt) {
   grunt.registerTask('live', ['mochaTest:live']);
   grunt.registerTask('coverage', ['mocha_istanbul:coverage']);
   grunt.registerTask('default', ['jshint', 'mocha_istanbul:test']);
+
+  // Once our coverage reports have been generated, fire off coverage reports to
+  // coveralls.io so our coverage is made public.
+  grunt.event.on('coverage', function(lcov, done) {
+    require('coveralls').handleInput(lcov, function(err) {
+      done(err);
+    });
+  });
 };
