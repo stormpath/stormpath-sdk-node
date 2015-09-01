@@ -11,12 +11,24 @@ describe('AuthRequestParser', function() {
     }, Error);
   });
 
+  it('should throw an error if request.url is not a string', function() {
+    assert.throws(function() {
+      new AuthRequestParser({
+        body: null,
+        headers: {},
+        method: 'get',
+        url: 'test'
+      }, ['body']);
+    }, Error);
+  });
+
   it('should throw an error if locationsToSearch is not an array', function() {
     assert.throws(function() {
       new AuthRequestParser({
         body: null,
         headers: {},
-        method: 'get'
+        method: 'get',
+        url: 'test'
       }, 'woo');
     }, Error);
   });
@@ -36,10 +48,9 @@ describe('AuthRequestParser', function() {
   it('should allow the request.body to be null', function() {
     var parser = new AuthRequestParser({
       body: null,
-      headers: {
-        some: 'header'
-      },
-      method: 'get'
+      headers: {},
+      method: 'get',
+      url: 'test'
     }, ['body']);
 
     assert.equal(Object.keys(parser.body).length, 0);
