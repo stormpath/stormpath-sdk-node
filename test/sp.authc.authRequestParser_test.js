@@ -17,7 +17,7 @@ describe('AuthRequestParser', function() {
         body: null,
         headers: {},
         method: 'get',
-        url: 'test'
+        url: 1,
       }, ['body']);
     }, Error);
   });
