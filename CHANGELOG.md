@@ -4,6 +4,7 @@
 
 - Fixing issue with null request bodies when using our `AuthRequestParser`
   class.
+- Adding tests for `AuthRequestParser` class.
 
 ### 0.11.2
 
