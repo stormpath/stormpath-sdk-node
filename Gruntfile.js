@@ -13,7 +13,7 @@ module.exports = function (grunt) {
       test: {
         src: ['test/**/*_test.js'],
         options: {
-          timeout: 20000
+          timeout: 30000
         }
 
       },
@@ -35,7 +35,7 @@ module.exports = function (grunt) {
         options: {
           mask: '**/*_it.js',
           require: ['test/common.js'],
-          timeout: 20000
+          timeout: 30000
         }
       }
     },
