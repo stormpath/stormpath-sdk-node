@@ -2,11 +2,12 @@
 
 ### 0.11.2
 
-Modifying our test runner.  If you run `npm test`, all tests will be ran -- not
-just the mocks.
-
-Removing a dependency on the `$HOME` environment variable being set.  It now
-works without it =)
+- Modifying our test runner.  If you run `npm test`, all tests will be ran --
+  not just the mocks.
+- Removing a dependency on the `$HOME` environment variable being set.  It now
+  works without it =)
+- Making our tests publish coverage results to coveralls.io.
+- Adding a coverage badge to the `README.md`.
 
 ### 0.11.1
 
