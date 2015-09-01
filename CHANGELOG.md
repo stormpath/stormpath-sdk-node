@@ -8,6 +8,8 @@
   works without it =)
 - Making our tests publish coverage results to coveralls.io.
 - Adding a coverage badge to the `README.md`.
+- Fixing issue with customData field removal.  Previously if you tried removing
+  the last customData field, it would error out.
 
 ### 0.11.1
 
