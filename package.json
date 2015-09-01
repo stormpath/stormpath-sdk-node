@@ -47,7 +47,7 @@
     "request": "~2.40.0",
     "moment": "~2.8.3",
     "node-uuid": "~1.4.1",
-    "async": "~1.4.2",
+    "async": "~0.7.0",
     "redis": "~0.12.1",
     "memcached": "~0.2.8",
     "glob": "3",
