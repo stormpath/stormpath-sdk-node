@@ -5,6 +5,9 @@
 Modifying our test runner.  If you run `npm test`, all tests will be ran -- not
 just the mocks.
 
+Removing a dependency on the `$HOME` environment variable being set.  It now
+works without it =)
+
 ### 0.11.1
 
 Adding configuration options `web` and `api`.  These are to be consumed
