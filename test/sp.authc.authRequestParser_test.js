@@ -53,7 +53,6 @@ describe('AuthRequestParser', function() {
       url: 'test'
     }, ['body']);
 
-    console.log('DEBUG:', parser.body);
     assert.equal(Object.keys(parser.body).length, 0);
   });
 });
