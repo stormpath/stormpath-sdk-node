@@ -11,16 +11,16 @@ describe('AuthRequestParser', function() {
     }, Error);
   });
 
-  //it('should throw an error if request.url is not a string', function() {
-  //  assert.throws(function() {
-  //    new AuthRequestParser({
-  //      body: null,
-  //      headers: {},
-  //      method: 'get',
-  //      url: 1,
-  //    }, ['body']);
-  //  }, Error);
-  //});
+  it('should throw an error if request.url is not a string', function() {
+    assert.throws(function() {
+      new AuthRequestParser({
+        body: null,
+        headers: {},
+        method: 'get',
+        url: 1,
+      }, ['body']);
+    }, Error);
+  });
 
   it('should throw an error if locationsToSearch is not an array', function() {
     assert.throws(function() {
