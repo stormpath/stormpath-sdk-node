@@ -88,6 +88,13 @@ describe('Account', function() {
         it('should have the new property persisted', function() {
           assert.equal(customDataAfterGet[propertyName], propertyValue);
         });
+
+        it('should allow all added keys to be deleted', function(done) {
+          customDataAfterGet.remove(propertyName);
+          customDataAfterGet.save(function(err) {
+            done(err);
+          });
+        });
       });
     });
 
