@@ -23,8 +23,7 @@ You can do this in one of two ways:
   var client;
 
   stormpath.loadApiKey(apiKeyFilePath, function(err, apiKey) {
-
-    client = new stormpath.Client({apiKey: apiKey});
+    client = new stormpath.Client({ apiKey: apiKey });
   });
   ```
 
@@ -36,11 +35,11 @@ You can do this in one of two ways:
   // In this example, we'll reference the API credentials from environment
   // variables (*NEVER HARDCODE API KEY VALUES IN SOURCE CODE!*).
   var apiKey = new stormpath.ApiKey(
-    process.env['STORMPATH_API_KEY_ID'],
-    process.env['STORMPATH_API_KEY_SECRET']
+    process.env['STORMPATH_CLIENT_APIKEY_ID'],
+    process.env['STORMPATH_CLIENT_APIKEY_SECRET']
   );
 
-  var client = new stormpath.Client({apiKey: apiKey});
+  var client = new stormpath.Client({ apiKey: apiKey });
   ```
 
 **Since**: 0.1
@@ -503,7 +502,7 @@ var app = {
   description: 'Srsly. Awesome.'
 };
 
-client.createApplication(app, {createDirectory: true}, function(err, newApp) {
+client.createApplication(app, { createDirectory: true }, function(err, newApp) {
   console.log(newApp);
 });
 ```
@@ -654,7 +653,7 @@ You can specify query parameters as the **options** argument, for example, for
 [resource expansion][]:
 
 ```javascript
-client.getAccount(href, {expand: 'customData'}, function(err, account) {
+client.getAccount(href, { expand: 'customData' }, function(err, account) {
   console.log(account);
 });
 ```
@@ -726,7 +725,7 @@ You can specify query parameters as the **options** argument, for example, for
 [resource expansion][]:
 
 ```javascript
-client.getApplication(href, {expand: 'accounts'}, function(err, app) {
+client.getApplication(href, { expand: 'accounts' }, function(err, app) {
   console.log(app);
 });
 ```
@@ -794,11 +793,11 @@ If you want to retrieve *all* of your tenant's applications:
 ```javascript
 client.getApplications(function(err, applications) {
 
-  applications.each(function(app, callback) {
+  applications.each(function(app, cb) {
     console.log(app);
-    callback();
+    cb();
   }, function(err) {
-
+    console.log('Finsihed iterating over applications.');
   });
 });
 ```
@@ -813,13 +812,12 @@ for them by specifying the *options* argument with [application search][]
 query parameters:
 
 ```javascript
-client.getApplications({name: '*Awesome*'}, function(err, apps) {
-
-  applications.each(function(app, callback) {
+client.getApplications({ name: '*Awesome*' }, function(err, apps) {
+  applications.each(function(app, cb) {
     console.log(app);
-    callback();
+    cb();
   }, function(err) {
-
+    console.log('Finished iterating over applications.');
   });
 });
 ```
@@ -883,7 +881,7 @@ You can also use [resource expansion][] options (query params) to obtain
 linked resources in the same request:
 
 ```javascript
-client.getCurrentTenant({expand:'applications'}, function(err, tenant) {
+client.getCurrentTenant({ expand:'applications' }, function(err, tenant) {
   console.log(tenant);
 });
 ```
@@ -943,12 +941,11 @@ If you want to retrieve *all* of your tenant's directories:
 
 ```javascript
 client.getDirectories(function(err, directories) {
-
-  directories.each(function(dir, callback) {
+  directories.each(function(dir, cb) {
     console.log(dir);
-    callback();
+    cb();
   }, function(err) {
-
+    console.log('Finished iterating over directories.');
   });
 });
 ```
@@ -963,14 +960,12 @@ for them by specifying the *options* argument with [directory search][]
 query parameters:
 
 ```javascript
-client.getDirectories({name: '*foo*'}, function(err, directories) {
-
-
-  directories.each(function(dir, callback) {
+client.getDirectories({ name: '*foo*' }, function(err, directories) {
+  directories.each(function(dir, cb) {
     console.log(dir);
-    callback();
+    cb();
   }, function(err) {
-
+    console.log('Finsihed iterating over directories.');
   });
 });
 ```
@@ -1041,7 +1036,7 @@ You can specify query parameters as the **options** argument, for example, for
 [resource expansion][]:
 
 ```javascript
-client.getDirectory(href, {expand: 'accounts'}, function(err, dir) {
+client.getDirectory(href, { expand: 'accounts' }, function(err, dir) {
   console.log(dir);
 });
 ```
@@ -1114,7 +1109,7 @@ You can specify query parameters as the **options** argument, for example, for
 [resource expansion][]:
 
 ```javascript
-client.group(href, {expand: 'accounts'}, function(err, group) {
+client.group(href, { expand: 'accounts' }, function(err, group) {
   console.log(group);
 });
 ```
@@ -1187,7 +1182,7 @@ You can specify query parameters as the **options** argument, for example, for
 [resource expansion][]:
 
 ```javascript
-client.getGroupMembership(href, {expand: 'account,group'}, function(err, membership) {
+client.getGroupMembership(href, { expand: 'account,group' }, function(err, membership) {
   console.log(membership);
 });
 ```
