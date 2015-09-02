@@ -22,7 +22,7 @@ membership.getAccount(function(err, account) {
 You can also use [resource expansion](http://docs.stormpath.com/rest/product-guide/#link-expansion) options (query params) to obtain linked resources in the same request:
 
 ```javascript
-membership.getAccount({expand:'groups'}, function(err, account) {
+membership.getAccount({ expand:'groups' }, function(err, account) {
   console.log(account);
 });
 ```
@@ -76,7 +76,7 @@ membership.getGroup(function(err, group) {
 You can also use [resource expansion](http://docs.stormpath.com/rest/product-guide/#link-expansion) options (query params) to obtain linked resources in the same request:
 
 ```javascript
-membership.getGroup({expand:'accounts'}, function(err, group) {
+membership.getGroup({ expand:'accounts' }, function(err, group) {
   console.log(group);
 });
 ```

@@ -43,6 +43,7 @@ Here is an example of a `CollectionResource`'s JSON representation (in this case
   href: 'https://api.stormpath.com/v1/tenants/1X2vlZCo4vd8Ar6LD7UHjj/applications',
   offset: 0,
   limit: 100,
+  size: 100,
   items: [
     { ... app0 name/value pairs ... },
     { ... app1 name/value pairs ... },
@@ -93,12 +94,12 @@ Iterates (with automatic pagination - see above) over all resources within the c
 ```javascript
 // assuming applications is a collection resource
 
-function iterator(application, cb){
+function iterator(application, cb) {
   console.log(application);
   cb();
 }
 
-applications.each(iterator, function(err){
+applications.each(iterator, function (err) {
   // if any of the iterator calls produced an error, err would equal that error
 });
 ```
@@ -169,12 +170,12 @@ Iterates (with automatic pagination - see above) over all resources within the c
 ```javascript
 // assuming applications is a collection resource
 
-function processApplication(application, cb){
+function processApplication(application, cb) {
   //do some work with application
   cb();
 }
 
-async.eachLimit(20, processApplication, function(err){
+async.eachLimit(20, processApplication, function(err) {
   // if any of the saves produced an error, err would equal that error
 });
 ```
@@ -241,11 +242,11 @@ Iterates (with automatic pagination - see above) over all resources within the c
 ```javascript
 // assuming applications is a collection resource
 
-function pluckAppName(application, cb){
+function pluckAppName(application, cb) {
   cb(null, application.name);
 }
 
-applications.map(pluckAppName, function(err, results){
+applications.map(pluckAppName, function(err, results) {
   // results is now an array of name for each application
 });
 ```
@@ -313,11 +314,11 @@ Iterates (with automatic pagination - see above) over all resources within the c
 ```javascript
 // assuming applications is a collection resource
 
-function pluckAppName(application, cb){
+function pluckAppName(application, cb) {
   cb(null, application.name);
 }
 
-applications.map(pluckAppName, function(err, results){
+applications.map(pluckAppName, function(err, results) {
   // results is now an array of name for each application
 });
 ```
@@ -384,11 +385,11 @@ Iterates (with automatic pagination - see above) over all resources within the c
 ```javascript
 // assuming applications is a collection resource
 
-function isAppContainsTest (application, cb){
+function isAppContainsTest (application, cb) {
   cb(/test/.test(application.name));
 }
 
-applications.filter(isAppContainsTest, function(results){
+applications.filter(isAppContainsTest, function(results) {
   // results now equals an array of the existing files
 });
 ```
@@ -480,12 +481,12 @@ Iterates (with automatic pagination - see above) over all resources within the c
 ```javascript
 // assuming applications is a collection resource
 
-applications.reduce(0, function(memo, item, callback){
+applications.reduce(0, function(memo, item, callback) {
   // pointless async:
-  process.nextTick(function(){
-      callback(null, memo++)
+  process.nextTick(function() {
+      callback(null, memo++);
   });
-}, function(err, result){
+}, function(err, result) {
   // result is now equal to the last value of memo, which is count of applications
 });
 ```
@@ -564,11 +565,11 @@ Iterates (with automatic pagination - see above) over all resources within the c
 ```javascript
 // assuming applications is a collection resource
 
-function isAppNameInLowerCase(application, cb){
+function isAppNameInLowerCase(application, cb) {
   cb(application.name === application.name.toLowerCase());
 }
 
-applications.detect(isAppNameInLowerCase, function(result){
+applications.detect(isAppNameInLowerCase, function(result) {
   // result now equals the first application in the list that has name in lower case
 });
 ```
@@ -633,9 +634,9 @@ Iterates (with automatic pagination - see above) over all resources within the c
 ```javascript
 // assuming applications is a collection resource
 
-applications.sortBy(function(application, callback){
+applications.sortBy(function(application, callback) {
   callback(null, application.name);
-}, function(err, results){
+}, function(err, results) {
   // results is now the array of application sorted by
   // application name
 });
@@ -646,19 +647,19 @@ __Sort Order__
 By modifying the callback parameter the sorting order can be influenced:
 
 ```javascript
-//case insensitive order
-applications.sortBy(function(application, callback){
+// case insensitive order
+applications.sortBy(function(application, callback) {
   callback(err, application.name.toLowerCase());
-}, function(err,result){
-  //result callback
+}, function(err, result) {
+  // result callback
 } );
 
-//case sensitive order
-applications.sortBy(function(application, callback){
+// case sensitive order
+applications.sortBy(function(application, callback) {
     callback(null, application.name);
-}, function(err,result){
-  //result callback
-} );
+}, function(err, result) {
+  // result callback
+});
 ```
 
 #### Parameters
@@ -715,11 +716,11 @@ Iterates (with automatic pagination - see above) over all resources within the c
 ```javascript
 // assuming applications is a collection resource
 
-function isAppNameHasTest(application, cb){
+function isAppNameHasTest(application, cb) {
   cb(/test/.test(application.name));
 }
 
-applications.some(isAppNameHasTest, function(result){
+applications.some(isAppNameHasTest, function(result) {
   // if result is true then at least one of the files exists
 });
 ```
@@ -776,11 +777,11 @@ Iterates (with automatic pagination - see above) over all resources within the c
 ```javascript
 // assuming applications is a collection resource
 
-function isAppNameHasSecure(application, cb){
+function isAppNameHasSecure(application, cb) {
   cb(/secure/.test(application.description);
 }
 
-applications.every(isAppNameHasSecure, function(result){
+applications.every(isAppNameHasSecure, function(result) {
   // if result is true then every application has 'secure' word in description
 });
 ```
@@ -835,11 +836,11 @@ Iterates (with automatic pagination - see above) over all resources within the c
 ```javascript
 // assuming applications is a collection resource
 
-function pluckAppNameAndHref(application, cb){
-  cb(null, {href: application.href, name: application.name});
+function pluckAppNameAndHref(application, cb) {
+  cb(null, { href: application.href, name: application.name });
 }
 
-applications.concat(pluckAppNameAndHref, function(err, apps){
+applications.concat(pluckAppNameAndHref, function(err, apps) {
   // apps is now a list of app names and hrefs
 });
 ```

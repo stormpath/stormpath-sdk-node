@@ -29,7 +29,7 @@ var account = {
   password: 'Changeme1!'
 };
 
-directory.createAccount(account, function onAccountCreated(err, createdAccount) {
+directory.createAccount(account, function(err, createdAccount) {
   console.log(createdAccount);
 });
 ```
@@ -53,7 +53,7 @@ Whenever you create an `account`, an empty `customData` resource is created
   }
 };
 
-directory.createAccount(account, function onAccountCreated(err, createdAccount) {
+directory.createAccount(account, function(err, createdAccount) {
   console.log(createdAccount);
 });
 ```
@@ -61,11 +61,11 @@ directory.createAccount(account, function onAccountCreated(err, createdAccount) 
 You can also specify options to control creation behavior and things like reference expansion:
 
 ```javascript
-...
+// ...
 
-var options = {registrationWorkflowEnabled: false};
+var options = { registrationWorkflowEnabled: false };
 
-directory.createAccount(account, options, function onAccountCreated(err, createdAccount) {
+directory.createAccount(account, options, function(err, createdAccount) {
   console.log(createdAccount);
 });
 ```
@@ -119,9 +119,9 @@ Creates a new [Group](group) in the directory.  Every group in the directory mus
 Example:
 
 ```javascript
-var group = {name: 'Administrators'}
+var group = { name: 'Administrators' };
 
-directory.createGroup(group, onGroupCreation(err, createdGroup) {
+directory.createGroup(group, function(err, createdGroup) {
   console.log(createdGroup);
 });
 ```
@@ -129,7 +129,7 @@ directory.createGroup(group, onGroupCreation(err, createdGroup) {
 You can also specify options to control things like reference expansion:
 
 ```javascript
-directory.createGroup(group, {expand:'directory'}, function onAccountCreated(err, createdGroup) {
+directory.createGroup(group, { expand:'directory' }, function(err, createdGroup) {
   console.log(createdGroup);
 });
 ```
@@ -186,22 +186,30 @@ If you want to retrieve _all_ of the directory's accounts:
 
 ```javascript
 directory.getAccounts(function(err, accounts) {
-  accounts.each(function(err, account, offset) {
-    console.log('Offset ' + offset + ', account: ' + account);
+  accounts.each(function(account, cb) {
+    console.log('account:', account);
+    cb();
+  }, function(err) {
+    console.log('Finsihed iterating over accounts.');
   });
 });
 ```
-As you can see, the [Collection](collectionResource) provided to the `callback` has an `each` function that accepts its own callback.  The collection will iterate over all of the accounts in the collection, and invoke the callback for each one.  The `offset` parameter indicates the index of the account in the returned collection.  The `offset` parameter is optional - it may be omitted from the callback definition.
+
+As you can see, the [Collection](collectionResource) provided to the `callback` has an `each` function that accepts its own callback.  The collection will iterate over all of the accounts in the collection, and invoke the callback for each one.
 
 If you don't want all accounts, and only want specific ones, you can search for them by specifying the _options_ argument with [directory account](http://docs.stormpath.com/rest/product-guide/#directory-accounts) search query parameters:
 
 ```javascript
-directory.getAccounts({username: '*foo*'}, function(err, accounts) {
-  accounts.each(function(err, account) {
-    console.log(account);
+directory.getAccounts({ username: '*foo*' }, function(err, accounts) {
+  accounts.each(function(account, cb) {
+    console.log('account:', account);
+    cb();
+  }, function(err) {
+    console.log('Finished iterating over accounts.');
   });
 });
 ```
+
 The above code example would only print out directory accounts with the text fragment `foo` in the username.  See the Stormpath REST API Guide's [directory account documentation](http://docs.stormpath.com/rest/product-guide/#directory-accounts) for other supported query parameters, such as reference expansion.
 
 #### Parameters
@@ -303,22 +311,29 @@ If you want to retrieve _all_ of the directory's groups:
 
 ```javascript
 directory.getGroups(function(err, groups) {
-  groups.each(function(err, group, offset) {
-    console.log('Offset ' + offset + ', group: ' + group);
+  groups.each(function(group, cb) {
+    console.log('group:', group);
+    cb();
+  }, function(err) {
+    console.log('Finished iterating over groups.');
   });
 });
 ```
-As you can see, the [collection](collectionResource) provided to the `callback` has an `each` function that accepts its own callback.  The collection will iterate over all of the groups in the collection, and invoke the callback for each one.  The `offset` parameter indicates the index of the group in the returned collection.  The `offset` parameter is optional - it may be omitted from the callback definition.
+As you can see, the [collection](collectionResource) provided to the `callback` has an `each` function that accepts its own callback.  The collection will iterate over all of the groups in the collection, and invoke the callback for each one.
 
 If you don't want all groups, and only want specific ones, you can search for them by specifying the _options_ argument with [directory group](http://docs.stormpath.com/rest/product-guide/#directory-groups) search query parameters:
 
 ```javascript
-directory.getGroups({name: '*bar*'}, function(err, groups) {
-  groups.each(function(err, group) {
-    console.log(group);
+directory.getGroups({ name: '*bar*' }, function(err, groups) {
+  groups.each(function(group, cb) {
+    console.log('group:', group);
+    cb();
+  }, function(err) {
+    console.log('Finished iterating over groups.');
   });
 });
 ```
+
 The above code example would only print out groups with the text fragment `foo` in their name.  See the Stormpath REST API Guide's [directory group](http://docs.stormpath.com/rest/product-guide/#directory-groups) documentation for other supported query parameters, such as reference expansion.
 
 #### Parameters
@@ -368,7 +383,7 @@ directory.getTenant(function(err, tenant) {
 ```
 You can also use [resource expansion](http://docs.stormpath.com/rest/product-guide/#link-expansion) options (query params) to obtain linked resources in the same request:
 ```javascript
-directory.getTenant({expand:'applications'}, function(err, tenant) {
+directory.getTenant({ expand:'applications' }, function(err, tenant) {
   console.log(tenant);
 });
 ```

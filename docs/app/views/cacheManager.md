@@ -12,6 +12,7 @@ Returns current instance of cache store.
 #### Usage
 
 Example:
+
 ```javascript
 var cache = cacheManager.getCache();
 ```
@@ -30,9 +31,11 @@ Creates an instance of cache store.
 #### Usage
 
 Example:
+
 ```javascript
 cache.createCache(options);
 ```
+
 #### Parameters
 
 <table class="table table-striped table-hover table-curved">

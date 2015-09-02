@@ -60,8 +60,7 @@ Here is an example of an `ResourceError`'s representation (in this case, a [2001
 `ResourceError`s that occur as a result of a REST request will be presented to any callback function as the callback's first parameter:
 
 ```javascript
-someObject.doSomethingWrong(..., function myCallback(err, result) {
-
+someObject.doSomethingWrong(..., function(err, result) {
   ...
 });
 ```

@@ -25,10 +25,8 @@ var authcRequest = {
   password: 'RawPassw0rd!'
 };
 
-application.authenticateAccount(authcRequest, function onAuthcResult(err, result) {
-
-  //if successful, the result will have an account field with the successfully authenticated account:
-
+application.authenticateAccount(authcRequest, function(err, result) {
+  // if successful, the result will have an account field with the successfully authenticated account:
   result.getAccount(function(err, account) {
     console.log(account);
   });
@@ -78,7 +76,7 @@ Used this method to:
 
  * Authenticate users who wish to identify themselves with an ApiKey that has been created on their [Account](account).
  * Allow those same users to exchange their ApiKey credentials for an Oauth Access tken
- * Auuthenticate a user who has an Oauth Access token that you have issued to them
+ * Authenticate a user who has an Oauth Access token that you have issued to them
 
 
 The user will supply the necessary information to you by making an HTTP request to your server.  You will pass that request, using the `options.request` paramter, to this method.  This method will to do one of the following, based on the nature of the request:
@@ -104,16 +102,16 @@ Pass an object as the first parmeter, and assign the HTTP request to the `reques
 ```javascript
 // Express.js example - accept Basic or OAuth Access Token for a given resource
 
-app.get('/protected/resource',function (req,res){
-  application.authenticateApiRequest({
-    request: req
-  },function(err,authResult){
-    authResult.getAccount(function(err,account){
+app.get('/protected/resource', function(req, res) {
+  application.authenticateApiRequest({ request: req }, function(err, authResult) {
+    authResult.getAccount(function(err, account) {
       var message = 'Hello, ' + account.username + '! Thanks for authenticating.';
-      if(authResult.grantedScopes){
+
+      if (authResult.grantedScopes) {
         message += ' You have been granted: ' + authResult.grantedScopes.join(' ');
       }
-      res.json({message: message });
+
+      res.json({ message: message });
     });
   });
 });
@@ -124,14 +122,16 @@ Or if you want to support Oauth Access Token exchange:
 ```javascript
 // Express.js example - support the exchange of api key credentials for an Oauth Access Token
 
-app.post('/oauth/token',function (req,res){
+app.post('/oauth/token', function(req, res) {
   application.authenticateApiRequest({
     request: req,
-    scopeFactory: function(account,requestedScopes){
-      // determine what scope to give, then return
+
+    // determine what scope to give, then return.  This is a synchronous
+    // function, don't use callbacks here.
+    scopeFactory: function(account, requestedScopes) {
       return ['granted-scope'];
     }
-  },function(err,authResult){
+  }, function(err, authResult) {
     res.json(authResult.tokenResponse);
   });
 });
@@ -146,17 +146,13 @@ If you are not using a framework, you may manually construct an object literal f
 var requestObject = {
   url: '/oauth/token',
   method: 'POST',
-  headers:{
-    'authorization': 'Basic 3HR937281K7QWC5YS37289WPE:MTdncVDALvHcdoY3sjrK+/WgYY3sj3AZx1vZx1v'
-  },
-  body:{
-    grant_type: 'client_credentials'
-  }
+  headers: { 'authorization': 'Basic 3HR937281K7QWC5YS37289WPE:MTdncVDALvHcdoY3sjrK+/WgYY3sj3AZx1vZx1v' },
+  body: { grant_type: 'client_credentials' }
 };
 
-application.authenticateApiRequest({ request: requestObject },function(err,authResult){
+application.authenticateApiRequest({ request: requestObject },function(err, authResult) {
   // .. handle the result
-})
+});
 
 
 ```
@@ -250,7 +246,7 @@ var account = {
   password: 'Changeme1!'
 };
 
-application.createAccount(account, function onAccountCreated(err, createdAccount) {
+application.createAccount(account, function(err, createdAccount) {
   console.log(createdAccount);
 });
 ```
@@ -274,7 +270,7 @@ var account = {
   }
 };
 
-application.createAccount(account, function onAccountCreated(err, createdAccount) {
+application.createAccount(account, function(err, createdAccount) {
   console.log(createdAccount);
 });
 ```
@@ -284,9 +280,9 @@ You can also specify options to control creation behavior and things like refere
 ```javascript
 ...
 
-var options = {registrationWorkflowEnabled: false, expand: 'directory'};
+var options = { registrationWorkflowEnabled: false, expand: 'directory' };
 
-application.createAccount(account, options, function onAccountCreated(err, createdAccount) {
+application.createAccount(account, options, function(err, createdAccount) {
   console.log(createdAccount);
 });
 ```
@@ -340,9 +336,9 @@ Creates a new [Group](group) in the application's [default group store](http://d
 Example:
 
 ```javascript
-var group = {name: 'Administrators'}
+var group = { name: 'Administrators' };
 
-application.createGroup(group, onGroupCreation(err, createdGroup) {
+application.createGroup(group, function(err, createdGroup) {
   console.log(createdGroup);
 });
 ```
@@ -350,7 +346,7 @@ application.createGroup(group, onGroupCreation(err, createdGroup) {
 You can also specify options to control things like reference expansion:
 
 ```javascript
-application.createGroup(group, {expand:'directory'}, function onAccountCreated(err, createdGroup) {
+application.createGroup(group, { expand:'directory' }, function(err, createdGroup) {
   console.log(createdGroup);
 });
 ```
@@ -407,10 +403,8 @@ For more information, see the [ID Site Feature Guide][]
 ````javascript
 // Express.js example
 
-app.get('/login',function(req,res){
-  var url = application.createIdSiteUrl({
-    callbackUri: 'https://www.mysite.com/dashboard'
-  });
+app.get('/login', function(req, res) {
+  var url = application.createIdSiteUrl({ callbackUri: 'https://www.mysite.com/dashboard' });
 
   res.writeHead(302, {
     'Cache-Control': 'no-store',
@@ -420,7 +414,7 @@ app.get('/login',function(req,res){
   res.end();
 });
 
-app.get('/logout',function(req,res){
+app.get('/logout', function(req, res) {
   var url = application.createIdSiteUrl({
     callbackUri: 'https://www.mysite.com/home',
     logout: true
@@ -495,8 +489,11 @@ If you want to retrieve _all_ of the application's accounts:
 
 ```javascript
 application.getAccounts(function(err, accounts) {
-  accounts.each(function(err, account, offset) {
-    console.log('Offset ' + offset + ', account: ' + account);
+  accounts.each(function(account, cb) {
+    console.log('account:', account);
+    cb();
+  }, function(err) {
+    console.log('Finished iterating over accounts.');
   });
 });
 ```
@@ -505,9 +502,12 @@ As you can see, the [Collection](collectionResource) provided to the `callback` 
 If you don't want all accounts, and only want specific ones, you can search for them by specifying the _options_ argument with [application account search](http://docs.stormpath.com/rest/product-guide/#application-accounts-search) query parameters:
 
 ```javascript
-application.getAccounts({username: '*foo*'}, function(err, accounts) {
-  accounts.each(function(err, account) {
-    console.log(account);
+application.getAccounts({ username: '*foo*' }, function(err, accounts) {
+  accounts.each(function(account, cb) {
+    console.log('account:', account);
+    cb();
+  }, function(err) {
+    console.log('Finished iterating over accounts.');
   });
 });
 ```
@@ -560,9 +560,9 @@ For those interested, password-based AES 256 encryption is used: the password is
 #### Usage
 
 ````javascript
-application.getApiKey('an api key id',function(err,apiKey){
+application.getApiKey('an api key id', function(err, apiKey) {
   console.log(apiKey);
-})
+});
 ````
 
 #### Parameters
@@ -677,8 +677,11 @@ If you want to retrieve _all_ of the application's groups:
 
 ```javascript
 application.getGroups(function(err, groups) {
-  groups.each(function(err, group, offset) {
-    console.log('Offset ' + offset + ', group: ' + group);
+  groups.each(function(group, cb) {
+    console.log('group:', group);
+    cb();
+  }, function(err) {
+    console.log('Finished iterating over groups.');
   });
 });
 ```
@@ -687,9 +690,12 @@ As you can see, the [collection](collectionResource) provided to the `callback` 
 If you don't want all groups, and only want specific ones, you can search for them by specifying the _options_ argument with [application group search](http://docs.stormpath.com/rest/product-guide/#application-groups-search) query parameters:
 
 ```javascript
-application.getGroups({name: '*bar*'}, function(err, groups) {
-  groups.each(function(err, group) {
-    console.log(group);
+application.getGroups({ name: '*bar*' }, function(err, groups) {
+  groups.each(function(group, cb) {
+    console.log('group:', group);
+    cb();
+  }, function(err) {
+    console.log('Finished iterating over groups.');
   });
 });
 ```
@@ -742,7 +748,7 @@ application.getTenant(function(err, tenant) {
 ```
 You can also use [resource expansion](http://docs.stormpath.com/rest/product-guide/#link-expansion) options (query params) to obtain linked resources in the same request:
 ```javascript
-application.getTenant({expand:'directories'}, function(err, tenant) {
+application.getTenant({ expand:'directories' }, function(err, tenant) {
   console.log(tenant);
 });
 ```
@@ -792,8 +798,8 @@ For more information, see the [ID Site Feature Guide][]
 ```javascript
 // Express.js example, assumes you set '/dashboard' as the callbackUri when calling application.createIdSiteUrl()
 
-app.get('/dashboard',function(req,res){
-  application.handleIdSiteCallback(req.url,function(err,idSiteResult){
+app.get('/dashboard', function(req,res) {
+  application.handleIdSiteCallback(req.url, function(err, idSiteResult) {
     var account = idSiteResult.account;
     // render the user dashboard for this account
   });
@@ -853,15 +859,12 @@ The corresponding account can be retrieved, using the account HREF that is provi
 #### Usage
 
 ```javascript
-application.sendPasswordResetEmail({email: 'foo@bar.com'}, function(err, passwordResetToken) {
-
+application.sendPasswordResetEmail({ email: 'foo@bar.com' }, function(err, passwordResetToken) {
   // The token is the last part of the HREF
-
   console.log(passwordResetToken.href.split('/').pop());
 
   // The account can be retrieved by using the account href on the result
-
-  client.getAccount(passwordResetToken.account.href,function(err,account){
+  client.getAccount(passwordResetToken.account.href, function(err, account) {
     console.log(account);
   });
 });
@@ -919,16 +922,14 @@ Use this method if you want to verify the token before you ask the user to submi
 var sptoken = request.query.sptoken; // get the sptoken from the request URL
 
 application.verifyPasswordResetToken(sptoken, function(err, verificationResponse) {
-
-  if(err){
+  if (err) {
     // The token has been used or is expired, have user request a new token
-  }else{
+  } else {
     // Show the user a form which allows them to reset their password
-    client.getAccount(verificationResponse.account.href,function(err,account){
+    client.getAccount(verificationResponse.account.href, function(err, account) {
       console.log(account);
     });
   }
-
 });
 ```
 
@@ -991,14 +992,12 @@ var token = req.body.token;
 var password = req.body.password;
 
 application.resetPassword(token, password, function(err, result) {
-
-  if(err){
+  if (err) {
     // The token has been used or is expired, have user request a new token
   }
 
   // The response contains a link to the account which is associated
   // with this password reset workflow:
-
   console.log(result.account.href);
 });
 
@@ -1068,8 +1067,7 @@ var options = {
 };
 
 application.getAccount(options, function(err, providerAccountResult) {
-
-  if(providerAccountResult.created){
+  if (providerAccountResult.created) {
     console.log('Just created a new user');
   }
 
@@ -1143,10 +1141,9 @@ Retrieves the Collection of `AccountStoreMappings` and provides it to the specif
 
 
 ```javascript
-application.getAccountStoreMappings({expand: 'accountStore'}, function(err, asm){
+application.getAccountStoreMappings({ expand: 'accountStore' }, function(err, asm) {
   var accountStoreMappings = asm;
-})
-
+});
 ```
 
 #### Parameters
@@ -1195,10 +1192,9 @@ If default Account Store not set, `callback` will be called without parameters.
 
 
 ```javascript
-application.getDefaultAccountStore({expand: 'accountStore'}, function(err, asm){
+application.getDefaultAccountStore({ expand: 'accountStore' }, function(err, asm) {
   var accountStoreMappings = asm;
-})
-
+});
 ```
 
 #### Parameters
@@ -1247,10 +1243,9 @@ If default Group Store not set, `callback` will be called without parameters.
 
 
 ```javascript
-application.getDefaultAccountStore({expand: 'accountStore'}, function(err, asm){
+application.getDefaultAccountStore({ expand: 'accountStore' }, function(err, asm) {
   var accountStoreMappings = asm;
-})
-
+});
 ```
 
 #### Parameters
@@ -1301,10 +1296,9 @@ Returns a newly created `AccountStoreMapping` as a second callback parameter.
 
 
 ```javascript
-application.setDefaultAccountStore(directory, function(err, asm){
+application.setDefaultAccountStore(directory, function(err, asm) {
   var accountStoreMapping = asm;
-})
-
+});
 ```
 
 #### Parameters
@@ -1356,10 +1350,9 @@ Returns a newly created `AccountStoreMapping` as a second callback parameter.
 
 
 ```javascript
-application.setDefaultGroupStore(directory, function(err, asm){
+application.setDefaultGroupStore(directory, function(err, asm) {
   var accountStoreMapping = asm;
-})
-
+});
 ```
 
 #### Parameters
@@ -1414,7 +1407,7 @@ Returns a newly created `AccountStoreMapping` as a second callback parameter.
 var mapping = {
   application: {
     href: "https://api.stormpath.com/v1/applications/Uh8FzIouQ9C8EpcExAmPLe"
-  }
+  },
   accountStore: {
     href: "https://api.stormpath.com/v1/directories/bckhcGMXQDujIXpExAmPLe"
   },
@@ -1422,10 +1415,9 @@ var mapping = {
   isDefaultGroupStore: true
 };
 
-application.createAccountStoreMapping(mapping, function(err, asm){
+application.createAccountStoreMapping(mapping, function(err, asm) {
   var accountStoreMapping = asm;
-})
-
+});
 ```
 
 #### Parameters
@@ -1478,10 +1470,9 @@ Returns a newly created `AccountStoreMapping` as a second callback parameter.
 
 
 ```javascript
-application.addAccountStore(directory, function(err, asm){
+application.addAccountStore(directory, function(err, asm) {
   var accountStoreMapping = asm;
-})
-
+});
 ```
 
 #### Parameters

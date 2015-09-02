@@ -54,10 +54,10 @@ You can do this easily in one of two ways:
   // disk:
   var client;
 
-    stormpath.loadApiKey(apiKeyFilePath, function apiKeyFileLoaded(err, apiKey) {
-      client = new stormpath.Client({apiKey: apiKey});
-    });
-    ```
+  stormpath.loadApiKey(apiKeyFilePath, function apiKeyFileLoaded(err, apiKey) {
+    client = new stormpath.Client({ apiKey: apiKey });
+  });
+  ```
 
 * Create an ApiKey object manually:
 
@@ -67,11 +67,11 @@ You can do this easily in one of two ways:
   // In this example, we'll reference the API credentials from environment
   // variables (*NEVER HARDCODE API KEY VALUES IN SOURCE CODE!*).
   var apiKey = new stormpath.ApiKey(
-    process.env['STORMPATH_API_KEY_ID'],
-    process.env['STORMPATH_API_KEY_SECRET']
+    process.env['STORMPATH_CLIENT_APIKEY_ID'],
+    process.env['STORMPATH_CLIENT_APIKEY_SECRET']
   );
 
-  var client = new stormpath.Client({apiKey: apiKey});
+  var client = new stormpath.Client({ apiKey: apiKey });
   ```
 
 
@@ -82,16 +82,21 @@ In order to get a list of all your Stormpath [Applications][] and
 
 ```javascript
 client.getApplications(function(err, apps) {
-  apps.each(function(err, app, offset) { //offset is an optional argument
-    console.log(offset + ": " + app);
+  apps.each(function(app, cb) {
+    console.log('app:', app);
+    cb();
+  }, function(err) {
+    console.log('Finished iterating over apps.');
   });
 });
 
 
-client.getDirectories({expand: 'groups'}, function(err, dirs) {
-  dirs.each(function(dir, callback) {
+client.getDirectories({ expand: 'groups' }, function(err, dirs) {
+  dirs.each(function(dir, cb) {
     console.log(dir);
-    callback();
+    cb();
+  }, function(err) {
+    console.log('Finished iterating over directories.');
   });
 });
 ```
@@ -126,7 +131,6 @@ var appHref = 'https://api.stormpath.com/v1/applications/xxx';
 
 client.getApplication(appHref, function(err, app) {
   if (err) throw err;
-
   console.log(app);
 });
 ```
@@ -137,10 +141,10 @@ Once you have retrieved a resource, you can update it's properties and then call
 
 ```javascript
 // Update an account resource
-client.getAccount(accountHref,function(err,account){
+client.getAccount(accountHref, function(err, account) {
   account.surname = 'my new last name';
-  account.save(function(err, updatedAccount) {
-    console.log(updatedAccount);
+  account.save(function(err) {
+    console.log(account);
   });
 });
 ```
@@ -150,8 +154,8 @@ client.getAccount(accountHref,function(err,account){
 All resources have a `delete()` method which will send an `DELETE` request to the REST API.  **This operation cannot be undone.**
 
 ```javascript
-// Delete an account resource
-client.getAccount(accountHref,function(err,account){
+// Delete an account resource.
+client.getAccount(accountHref, function(err, account) {
   account.delete(function(err) {
     // handle error, if exists
   });
@@ -169,7 +173,7 @@ var app = {
   description: "No, Srsly. It's Awesome."
 };
 
-client.createApplication(app, {createDirectory:true}, function onAppCreated(err, createdApp) {
+client.createApplication(app, { createDirectory: true }, function(err, createdApp) {
   console.log(createdApp);
 });
 ```
@@ -187,7 +191,7 @@ var app = {
   description: 'The coolest app ever made.'
 };
 
-client.createApplication(app, function onAppCreated(err, createdApp) {
+client.createApplication(app, function(err, createdApp) {
   console.log(createdApp);
 });
 ```
@@ -207,7 +211,7 @@ var account = {
   password: 'Changeme1!'
 };
 
-createdApp.createAccount(account, function onAccountCreated(err, createdAccount) {
+createdApp.createAccount(account, function(err, createdAccount) {
   console.log(createdAccount);
 });
 ```
@@ -220,8 +224,8 @@ then calling the `save` method:
 
 ```javascript
 createdAccount.middleName = 'Make it so.';
-createdAccount.save(function onSave(err, savedAccount) {
-  console.log(savedAccount);
+createdAccount.save(function(err) {
+  console.log(createdAccount);
 });
 ```
 
@@ -239,12 +243,11 @@ var authcRequest = {
   password: 'Changeme1!'
 };
 
-createdApp.authenticateAccount(authcRequest, function onAuthcResult(err, result) {
-
-  //if successful, you can obtain the account by calling result.getAccount:
-
-  return result.getAccount(function(err2, account) { //this is cached and will execute immediately (no server request):
-    if(err) throw err;
+createdApp.authenticateAccount(authcRequest, function(err, result) {
+  // If successful, you can obtain the account by calling result.getAccount:
+  // This is cached and will return immediately without an API request.
+  result.getAccount(function(err, account) {
+    if (err) throw err;
     console.log(account);
   });
 });
@@ -262,7 +265,7 @@ If one of your end-users forgets their password, you can trigger the
 ```javascript
 var email = 'jlpicard@starfleet.com';
 
-createdApp.sendPasswordResetEmail(email, function onEmailSent(err, token) {
+createdApp.sendPasswordResetEmail(email, function(err, token) {
   console.log(token);
 });
 ```
@@ -281,9 +284,9 @@ permission systems.
 Creating a new Group is easy:
 
 ```javascript
-var group = {name: 'Administrators'};
+var group = { name: 'Administrators' };
 
-createdApp.createGroup(group, onGroupCreation(err, createdGroup) {
+createdApp.createGroup(group, function(err, createdGroup) {
   console.log(createdGroup);
 });
 ```
@@ -295,20 +298,17 @@ You can do easily assign a Group to an Account in two ways: by interacting with
 the Account, or by interacting with the Group:
 
 ```javascript
-//via the account
-//groupOrGroupHref may be the actual group or the group's href:
-account.addToGroup(groupOrGroupHref, onMembershipCreated(err, membership) {
+// via the account
+// groupOrGroupHref may be the actual group or the group's href:
 
-  //membership is a GroupMembership resource that represents the pairing of the group to the account:
-
+account.addToGroup(groupOrGroupHref, function(err, membership) {
+  // membership is a GroupMembership resource that represents the pairing of the group to the account:
   console.log(membership);
 });
 
-//via the group:
-group.addAccount(accountOrAccountHref, onMembershipCreated(err, membership) {
-
-  //membership is a GroupMembership resource that represents the pairing of the group to the account:
-
+// via the group:
+group.addAccount(accountOrAccountHref, function(err, membership) {
+  // membership is a GroupMembership resource that represents the pairing of the group to the account:
   console.log(membership);
 });
 ```
@@ -327,16 +327,15 @@ control.  For example, you might want to see if an Account is in the
 You can do this by iterating over an Account's groups like so:
 
 ```javascript
-account.getGroups(function onGroups(err, groups) {
-
-  groups.each(function(err, group) {
+account.getGroups(function(err, groups) {
+  groups.each(function(group, cb) {
     if (group.name === 'Administrators') {
       console.log('We have an administrator!');
     }
 
-    callback();
+    cb();
   }, function(err) {
-    if (err) throw err;
+    console.log('Finished iterating over groups.');
   });
 });
 ```

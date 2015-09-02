@@ -20,19 +20,20 @@ Creates a new [Application](application) within the tenant.
 Create a new Application with its own private Directory so you can start adding user accounts right away:
 
 ```javascript
-var app = {name: 'My Awesome App', description: 'Srsly. Awesome.'};
+var app = { name: 'My Awesome App', description: 'Srsly. Awesome.' };
 
-tenant.createApplication(app, {createDirectory:true}, function(err, createdApplication) {
-    console.log(createdApplication);
+tenant.createApplication(app, { createDirectory: true }, function(err, app) {
+    console.log(app);
 });
 ```
+
 Create a new Application without any mapped user account stores.  You are responsible for adding account stores later if you want to be able to create new user accounts via the application directly.  Notice there is no _options_ param:
 
 ```javascript
-var app = {name: 'My Awesome App', description: 'Srsly. Awesome.'};
+var app = { name: 'My Awesome App', description: 'Srsly. Awesome.' };
 
-tenant.createApplication(app, function(err, createdApplication) {
-  console.log(createdApplication);
+tenant.createApplication(app, function(err, app) {
+  console.log(app);
 });
 ```
 
@@ -83,10 +84,10 @@ Creates a new [Directory](directory) within the tenant.
 #### Usage
 
 ```javascript
-var app = {name: 'Employees Directory', description: 'Only Employee accounts in here please.'};
+var app = { name: 'Employees Directory', description: 'Only Employee accounts in here please.' };
 
-tenant.createApplication(app, function(err, createdApplication) {
-  console.log(createdApplication);
+tenant.createApplication(app, function(err, app) {
+  console.log(app);
 });
 ```
 
@@ -142,22 +143,30 @@ If you want to retrieve _all_ of the tenant's applications:
 
 ```javascript
 tenant.getApplications(function(err, applications) {
-  applications.each(function(err, app, offset) {
-    console.log('Offset ' + offset + ', application: ' + app);
+  applications.each(function(app, cb) {
+    console.log('app:', app);
+    cb();
+  }, function(err) {
+    console.log('Finished iterating over apps.');
   });
 });
 ```
+
 As you can see, the [collection](collectionResource) provided to the `callback` has an [each function](collectionResource#each) that accepts another callback.  The collection will iterate over all of the applications in the collection, and invoke the callback for each one.  The `offset` parameter indicates the index of the application in the returned collection.  The `offset` parameter is optional - it may be omitted from the callback definition.
 
 If you don't want all applications, and only want specific ones, you can search for them by specifying the _options_ argument with [application search](http://docs.stormpath.com/rest/product-guide/#tenant-applications-search) query parameters:
 
 ```javascript
-tenant.getApplications({name: '*Awesome*'}, function(err, applications) {
-  applications.each(function(err, app) {
+tenant.getApplications({ name: '*Awesome*' }, function(err, applications) {
+  applications.each(function(app, cb) {
     console.log(app);
+    cb();
+  }, function(err) {
+    console.log('Finished iterating over applications.');
   });
 });
 ```
+
 The above code example would only print out applications with the text fragment `Awesome` in their name.  See the Stormpath REST API Guide's [application search documentation](http://docs.stormpath.com/rest/product-guide/#tenant-applications-search) for other supported query parameters, such as reference expansion.
 
 #### Parameters
@@ -259,22 +268,30 @@ If you want to retrieve _all_ of the tenant's directories:
 
 ```javascript
 tenant.getDirectories(function(err, directories) {
-  directories.each(function(err, dir, offset) {
-    console.log('Offset ' + offset + ', dir: ' + dir);
+  directories.each(function(dir, cb) {
+    console.log('dir:', dir);
+    cb();
+  }, function(err) {
+    console.log('Finished iterating over directories.');
   });
 });
 ```
+
 As you can see, the [Collection](collectionResource) provided to the `callback` has an [each function](collectionResource#each) that accepts another callback.  The collection will iterate over all of the directories in the collection, and invoke the callback for each one.  The `offset` parameter indicates the index of the directory in the returned collection.  The `offset` parameter is optional - it may be omitted from the callback definition.
 
 If you don't want all directories, and only want specific ones, you can search for them by specifying the _options_ argument with [directory search](http://docs.stormpath.com/rest/product-guide/#tenant-directories-search) query parameters:
 
 ```javascript
-tenant.getDirectories({name: '*foo*'}, function(err, directories) {
-  directories.each(function(err, dir) {
-    console.log(dir);
+tenant.getDirectories({ name: '*foo*' }, function(err, directories) {
+  directories.each(function(dir, cb) {
+    console.log('dir:', dir);
+    cb();
+  }, function(err) {
+    console.log('Finished iterating over directories.');
   });
 });
 ```
+
 The above code example would only print out directories with the text fragment `foo` in their name.  See the Stormpath REST API Guide's [directory search documentation](http://docs.stormpath.com/rest/product-guide/#tenant-directories-search) for other supported query parameters, such as reference expansion.
 
 #### Parameters
