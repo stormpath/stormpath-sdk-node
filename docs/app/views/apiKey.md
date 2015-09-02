@@ -25,7 +25,7 @@ There are two easy ways to obtain an `ApiKey` instance:
 
   stormpath.loadApiKey(apiKeyFilePath, function(err, apiKey) {
     if (err) throw err;
-    client = new stormpath.Client({apiKey: apiKey});
+    client = new stormpath.Client({ apiKey: apiKey });
   });
   ```
 
@@ -37,11 +37,11 @@ There are two easy ways to obtain an `ApiKey` instance:
   // In this example, we'll reference the values from the environment (*NEVER
   // HARDCODE API KEY VALUES IN SOURCE CODE!*).
   var apiKey = new stormpath.ApiKey(
-    process.env['STORMPATH_API_KEY_ID'],
-    process.env['STORMPATH_API_KEY_SECRET']
+    process.env['STORMPATH_CLIENT_APIKEY_ID'],
+    process.env['STORMPATH_CLIENT_APIKEY_SECRET']
   );
 
-  var client = new stormpath.Client({apiKey: apiKey});
+  var client = new stormpath.Client({ apiKey: apiKey });
   ```
 
 **Since**: 0.1
@@ -65,8 +65,8 @@ You must `require('stormpath')` to access the constructor function:
 var stormpath = require('stormpath');
 
 var apiKey = new stormpath.ApiKey(
-  process.env['STORMPATH_API_KEY_ID'],
-  process.env['STORMPATH_API_KEY_SECRET']
+  process.env['STORMPATH_CLIENT_APIKEY_ID'],
+  process.env['STORMPATH_CLIENT_APIKEY_SECRET']
 );
 ```
 
@@ -101,8 +101,8 @@ A new `ApiKey` instance with the specified API ID and secret.
 
 ```javascript
 var apiKey = new stormpath.ApiKey(
-  process.env['STORMPATH_API_KEY_ID'],
-  process.env['STORMPATH_API_KEY_SECRET']
+  process.env['STORMPATH_CLIENT_APIKEY_ID'],
+  process.env['STORMPATH_CLIENT_APIKEY_SECRET']
 );
 
 console.log(apiKey.toString());
