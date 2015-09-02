@@ -5,6 +5,7 @@
 - Fixing issue with null request bodies when using our `AuthRequestParser`
   class.
 - Adding tests for `AuthRequestParser` class.
+- Adding support for Node 0.11, 0.12, and iojs.  Yey!
 
 ### 0.11.2
 

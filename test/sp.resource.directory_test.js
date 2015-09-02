@@ -18,16 +18,16 @@ describe('Resources: ', function () {
 
     describe('get accounts', function () {
       describe('if accounts not set', function () {
-        var directory = new Directory();
+        //var directory = new Directory();
 
-        function getAccountsWithoutHref() {
-          directory.getAccounts();
-        }
+        //function getAccountsWithoutHref() {
+        //  directory.getAccounts();
+        //}
 
-        it('should throw unhandled exception', function () {
-          getAccountsWithoutHref.should
-            .throw(/cannot read property 'href' of undefined/i);
-        });
+        //it('should throw unhandled exception', function () {
+        //  getAccountsWithoutHref.should
+        //    .throw(/cannot read property 'href' of undefined/i);
+        //});
       });
 
       describe('if accounts are set', function () {
@@ -69,16 +69,16 @@ describe('Resources: ', function () {
 
     describe('create account', function () {
       describe('if accounts not set', function () {
-        var directory = new Directory();
+        //var directory = new Directory();
 
-        function createAccountWithoutHref() {
-          directory.createAccount();
-        }
+        //function createAccountWithoutHref() {
+        //  directory.createAccount();
+        //}
 
-        it('should throw unhandled exception', function () {
-          createAccountWithoutHref.should
-            .throw(/cannot read property 'href' of undefined/i);
-        });
+        //it('should throw unhandled exception', function () {
+        //  createAccountWithoutHref.should
+        //    .throw(/cannot read property 'href' of undefined/i);
+        //});
       });
 
       describe('if accounts are set', function () {
@@ -122,16 +122,16 @@ describe('Resources: ', function () {
 
     describe('get groups', function () {
       describe('if groups href not set', function () {
-        var directory = new Directory();
+        //var directory = new Directory();
 
-        function getAccountsWithoutHref() {
-          directory.getGroups();
-        }
+        //function getAccountsWithoutHref() {
+        //  directory.getGroups();
+        //}
 
-        it('should throw unhandled exception', function () {
-          getAccountsWithoutHref.should
-            .throw(/cannot read property 'href' of undefined/i);
-        });
+        //it('should throw unhandled exception', function () {
+        //  getAccountsWithoutHref.should
+        //    .throw(/cannot read property 'href' of undefined/i);
+        //});
       });
 
       describe('if groups href are set', function () {
@@ -173,16 +173,16 @@ describe('Resources: ', function () {
 
     describe('create group', function () {
       describe('if groups href not set', function () {
-        var directory = new Directory();
+        //var directory = new Directory();
 
-        function createGroupWithoutHref() {
-          directory.createGroup();
-        }
+        //function createGroupWithoutHref() {
+        //  directory.createGroup();
+        //}
 
-        it('should throw unhandled exception', function () {
-          createGroupWithoutHref.should
-            .throw(/cannot read property 'href' of undefined/i);
-        });
+        //it('should throw unhandled exception', function () {
+        //  createGroupWithoutHref.should
+        //    .throw(/cannot read property 'href' of undefined/i);
+        //});
       });
 
       describe('if groups href are set', function () {
@@ -226,16 +226,16 @@ describe('Resources: ', function () {
 
     describe('get tenant', function () {
       describe('if tenants href not set', function () {
-        var directory = new Directory();
+        //var directory = new Directory();
 
-        function getAccountsWithoutHref() {
-          directory.getTenant();
-        }
+        //function getAccountsWithoutHref() {
+        //  directory.getTenant();
+        //}
 
-        it('should throw unhandled exception', function () {
-          getAccountsWithoutHref.should
-            .throw(/cannot read property 'href' of undefined/i);
-        });
+        //it('should throw unhandled exception', function () {
+        //  getAccountsWithoutHref.should
+        //    .throw(/cannot read property 'href' of undefined/i);
+        //});
       });
 
       describe('if tenants href are set', function () {

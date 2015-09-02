@@ -11,16 +11,16 @@ describe('Resources: ', function () {
     var dataStore = new DataStore({apiKey: {id: 1, secret: 2}});
     describe('get accounts', function () {
       describe('if accounts not set', function () {
-        var authcResult = new AuthenticationResult();
+        //var authcResult = new AuthenticationResult();
 
-        function getAccountsWithoutHref() {
-          authcResult.getAccount();
-        }
+        //function getAccountsWithoutHref() {
+        //  authcResult.getAccount();
+        //}
 
-        it('should throw unhandled exception', function () {
-          getAccountsWithoutHref.should
-            .throw(/cannot read property 'href' of undefined/i);
-        });
+        //it('should throw unhandled exception', function () {
+        //  getAccountsWithoutHref.should
+        //    .throw(/cannot read property 'href' of undefined/i);
+        //});
       });
 
       describe('if accounts are set', function () {

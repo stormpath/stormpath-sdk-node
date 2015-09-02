@@ -109,16 +109,16 @@ describe('Resources: ', function () {
 
     describe('get accounts', function () {
       describe('if accounts not set', function () {
-        var group = new Group();
+        //var group = new Group();
 
-        function getAccountsWithoutHref() {
-          group.getAccounts();
-        }
+        //function getAccountsWithoutHref() {
+        //  group.getAccounts();
+        //}
 
-        it('should throw unhandled exception', function () {
-          getAccountsWithoutHref.should
-            .throw(/cannot read property 'href' of undefined/i);
-        });
+        //it('should throw unhandled exception', function () {
+        //  getAccountsWithoutHref.should
+        //    .throw(/cannot read property 'href' of undefined/i);
+        //});
       });
 
       describe('if accounts are set', function () {
