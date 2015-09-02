@@ -3,6 +3,7 @@
 ### 0.11.4
 
 - Updating API docs -- fixing bugs, cleaning up code samples, etc.
+- Removing `resource.customData.get` -- use `resource.getCustomData` instead =)
 
 ### 0.11.3
 
