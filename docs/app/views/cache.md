@@ -17,10 +17,11 @@ Gets cache entry referenced by `key`, retrieved `entry` passed into `callback(er
 
 Example:
 ```javascript
-cache.get(href, function(err, entry){
+cache.get(href, function(err, entry) {
   console.log(entry);
 });
 ```
+
 #### Parameters
 
 <table class="table table-striped table-hover table-curved">
@@ -65,9 +66,9 @@ Puts a new or updates an existing `entry` in cache store referenced by `key`.
 #### Usage
 
 Example:
-Example:
+
 ```javascript
-cache.put(href, account, false, function(err, res){
+cache.put(href, account, false, function(err, res) {
   console.log(res);
 });
 ```
@@ -128,11 +129,13 @@ Removes an `entry` from cache store referenced by `key`.
 #### Usage
 
 Example:
+
 ```javascript
-cache.delete(href, function(err, res){
+cache.delete(href, function(err, res) {
   console.log(res);
 });
 ```
+
 #### Parameters
 
 <table class="table table-striped table-hover table-curved">
@@ -177,8 +180,9 @@ Delete all the keys in cache store.
 #### Usage
 
 Example:
+
 ```javascript
-cache.clear(function(err, res){
+cache.clear(function(err, res) {
   console.log(res);
 });
 ```
@@ -221,8 +225,9 @@ Return the number of keys in the cache store.
 #### Usage
 
 Example:
+
 ```javascript
-cache.size(function(err, size){
+cache.size(function(err, size) {
   console.log(size);
 });
 ```
