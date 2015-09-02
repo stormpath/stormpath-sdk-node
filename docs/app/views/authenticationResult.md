@@ -133,15 +133,14 @@ Exists if the authentication result was created for an Oauth Access Token reques
 
 #### Format
 
-````javascript
+```javascript
 {
   "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc ...",
   "expires_in": 3600,
   "token_type": "bearer",
   "scope": "given-scope"
 }
-
-````
+```
 
 ---
 
@@ -152,6 +151,6 @@ Exists if the authentication result was created from a previously issued Oauth A
 
 #### Format
 
-````javascript
+```javascript
 ['scope-a','scope-b']
-````
+```
