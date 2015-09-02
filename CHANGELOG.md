@@ -1,5 +1,9 @@
 # stormpath-sdk-node Change Log
 
+### 0.11.4
+
+- Updating API docs -- fixing bugs, cleaning up code samples, etc.
+
 ### 0.11.3
 
 - Fixing issue with null request bodies when using our `AuthRequestParser`
