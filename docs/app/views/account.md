@@ -119,7 +119,7 @@ Creates an [Api Key](apiKey) for this account, which can be used to authenticate
 #### Usage
 
 ````javascript
-account.createApiKey(function(err,apiKey){
+account.createApiKey(function(err, apiKey){
   console.log(apiKey);
 })
 ````
@@ -166,10 +166,13 @@ For those interested, password-based AES 256 encryption is used: the password is
 #### Usage
 
 ````javascript
-account.getApiKeys(function(err,collectionResult){
-  collectionResult.each(function(apiKey){
+account.getApiKeys(function(err, collectionResult) {
+  collectionResult.each(function(apiKey, cb) {
     console.log(apiKey);
-  })
+    cb();
+  }, function(err) {
+    console.log('Finished iterating over ApiKeys.'):
+  });
 })
 ````
 
@@ -233,8 +236,11 @@ If you want to retrieve *all* of the account's groups:
 
 ```javascript
 account.getGroups(function(err, groups) {
-  groups.each(function(group) {
+  groups.each(function(group, cb) {
     console.log(group);
+    cb();
+  }, function(err) {
+    console.log('Finished iterating over groups.');
   });
 });
 ```
@@ -249,9 +255,12 @@ them by specifying the *options* argument with [account group][] search query
 parameters:
 
 ```javascript
-account.getGroups({name: '*bar*'}, function(err, groups) {
-  groups.each(function(account) {
+account.getGroups({ name: '*bar*' }, function(err, groups) {
+  groups.each(function(account, cb) {
     console.log(account);
+    cb();
+  }, function(err) {
+    console.log('Finished iterating over groups.');
   });
 });
 ```
@@ -315,8 +324,11 @@ If you want to retrieve all of the group's memberships/associations:
 
 ```javascript
 account.getGroupMemberships(function(err, memberships) {
-  memberships.each(function(membership) {
+  memberships.each(function(membership, cb) {
     console.log(membership);
+    cb();
+  }, function(err) {
+    console.log('Finished iterating over GroupMemberships.');
   });
 });
 ```
@@ -331,10 +343,13 @@ access the membership and its associated group*), you can specify an `expand`
 query parameter:
 
 ```javascript
-account.getGroupMemberships({expand: 'group'}, function(err, memberships) {
-  memberships.each(function(membership) {
+account.getGroupMemberships({ expand: 'group' }, function(err, memberships) {
+  memberships.each(function(membership, cb) {
     console.log(membership);
     console.log(membership.group);
+    cb();
+  }, function(err) {
+    console.log('Finished iterating over GroupMemberships.');
   });
 });
 ```
@@ -396,7 +411,7 @@ You can also use [resource expansion][] options (*query params*) to obtain
 linked resources in the same request:
 
 ```javascript
-account.getDirectory({expand:'groups'}, function(err, directory) {
+account.getDirectory({ expand:'groups' }, function(err, directory) {
   console.log(directory);
 });
 ```
@@ -457,10 +472,13 @@ You can also use [resource expansion][] options (*query params*) to obtain
 linked resources in the same request:
 
 ```javascript
-account.getTenant({expand:'applications'}, function(err, tenant) {
+account.getTenant({ expand:'applications' }, function(err, tenant) {
   console.log(tenant);
-  tenant.applications.each(function(application) {
+  tenant.applications.each(function(application, cb) {
     console.log(application);
+    cb();
+  }, function(err) {
+    console.log('Finished iterating over applications.');
   });
 });
 ```
