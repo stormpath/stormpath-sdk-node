@@ -12,9 +12,9 @@ the custom data resource as a `CustomData` instance.
 #### Usage example
 
 ```javascript
-client.getAccount(accountHref,function(err,account){
-  account.getCustomData(function(err,customData){
-    console.log('my custom property',customData.myCustomProperty);
+client.getAccount(accountHref, function(err, account) {
+  account.getCustomData(function(err, customData) {
+    console.log('my custom property', customData.myCustomProperty);
   });
 });
 ```
@@ -34,12 +34,11 @@ This function is used to delete the contents of the resource's custom data resou
 #### Usage
 
 ```javascript
-account.getCustomData(function(err,customData){
-  customData.delete(function(err){
-    if(err) throw err;
+account.getCustomData(function(err, customData){
+  customData.delete(function(err) {
+    if (err) throw err;
   });
-})
-
+});
 ```
 
 
@@ -63,8 +62,11 @@ Call to this methods queues removal of any `CustomData` field until next
 #### Usage
 
 ```javascript
-account.getCustomData(function(err,customData){
+account.getCustomData(function(err, customData) {
   customData.remove('address1');
+  customData.save(function(err) {
+    if (err) throw err;
+  });
 });
 
 ```
@@ -90,13 +92,12 @@ Calling this method updates `CustomData` resource directly.
 #### Usage
 
 ```javascript
-account.getCustomData(function(err,customData){
+account.getCustomData(function(err, customData) {
   customData.remove('address1');
-  customData.save(function(err){
-    if(err) throw err;
-  })
+  customData.save(function(err) {
+    if (err) throw err;
+  });
 });
-
 ```
 
 #### Parameters
