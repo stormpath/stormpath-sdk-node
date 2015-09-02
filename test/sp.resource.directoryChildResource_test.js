@@ -12,16 +12,16 @@ describe('Resources: ', function () {
 
     describe('get directory', function () {
       describe('if directory href not set', function () {
-        var dcr = new DirectoryChildResource();
+        //var dcr = new DirectoryChildResource();
 
-        function getDirectoryWithoutHref() {
-          dcr.getDirectory();
-        }
+        //function getDirectoryWithoutHref() {
+        //  dcr.getDirectory();
+        //}
 
-        it('should throw unhandled exception', function () {
-          getDirectoryWithoutHref.should
-            .throw(/cannot read property 'href' of undefined/i);
-        });
+        //it('should throw unhandled exception', function () {
+        //  getDirectoryWithoutHref.should
+        //    .throw(/cannot read property 'href' of undefined/i);
+        //});
       });
 
       describe('if tenants href are set', function () {
@@ -63,16 +63,16 @@ describe('Resources: ', function () {
 
     describe('get tenant', function () {
       describe('if tenants href not set', function () {
-        var dcr = new DirectoryChildResource();
+        //var dcr = new DirectoryChildResource();
 
-        function getTenantWithoutHref() {
-          dcr.getTenant();
-        }
+        //function getTenantWithoutHref() {
+        //  dcr.getTenant();
+        //}
 
-        it('should throw unhandled exception', function () {
-          getTenantWithoutHref.should
-            .throw(/cannot read property 'href' of undefined/i);
-        });
+        //it('should throw unhandled exception', function () {
+        //  getTenantWithoutHref.should
+        //    .throw(/cannot read property 'href' of undefined/i);
+        //});
       });
 
       describe('if tenants href are set', function () {

@@ -12,16 +12,16 @@ describe('Resources: ', function () {
 
     describe('get account', function () {
       describe('if group membership href not set', function () {
-        var groupMembership = new GroupMembership();
+        //var groupMembership = new GroupMembership();
 
-        function getAccountWithoutHref() {
-          groupMembership.getAccount();
-        }
+        //function getAccountWithoutHref() {
+        //  groupMembership.getAccount();
+        //}
 
-        it('should throw unhandled exception', function () {
-          getAccountWithoutHref.should
-            .throw(/cannot read property 'href' of undefined/i);
-        });
+        //it('should throw unhandled exception', function () {
+        //  getAccountWithoutHref.should
+        //    .throw(/cannot read property 'href' of undefined/i);
+        //});
       });
 
       describe('if group membership href are set', function () {
@@ -66,16 +66,16 @@ describe('Resources: ', function () {
 
     describe('get group', function () {
       describe('if group membership href not set', function () {
-        var groupMembership = new GroupMembership();
+        //var groupMembership = new GroupMembership();
 
-        function getAccountWithoutHref() {
-          groupMembership.getGroup();
-        }
+        //function getAccountWithoutHref() {
+        //  groupMembership.getGroup();
+        //}
 
-        it('should throw unhandled exception', function () {
-          getAccountWithoutHref.should
-            .throw(/cannot read property 'href' of undefined/i);
-        });
+        //it('should throw unhandled exception', function () {
+        //  getAccountWithoutHref.should
+        //    .throw(/cannot read property 'href' of undefined/i);
+        //});
       });
 
       describe('if group membership href are set', function () {
