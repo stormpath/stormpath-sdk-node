@@ -119,9 +119,9 @@ Creates a new [Group](group) in the directory.  Every group in the directory mus
 Example:
 
 ```javascript
-var group = {name: 'Administrators'}
+var group = { name: 'Administrators' };
 
-directory.createGroup(group, onGroupCreation(err, createdGroup) {
+directory.createGroup(group, function(err, createdGroup) {
   console.log(createdGroup);
 });
 ```
@@ -129,7 +129,7 @@ directory.createGroup(group, onGroupCreation(err, createdGroup) {
 You can also specify options to control things like reference expansion:
 
 ```javascript
-directory.createGroup(group, {expand:'directory'}, function onAccountCreated(err, createdGroup) {
+directory.createGroup(group, { expand:'directory' }, function(err, createdGroup) {
   console.log(createdGroup);
 });
 ```
