@@ -31,7 +31,7 @@ Retrieves the associated Application and provides it to the specified callback.
 #### Usage
 
 ```javascript
-accountStoreMapping.getApplication({expand: 'accounts'}, function(err, app) {
+accountStoreMapping.getApplication({ expand: 'accounts' }, function(err, app) {
   console.log(app);
 });
 ```
@@ -125,7 +125,7 @@ to the specified callback.
 #### Usage
 
 ```javascript
-accountStoreMapping.getAccountStore({expand: 'accounts'}, function(err, store) {
+accountStoreMapping.getAccountStore({ expand: 'accounts' }, function(err, store) {
   console.log(store);
 });
 ```
