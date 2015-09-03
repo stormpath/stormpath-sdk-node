@@ -23,9 +23,9 @@ function loadApiKey(cb) {
   });
 }
 
-function getClient(cb){
-  loadApiKey(function(apiKey){
-    cb(new stormpath.Client({apiKey:apiKey}));
+function getClient(cb) {
+  loadApiKey(function(apiKey) {
+    cb(new stormpath.Client({ apiKey: apiKey }));
   });
 }
 
