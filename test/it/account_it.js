@@ -47,62 +47,6 @@ describe('Account', function() {
   });
 
   describe('customData', function() {
-    describe('via customData.get', function() {
-      var customData;
-
-      before(function(done) {
-        account.customData.get(function(err, _customData) {
-          if (err) {
-            return done(err);
-          }
-
-          customData = _customData;
-          done();
-        });
-      });
-
-      it('should be get-able', function() {
-        assert(customData instanceof CustomData);
-        assert.equal(customData.href, account.href + '/customData');
-      });
-
-      describe('when saved and re-fetched', function() {
-        var customDataAfterGet;
-        var propertyName = helpers.uniqId();
-        var propertyValue = helpers.uniqId();
-
-        before(function(done) {
-          customData[propertyName] = propertyValue;
-
-          customData.save(function(err) {
-            if (err) {
-              return done(err);
-            }
-
-            account.customData.get(function(err, customData) {
-              if (err) {
-                return done(err);
-              }
-
-              customDataAfterGet = customData;
-              done();
-            });
-          });
-        });
-
-        it('should have the new property persisted', function() {
-          assert.equal(customDataAfterGet[propertyName], propertyValue);
-        });
-
-        it('should allow all added keys to be deleted', function(done) {
-          customDataAfterGet.remove(propertyName);
-          customDataAfterGet.save(function(err) {
-            done(err);
-          });
-        });
-      });
-    });
-
     describe('via getCustomData', function() {
       var customData;
 

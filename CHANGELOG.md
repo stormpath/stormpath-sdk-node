@@ -6,6 +6,9 @@
 - Adding tests for `Application.getAccount()`.
 - Improved error handling for `Application.getAccount()` so it can't be used
   improperly.
+- Removing `resource.customData.get` -- use `resource.getCustomData` instead =)
+  This wasn't used anywhere anyhow: so this doesn't need to be a major version
+  upgrade.
 
 ### 0.11.3
 
