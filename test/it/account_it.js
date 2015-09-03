@@ -17,6 +17,10 @@ describe('Account', function() {
       client = _client;
 
       client.createDirectory({ name: uuid.v4() }, function(err, _directory) {
+        if (err) {
+          return done(err);
+        }
+
         directory = _directory;
 
         console.log('CREATED DIRECTORY!', directory);
