@@ -35,6 +35,40 @@ describe('Application',function(){
     }, done);
   });
 
+  describe('.getAccount()', function() {
+    it('should throw an error if providerData is not provided', function() {
+      assert.throws(function() {
+        app.getAccount(function() {
+        });
+      }, Error);
+    });
+
+    it('should throw an error if callback is not provided', function() {
+      assert.throws(function() {
+        app.getAccount({ providerData: { providerId: 'google', code: 'xxx' } });
+      }, Error);
+    });
+
+    it('should throw an error if providerData is not an object', function() {
+      assert.throws(function() {
+        app.getAccount('https://api.stormpath.com/v1/accounts/xxx', function() {
+        });
+      }, Error);
+    });
+
+    it('should throw an error if providerData.providerId is not a string', function() {
+      assert.throws(function() {
+        app.getAccount({ providerData: { providerId: 1 } }, function() {});
+      }, Error);
+    });
+
+    it('should throw an error if either providerData.code or providerData.accessToken are not strings', function() {
+      assert.throws(function() {
+        app.getAccount({ providerData: { providerId: 'google' } }, function() {});
+      }, Error);
+    });
+  });
+
   it('should be create-able',function(){
     assert.equal(creationResult[0],null); // did not error
     assert.instanceOf(app,Application);
