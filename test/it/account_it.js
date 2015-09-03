@@ -22,9 +22,6 @@ describe('Account', function() {
         }
 
         directory = _directory;
-
-        console.log('CREATED DIRECTORY!', directory);
-
         directory.createAccount(helpers.fakeAccount(), function(err,_account) {
           account = _account;
           creationResult = [err, _account];
