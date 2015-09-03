@@ -3,10 +3,10 @@ node_js:
   - '0.10'
   - '0.11'
   - '0.12'
-  - iojs
+  - 'iojs'
 sudo: false
 script: travis_retry npm test
 env:
   global:
-    - secure: W+GZrQruCyyKfezVm5Fb/Qo8hUk5pSevrW7t7UXSBTNOx9vusLaEns1MXIjzxtR4kzxy4dM/83WhMVPHawPd8FPH9/ICV+FQ/wy8T84mJA19kG4rkN1/BT22a3Wmjr607njQBjONlCiGlFnkOQsCAGl5V0pEENHEbOvrAuvq0C8=
-    - secure: MLfnm90FHiJgHYLYsFaWzkoD8eR+3jho4Ff1hCvoLhtWT0j4wwI6pg5MuV6HE7wOcMCDdvSxfG7jfGlwR/Q9Xb8NGfm7OZrHmcYPVS/zh1DZtmfjt7EOp2E4jSnVvOD+2PSp3pHsAg0DLFhGNjHp6uLlODtA1Q6lmiELuvbbcMU=
+    - secure: YxflmHcSNi8hqNOY4a+gEyilWJeCpsl7Z/UUYegNchglahPEsuTlFNZk85tUTpqNBEYLBayD78GMwmy/MjOsOVhxsOBJxASHa+GNJ6z1jcv4hilPAV9KxABDpnPVvAdmXlWXNCa6FQQWuVR7th0cwAUyoDGhl7PX0/WTrLCWjyQ=
+    - secure: hnDlH09EmIh93nZ6OkTGI793JlLuQxPYCfImSuqdhejaxS8dRmyYQw+uqOfcJLSzdYkWtqNKJ3L9LC4rMwuys4DwtIzMFXvADPoV4KoVLyqAlZSgJ7iHTUS+1earTnfZ5+IVb5Vn3RKmwLHuE6bOozbBFOWkOsfQFXI94CQ4OFU=
