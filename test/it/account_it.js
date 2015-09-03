@@ -2,6 +2,8 @@
 
 var assert = require('assert');
 
+var uuid = require('uuid');
+
 var helpers = require('./helpers');
 
 var Account = require('../../lib/resource/Account');
@@ -14,8 +16,14 @@ describe('Account', function() {
     helpers.getClient(function(_client) {
       client = _client;
 
-      client.createDirectory({ name: helpers.uniqId() }, function(err, _directory) {
+      client.createDirectory({ name: uuid.v4() }, function(err, _directory) {
+        if (err) {
+          return done(err);
+        }
+
         directory = _directory;
+
+        console.log('CREATED DIRECTORY!', directory);
 
         directory.createAccount(helpers.fakeAccount(), function(err,_account) {
           account = _account;

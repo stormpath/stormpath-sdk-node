@@ -2,31 +2,30 @@ var common = require('../common');
 var uuid = common.uuid;
 var stormpath = common.Stormpath;
 
-function loadApiKey(cb){
-  var homeDir = process.env[(process.platform === 'win32' ? 'USERPROFILE' : 'HOME')];
+function loadApiKey(cb) {
+  var id = process.env.STORMPATH_CLIENT_APIKEY_ID;
+  var secret = process.env.STORMPATH_CLIENT_APIKEY_SECRET;
+  var homeDir = process.env[(process.platform === 'win32' ? 'USERPROFILE' : 'HOME')] || '';
   var apiKeyFilePath = homeDir + '/.stormpath/apiKey.properties';
 
-
-
-  var id = process.env['STORMPATH_CLIENT_APIKEY_ID'];
-  var secret = process.env['STORMPATH_CLIENT_APIKEY_SECRET'];
-
-  if(id && secret){
-    process.nextTick(function(){
-      cb(new stormpath.ApiKey( id, secret ));
-    });
-  }else{
-    stormpath.loadApiKey(apiKeyFilePath, function apiKeyFileLoaded(err, apiKey) {
-      if (err){ throw err; }
-      cb(apiKey);
+  if (id && secret) {
+    return process.nextTick(function() {
+      cb(new stormpath.ApiKey(id, secret));
     });
   }
 
+  stormpath.loadApiKey(apiKeyFilePath, function(err, apiKey) {
+    if (err) {
+      throw err;
+    }
+
+    cb(apiKey);
+  });
 }
 
-function getClient(cb){
-  loadApiKey(function(apiKey){
-    cb(new stormpath.Client({apiKey:apiKey}));
+function getClient(cb) {
+  loadApiKey(function(apiKey) {
+    cb(new stormpath.Client({ apiKey: apiKey }));
   });
 }
 

@@ -11,28 +11,62 @@ describe('Application',function(){
 
   var client, app, creationResult, directory, account;
 
-  before(function(done){
-    helpers.getClient(function(_client){
+  before(function(done) {
+    helpers.getClient(function(_client) {
       client = _client;
-      client.createApplication(
-        {name: helpers.uniqId()},
-        function(err, _app) {
-          creationResult = [err,_app];
-          app = _app;
-          done();
-        }
-      );
+
+      client.createApplication({ name: helpers.uniqId() }, function(err, _app) {
+        creationResult = [err, _app];
+        app = _app;
+        done();
+      });
     });
   });
 
-  after(function(done){
-    // cleanup, delete resources that were created
-    async.each([app,directory,account],function(resource,next){
-      resource.delete(function(err){
-        if(err){ throw err; }
+  after(function(done) {
+    async.each([app, directory, account], function(resource, next) {
+      if (resource) {
+        resource.delete(function(err) {
+          next(err);
+        });
+      } else {
         next();
-      });
-    },done);
+      }
+    }, done);
+  });
+
+  describe('.getAccount()', function() {
+    it('should throw an error if providerData is not provided', function() {
+      assert.throws(function() {
+        app.getAccount(function() {
+        });
+      }, Error);
+    });
+
+    it('should throw an error if callback is not provided', function() {
+      assert.throws(function() {
+        app.getAccount({ providerData: { providerId: 'google', code: 'xxx' } });
+      }, Error);
+    });
+
+    it('should throw an error if providerData is not an object', function() {
+      assert.throws(function() {
+        app.getAccount('https://api.stormpath.com/v1/accounts/xxx', function() {
+        });
+      }, Error);
+    });
+
+    it('should throw an error if providerData.providerId is not a string', function() {
+      assert.throws(function() {
+        app.getAccount({ providerData: { providerId: 1 } }, function() {});
+      }, Error);
+    });
+
+    it('should throw an error if either providerData.code or providerData.accessToken are not strings', function() {
+      assert.throws(function() {
+        app.getAccount({ providerData: { providerId: 'google' } }, function() {});
+      }, Error);
+    });
   });
 
   it('should be create-able',function(){

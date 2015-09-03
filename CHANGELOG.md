@@ -3,6 +3,9 @@
 ### 0.11.4
 
 - Updating API docs -- fixing bugs, cleaning up code samples, etc.
+- Adding tests for `Application.getAccount()`.
+- Improved error handling for `Application.getAccount()` so it can't be used
+  improperly.
 
 ### 0.11.3
 
