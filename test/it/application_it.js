@@ -11,28 +11,28 @@ describe('Application',function(){
 
   var client, app, creationResult, directory, account;
 
-  before(function(done){
-    helpers.getClient(function(_client){
+  before(function(done) {
+    helpers.getClient(function(_client) {
       client = _client;
-      client.createApplication(
-        {name: helpers.uniqId()},
-        function(err, _app) {
-          creationResult = [err,_app];
-          app = _app;
-          done();
-        }
-      );
+
+      client.createApplication({ name: helpers.uniqId() }, function(err, _app) {
+        creationResult = [err, _app];
+        app = _app;
+        done();
+      });
     });
   });
 
-  after(function(done){
-    // cleanup, delete resources that were created
-    async.each([app,directory,account],function(resource,next){
-      resource.delete(function(err){
-        if(err){ throw err; }
+  after(function(done) {
+    async.each([app, directory, account], function(resource, next) {
+      if (resource) {
+        resource.delete(function(err) {
+          next(err);
+        });
+      } else {
         next();
-      });
-    },done);
+      }
+    }, done);
   });
 
   it('should be create-able',function(){
