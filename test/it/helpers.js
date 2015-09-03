@@ -6,8 +6,6 @@ function loadApiKey(cb){
   var homeDir = process.env[(process.platform === 'win32' ? 'USERPROFILE' : 'HOME')];
   var apiKeyFilePath = homeDir + '/.stormpath/apiKey.properties';
 
-
-
   var id = process.env['STORMPATH_CLIENT_APIKEY_ID'];
   var secret = process.env['STORMPATH_CLIENT_APIKEY_SECRET'];
 
