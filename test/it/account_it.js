@@ -14,6 +14,8 @@ describe('Account', function() {
     helpers.getClient(function(_client) {
       client = _client;
 
+      console.log('CREATED CLIENT!', client);
+
       client.createDirectory({ name: helpers.uniqId() }, function(err, _directory) {
         directory = _directory;
 
