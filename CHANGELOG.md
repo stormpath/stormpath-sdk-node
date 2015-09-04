@@ -9,6 +9,7 @@
 - Removing `resource.customData.get` -- use `resource.getCustomData` instead =)
   This wasn't used anywhere anyhow: so this doesn't need to be a major version
   upgrade.
+- Adding tests to ensure URI fragments can be retrieved (*they can*).
 
 ### 0.11.3
 
