@@ -46,6 +46,20 @@ describe('Account', function() {
     assert(account instanceof Account);
   });
 
+  it('should be retrievable by URI fragment', function(done) {
+    var hrefParts = account.href.split('/');
+    var uriFragment = '/' + hrefParts.slice(Math.max(hrefParts.length - 2, 1)).join('/');
+
+    client.getAccount(uriFragment, function(err, _account) {
+      if (err) {
+        return done(err);
+      }
+
+      assert.equal(account.href, _account.href);
+      done();
+    });
+  });
+
   describe('customData', function() {
     describe('via getCustomData', function() {
       var customData;
