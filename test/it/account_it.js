@@ -46,7 +46,7 @@ describe('Account', function() {
     assert(account instanceof Account);
   });
 
-  it.only('should be retrievable by URI fragment', function(done) {
+  it('should be retrievable by URI fragment', function(done) {
     var hrefParts = account.href.split('/');
     var uriFragment = '/' + hrefParts.slice(Math.max(hrefParts.length - 2, 1)).join('/');
 
