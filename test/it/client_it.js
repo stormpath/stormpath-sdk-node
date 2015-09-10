@@ -22,6 +22,20 @@ describe('Client', function() {
       });
     });
 
+    //it('should not expose an apiKey property', function(done) {
+    //  helpers.getClient(function(client) {
+    //    assert.equal(client.config.apiKey, undefined);
+    //    done();
+    //  });
+    //});
+
+    //it('should automatically load client.config.apiKey', function(done) {
+    //  helpers.getClient(function(client) {
+    //    assert(client.config.client.apiKey);
+    //    done();
+    //  });
+    //});
+
     it('shoud propertly load socialProviders onto the configuration object', function(done) {
       helpers.getClient(function(client) {
         var applicationData = { name: uuid.v4() };
@@ -120,7 +134,7 @@ describe('Client', function() {
     it('should not err', function(done) {
       helpers.getClient(function(client) {
         client.getCurrentTenant(function(err) {
-          assert.equal(err, null);
+          assert.ifError(err);
           done();
         });
       });
@@ -129,10 +143,7 @@ describe('Client', function() {
     it('should return a tenant instance', function(done) {
       helpers.getClient(function(client) {
         client.getCurrentTenant(function(err, tenant) {
-          if (err) {
-            return done(err);
-          }
-
+          assert.ifError(err);
           assert(tenant instanceof Tenant);
           done();
         });

@@ -3,21 +3,18 @@ var common = require('../common');
 var helpers = require('./helpers');
 var assert = common.assert;
 
-
-describe('Data Store',function(){
-
-
-  describe('when asked for a resource',function(){
-
+describe('DataStore', function() {
+  describe('when asked for a resource', function() {
     var cacheResult, resource;
 
-    before(function(done){
-      helpers.getClient(function(client){
-        client.getCurrentTenant(function(err,tenant){
+    before(function(done) {
+      helpers.getClient(function(client) {
+        client.getCurrentTenant(function(err, tenant) {
+          assert.ifError(err);
           resource = tenant;
-          if(err){throw err;}
-          client._dataStore.cacheHandler.get(tenant.href,function(err,value){
-            if(err){throw err;}
+
+          client._dataStore.cacheHandler.get(tenant.href, function(err, value) {
+            assert.ifError(err);
             cacheResult = value;
             done();
           });
@@ -25,8 +22,8 @@ describe('Data Store',function(){
       });
     });
 
-    it('should cache the resource',function(){
-      assert.equal(cacheResult.href,resource.href);
+    it('should cache the resource', function() {
+      assert.equal(cacheResult.href, resource.href);
     });
   });
 

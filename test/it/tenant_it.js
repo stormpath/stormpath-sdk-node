@@ -6,26 +6,26 @@ var assert = common.assert;
 var CustomData = require('../../lib/resource/CustomData');
 var Tenant = require('../../lib/resource/Tenant');
 
-describe('Tenant',function(){
-
+describe('Tenant', function() {
   var client, tenant;
 
-  before(function(done){
-    helpers.getClient(function(_client){
+  before(function(done) {
+    helpers.getClient(function(_client) {
       client = _client;
-      client.getCurrentTenant(
-        {name: helpers.uniqId()},
-        function(err, _tenant) {
-          if(err){ throw err; }
-          tenant = _tenant;
-          done();
+
+      client.getCurrentTenant({ name: helpers.uniqId() }, function(err, _tenant) {
+        if (err) {
+          return done(err);
         }
-      );
+
+        tenant = _tenant;
+        done();
+      });
     });
   });
 
-  it('should be get-able',function(){
-    assert.instanceOf(tenant,Tenant);
+  it('should be get-able', function() {
+    assert.instanceOf(tenant, Tenant);
   });
 
   describe('getAccounts',function(){
