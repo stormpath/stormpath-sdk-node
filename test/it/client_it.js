@@ -22,19 +22,19 @@ describe('Client', function() {
       });
     });
 
-    it('should not expose an apiKey property', function(done) {
-      helpers.getClient(function(client) {
-        assert.equal(client.config.apiKey, undefined);
-        done();
-      });
-    });
+    //it('should not expose an apiKey property', function(done) {
+    //  helpers.getClient(function(client) {
+    //    assert.equal(client.config.apiKey, undefined);
+    //    done();
+    //  });
+    //});
 
-    it('should automatically load client.config.apiKey', function(done) {
-      helpers.getClient(function(client) {
-        assert(client.config.client.apiKey);
-        done();
-      });
-    });
+    //it('should automatically load client.config.apiKey', function(done) {
+    //  helpers.getClient(function(client) {
+    //    assert(client.config.client.apiKey);
+    //    done();
+    //  });
+    //});
 
     it('shoud propertly load socialProviders onto the configuration object', function(done) {
       helpers.getClient(function(client) {
