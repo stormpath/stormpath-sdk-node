@@ -1,5 +1,9 @@
 # stormpath-sdk-node Change Log
 
+### 0.11.5
+
+- Adding tests for Config.
+
 ### 0.11.4
 
 - Updating API docs -- fixing bugs, cleaning up code samples, etc.
