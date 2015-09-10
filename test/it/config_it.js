@@ -44,9 +44,6 @@ describe('Config', function() {
     });
 
     it('should generate the appropriate application options when environment variables are supplied', function(done) {
-      var oldApplicationHref = process.env.STORMPATH_APPLICATION_HREF;
-      var oldApplicationName = process.env.STORMPATH_APPLICATION_NAME;
-
       process.env.STORMPATH_APPLICATION_HREF = 'xxx';
       process.env.STORMPATH_APPLICATION_NAME = 'yyy';
 
@@ -54,8 +51,8 @@ describe('Config', function() {
       assert.equal(config.application.href, 'xxx');
       assert.equal(config.application.name, 'yyy');
 
-      process.env.STORMPATH_APPLICATION_HREF = oldApplicationHref;
-      process.env.STORMPATH_APPLICATION_NAME = oldApplicationName;
+      delete process.env.STORMPATH_APPLICATION_HREF;
+      delete process.env.STORMPATH_APPLICATION_NAME;
 
       done();
     });
