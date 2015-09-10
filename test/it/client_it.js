@@ -120,7 +120,7 @@ describe('Client', function() {
     it('should not err', function(done) {
       helpers.getClient(function(client) {
         client.getCurrentTenant(function(err) {
-          assert.equal(err, null);
+          assert.ifError(err);
           done();
         });
       });
@@ -129,10 +129,7 @@ describe('Client', function() {
     it('should return a tenant instance', function(done) {
       helpers.getClient(function(client) {
         client.getCurrentTenant(function(err, tenant) {
-          if (err) {
-            return done(err);
-          }
-
+          assert.ifError(err);
           assert(tenant instanceof Tenant);
           done();
         });
