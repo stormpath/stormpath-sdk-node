@@ -631,7 +631,9 @@ describe('Application.authenticateApiRequest',function(){
 
     it('should set the ttl',function(){
       assert.equal(tokenResponse.expires_in,desiredTtl);
-      assert.equal(decodedAccessToken.exp,(decodedAccessToken.iat + desiredTtl));
+      // It takes a second to talk to the API, so allow 1 second of difference
+      // in the result we get
+      assert.closeTo(decodedAccessToken.body.exp,(decodedAccessToken.body.iat + desiredTtl),1);
     });
 
   });
