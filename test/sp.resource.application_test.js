@@ -18,6 +18,7 @@ var AccountStoreMapping = require('../lib/resource/AccountStoreMapping');
 var ApiKey = require('../lib/resource/ApiKey');
 var DataStore = require('../lib/ds/DataStore');
 var jwt = require('jwt-simple');
+var nJwtProperties = require('njwt/properties');
 var uuid = require('node-uuid');
 var url = require('url');
 
@@ -244,7 +245,8 @@ describe('Resources: ', function () {
             test.after();
           });
           it('should error with the expiration error',function(){
-            common.assert.equal(test.cbSpy.args[0][0].message,errorMessages.ID_SITE_JWT_HAS_EXPIRED);
+
+            common.assert.equal(test.cbSpy.args[0][0].message,nJwtProperties.errors.EXPIRED);
           });
         });
 
@@ -262,8 +264,7 @@ describe('Resources: ', function () {
               sub: accountHref,
               irt: test.jwtRequest.jti,
               state: test.jwtRequest.state,
-              aud: uuid(),
-              exp: utils.nowEpochSeconds() - 1
+              aud: uuid()
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
             test.handleIdSiteCallback(responseUri,'jwt');
