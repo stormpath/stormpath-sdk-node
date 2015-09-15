@@ -458,6 +458,10 @@ app.get('/logout', function(req, res) {
             and redirected to the sepcified callbackUri.
           </li>
           <li>
+            `organizationNameKey` - OPTIONAL - The organization name to display
+            on ID Site.  This value will be fixed and the user cannot change it.
+          </li>
+          <li>
             `path` - OPTIONAL - Sets the initial path in the ID Site where the user should be sent. If unspecified, this defaults to /, implying that the ID Site's landing/home page is the desired location.
 
             Most Stormpath customers allow their ID Site's default landing page `/` to reflect a traditional 'Login or Signup' page for convenience.
@@ -465,8 +469,18 @@ app.get('/logout', function(req, res) {
             For example, if you are using the default ID Site provided by Stormpath, you can send the user directly to the registration page by specifying `/#/register` or the forgot password page by specifying `/#/forgot`
           </li>
           <li>
+            `showOrganizationField` - OPTIONAL - Shows the organization field on ID Site,
+            if the user can select from multiple organizations (depends on account store
+            mappings of the application).
+          </li>
+          <li>
             `state` - OPTIONAL - Application-specific state that should be retained and made available to your callbackUri when
             the user returns from the ID Site.  See [handleIdSiteCallback](application#handleIdSiteCallback)
+          </li>
+          <li>
+            `useSubDomain` - OPTIONAL - Use organization name key as domain
+            prefix for ID Site URL.  For example, if `organizationNameKey` is
+            `org-a` then the user will be redirected to `org-a.myidsitedomain.tld`
           </li>
         </ul>
       </td>
