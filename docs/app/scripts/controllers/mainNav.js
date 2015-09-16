@@ -190,8 +190,16 @@ function items() {
       anchor('getGroup')
     ]),
 
-    //item('InstanceResource', 'instanceResource'),
-    //item('Resource'),
+    item('Organization', null, [
+      anchor('Overview', 'top'),
+      anchor('createAccountStoreMapping')
+    ]),
+
+    item('OrganizationAccountStoreMapping', 'organizationAccountStoreMapping', [
+      anchor('Overview', 'top'),
+      anchor('getAccountStore'),
+      anchor('getOrganization')
+    ]),
 
     item('ResourceError', 'resourceError', [
       anchor('Overview', 'top')

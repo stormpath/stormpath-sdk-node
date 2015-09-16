@@ -70,6 +70,14 @@ angular.module('docsApp', [
         templateUrl: 'views/groupMembership.html',
         controller: 'MainCtrl'
       })
+      .when('/organization', {
+        templateUrl: 'views/organization.html',
+        controller: 'MainCtrl'
+      })
+      .when('/organizationAccountStoreMapping', {
+        templateUrl: 'views/organizationAccountStoreMapping.html',
+        controller: 'MainCtrl'
+      })
       .when('/resourceError', {
         templateUrl: 'views/resourceError.html',
         controller: 'MainCtrl'
