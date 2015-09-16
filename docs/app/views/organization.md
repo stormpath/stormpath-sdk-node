@@ -49,7 +49,7 @@ organization.createAccountStoreMapping(mapping, function(err, result) {
       <td>required</td>
       <td> An object literal which contains an `accountStore` property
         that references the account store that you want to add to this
-        Organization.
+        Organization.  Can be a [Directory](directory) or [Group](group).
       </td>
     </tr>
     <tr>

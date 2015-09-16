@@ -74,47 +74,6 @@ will be provided to the callback as the callback's second parameter.
 ---
 
 
-<a name="setApplication"></a>
-### <span class="member">method</span> setApplication(application)
-
-Sets Application as the Account Store Mapping's Application.
-**This method doesn't generate a request to update `Account Store Mapping`.**
-
-
-#### Usage
-
-```javascript
-accountStoreMapping.setApplication(application);
-accountStoreMapping.save(function(err, mapping) {
-  console.log(mapping);
-});
-```
-
-
-#### Parameters
-
-<table class="table table-striped table-hover table-curved">
-  <thead>
-    <tr>
-      <th>Parameter</th>
-      <th>Type</th>
-      <th>Presence</th>
-      <th>Description<th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>`application`</td>
-      <td>object</td>
-      <td>required</td>
-      <td>The `Application` that will be associated with `Account Store Mapping`.</td>
-    </tr>
-  </tbody>
-</table>
-
----
-
-
 <a name="getAccountStore"></a>
 ### <span class="member">method</span> getAccountStore(*[options,]* callback)
 
@@ -165,45 +124,3 @@ If the request fails, the callback's first parameter (`err`) will report the
 failure.  If the request succeeds, the instance of [Directory](directory) or
 [Group](group) will be provided to the callback as the callback's second
 parameter.
-
----
-
-
-<a name="setAccountStore"></a>
-### <span class="member">method</span> setAccountStore(accountStore)
-
-Sets AccountStore (*Group or Directory*) provided as Account Store Mapping
-*account store*.  **This method doesn't generate a request to update
-Account Store Mapping.**
-
-
-#### Usage
-
-```javascript
-accountStoreMapping.setAccountStore(directory);
-accountStoreMapping.save(function(err, mapping) {
-  console.log(mapping);
-});
-```
-
-
-#### Parameters
-
-<table class="table table-striped table-hover table-curved">
-  <thead>
-    <tr>
-      <th>Parameter</th>
-      <th>Type</th>
-      <th>Presence</th>
-      <th>Description<th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>`accountStore`</td>
-      <td>object</td>
-      <td>required</td>
-      <td>The `AccountStore` ('Group` or `Directory`) that will be associated with `Account Store Mapping`.</td>
-    </tr>
-  </tbody>
-</table>

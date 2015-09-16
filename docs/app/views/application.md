@@ -326,6 +326,71 @@ void; the created [Account](account) returned from the server will be provided t
 
 ---
 
+<a name="createAccountStoreMapping"></a>
+### <span class="member">method</span> createAccountStoreMapping(accountStoreMapping, callback)
+
+Creates an instance of [AccountStoreMapping](accountStoreMapping) from the `accountStoreMapping` literal and associate it with current application.
+Returns a newly created [AccountStoreMapping](accountStoreMapping) as a second callback parameter.
+
+
+#### Usage
+
+
+```javascript
+var mapping = {
+  accountStore: {
+    href: "https://api.stormpath.com/v1/directories/bckhcGMXQDujIXpExAmPLe"
+  },
+  isDefaultAccountStore: true,
+  isDefaultGroupStore: true
+};
+
+application.createAccountStoreMapping(mapping, function(err, asm) {
+  var accountStoreMapping = asm;
+});
+```
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>`accountStoreMapping`</td>
+      <td>`object`</td>
+      <td>required</td>
+      <td> An object literal which contains an `accountStore` property
+        that references the account store that you want to add to this
+        Application.  Can be a [Directory](directory), [Group](group),
+        or [Organization](organization).
+      </td>
+    </tr>
+    <tr>
+      <td>`callback`</td>
+      <td>`function`</td>
+      <td>required</td>
+      <td>The callback to execute upon server response. The 1st parameter is an [error](resourceError).
+      The 2nd parameter is an [AccountStoreMapping](accountStoreMapping) instance.</td>
+    </tr>
+  </tbody>
+</table>
+
+#### Returns
+
+void;
+If the request fails, the callback's first parameter (`err`) will report the failure.
+If the request succeeds, the instance of  [AccountStoreMapping](accountStoreMapping) will be provided to the `callback` as the callback's second parameter.
+
+
+---
+
 <a name="createGroup"></a>
 ### <span class="member">method</span> createGroup(group, *[options,]* callback)
 
@@ -1405,69 +1470,6 @@ void;
 If the request fails, the callback's first parameter (`err`) will report the failure.
 If the request succeeds, the instance of  [AccountStoreMapping](accountStoreMapping) will be provided to the `callback` as the callback's second parameter.
 
----
-
-<a name="createAccountStoreMapping"></a>
-### <span class="member">method</span> createAccountStoreMapping(accountStoreMapping, callback)
-
-Creates an instance of `AccountStoreMapping` from `accountStoreMapping` object and associate it with current application.
-Returns a newly created `AccountStoreMapping` as a second callback parameter.
-
-
-#### Usage
-
-
-```javascript
-var mapping = {
-  application: {
-    href: "https://api.stormpath.com/v1/applications/Uh8FzIouQ9C8EpcExAmPLe"
-  },
-  accountStore: {
-    href: "https://api.stormpath.com/v1/directories/bckhcGMXQDujIXpExAmPLe"
-  },
-  isDefaultAccountStore: true,
-  isDefaultGroupStore: true
-};
-
-application.createAccountStoreMapping(mapping, function(err, asm) {
-  var accountStoreMapping = asm;
-});
-```
-
-#### Parameters
-
-<table class="table table-striped table-hover table-curved">
-  <thead>
-    <tr>
-      <th>Parameter</th>
-      <th>Type</th>
-      <th>Presence</th>
-      <th>Description<th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>`accountStoreMapping`</td>
-      <td>`object`</td>
-      <td>required</td>
-      <td> The `AcountStoreMapping` object
-      </td>
-    </tr>
-    <tr>
-      <td>`callback`</td>
-      <td>`function`</td>
-      <td>required</td>
-      <td>The callback to execute upon server response. The 1st parameter is an [error](resourceError).
-      The 2nd parameter is an [AccountStoreMapping](accountStoreMapping) instance.</td>
-    </tr>
-  </tbody>
-</table>
-
-#### Returns
-
-void;
-If the request fails, the callback's first parameter (`err`) will report the failure.
-If the request succeeds, the instance of  [AccountStoreMapping](accountStoreMapping) will be provided to the `callback` as the callback's second parameter.
 
 ---
 
