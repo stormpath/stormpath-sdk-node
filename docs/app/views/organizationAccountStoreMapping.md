@@ -1,38 +1,38 @@
-## Account Store Mapping
+## Organization Account Store Mapping
 
-"Account Store" is a generic term for either a [Directory](directory) or a
-[Group](group).  Directories and Groups are both are considered "account
-stores" because they both contain, or store, Accounts.  An "Account Store
-Mapping", then, represents an Account Store mapped (*assigned*) to an
-Application.
+"Account Store" is a generic term for either a [Directory](directory),
+[Group](group), or [Organization](organization).  All of these types are
+considered "account stores" because they contain, or store, Accounts.  An
+"Organization Account Store Mapping", then, represents an Account Store that is
+mapped (*assigned*) to an Organization.
 
-In Stormpath, you control who may login to an Application by associating (*or
-mapping*) one or more account stores to an Application.  All of the Accounts
-across all of an application's assigned account stores form the application's
-effective *user base*: accounts which can log into the Application.  If no
-account stores are assigned to an Application, no accounts will be able to
-log into the Application.
+In Stormpath, you control who may login to an Organization by associating (*or
+mapping*) one or more account stores to an Organization.  All of the Accounts
+across all of an organization's assigned account stores form the organization's
+effective *user base*: accounts which can log into the Organization.  If no
+account stores are assigned to an Organization, no accounts will be able to
+log into the Organization.
 
-You can control which account stores are assigned (*mapped*) to an Application,
-and the order in which they are consulted during a login attempt, by
-manipulating an application's AccountStoreMapping resources.
+If an Organization is mapped to an Organization, then all of the account
+stores that are mapped to the Organization will also be able to log in
+to the Organization.
 
-**Since**: 0.1.2
+**Since**: 0.12.0
 
 ---
 
 
-<a name="getApplication"></a>
-### <span class="member">method</span> getApplication(*[options,]* callback)
+<a name="getOrganization"></a>
+### <span class="member">method</span> getOrganization(*[options,]* callback)
 
-Retrieves the associated Application and provides it to the specified callback.
+Retrieves the associated Organization and provides it to the specified callback.
 
 
 #### Usage
 
 ```javascript
-accountStoreMapping.getApplication({ expand: 'accounts' }, function(err, app) {
-  console.log(app);
+organizationAccountStoreMapping.getOrganization(function(err, organization) {
+  console.log(organization);
 });
 ```
 
@@ -59,7 +59,7 @@ accountStoreMapping.getApplication({ expand: 'accounts' }, function(err, app) {
       <td>`callback`</td>
       <td>`function`</td>
       <td>required</td>
-      <td>The callback to execute upon server response. The 1st parameter is an [error](resourceError).  The 2nd parameter is an [Application](application) instance.</td>
+      <td>The callback to execute upon server response. The 1st parameter is an [error](resourceError).  The 2nd parameter is an [Organization](organization) instance.</td>
     </tr>
   </tbody>
 </table>
@@ -68,8 +68,9 @@ accountStoreMapping.getApplication({ expand: 'accounts' }, function(err, app) {
 #### Returns
 
 If the request fails, the callback's first parameter (`err`) will report the
-failure.  If the request succeeds, the instance of  [Application](application)
+failure.  If the request succeeds, the instance of  [Organization](organization)
 will be provided to the callback as the callback's second parameter.
+
 
 ---
 
@@ -84,8 +85,8 @@ to the specified callback.
 #### Usage
 
 ```javascript
-accountStoreMapping.getAccountStore({ expand: 'accounts' }, function(err, store) {
-  console.log(store);
+orgqnizationAccountStoreMapping.getAccountStore(function(err, accountStore) {
+  console.log(accountStore);
 });
 ```
 
@@ -124,3 +125,5 @@ If the request fails, the callback's first parameter (`err`) will report the
 failure.  If the request succeeds, the instance of [Directory](directory) or
 [Group](group) will be provided to the callback as the callback's second
 parameter.
+
+---

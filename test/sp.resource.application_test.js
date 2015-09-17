@@ -17,7 +17,8 @@ var AuthenticationResult = require('../lib/resource/AuthenticationResult');
 var AccountStoreMapping = require('../lib/resource/AccountStoreMapping');
 var ApiKey = require('../lib/resource/ApiKey');
 var DataStore = require('../lib/ds/DataStore');
-var jwt = require('jwt-simple');
+var nJwt = require('njwt');
+var nJwtProperties = require('njwt/properties');
 var uuid = require('node-uuid');
 var url = require('url');
 
@@ -62,7 +63,7 @@ describe('Resources: ', function () {
         it('should create a jwtRequest that is signed with the client secret',
           function(){
             common.assert.equal(
-              jwt.decode(params.jwtRequest,clientApiKeySecret).state,
+              nJwt.verify(params.jwtRequest,clientApiKeySecret).body.state,
               clientState
             );
           }
@@ -99,7 +100,7 @@ describe('Resources: ', function () {
         it('should create a jwtRequest that is signed with the client secret',
           function(){
             common.assert.equal(
-              jwt.decode(params.jwtRequest,clientApiKeySecret).state,
+              nJwt.verify(params.jwtRequest,clientApiKeySecret).body.state,
               clientState
             );
           }
@@ -136,7 +137,7 @@ describe('Resources: ', function () {
           self.getResourceStub.restore();
         };
         self.decodeJwtRequest = function(jwtRequest){
-          return jwt.decode(decodeURIComponent(jwtRequest),self.clientApiKeySecret);
+          return nJwt.verify(decodeURIComponent(jwtRequest),self.clientApiKeySecret);
         };
         return self;
       }
@@ -180,14 +181,14 @@ describe('Resources: ', function () {
             responseJwt = {
               sub: accountHref,
               irt: test.jwtRequest.jti,
-              state: test.jwtRequest.state,
+              state: test.jwtRequest.body.state,
               aud: test.clientApiKeyId,
               exp: utils.nowEpochSeconds() + 1,
               isNewSub: false,
               status: statusValue
             };
             var responseUri = '/somewhere?jwtResponse=' +
-              jwt.encode(responseJwt,test.clientApiKeySecret,'HS256') + '&state=' + test.givenState;
+              nJwt.create(responseJwt,test.clientApiKeySecret,'HS256') + '&state=' + test.givenState;
             test.handleIdSiteCallback(responseUri);
           });
           after(function(){
@@ -222,21 +223,18 @@ describe('Resources: ', function () {
 
         describe('with an expired token',function(){
           var accountHref = uuid();
-          var clientState = uuid();
           var responseJwt;
           var test = new SsoResponseTest({
-            callbackUri: '/',
-            state: clientState
+            callbackUri: '/'
           });
           before(function(){
             test.before();
-            responseJwt = jwt.encode({
+            responseJwt = nJwt.create({
               sub: accountHref,
               irt: test.jwtRequest.jti,
-              state: test.jwtRequest.state,
-              aud: test.clientApiKeyId,
-              exp: utils.nowEpochSeconds() - 1
+              aud: test.clientApiKeyId
             },test.clientApiKeySecret,'HS256');
+            responseJwt.setExpiration(utils.nowEpochSeconds() - 1);
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
             test.handleIdSiteCallback(responseUri,'jwt');
           });
@@ -244,26 +242,24 @@ describe('Resources: ', function () {
             test.after();
           });
           it('should error with the expiration error',function(){
-            common.assert.equal(test.cbSpy.args[0][0].message,errorMessages.ID_SITE_JWT_HAS_EXPIRED);
+
+            common.assert.equal(test.cbSpy.args[0][0].message,nJwtProperties.errors.EXPIRED);
           });
         });
 
         describe('with a different client id (aud)',function(){
           var accountHref = uuid();
-          var clientState = uuid();
+
           var responseJwt;
           var test = new SsoResponseTest({
-            callbackUri: '/',
-            state: clientState
+            callbackUri: '/'
           });
           before(function(){
             test.before();
-            responseJwt = jwt.encode({
+            responseJwt = nJwt.create({
               sub: accountHref,
               irt: test.jwtRequest.jti,
-              state: test.jwtRequest.state,
-              aud: uuid(),
-              exp: utils.nowEpochSeconds() - 1
+              aud: uuid()
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
             test.handleIdSiteCallback(responseUri,'jwt');
@@ -279,21 +275,20 @@ describe('Resources: ', function () {
 
         describe('with an invalid exp value',function(){
           var accountHref = uuid();
-          var clientState = uuid();
+
           var responseJwt;
           var test = new SsoResponseTest({
-            callbackUri: '/',
-            state: clientState
+            callbackUri: '/'
           });
           before(function(){
             test.before();
-            responseJwt = jwt.encode({
+            responseJwt = nJwt.create({
               sub: accountHref,
               irt: test.jwtRequest.jti,
-              state: test.jwtRequest.state,
               aud: test.clientApiKeyId,
               exp: "yeah right"
             },test.clientApiKeySecret,'HS256');
+            responseJwt.setExpiration("yeah right");
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=' + test.givenState;
             test.handleIdSiteCallback(responseUri,'jwt');
           });
@@ -301,7 +296,7 @@ describe('Resources: ', function () {
             test.after();
           });
           it('should error with the expiration error',function(){
-            common.assert.equal(test.cbSpy.args[0][0].message,errorMessages.ID_SITE_JWT_HAS_EXPIRED);
+            common.assert.equal(test.cbSpy.args[0][0].message,nJwtProperties.errors.EXPIRED);
           });
         });
 
@@ -312,12 +307,10 @@ describe('Resources: ', function () {
           });
           before(function(){
             test.before();
-            var responseJwt = jwt.encode({
+            var responseJwt = nJwt.create({
               sub: accountHref,
-              irt: test.jwtRequest.jti,
-              state: test.jwtRequest.state,
-              aud: test.clientApiKeyId,
-              exp: utils.nowEpochSeconds() + 1
+              irt: test.jwtRequest.body.jti,
+              aud: test.clientApiKeyId
             },test.clientApiKeySecret,'HS256');
             var responseUri = '/somewhere?jwtResponse=' + responseJwt + '&state=';
             test.handleIdSiteCallback(responseUri);
@@ -342,7 +335,7 @@ describe('Resources: ', function () {
           });
           before(function(){
             test.before();
-            var responseJwt = jwt.encode({
+            var responseJwt = nJwt.create({
               irt: test.givenNonce,
               state: test.givenState
             },'not the right key','HS256');

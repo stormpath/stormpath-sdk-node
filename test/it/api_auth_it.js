@@ -1,4 +1,4 @@
-var jwt = require('jwt-simple');
+var nJwt = require('njwt');
 var common = require('../common');
 var helpers = require('./helpers');
 var assert = common.assert;
@@ -304,10 +304,10 @@ describe('Application.authenticateApiRequest',function(){
         var result;
         before(function(done){
 
-          var decodedAccessToken = jwt.decode(accessToken,
+          var decodedJwt = nJwt.verify(accessToken,
             client._dataStore.requestExecutor.options.apiKey.secret,'HS256');
-          decodedAccessToken.scope += ' things-i-cant-have';
-          var tamperedToken = jwt.encode(decodedAccessToken,'not the same key','HS256');
+          decodedJwt.body.scope += ' things-i-cant-have';
+          var tamperedToken = nJwt.create(decodedJwt.body,'not the same key','HS256').compact();
           var requestObject = {
             headers: {
               'authorization': 'Bearer ' + tamperedToken
@@ -568,7 +568,7 @@ describe('Application.authenticateApiRequest',function(){
         }
       },function(err,value){
         result = [err,value];
-        decodedAccessToken = jwt.decode(result[1].tokenResponse.access_token,
+        decodedAccessToken = nJwt.verify(result[1].tokenResponse.access_token,
           client._dataStore.requestExecutor.options.apiKey.secret,'HS256');
         done();
       });
@@ -589,7 +589,7 @@ describe('Application.authenticateApiRequest',function(){
     });
 
     it('should add the scope to the token',function(){
-      assert.equal(decodedAccessToken.scope,givenScope.join(' '));
+      assert.equal(decodedAccessToken.body.scope,givenScope.join(' '));
     });
 
     it('should add the scope to authResult',function(){
@@ -619,7 +619,7 @@ describe('Application.authenticateApiRequest',function(){
       },function(err,value){
         result = [err,value];
         tokenResponse = value.tokenResponse;
-        decodedAccessToken = jwt.decode(result[1].tokenResponse.access_token,
+        decodedAccessToken = nJwt.verify(result[1].tokenResponse.access_token,
           client._dataStore.requestExecutor.options.apiKey.secret,'HS256');
         done();
       });
@@ -631,7 +631,9 @@ describe('Application.authenticateApiRequest',function(){
 
     it('should set the ttl',function(){
       assert.equal(tokenResponse.expires_in,desiredTtl);
-      assert.equal(decodedAccessToken.exp,(decodedAccessToken.iat + desiredTtl));
+      // It takes a second to talk to the API, so allow 1 second of difference
+      // in the result we get
+      assert.closeTo(decodedAccessToken.body.exp,(decodedAccessToken.body.iat + desiredTtl),1);
     });
 
   });

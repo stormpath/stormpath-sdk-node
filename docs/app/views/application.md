@@ -326,6 +326,71 @@ void; the created [Account](account) returned from the server will be provided t
 
 ---
 
+<a name="createAccountStoreMapping"></a>
+### <span class="member">method</span> createAccountStoreMapping(accountStoreMapping, callback)
+
+Creates an instance of [AccountStoreMapping](accountStoreMapping) from the `accountStoreMapping` literal and associate it with current application.
+Returns a newly created [AccountStoreMapping](accountStoreMapping) as a second callback parameter.
+
+
+#### Usage
+
+
+```javascript
+var mapping = {
+  accountStore: {
+    href: "https://api.stormpath.com/v1/directories/bckhcGMXQDujIXpExAmPLe"
+  },
+  isDefaultAccountStore: true,
+  isDefaultGroupStore: true
+};
+
+application.createAccountStoreMapping(mapping, function(err, asm) {
+  var accountStoreMapping = asm;
+});
+```
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>`accountStoreMapping`</td>
+      <td>`object`</td>
+      <td>required</td>
+      <td> An object literal which contains an `accountStore` property
+        that references the account store that you want to add to this
+        Application.  Can be a [Directory](directory), [Group](group),
+        or [Organization](organization).
+      </td>
+    </tr>
+    <tr>
+      <td>`callback`</td>
+      <td>`function`</td>
+      <td>required</td>
+      <td>The callback to execute upon server response. The 1st parameter is an [error](resourceError).
+      The 2nd parameter is an [AccountStoreMapping](accountStoreMapping) instance.</td>
+    </tr>
+  </tbody>
+</table>
+
+#### Returns
+
+void;
+If the request fails, the callback's first parameter (`err`) will report the failure.
+If the request succeeds, the instance of  [AccountStoreMapping](accountStoreMapping) will be provided to the `callback` as the callback's second parameter.
+
+
+---
+
 <a name="createGroup"></a>
 ### <span class="member">method</span> createGroup(group, *[options,]* callback)
 
@@ -458,6 +523,10 @@ app.get('/logout', function(req, res) {
             and redirected to the sepcified callbackUri.
           </li>
           <li>
+            `organizationNameKey` - OPTIONAL - The organization name to display
+            on ID Site.  This value will be fixed and the user cannot change it.
+          </li>
+          <li>
             `path` - OPTIONAL - Sets the initial path in the ID Site where the user should be sent. If unspecified, this defaults to /, implying that the ID Site's landing/home page is the desired location.
 
             Most Stormpath customers allow their ID Site's default landing page `/` to reflect a traditional 'Login or Signup' page for convenience.
@@ -465,8 +534,18 @@ app.get('/logout', function(req, res) {
             For example, if you are using the default ID Site provided by Stormpath, you can send the user directly to the registration page by specifying `/#/register` or the forgot password page by specifying `/#/forgot`
           </li>
           <li>
+            `showOrganizationField` - OPTIONAL - Shows the organization field on ID Site,
+            if the user can select from multiple organizations (depends on account store
+            mappings of the application).
+          </li>
+          <li>
             `state` - OPTIONAL - Application-specific state that should be retained and made available to your callbackUri when
             the user returns from the ID Site.  See [handleIdSiteCallback](application#handleIdSiteCallback)
+          </li>
+          <li>
+            `useSubDomain` - OPTIONAL - Use organization name key as domain
+            prefix for ID Site URL.  For example, if `organizationNameKey` is
+            `org-a` then the user will be redirected to `org-a.myidsitedomain.tld`
           </li>
         </ul>
       </td>
@@ -1391,69 +1470,6 @@ void;
 If the request fails, the callback's first parameter (`err`) will report the failure.
 If the request succeeds, the instance of  [AccountStoreMapping](accountStoreMapping) will be provided to the `callback` as the callback's second parameter.
 
----
-
-<a name="createAccountStoreMapping"></a>
-### <span class="member">method</span> createAccountStoreMapping(accountStoreMapping, callback)
-
-Creates an instance of `AccountStoreMapping` from `accountStoreMapping` object and associate it with current application.
-Returns a newly created `AccountStoreMapping` as a second callback parameter.
-
-
-#### Usage
-
-
-```javascript
-var mapping = {
-  application: {
-    href: "https://api.stormpath.com/v1/applications/Uh8FzIouQ9C8EpcExAmPLe"
-  },
-  accountStore: {
-    href: "https://api.stormpath.com/v1/directories/bckhcGMXQDujIXpExAmPLe"
-  },
-  isDefaultAccountStore: true,
-  isDefaultGroupStore: true
-};
-
-application.createAccountStoreMapping(mapping, function(err, asm) {
-  var accountStoreMapping = asm;
-});
-```
-
-#### Parameters
-
-<table class="table table-striped table-hover table-curved">
-  <thead>
-    <tr>
-      <th>Parameter</th>
-      <th>Type</th>
-      <th>Presence</th>
-      <th>Description<th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>`accountStoreMapping`</td>
-      <td>`object`</td>
-      <td>required</td>
-      <td> The `AcountStoreMapping` object
-      </td>
-    </tr>
-    <tr>
-      <td>`callback`</td>
-      <td>`function`</td>
-      <td>required</td>
-      <td>The callback to execute upon server response. The 1st parameter is an [error](resourceError).
-      The 2nd parameter is an [AccountStoreMapping](accountStoreMapping) instance.</td>
-    </tr>
-  </tbody>
-</table>
-
-#### Returns
-
-void;
-If the request fails, the callback's first parameter (`err`) will report the failure.
-If the request succeeds, the instance of  [AccountStoreMapping](accountStoreMapping) will be provided to the `callback` as the callback's second parameter.
 
 ---
 

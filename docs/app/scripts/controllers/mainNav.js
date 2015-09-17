@@ -78,9 +78,7 @@ function items() {
     item('AccountStoreMapping', 'accountStoreMapping', [
       anchor('Overview', 'top'),
       anchor('getApplication'),
-      anchor('setApplication'),
       anchor('getAccountStore'),
-      anchor('setAccountStore')
     ]),
 
     item('Application', null, [
@@ -88,6 +86,7 @@ function items() {
       anchor('authenticateAccount'),
       anchor('authenticateApiRequest'),
       anchor('createAccount'),
+      anchor('createAccountStoreMapping'),
       anchor('createGroup'),
       anchor('createIdSiteUrl'),
       anchor('getAccounts'),
@@ -105,7 +104,6 @@ function items() {
       anchor('setDefaultAccountStore'),
       anchor('getDefaultGroupStore'),
       anchor('setDefaultGroupStore'),
-      anchor('createAccountStoreMapping'),
       anchor('addAccountStore')
     ]),
 
@@ -190,8 +188,16 @@ function items() {
       anchor('getGroup')
     ]),
 
-    //item('InstanceResource', 'instanceResource'),
-    //item('Resource'),
+    item('Organization', null, [
+      anchor('Overview', 'top'),
+      anchor('createAccountStoreMapping')
+    ]),
+
+    item('OrganizationAccountStoreMapping', 'organizationAccountStoreMapping', [
+      anchor('Overview', 'top'),
+      anchor('getAccountStore'),
+      anchor('getOrganization')
+    ]),
 
     item('ResourceError', 'resourceError', [
       anchor('Overview', 'top')
