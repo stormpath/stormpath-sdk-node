@@ -9,7 +9,7 @@ var common = require('../common');
 var stormpath = common.Stormpath;
 var helpers = require('./helpers');
 
-var Organization = require('stormpath/lib/resource/Organization');
+var Organization = require('../../lib/resource/Organization');
 
 describe('Client', function() {
   var organization;
