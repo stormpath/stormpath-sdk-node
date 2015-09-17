@@ -6,7 +6,7 @@ var async = require('async');
 
 var CustomData = require('../../lib/resource/CustomData');
 var Application = require('../../lib/resource/Application');
-var ApplicationAccountStoreMapping = require('stormpath/lib/resource/ApplicationAccountStoreMapping');
+var ApplicationAccountStoreMapping = require('../../lib/resource/ApplicationAccountStoreMapping');
 
 describe('Application',function(){
 

@@ -4,8 +4,8 @@ var helpers = require('./helpers');
 var assert = common.assert;
 var async = require('async');
 
-var Organization = require('stormpath/lib/resource/Organization');
-var OrganizationAccountStoreMapping = require('stormpath/lib/resource/OrganizationAccountStoreMapping');
+var Organization = require('../../lib/resource/Organization');
+var OrganizationAccountStoreMapping = require('../../lib/resource/OrganizationAccountStoreMapping');
 
 describe('Organization',function(){
 
