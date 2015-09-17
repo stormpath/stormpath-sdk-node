@@ -6,19 +6,27 @@ var async = require('async');
 
 var CustomData = require('../../lib/resource/CustomData');
 var Application = require('../../lib/resource/Application');
+var ApplicationAccountStoreMapping = require('stormpath/lib/resource/ApplicationAccountStoreMapping');
 
 describe('Application',function(){
 
-  var client, app, creationResult, directory, account;
+  var client, app, creationResult, directory, account, mapping;
 
   before(function(done) {
     helpers.getClient(function(_client) {
       client = _client;
 
-      client.createApplication({ name: helpers.uniqId() }, function(err, _app) {
+      client.createApplication({ name: helpers.uniqId()}, function(err, _app) {
         creationResult = [err, _app];
         app = _app;
-        done();
+
+        client.createDirectory(helpers.fakeDirectory(),function(err,_directory){
+          if(err){ throw err; }
+          directory = _directory;
+          done();
+        });
+
+
       });
     });
   });
@@ -33,6 +41,45 @@ describe('Application',function(){
         next();
       }
     }, done);
+  });
+
+  describe('createAccountStoreMapping',function(){
+    it('should create an ApplicationAccountStoreMapping',function(done){
+      app.createAccountStoreMapping({accountStore:directory},function(err,result){
+        mapping = result;
+        assert(result instanceof ApplicationAccountStoreMapping);
+        done();
+      });
+    });
+    it('should handle errors',function(done){
+      app.createAccountStoreMapping({accountStore:{href:'not found'}},function(err){
+        assert(err.status === 400);
+        assert(err.code === 2002);
+        done();
+      });
+    });
+  });
+
+  describe('getApplication',function(){
+    after(function(done){
+      mapping.delete(done);
+    });
+    it('should return the application',function(done){
+      mapping.getApplication(function(err,application){
+        assert(application instanceof Application);
+        done();
+      });
+    });
+  });
+
+  describe('createAccountStoreMappings',function(){
+    it('should create an ApplicationAccountStoreMapping',function(done){
+      app.createAccountStoreMappings([{accountStore:directory}],function(err,results){
+        assert(results[0] instanceof ApplicationAccountStoreMapping);
+        mapping = results[0];
+        done();
+      });
+    });
   });
 
   describe('.getAccount()', function() {
@@ -75,13 +122,7 @@ describe('Application',function(){
   });
 
   describe('setDefaultAccountStore',function () {
-    before(function(done){
-      client.createDirectory(helpers.fakeDirectory(),function(err,_directory){
-        if(err){ throw err; }
-        directory = _directory;
-        done();
-      });
-    });
+
     describe('with a href string property',function(){
       var result;
       before(function(done){
