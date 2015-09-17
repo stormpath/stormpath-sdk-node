@@ -1,5 +1,18 @@
 # stormpath-sdk-node Change Log
 
+### 0.12.0
+
+#### Organization Support
+
+This SDK now supports the new Organization Resource in Stormpath.  Create
+Organizations through the Client, and create Organization Account Store Mappings
+through an Organization instance.
+
+`Application.createIdSiteUrl` now has more options that allow you to enable
+Organization features on ID Site sessions.
+
+Please see the documentation for more information.
+
 ### 0.11.5
 
 - Adding tests for Config.
