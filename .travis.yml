@@ -5,6 +5,7 @@ node_js:
   - '0.12'
   - 'iojs'
   - '4.0'
+  - '4.1'
 sudo: false
 script: travis_retry npm test
 env:
