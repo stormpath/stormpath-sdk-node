@@ -37,6 +37,10 @@
     "facebook": {
       "enabled": false,
       "callbackUri": "/callbacks/facebook"
+    },
+    "linkedin": {
+      "enabled": false,
+      "callbackUri": "/callbacks/linkedin"
     }
   },
   "web": {
