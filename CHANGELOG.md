@@ -1,5 +1,9 @@
 # stormpath-sdk-node Change Log
 
+### 0.12.2
+
+- Supporting LinkedIn configuration options.
+
 ### 0.12.1
 
 - Fix: enable the `/me` route if the `website` option is used in the config parser
