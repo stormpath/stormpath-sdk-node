@@ -1,5 +1,9 @@
 # stormpath-sdk-node Change Log
 
+### 0.12.1
+
+- Fix: enable the `/me` route if the `website` option is used in the config parser
+
 ### 0.12.0
 
 #### Organization Support
