@@ -19,7 +19,7 @@ describe('Client', function() {
         helpers.loadApiKey(function(apiKey) {
           var client = new stormpath.Client({ apiKey: apiKey });
 
-          client.on('error', function () {
+          client.on('error', function (err) {
             throw err;
           });
 
