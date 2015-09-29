@@ -6,31 +6,43 @@ var Client = require('../../lib/Client');
 
 describe('PasswordPolicy', function() {
   describe('getStrength', function() {
+    // Give this some time to work.
+    this.timeout(5 * 1000);
+
     var client, directory;
 
-    before(function() {
+    before(function (done) {
       client = new Client();
+
+      client.on('error', function (err) {
+        done(err);
+      });
+
+      client.on('ready', function () {
+        done();
+      });
     });
 
-    after(function(done) {
+    after(function (done) {
       directory.delete(function(err) {
         done(err);
       });
     });
 
-    it('should return the strength object', function(done) {
-      client.createDirectory({ name: uuid.v4() }, function(err, dir) {
+    it('should return the strength object', function (done) {
+      client.createDirectory({ name: uuid.v4() }, function (err, dir) {
         if (err) {
           return done(err);
         }
 
         directory = dir;
-        directory.getPasswordPolicy(function(err, policy) {
+
+        directory.getPasswordPolicy(function (err, policy) {
           if (err) {
             return done(err);
           }
 
-          policy.getStrength(function(err, strength) {
+          policy.getStrength(function (err, strength) {
             if (err) {
               return done(err);
             }

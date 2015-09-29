@@ -32,9 +32,19 @@ describe('Client', function () {
   var apiKey = {id: 1, secret: 2};
   describe('constructor', function () {
     var client;
-    before(function () {
+
+    before(function (done) {
       client = new Client({apiKey: apiKey});
+
+      client.on('error', function (err) {
+        throw err;
+      });
+
+      client.on('ready', function () {
+        done();
+      });
     });
+
     it('should create data store', function () {
       client._dataStore.should.be.an.instanceof(DataStore);
     });
@@ -46,76 +56,22 @@ describe('Client', function () {
     it('should use the public api as the base url',function(){
       expect(client._dataStore.requestExecutor.baseUrl).to.equal('https://api.stormpath.com/v1');
     });
-    it('should allow me to change the base url',function(){
+    it('should allow me to change the base url',function(done){
       var url = 'http://api.mydomain.com/';
       var client = new Client({apiKey: apiKey, baseUrl: url});
-      expect(client._dataStore.requestExecutor.baseUrl).to.equal(url);
+
+      client.on('error', function (err) {
+        throw err;
+      });
+
+      client.on('ready', function () {
+        expect(client._dataStore.requestExecutor.baseUrl).to.equal(url);
+        done();
+      });
     });
   });
 
-
   describe('default constructor', function () {
-    it('should throw if it\'s a bunk filename and env does not provide id or secret', function () {
-      var filename = 'foo.bar';
-      var resetEnvVars = clearEnvVars('STORMPATH_CLIENT_APIKEY_ID','STORMPATH_CLIENT_APIKEY_SECRET');
-      assert.throws(function(){
-        new Client({
-          client:{
-            apiKey:{
-              file: filename
-            }
-          }
-        });
-      },new RegExp('Client API key file not found: ' + filename));
-      resetEnvVars();
-    });
-
-    it('should apply the default config.json to the client.config object', function(done) {
-      var client = new Client({
-        client: {
-          apiKey: {
-            id: '1',
-            secret: '1'
-          }
-        }
-      });
-
-      assert(client.config.web.register.fieldOrder);
-      done();
-    });
-
-    it('should enable all web routes if the website config option is specified', function(done) {
-      var client = new Client({
-        client: {
-          apiKey: {
-            id: '1',
-            secret: '1'
-          }
-        },
-        website: true
-      });
-
-      assert(client.config.web.register.enabled);
-      assert(client.config.web.login.enabled);
-      assert(client.config.web.logout.enabled);
-
-      done();
-    });
-
-    it('should enable all oauth2 routes if the api config option is specified', function(done) {
-      var client = new Client({
-        client: {
-          apiKey: {
-            id: '1',
-            secret: '1'
-          }
-        },
-        api: true
-      });
-
-      assert(client.config.web.oauth2.enabled);
-      done();
-    });
 
     it('should emit a ready event with the client itself as the value', function(done) {
       var client = new Client({
@@ -124,54 +80,21 @@ describe('Client', function () {
         }
       });
 
+      client.on('error', function (err) {
+        throw err;
+      });
+
       client.on('ready', function(c) {
         assert.deepEqual(client.config.client, c.config.client);
         done();
       });
     });
 
-    it('should override custom config options on the client.config object', function(done) {
-      var client = new Client({
-        client: {
-          apiKey: {
-            id: '1',
-            secret: '1'
-          }
-        },
-        web: {
-          register: {
-            enabled: true,
-            fieldOrder: ['email', 'password']
-          }
-        }
-      });
-
-      assert.equal(client.config.web.register.fieldOrder.length, 2);
-      assert.equal(client.config.web.register.fieldOrder[0], 'email');
-      assert.equal(client.config.web.register.fieldOrder[1], 'password');
-      done();
-    });
-
-    it('should throw if it\'s an invalid properties file', function () {
+    it('should error if it\'s an invalid properties file', function (done) {
       var resetEnvVars = clearEnvVars('STORMPATH_CLIENT_APIKEY_ID','STORMPATH_CLIENT_APIKEY_SECRET');
       var tmpobj = tmp.fileSync();
+
       fs.writeSync(tmpobj.fd,'yo');
-      fs.closeSync(tmpobj.fd);
-      assert.throws(function(){
-        new Client({
-          client:{
-            apiKey:{
-              file: tmpobj.name
-            }
-          }
-        });
-      },new RegExp('Unable to read properties file: '+tmpobj.name));
-      resetEnvVars();
-    });
-    it('should populate api key id secret on the config object', function(){
-      var resetEnvVars = clearEnvVars('STORMPATH_CLIENT_APIKEY_ID','STORMPATH_CLIENT_APIKEY_SECRET');
-      var tmpobj = tmp.fileSync();
-      fs.writeSync(tmpobj.fd,'id=1\nsecret=2');
       fs.closeSync(tmpobj.fd);
 
       var client = new Client({
@@ -181,142 +104,66 @@ describe('Client', function () {
           }
         }
       });
-      assert.equal(client.config.apiKey.id,'1');
-      assert.equal(client.config.apiKey.secret,'2');
-      resetEnvVars();
-    });
-  });
 
-  describe('with an app href that has a valid default account store with email verification enabled', function() {
-    var application, directory;
-
-    before(function(done) {
-      new Client().createApplication({ name:common.uuid() }, { createDirectory: true }, function(err, app) {
-        if (err) { throw err; }
-
-        application = app;
-        application.getDefaultAccountStore(function(err, accountStoreMapping) {
-          if (err) { throw err; }
-
-          accountStoreMapping.getAccountStore(function(err, dir) {
-            if (err) { throw err; }
-
-            directory = dir;
-            directory.getAccountCreationPolicy(function(err, policy) {
-              if (err) { throw err; }
-
-              policy.verificationEmailStatus = 'ENABLED';
-              policy.save(done);
-            });
-          });
-        });
+      client.on('error', function (err) {
+        resetEnvVars();
+        assert(err && err.message.indexOf('Unable to read properties file:') === 0);
+        done();
       });
-    });
 
-    after(function(done) {
-      application.delete(function() {
-        directory.delete(done);
-      });
-    });
-
-    it('should apply the account store policies to the config', function(done) {
-      var client = new Client({ application: { href: application.href } });
-      client.on('ready', function() {
-        assert.equal(client.config.web.verifyEmail.enabled, true);
+      client.on('ready', function () {
+        resetEnvVars();
         done();
       });
     });
-  });
 
-  describe('with an app href that has a valid default account store with password reset enabled', function() {
-    var application, directory;
+    it('should populate api key id secret on the config object', function(done) {
+      var resetEnvVars = clearEnvVars('STORMPATH_CLIENT_APIKEY_ID','STORMPATH_CLIENT_APIKEY_SECRET');
+      var tmpobj = tmp.fileSync();
 
-    before(function(done) {
-      new Client().createApplication({ name:common.uuid() }, { createDirectory: true }, function(err, app) {
-        if (err) { throw err; }
+      fs.writeSync(tmpobj.fd,'apiKey.id=1\napiKey.secret=2');
+      fs.closeSync(tmpobj.fd);
 
-        application = app;
-        application.getDefaultAccountStore(function(err, accountStoreMapping) {
-          if (err) { throw err; }
-
-          accountStoreMapping.getAccountStore(function(err, dir) {
-            if (err) { throw err; }
-
-            directory = dir;
-            directory.getPasswordPolicy(function(err, policy) {
-              if (err) { throw err; }
-
-              policy.resetEmailStatus = 'ENABLED';
-              policy.save(done);
-            });
-          });
-        });
-      });
-    });
-
-    after(function(done) {
-      application.delete(function() {
-        directory.delete(done);
-      });
-    });
-
-    it('should apply the account store policies to the config', function(done) {
-      var client = new Client({ application: { href: application.href } });
-      client.on('ready', function() {
-        assert.equal(client.config.web.forgotPassword.enabled, true);
-        assert.equal(client.config.web.changePassword.enabled, true);
-        done();
-      });
-    });
-  });
-
-  describe('with an app href that DOES NOT have a valid default account store',function(){
-    var application;
-    before(function(done){
-      new Client().createApplication(
-        {name:common.uuid()},
-        {createDirectory: true},
-        function(err,app){
-          if(err){
-            throw err;
-          }else{
-            application = app;
-            done();
+      var client = new Client({
+        client:{
+          apiKey:{
+            file: tmpobj.name
           }
         }
-      );
-    });
-    after(function(done){
-      application.delete(done);
-    });
-    it('should disable the email verification and password reset features',function(done){
-      var client = new Client({
-        application:{
-          href: application.href
-        }
       });
-      client.on('ready',function(){
-        assert.equal(client.config.web.verifyEmail.enabled,false);
+
+      client.on('error', function (err) {
+        resetEnvVars();
+        throw err;
+      });
+
+      client.on('ready', function () {
+        resetEnvVars();
+        assert.equal(client.config.apiKey.id,'1');
+        assert.equal(client.config.apiKey.secret,'2');
         done();
       });
     });
   });
 
-  describe('with an invalid app href',function(){
-
-    it('should fail',function(done){
+  describe('with an invalid app href', function() {
+    it('should fail', function (done) {
       var client = new Client({
         application:{
           href: 'https://api.stormpath.com/v1/applications/blah'
         }
       });
-      client.on('error',function(err){
-        assert.equal(err.status,404);
+
+      client.on('error', function(err) {
+        assert.equal(err.status, 404);
+        done();
+      });
+
+      client.on('ready', function () {
         done();
       });
     });
   });
-
 
   //
   //  TODO bring this test back when i figure out why nock
@@ -357,24 +204,34 @@ describe('Client', function () {
   // });
 
   describe('call get current tenant', function () {
-    describe('fist call should get resource', function () {
+    describe('first call should get resource', function () {
 
       var sandbox, client, getResourceStub, cbSpy, err, tenant, onCurrentTenantCb;
       var currentTenantHref = '/tenants/current';
-      before(function () {
+
+      before(function (done) {
         sandbox = sinon.sandbox.create();
         err = {error: 'boom!'};
         tenant = { href: 'foo'};
         client = new Client({apiKey: apiKey});
-        getResourceStub = sandbox.stub(client._dataStore, 'getResource', function (href, opt, ctor, cb) {
-          onCurrentTenantCb = cb;
-          if (opt && opt.error) {
-            return cb(opt.error);
-          }
-          cb(null, opt && opt.tenant);
+
+        client.on('error', function (err) {
+          throw err;
         });
-        cbSpy = sandbox.spy();
+
+        client.on('ready', function () {
+          getResourceStub = sandbox.stub(client._dataStore, 'getResource', function (href, opt, ctor, cb) {
+            onCurrentTenantCb = cb;
+            if (opt && opt.error) {
+              return cb(opt.error);
+            }
+            cb(null, opt && opt.tenant);
+          });
+          cbSpy = sandbox.spy();
+          done();
+        });
       });
+
       after(function () {
         sandbox.restore();
       });
@@ -413,20 +270,30 @@ describe('Client', function () {
     describe('second and after call', function () {
       var sandbox, client, getResourceStub, cbSpy, err, tenant, onCurrentTenantCb;
       var currentTenantHref = '/tenants/current';
-      before(function () {
+
+      before(function (done) {
         sandbox = sinon.sandbox.create();
         err = {error: 'boom!'};
         tenant = { href: 'foo'};
         client = new Client({apiKey: apiKey});
-        getResourceStub = sandbox.stub(client._dataStore, 'getResource', function (href, opt, ctor, cb) {
-          onCurrentTenantCb = cb;
-          if (opt && opt.error) {
-            return cb(opt.error);
-          }
-          cb(null, opt && opt.tenant);
+
+        client.on('error', function (err) {
+          throw err;
         });
-        cbSpy = sandbox.spy();
+
+        client.on('ready', function () {
+          getResourceStub = sandbox.stub(client._dataStore, 'getResource', function (href, opt, ctor, cb) {
+            onCurrentTenantCb = cb;
+            if (opt && opt.error) {
+              return cb(opt.error);
+            }
+            cb(null, opt && opt.tenant);
+          });
+          cbSpy = sandbox.spy();
+          done();
+        });
       });
+
       after(function () {
         sandbox.restore();
       });
@@ -452,14 +319,26 @@ describe('Client', function () {
   describe('call to get resource', function () {
     var sandbox, client, getResourceStub, cbSpy;
     var href = '/boom!';
-    before(function () {
+
+    before(function (done) {
       sandbox = sinon.sandbox.create();
       client = new Client({apiKey: apiKey});
-      getResourceStub = sandbox.stub(client._dataStore, 'getResource', function (href, ctor, cb) {
-        cb();
+
+      client.on('error', function (err) {
+        throw err;
       });
-      cbSpy = sandbox.spy();
+
+      client.on('ready', function () {
+        getResourceStub = sandbox.stub(client._dataStore, 'getResource', function (href, ctor, cb) {
+          cb();
+        });
+
+        cbSpy = sandbox.spy();
+
+        done();
+      });
     });
+
     after(function () {
       sandbox.restore();
     });
@@ -480,14 +359,26 @@ describe('Client', function () {
   describe('call to create resource', function () {
     var sandbox, client, createResourceStub, cbSpy;
     var href = '/boom!';
-    before(function () {
+
+    before(function (done) {
       sandbox = sinon.sandbox.create();
       client = new Client({apiKey: apiKey});
-      createResourceStub = sandbox.stub(client._dataStore, 'createResource', function (href, data, ctor, cb) {
-        cb();
+
+      client.on('error', function (err) {
+        throw err;
       });
-      cbSpy = sandbox.spy();
+
+      client.on('ready', function () {
+        createResourceStub = sandbox.stub(client._dataStore, 'createResource', function (href, data, ctor, cb) {
+          cb();
+        });
+
+        cbSpy = sandbox.spy();
+
+        done();
+      });
     });
+
     after(function () {
       sandbox.restore();
     });
@@ -510,23 +401,33 @@ describe('Client', function () {
     var getCurrentTenantStub, getTenantAccounts;
     var returnError = false;
 
-    before(function() {
+    before(function(done) {
       sandbox = sinon.sandbox.create();
       err = {error: 'boom!'};
+
       client = new Client({ apiKey: apiKey });
-      tenant = new Tenant({ href: 'boom!' }, client._dataStore);
-      cbSpy = sandbox.spy();
 
-      getCurrentTenantStub = sandbox.stub(client, 'getCurrentTenant', function(cb) {
-        if (returnError) {
-          return cb(err);
-        }
-
-        return cb(null, tenant);
+      client.on('error', function (err) {
+        throw err;
       });
 
-      getTenantAccounts = sandbox.stub(tenant, 'getAccounts', function(options, cb) {
-        cb();
+      client.on('ready', function () {
+        tenant = new Tenant({ href: 'boom!' }, client._dataStore);
+        cbSpy = sandbox.spy();
+
+        getCurrentTenantStub = sandbox.stub(client, 'getCurrentTenant', function(cb) {
+          if (returnError) {
+            return cb(err);
+          }
+
+          return cb(null, tenant);
+        });
+
+        getTenantAccounts = sandbox.stub(tenant, 'getAccounts', function(options, cb) {
+          cb();
+        });
+
+        done();
       });
     });
 
@@ -565,23 +466,33 @@ describe('Client', function () {
     var getCurrentTenantStub, getTenantGroups;
     var returnError = false;
 
-    before(function() {
+    before(function (done) {
       sandbox = sinon.sandbox.create();
       err = {error: 'boom!'};
+
       client = new Client({ apiKey: apiKey });
-      tenant = new Tenant({ href: 'boom!' }, client._dataStore);
-      cbSpy = sandbox.spy();
 
-      getCurrentTenantStub = sandbox.stub(client, 'getCurrentTenant', function(cb) {
-        if (returnError) {
-          return cb(err);
-        }
-
-        return cb(null, tenant);
+      client.on('error', function (err) {
+        throw err;
       });
 
-      getTenantGroups = sandbox.stub(tenant, 'getGroups', function(options, cb) {
-        cb();
+      client.on('ready', function () {
+        tenant = new Tenant({ href: 'boom!' }, client._dataStore);
+        cbSpy = sandbox.spy();
+
+        getCurrentTenantStub = sandbox.stub(client, 'getCurrentTenant', function(cb) {
+          if (returnError) {
+            return cb(err);
+          }
+
+          return cb(null, tenant);
+        });
+
+        getTenantGroups = sandbox.stub(tenant, 'getGroups', function(options, cb) {
+          cb();
+        });
+
+        done();
       });
     });
 
@@ -619,22 +530,35 @@ describe('Client', function () {
     var sandbox, client, getCurrentTenantStub, getTenantApplications,
       cbSpy, err, tenant;
     var returnError = false;
-    before(function () {
+
+    before(function (done) {
       sandbox = sinon.sandbox.create();
       err = {error: 'boom!'};
       client = new Client({apiKey: apiKey});
-      tenant = new Tenant({href: 'boom!'}, client._dataStore);
-      cbSpy = sandbox.spy();
-      getCurrentTenantStub = sandbox.stub(client, 'getCurrentTenant', function(cb){
-        if (returnError){
-          return cb(err);
-        }
-        cb(null, tenant);
+
+      client.on('error', function (err) {
+        throw err;
       });
-      getTenantApplications = sandbox.stub(tenant, 'getApplications', function(options, cb){
-        cb();
+
+      client.on('ready', function () {
+        tenant = new Tenant({href: 'boom!'}, client._dataStore);
+        cbSpy = sandbox.spy();
+
+        getCurrentTenantStub = sandbox.stub(client, 'getCurrentTenant', function(cb){
+          if (returnError){
+            return cb(err);
+          }
+          cb(null, tenant);
+        });
+
+        getTenantApplications = sandbox.stub(tenant, 'getApplications', function(options, cb){
+          cb();
+        });
+
+        done();
       });
     });
+
     after(function () {
       sandbox.restore();
     });
@@ -668,22 +592,35 @@ describe('Client', function () {
     var sandbox, client, getCurrentTenantStub, createTenantApplication,
       cbSpy, app, err, tenant;
     var returnError = false;
-    before(function () {
+
+    before(function (done) {
       sandbox = sinon.sandbox.create();
       err = {error: 'boom!'};app = {href: 'boom!'};
       client = new Client({apiKey: apiKey});
-      tenant = new Tenant({href: 'boom!'}, client._dataStore);
-      cbSpy = sandbox.spy();
-      getCurrentTenantStub = sandbox.stub(client, 'getCurrentTenant', function(cb){
-        if (returnError){
-          return cb(err);
-        }
-        cb(null, tenant);
+
+      client.on('error', function (err) {
+        throw err;
       });
-      createTenantApplication = sandbox.stub(tenant, 'createApplication', function(app, options, cb){
-        cb();
+
+      client.on('ready', function () {
+        tenant = new Tenant({href: 'boom!'}, client._dataStore);
+        cbSpy = sandbox.spy();
+
+        getCurrentTenantStub = sandbox.stub(client, 'getCurrentTenant', function(cb){
+          if (returnError){
+            return cb(err);
+          }
+          cb(null, tenant);
+        });
+
+        createTenantApplication = sandbox.stub(tenant, 'createApplication', function(app, options, cb){
+          cb();
+        });
+
+        done();
       });
     });
+
     after(function () {
       sandbox.restore();
     });
@@ -717,22 +654,35 @@ describe('Client', function () {
     var sandbox, client, getCurrentTenantStub, getTenantDirectories,
       cbSpy, err, tenant;
     var returnError = false;
-    before(function () {
+
+    before(function (done) {
       sandbox = sinon.sandbox.create();
       err = {error: 'boom!'};
       client = new Client({apiKey: apiKey});
-      tenant = new Tenant({href: 'boom!'}, client._dataStore);
-      cbSpy = sandbox.spy();
-      getCurrentTenantStub = sandbox.stub(client, 'getCurrentTenant', function(cb){
-        if (returnError){
-          return cb(err);
-        }
-        cb(null, tenant);
+
+      client.on('error', function (err) {
+        throw err;
       });
-      getTenantDirectories = sandbox.stub(tenant, 'getDirectories', function(options, cb){
-        cb();
+
+      client.on('ready', function () {
+        tenant = new Tenant({href: 'boom!'}, client._dataStore);
+        cbSpy = sandbox.spy();
+
+        getCurrentTenantStub = sandbox.stub(client, 'getCurrentTenant', function(cb){
+          if (returnError){
+            return cb(err);
+          }
+          cb(null, tenant);
+        });
+
+        getTenantDirectories = sandbox.stub(tenant, 'getDirectories', function(options, cb){
+          cb();
+        });
+
+        done();
       });
     });
+
     after(function () {
       sandbox.restore();
     });
@@ -766,22 +716,35 @@ describe('Client', function () {
     var sandbox, client, getCurrentTenantStub, createTenantDirectory,
       cbSpy, app, err, tenant;
     var returnError = false;
-    before(function () {
+
+    before(function (done) {
       sandbox = sinon.sandbox.create();
       err = {error: 'boom!'};app = {href: 'boom!'};
       client = new Client({apiKey: apiKey});
-      tenant = new Tenant({href: 'boom!'}, client._dataStore);
-      cbSpy = sandbox.spy();
-      getCurrentTenantStub = sandbox.stub(client, 'getCurrentTenant', function(cb){
-        if (returnError){
-          return cb(err);
-        }
-        cb(null, tenant);
+
+      client.on('error', function (err) {
+        throw err;
       });
-      createTenantDirectory = sandbox.stub(tenant, 'createDirectory', function(app, options, cb){
-        cb();
+
+      client.on('ready', function () {
+        tenant = new Tenant({href: 'boom!'}, client._dataStore);
+        cbSpy = sandbox.spy();
+
+        getCurrentTenantStub = sandbox.stub(client, 'getCurrentTenant', function(cb){
+          if (returnError){
+            return cb(err);
+          }
+          cb(null, tenant);
+        });
+
+        createTenantDirectory = sandbox.stub(tenant, 'createDirectory', function(app, options, cb){
+          cb();
+        });
+
+        done();
       });
     });
+
     after(function () {
       sandbox.restore();
     });
@@ -813,19 +776,30 @@ describe('Client', function () {
 
   describe('call to get account', function () {
     var sandbox, client, getResourceStub, cbSpy, href, opt;
-    before(function () {
+
+    before(function (done) {
       sandbox = sinon.sandbox.create();
       cbSpy = sandbox.spy();
       opt = {};href = '/boom!';
       client = new Client({apiKey: apiKey});
-      getResourceStub = sandbox.stub(client._dataStore, 'getResource', function (href, options, ctor, cb) {
-        cb();
+
+      client.on('error', function (err) {
+        throw err;
       });
-      // call without optional param
-      client.getAccount(href, cbSpy);
-      // call with optional param
-      client.getAccount(href, opt, cbSpy);
+
+      client.on('ready', function () {
+        getResourceStub = sandbox.stub(client._dataStore, 'getResource', function (href, options, ctor, cb) {
+          cb();
+        });
+        // call without optional param
+        client.getAccount(href, cbSpy);
+        // call with optional param
+        client.getAccount(href, opt, cbSpy);
+
+        done();
+      });
     });
+
     after(function () {
       sandbox.restore();
     });
@@ -847,19 +821,30 @@ describe('Client', function () {
 
   describe('call to get application', function () {
     var sandbox, client, getResourceStub, cbSpy, href, opt;
-    before(function () {
+    before(function (done) {
       sandbox = sinon.sandbox.create();
       cbSpy = sandbox.spy();
       opt = {};href = '/boom!';
       client = new Client({apiKey: apiKey});
-      getResourceStub = sandbox.stub(client._dataStore, 'getResource', function (href, options, ctor, cb) {
-        cb();
+
+      client.on('error', function (err) {
+        throw err;
       });
-      // call without optional param
-      client.getApplication(href, cbSpy);
-      // call with optional param
-      client.getApplication(href, opt, cbSpy);
+
+      client.on('ready', function () {
+        getResourceStub = sandbox.stub(client._dataStore, 'getResource', function (href, options, ctor, cb) {
+          cb();
+        });
+
+        // call without optional param
+        client.getApplication(href, cbSpy);
+        // call with optional param
+        client.getApplication(href, opt, cbSpy);
+
+        done();
+      });
     });
+
     after(function () {
       sandbox.restore();
     });
@@ -881,19 +866,31 @@ describe('Client', function () {
 
   describe('call to get directory', function () {
     var sandbox, client, getResourceStub, cbSpy, href, opt;
-    before(function () {
+
+    before(function (done) {
       sandbox = sinon.sandbox.create();
       cbSpy = sandbox.spy();
       opt = {};href = '/boom!';
       client = new Client({apiKey: apiKey});
-      getResourceStub = sandbox.stub(client._dataStore, 'getResource', function (href, options, ctor, cb) {
-        cb();
+
+      client.on('error', function (err) {
+        throw err;
       });
-      // call without optional param
-      client.getDirectory(href, cbSpy);
-      // call with optional param
-      client.getDirectory(href, opt, cbSpy);
+
+      client.on('ready', function () {
+        getResourceStub = sandbox.stub(client._dataStore, 'getResource', function (href, options, ctor, cb) {
+          cb();
+        });
+
+        // call without optional param
+        client.getDirectory(href, cbSpy);
+        // call with optional param
+        client.getDirectory(href, opt, cbSpy);
+
+        done();
+      });
     });
+
     after(function () {
       sandbox.restore();
     });
@@ -912,21 +909,34 @@ describe('Client', function () {
         .calledWith(href, opt, Directory, cbSpy);
     });
   });
+
   describe('call to get group', function () {
     var sandbox, client, getResourceStub, cbSpy, href, opt;
-    before(function () {
+
+    before(function (done) {
       sandbox = sinon.sandbox.create();
       cbSpy = sandbox.spy();
       opt = {};href = '/boom!';
       client = new Client({apiKey: apiKey});
-      getResourceStub = sandbox.stub(client._dataStore, 'getResource', function (href, options, ctor, cb) {
-        cb();
+
+      client.on('error', function (err) {
+        throw err;
       });
-      // call without optional param
-      client.getGroup(href, cbSpy);
-      // call with optional param
-      client.getGroup(href, opt, cbSpy);
+
+      client.on('ready', function () {
+        getResourceStub = sandbox.stub(client._dataStore, 'getResource', function (href, options, ctor, cb) {
+          cb();
+        });
+
+        // call without optional param
+        client.getGroup(href, cbSpy);
+        // call with optional param
+        client.getGroup(href, opt, cbSpy);
+
+        done();
+      });
     });
+
     after(function () {
       sandbox.restore();
     });
@@ -945,20 +955,32 @@ describe('Client', function () {
         .calledWith(href, opt, Group, cbSpy);
     });
   });
+
   describe('call to get group membership', function () {
     var sandbox, client, getResourceStub, cbSpy, href, opt;
-    before(function () {
+    before(function (done) {
       sandbox = sinon.sandbox.create();
       cbSpy = sandbox.spy();
       opt = {};href = '/boom!';
+
       client = new Client({apiKey: apiKey});
-      getResourceStub = sandbox.stub(client._dataStore, 'getResource', function (href, options, ctor, cb) {
-        cb();
+
+      client.on('error', function (err) {
+        throw err;
       });
-      // call without optional param
-      client.getGroupMembership(href, cbSpy);
-      // call with optional param
-      client.getGroupMembership(href, opt, cbSpy);
+
+      client.on('ready', function () {
+        getResourceStub = sandbox.stub(client._dataStore, 'getResource', function (href, options, ctor, cb) {
+          cb();
+        });
+
+        // call without optional param
+        client.getGroupMembership(href, cbSpy);
+        // call with optional param
+        client.getGroupMembership(href, opt, cbSpy);
+
+        done();
+      });
     });
     after(function () {
       sandbox.restore();

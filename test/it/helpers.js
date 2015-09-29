@@ -25,7 +25,15 @@ function loadApiKey(cb) {
 
 function getClient(cb) {
   loadApiKey(function(apiKey) {
-    cb(new stormpath.Client({ apiKey: apiKey }));
+    var client = new stormpath.Client({ apiKey: apiKey });
+
+    client.on('error', function (err) {
+      throw err;
+    });
+
+    client.on('ready', function () {
+      cb(client);
+    });
   });
 }
 
