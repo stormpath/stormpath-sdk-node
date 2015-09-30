@@ -44,11 +44,18 @@ describe('Application',function(){
   });
 
   describe('createAccountStoreMapping',function(){
+    after(function(done){
+      mapping.delete(done);
+    });
     it('should create an ApplicationAccountStoreMapping',function(done){
       app.createAccountStoreMapping({accountStore:directory},function(err,result){
-        mapping = result;
-        assert(result instanceof ApplicationAccountStoreMapping);
-        done();
+        if(err){
+          done(err);
+        }else{
+          mapping = result;
+          assert(result instanceof ApplicationAccountStoreMapping);
+          done();
+        }
       });
     });
     it('should handle errors',function(done){
@@ -66,8 +73,12 @@ describe('Application',function(){
     });
     it('should return the application',function(done){
       mapping.getApplication(function(err,application){
-        assert(application instanceof Application);
-        done();
+        if(err){
+          done(err);
+        }else{
+          assert(application instanceof Application);
+          done();
+        }
       });
     });
   });
@@ -75,9 +86,13 @@ describe('Application',function(){
   describe('createAccountStoreMappings',function(){
     it('should create an ApplicationAccountStoreMapping',function(done){
       app.createAccountStoreMappings([{accountStore:directory}],function(err,results){
-        assert(results[0] instanceof ApplicationAccountStoreMapping);
-        mapping = results[0];
-        done();
+        if(err){
+          done(err);
+        }else{
+          assert(results[0] instanceof ApplicationAccountStoreMapping);
+          mapping = results[0];
+          done();
+        }
       });
     });
   });

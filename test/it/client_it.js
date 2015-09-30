@@ -131,6 +131,30 @@ describe('Client', function() {
     });
   });
 
+  describe('getAccessToken',function(){
+    var AccountAccessTokenFixture = require('../fixtures/account-token');
+    var accountCase = new AccountAccessTokenFixture();
+
+    before(function(done) {
+      accountCase.before(done);
+    });
+
+    after(function(done) {
+      accountCase.after(done);
+    });
+
+    it('should get an access token resource',function(done){
+      accountCase.client.getAccessToken(accountCase.passwordGrantResult.stormpathAccessTokenHref,function(err,resource){
+        if(err){
+          done(err);
+        }else{
+          assert(resource instanceof require('../../lib/resource/AccessToken'));
+          done();
+        }
+      });
+    });
+  });
+
   describe('getCurrentTenant', function() {
     var Tenant = require('../../lib/resource/Tenant');
 

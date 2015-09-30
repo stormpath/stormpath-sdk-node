@@ -2,61 +2,69 @@
 
 var assert = require('assert');
 
-var uuid = require('uuid');
-
 var helpers = require('./helpers');
 
+var AccessToken = require('../../lib/resource/AccessToken');
+var RefreshToken = require('../../lib/resource/RefreshToken');
 var Account = require('../../lib/resource/Account');
 var CustomData = require('../../lib/resource/CustomData');
 
+var AccountAccessTokenFixture = require('../fixtures/account-token');
+
 describe('Account', function() {
-  var client, directory, account, creationResult;
+
+  var fixture = new AccountAccessTokenFixture();
 
   before(function(done) {
-    helpers.getClient(function(_client) {
-      client = _client;
+    fixture.before(done);
+  });
 
-      client.createDirectory({ name: uuid.v4() }, function(err, _directory) {
-        if (err) {
-          return done(err);
-        }
+  after(function(done) {
+    fixture.after(done);
+  });
 
-        directory = _directory;
-        directory.createAccount(helpers.fakeAccount(), function(err,_account) {
-          account = _account;
-          creationResult = [err, _account];
+  it('should be create-able from a directory instance', function() {
+    assert.equal(fixture.creationResult[0], null); // did not error
+    assert(fixture.account instanceof Account);
+  });
+
+  it('should be retrievable by URI fragment', function(done) {
+    var hrefParts = fixture.account.href.split('/');
+    var uriFragment = '/' + hrefParts.slice(Math.max(hrefParts.length - 2, 1)).join('/');
+
+    fixture.client.getAccount(uriFragment, function(err, _account) {
+      if (err) {
+        return done(err);
+      }
+
+      assert.equal(fixture.account.href, _account.href);
+      done();
+    });
+  });
+
+  describe('getAccessTokens',function(){
+    it('should return a collection of access tokens',function(done){
+      fixture.account.getAccessTokens(function(err,collection){
+        if(err){
+          done(err);
+        }else{
+          assert(collection.items[0] instanceof AccessToken);
           done();
-        });
+        }
       });
     });
   });
 
-  after(function(done) {
-    account.delete(function(err) {
-      if (err) {
-        return done(err);
-      }
-
-      directory.delete(done);
-    });
-  });
-
-  it('should be create-able from a directory instance', function() {
-    assert.equal(creationResult[0], null); // did not error
-    assert(account instanceof Account);
-  });
-
-  it('should be retrievable by URI fragment', function(done) {
-    var hrefParts = account.href.split('/');
-    var uriFragment = '/' + hrefParts.slice(Math.max(hrefParts.length - 2, 1)).join('/');
-
-    client.getAccount(uriFragment, function(err, _account) {
-      if (err) {
-        return done(err);
-      }
-
-      assert.equal(account.href, _account.href);
-      done();
+  describe('getRefreshTokens',function(){
+    it('should return a collection of refresh tokens',function(done){
+      fixture.account.getRefreshTokens(function(err,collection){
+        if(err){
+          done(err);
+        }else{
+          assert(collection.items[0] instanceof RefreshToken);
+          done();
+        }
+      });
     });
   });
 
@@ -65,7 +73,7 @@ describe('Account', function() {
       var customData;
 
       before(function(done) {
-        account.getCustomData(function(err, _customData) {
+        fixture.account.getCustomData(function(err, _customData) {
           if (err) {
             return done(err);
           }
@@ -77,7 +85,7 @@ describe('Account', function() {
 
       it('should be get-able', function() {
         assert(customData instanceof CustomData);
-        assert.equal(customData.href, account.href + '/customData');
+        assert.equal(customData.href, fixture.account.href + '/customData');
       });
 
       describe('when saved and re-fetched', function() {
@@ -93,7 +101,7 @@ describe('Account', function() {
               return done(err);
             }
 
-            account.getCustomData(function(err, customData) {
+            fixture.account.getCustomData(function(err, customData) {
               if (err) {
                 return done(err);
               }
@@ -112,7 +120,7 @@ describe('Account', function() {
 
     describe('via resource expansion', function() {
       function getExpandedAccount(cb) {
-        client.getAccount(account.href, { expand: 'customData' }, function(err, account) {
+        fixture.client.getAccount(fixture.account.href, { expand: 'customData' }, function(err, account) {
           if (err) {
             throw err;
           }
@@ -132,7 +140,7 @@ describe('Account', function() {
 
       it('should be get-able', function() {
         assert(customData instanceof CustomData);
-        assert.equal(customData.href, account.href + '/customData');
+        assert.equal(customData.href, fixture.account.href + '/customData');
       });
 
       describe('when saved and re-fetched', function() {
