@@ -17,7 +17,10 @@ describe('Client', function() {
     it('should not throw', function(done) {
       assert.doesNotThrow(function () {
         helpers.loadApiKey(function(apiKey) {
-          var client = new stormpath.Client({ apiKey: apiKey });
+          var client = new stormpath.Client({
+            apiKey: apiKey,
+            skipRemoteConfig: true
+          });
 
           client.on('error', function (err) {
             throw err;

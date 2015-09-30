@@ -4,10 +4,16 @@ var assert = require('assert');
 var stormpathConfig = require('stormpath-config');
 var loader = require('../../lib/configLoader');
 
+function makeTestLoader () {
+  return loader({
+    skipRemoteConfig: true
+  });
+}
+
 describe('Config', function() {
   describe('()', function() {
     it('should work with no options supplied', function(done) {
-      loader().load(function (err, config) {
+      makeTestLoader().load(function (err, config) {
         if (err) {
           throw err;
         }
@@ -24,7 +30,7 @@ describe('Config', function() {
         delete process.env.HOME;
       }
 
-      loader().load(function (err, config) {
+      makeTestLoader().load(function (err, config) {
         if (err) {
           throw err;
         }
@@ -45,7 +51,7 @@ describe('Config', function() {
       process.env.STORMPATH_CLIENT_APIKEY_ID = 'xxx';
       process.env.STORMPATH_CLIENT_APIKEY_SECRET = 'yyy';
 
-      loader().load(function (err, config) {
+      makeTestLoader().load(function (err, config) {
         if (err) {
           throw err;
         }
@@ -64,7 +70,7 @@ describe('Config', function() {
       process.env.STORMPATH_APPLICATION_HREF = 'https://api.stormpath.com/v1/applications/fake';
       process.env.STORMPATH_APPLICATION_NAME = 'yyy';
 
-      loader().load(function (err, config) {
+      makeTestLoader().load(function (err, config) {
         if (err) {
           throw err;
         }

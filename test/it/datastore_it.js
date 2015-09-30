@@ -28,12 +28,10 @@ describe('DataStore', function() {
   });
 
   describe('when asked for a collection',function(){
-
     var cacheResult;
 
     before(function(done){
       helpers.getClient(function(client){
-
         client.getCurrentTenant(function(err,tenant){
           if(err){throw err;}
           tenant.getApplications(function(err,collection){

@@ -14,6 +14,11 @@ var Tenant = require('../lib/resource/Tenant');
 var Application = require('../lib/resource/Application');
 var DataStore = require('../lib/ds/DataStore');
 
+function makeTestClient (options) {
+  options.skipRemoteConfig = true;
+  return new Client(options);
+}
+
 function clearEnvVars(){
   var args = Array.prototype.slice.call(arguments);
   var saved = args.reduce(function(saved,arg){
@@ -30,11 +35,12 @@ function clearEnvVars(){
 
 describe('Client', function () {
   var apiKey = {id: 1, secret: 2};
+
   describe('constructor', function () {
     var client;
 
     before(function (done) {
-      client = new Client({apiKey: apiKey});
+      client = makeTestClient({apiKey: apiKey});
 
       client.on('error', function (err) {
         throw err;
@@ -58,7 +64,7 @@ describe('Client', function () {
     });
     it('should allow me to change the base url',function(done){
       var url = 'http://api.mydomain.com/';
-      var client = new Client({apiKey: apiKey, baseUrl: url});
+      var client = makeTestClient({apiKey: apiKey, baseUrl: url});
 
       client.on('error', function (err) {
         throw err;
@@ -74,7 +80,7 @@ describe('Client', function () {
   describe('default constructor', function () {
 
     it('should emit a ready event with the client itself as the value', function(done) {
-      var client = new Client({
+      var client = makeTestClient({
         client: {
           apiKey: { id: '1', secret: '2' }
         }
@@ -97,7 +103,7 @@ describe('Client', function () {
       fs.writeSync(tmpobj.fd,'yo');
       fs.closeSync(tmpobj.fd);
 
-      var client = new Client({
+      var client = makeTestClient({
         client:{
           apiKey:{
             file: tmpobj.name
@@ -124,7 +130,7 @@ describe('Client', function () {
       fs.writeSync(tmpobj.fd,'apiKey.id=1\napiKey.secret=2');
       fs.closeSync(tmpobj.fd);
 
-      var client = new Client({
+      var client = makeTestClient({
         client:{
           apiKey:{
             file: tmpobj.name
@@ -148,7 +154,7 @@ describe('Client', function () {
 
   describe('with an invalid app href', function() {
     it('should fail', function (done) {
-      var client = new Client({
+      var client = makeTestClient({
         application:{
           href: 'https://api.stormpath.com/v1/applications/blah'
         }
@@ -191,7 +197,7 @@ describe('Client', function () {
   //   });
 
   //   it('should fail',function(done){
-  //     var client = new Client({
+  //     var client = makeTestClient({
   //       application:{
   //         name: application.name
   //       }
@@ -213,7 +219,7 @@ describe('Client', function () {
         sandbox = sinon.sandbox.create();
         err = {error: 'boom!'};
         tenant = { href: 'foo'};
-        client = new Client({apiKey: apiKey});
+        client = makeTestClient({apiKey: apiKey});
 
         client.on('error', function (err) {
           throw err;
@@ -275,7 +281,7 @@ describe('Client', function () {
         sandbox = sinon.sandbox.create();
         err = {error: 'boom!'};
         tenant = { href: 'foo'};
-        client = new Client({apiKey: apiKey});
+        client = makeTestClient({apiKey: apiKey});
 
         client.on('error', function (err) {
           throw err;
@@ -322,7 +328,7 @@ describe('Client', function () {
 
     before(function (done) {
       sandbox = sinon.sandbox.create();
-      client = new Client({apiKey: apiKey});
+      client = makeTestClient({apiKey: apiKey});
 
       client.on('error', function (err) {
         throw err;
@@ -362,7 +368,7 @@ describe('Client', function () {
 
     before(function (done) {
       sandbox = sinon.sandbox.create();
-      client = new Client({apiKey: apiKey});
+      client = makeTestClient({apiKey: apiKey});
 
       client.on('error', function (err) {
         throw err;
@@ -405,7 +411,7 @@ describe('Client', function () {
       sandbox = sinon.sandbox.create();
       err = {error: 'boom!'};
 
-      client = new Client({ apiKey: apiKey });
+      client = makeTestClient({ apiKey: apiKey });
 
       client.on('error', function (err) {
         throw err;
@@ -439,25 +445,30 @@ describe('Client', function () {
       client.getAccounts(cbSpy);
       client.getAccounts({}, cbSpy);
 
-      getTenantAccounts.should.have.been.calledWith(null, cbSpy);
-      getTenantAccounts.should.have.been.calledWith({}, cbSpy);
+      client.on('ready', function () {
+        getTenantAccounts.should.have.been.calledWith(null, cbSpy);
+        getTenantAccounts.should.have.been.calledWith({}, cbSpy);
 
-      /* jshint -W030 */
-      getCurrentTenantStub.should.have.been.calledTwice;
-      getTenantAccounts.should.have.been.calledTwice;
-      /* jshint +W030 */
+        /* jshint -W030 */
+        getCurrentTenantStub.should.have.been.calledTwice;
+        getTenantAccounts.should.have.been.calledTwice;
+        /* jshint +W030 */
+      });
     });
 
     it('should return error', function() {
       returnError = true;
 
       client.getAccounts(cbSpy);
-      cbSpy.should.have.been.calledWith(err);
 
-      /* jshint -W030 */
-      getCurrentTenantStub.should.have.been.calledThrice;
-      getTenantAccounts.should.have.been.calledTwice;
-      /* jshint +W030 */
+      client.on('ready', function () {
+        cbSpy.should.have.been.calledWith(err);
+
+        /* jshint -W030 */
+        getCurrentTenantStub.should.have.been.calledThrice;
+        getTenantAccounts.should.have.been.calledTwice;
+        /* jshint +W030 */
+      });
     });
   });
 
@@ -470,7 +481,7 @@ describe('Client', function () {
       sandbox = sinon.sandbox.create();
       err = {error: 'boom!'};
 
-      client = new Client({ apiKey: apiKey });
+      client = makeTestClient({ apiKey: apiKey });
 
       client.on('error', function (err) {
         throw err;
@@ -534,7 +545,7 @@ describe('Client', function () {
     before(function (done) {
       sandbox = sinon.sandbox.create();
       err = {error: 'boom!'};
-      client = new Client({apiKey: apiKey});
+      client = makeTestClient({apiKey: apiKey});
 
       client.on('error', function (err) {
         throw err;
@@ -596,7 +607,7 @@ describe('Client', function () {
     before(function (done) {
       sandbox = sinon.sandbox.create();
       err = {error: 'boom!'};app = {href: 'boom!'};
-      client = new Client({apiKey: apiKey});
+      client = makeTestClient({apiKey: apiKey});
 
       client.on('error', function (err) {
         throw err;
@@ -658,7 +669,7 @@ describe('Client', function () {
     before(function (done) {
       sandbox = sinon.sandbox.create();
       err = {error: 'boom!'};
-      client = new Client({apiKey: apiKey});
+      client = makeTestClient({apiKey: apiKey});
 
       client.on('error', function (err) {
         throw err;
@@ -720,7 +731,7 @@ describe('Client', function () {
     before(function (done) {
       sandbox = sinon.sandbox.create();
       err = {error: 'boom!'};app = {href: 'boom!'};
-      client = new Client({apiKey: apiKey});
+      client = makeTestClient({apiKey: apiKey});
 
       client.on('error', function (err) {
         throw err;
@@ -781,7 +792,7 @@ describe('Client', function () {
       sandbox = sinon.sandbox.create();
       cbSpy = sandbox.spy();
       opt = {};href = '/boom!';
-      client = new Client({apiKey: apiKey});
+      client = makeTestClient({apiKey: apiKey});
 
       client.on('error', function (err) {
         throw err;
@@ -825,7 +836,7 @@ describe('Client', function () {
       sandbox = sinon.sandbox.create();
       cbSpy = sandbox.spy();
       opt = {};href = '/boom!';
-      client = new Client({apiKey: apiKey});
+      client = makeTestClient({apiKey: apiKey});
 
       client.on('error', function (err) {
         throw err;
@@ -871,7 +882,7 @@ describe('Client', function () {
       sandbox = sinon.sandbox.create();
       cbSpy = sandbox.spy();
       opt = {};href = '/boom!';
-      client = new Client({apiKey: apiKey});
+      client = makeTestClient({apiKey: apiKey});
 
       client.on('error', function (err) {
         throw err;
@@ -917,7 +928,7 @@ describe('Client', function () {
       sandbox = sinon.sandbox.create();
       cbSpy = sandbox.spy();
       opt = {};href = '/boom!';
-      client = new Client({apiKey: apiKey});
+      client = makeTestClient({apiKey: apiKey});
 
       client.on('error', function (err) {
         throw err;
@@ -963,7 +974,7 @@ describe('Client', function () {
       cbSpy = sandbox.spy();
       opt = {};href = '/boom!';
 
-      client = new Client({apiKey: apiKey});
+      client = makeTestClient({apiKey: apiKey});
 
       client.on('error', function (err) {
         throw err;

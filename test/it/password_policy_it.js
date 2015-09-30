@@ -6,13 +6,10 @@ var Client = require('../../lib/Client');
 
 describe('PasswordPolicy', function() {
   describe('getStrength', function() {
-    // Give this some time to work.
-    this.timeout(5 * 1000);
-
     var client, directory;
 
     before(function (done) {
-      client = new Client();
+      client = new Client({ skipRemoteConfig: true });
 
       client.on('error', function (err) {
         done(err);
