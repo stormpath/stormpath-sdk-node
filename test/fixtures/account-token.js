@@ -57,12 +57,14 @@ AccountAccessTokenFixture.prototype.before = function before(done) {
   });
 };
 AccountAccessTokenFixture.prototype.after = function after(done) {
-  var self = this;
-  self.application.delete(function(err){
+  var application = this.application;
+  var directory = this.directory;
+
+  application.delete(function(err){
     if (err) {
       return done(err);
     }
-    self.directory.delete(done);
+    directory.delete(done);
   });
 };
 
