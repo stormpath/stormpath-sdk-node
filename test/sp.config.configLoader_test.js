@@ -3,7 +3,8 @@ var uuid = require('uuid');
 var yaml = require('js-yaml');
 var nodeenv = require('nodeenv');
 var expandHomeDir = require('expand-home-dir');
-var mockFs = require('mock-fs');
+
+var FakeFS = require('fake-fs');
 
 var common = require('./common');
 var assert = common.assert;
@@ -12,25 +13,31 @@ var stormpathConfig = require('stormpath-config');
 var configLoader = require('../lib/configLoader');
 
 describe('Configuration loader', function () {
-  var loader;
+  var loader, fakeFs;
 
-  // Sets up our mock fs. Returns a callback
-  // that can be used to restore the fs to its clean state.
-  function setupMockFs(files) {
-    var mockFiles = {};
+  // Sets up our fake file system with mock files.
+  function setupFakeFs(files) {
+    // If we already have a fake fs, then unpatch
+    // the previous one and create a new.
+    if(fakeFs) {
+      fakeFs.unpatch();
+    }
+
+    fakeFs = new FakeFS().bind();
+
     var defaultConfigPath = process.cwd() + '/lib/config.yml';
 
-    mockFiles[defaultConfigPath] = fs.readFileSync(process.cwd() + '/lib/config.yml');
+    fakeFs.file(defaultConfigPath, {
+      content: fs.readFileSync(process.cwd() + '/lib/config.yml')
+    });
 
     if (files) {
       files.forEach(function (file) {
-        mockFiles[file.path] = file.content;
+        fakeFs.file(file.path, { content: file.content });
       });
     }
 
-    mockFs(mockFiles);
-
-    return mockFs.restore;
+    fakeFs.patch();
   }
 
   before(function () {
@@ -40,15 +47,13 @@ describe('Configuration loader', function () {
   });
 
   after(function () {
-    mockFs.restore();
+    if (fakeFs) {
+      fakeFs.unpatch();
+    }
   });
 
   it('should load without configuration', function(done) {
-    var restoreFs = setupMockFs();
-
-    after(function () {
-      restoreFs();
-    });
+    setupFakeFs();
 
     loader.load(function (err, config) {
       if (err) {
@@ -63,11 +68,7 @@ describe('Configuration loader', function () {
   });
 
   it('should load the default configuration', function (done) {
-    var restoreFs = setupMockFs();
-
-    after(function () {
-      restoreFs();
-    });
+    setupFakeFs();
 
     loader.load(function (err, config) {
       assert.isFalse(!!err);
@@ -103,7 +104,7 @@ describe('Configuration loader', function () {
   });
 
   it('should load configuration from the environment', function (done) {
-    var restoreFs = setupMockFs();
+    setupFakeFs();
 
     var env = {
       STORMPATH_CLIENT_APIKEY_ID: uuid(),
@@ -119,7 +120,6 @@ describe('Configuration loader', function () {
 
     after(function () {
       restoreEnv();
-      restoreFs();
     });
 
     loader.load(function (err, config) {
@@ -151,14 +151,10 @@ describe('Configuration loader', function () {
           }
         };
 
-        var restoreFs = setupMockFs([{
+        setupFakeFs([{
           path: expandHomeDir('~/.stormpath/stormpath.' + ext),
           content: serializeFn(homeConfig)
         }]);
-
-        after(function () {
-          restoreFs();
-        });
 
         loader.load(function (err, config) {
           assert.isNull(err);
@@ -195,17 +191,13 @@ describe('Configuration loader', function () {
           }
         };
 
-        var restoreFs = setupMockFs([{
+        setupFakeFs([{
           path: expandHomeDir('~/.stormpath/stormpath.' + ext),
           content: serializeFn(homeConfig)
         }, {
           path: process.cwd() + '/stormpath.' + ext,
           content: serializeFn(appConfig)
         }]);
-
-        after(function () {
-          restoreFs();
-        });
 
         loader.load(function (err, config) {
           assert.isNull(err);
@@ -229,8 +221,7 @@ describe('Configuration loader', function () {
   testLoadStormpathConfig('json', JSON.stringify);
 
   it('should extend config with custom config object', function (done) {
-    var restoreFs = setupMockFs();
-    after(restoreFs);
+    setupFakeFs();
 
     var customConfig = {
       skipRemoteConfig: true,
@@ -246,8 +237,8 @@ describe('Configuration loader', function () {
 
     loader.load(function (err, config) {
       assert.isNull(err);
-      assert.isTrue(!!config);
 
+      assert.isTrue(!!config);
       assert.isTrue(!!config.client);
       assert.isTrue(!!config.client.apiKey);
 
