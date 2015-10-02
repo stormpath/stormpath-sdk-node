@@ -39,6 +39,10 @@ describe('Configuration loader', function () {
     });
   });
 
+  after(function () {
+    mockFs.restore();
+  });
+
   it('should load without configuration', function(done) {
     var restoreFs = setupMockFs();
 
