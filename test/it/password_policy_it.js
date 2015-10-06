@@ -8,29 +8,38 @@ describe('PasswordPolicy', function() {
   describe('getStrength', function() {
     var client, directory;
 
-    before(function() {
-      client = new Client();
+    before(function (done) {
+      client = new Client({ skipRemoteConfig: true });
+
+      client.on('error', function (err) {
+        done(err);
+      });
+
+      client.on('ready', function () {
+        done();
+      });
     });
 
-    after(function(done) {
+    after(function (done) {
       directory.delete(function(err) {
         done(err);
       });
     });
 
-    it('should return the strength object', function(done) {
-      client.createDirectory({ name: uuid.v4() }, function(err, dir) {
+    it('should return the strength object', function (done) {
+      client.createDirectory({ name: uuid.v4() }, function (err, dir) {
         if (err) {
           return done(err);
         }
 
         directory = dir;
-        directory.getPasswordPolicy(function(err, policy) {
+
+        directory.getPasswordPolicy(function (err, policy) {
           if (err) {
             return done(err);
           }
 
-          policy.getStrength(function(err, strength) {
+          policy.getStrength(function (err, strength) {
             if (err) {
               return done(err);
             }
