@@ -19,40 +19,42 @@ AccountAccessTokenFixture.prototype.before = function before(done) {
     helpers.createApplication(function(err,app){
       if (err) {
         return done(err);
-      }else{
-        self.application = app;
-        helpers.getDefaultAccountStore(app,function(err,dir){
-          if (err) {
-            return done(err);
-          }else{
-            self.directory = dir;
-            self.newAccount = helpers.fakeAccount();
-            dir.createAccount(self.newAccount, function(err,_account) {
-              self.account = _account;
-              self.creationResult = [err, _account];
+      }
 
-              /*
-                We need to do a password grant request, so that we create
-                an access token and refresh token for this user
-               */
+      self.application = app;
+      helpers.getDefaultAccountStore(app,function(err,dir){
+        if (err) {
+          return done(err);
+        }
 
-              var authenticator = new OAuthPasswordGrantRequestAuthenticator(app);
-              authenticator.authenticate({
-                username: _account.username,
-                password: self.newAccount.password
-              },function(err,passwordGrantResult){
-                if(err){
-                  done(err);
-                }else{
-                  self.passwordGrantResult = passwordGrantResult;
-                  done();
-                }
-              });
-            });
-          }
+        self.directory = dir;
+        self.newAccount = helpers.fakeAccount();
+        dir.createAccount(self.newAccount, function(err,_account) {
+          self.account = _account;
+          self.creationResult = [err, _account];
+
+          /*
+            We need to do a password grant request, so that we create
+            an access token and refresh token for this user
+           */
+
+          var authenticator = new OAuthPasswordGrantRequestAuthenticator(app);
+          authenticator.authenticate({
+            username: _account.username,
+            password: self.newAccount.password
+          },function(err,passwordGrantResult){
+            if(err){
+              done(err);
+            }else{
+              self.passwordGrantResult = passwordGrantResult;
+              done();
+            }
+          });
         });
 
-      }
+      });
+
+
     });
   });
 };
