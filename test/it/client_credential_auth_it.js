@@ -57,15 +57,17 @@ describe('Client Credential Authentication',function(){
       });
     });
 
-    it('should generate an access token where the subject is the account',function(done){
+    it('should return an access token',function(done){
       assert.isString(accessToken);
       var secret = client._dataStore.requestExecutor.options.apiKey.secret;
       nJwt.verify(accessToken,secret,function(err,jwt){
         if(err){ throw err; }
+        // The subject should be the account
         assert.equal(jwt.body.sub,account.href);
+        // The defalt TTL is 3600 seconds
+        assert.equal(jwt.body.exp - jwt.body.iat,3600);
         done();
       });
-
     });
   });
 
