@@ -1,5 +1,12 @@
 # stormpath-sdk-node Change Log
 
+### 0.13.0
+
+- Configuration is now loaded all async.
+- Added tests for configuration.
+- Added getters and setters for access tokens and refresh tokens.
+- Added `Account.getAccessTokens()`, `Client.getAccessToken()`, and `Account.getRefreshTokens()`.
+
 ### 0.12.2
 
 - Supporting LinkedIn configuration options.
