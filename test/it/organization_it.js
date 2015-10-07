@@ -43,7 +43,9 @@ describe('Organization',function(){
   });
 
   describe('createAccountStoreMapping',function(){
-
+    after(function(done){
+      mapping.delete(done);
+    });
     it('should create an OrganizationAccountStoreMapping',function(done){
       organization.createAccountStoreMapping({accountStore:directory},function(err,_mapping){
         mapping = _mapping;
@@ -75,9 +77,13 @@ describe('Organization',function(){
   describe('createAccountStoreMappings',function(){
     it('should create an OrganizationAccountStoreMapping',function(done){
       organization.createAccountStoreMappings([{accountStore:directory}],function(err,results){
-        assert(results[0] instanceof OrganizationAccountStoreMapping);
-        mapping = results[0];
-        done();
+        if(err){
+          done(err);
+        }else{
+          assert(results[0] instanceof OrganizationAccountStoreMapping);
+          mapping = results[0];
+          done();
+        }
       });
     });
   });

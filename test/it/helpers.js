@@ -77,8 +77,26 @@ function fakeDirectory(){
     name: uniqId()
   };
 }
+/**
+ * Fetches the default account store for a given application
+ *
+ * @function
+ *
+ * @param {Object} application - Stormpath Application Object
+ * @param {Function} callback - A callback to run when done.
+ */
+function getDefaultAccountStore(application,done){
+  application.getDefaultAccountStore(function(err,accountStoreMapping){
+    if(err){
+      done(err);
+    }else{
+      accountStoreMapping.getAccountStore(done);
+    }
+  });
+}
 
 module.exports = {
+  getDefaultAccountStore: getDefaultAccountStore,
   createApplication: createApplication,
   loadApiKey: loadApiKey,
   getClient: getClient,
