@@ -104,19 +104,19 @@ var responseBody = authenticationResult.getAccessTokenResponse();
 <a name="getJwt"></a>
 ### <span class="member">method</span> getJwt()
 
-This method returns a JWT instance (from the [nJwt](https://github.com/jwtk/njwt) library) which is pre-configured with the
-same claims that you would get from calling `getAccessToken()`.  This method exists
-in case you need to make more modifications to the JWT before you compact it to an access
-token
+This method returns a JWT instance (from the
+[nJwt](https://github.com/jwtk/njwt) library) which is pre-configured with the
+same claims that you would get from calling `getAccessToken()`.  This method
+exists in case you need to make more modifications to the JWT before you
+compact it to an access token
 
 **Example**:
 
 ````javascript
 var jwt = authenticationResult.getJwt();
 
-// Modify the default TTL (one week in seconds)
-
-jwt.setTtl(604800);
+jwt.setExpiration(new Date('2015-07-01')); // A specific date
+jwt.setExpiration(new Date().getTime() + (60*60*1000)); // One hour from now
 
 // Compact the JWT to a base64 encoded token
 
