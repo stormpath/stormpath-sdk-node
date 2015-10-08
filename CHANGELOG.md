@@ -6,6 +6,7 @@
 - Added tests for configuration.
 - Added getters and setters for access tokens and refresh tokens.
 - Added `Account.getAccessTokens()`, `Client.getAccessToken()`, and `Account.getRefreshTokens()`.
+- Fixed TTL bug in `AuthenticationResult.getJwt()`
 
 ### 0.12.2
 
