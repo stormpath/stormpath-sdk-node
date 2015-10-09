@@ -1,5 +1,9 @@
 # stormpath-sdk-node Change Log
 
+### 0.13.1
+
+Moving `lodash` to dependencies, it was incorrectly placed in the dev dependencies
+
 ### 0.13.0
 
 - Configuration is now loaded all async.
