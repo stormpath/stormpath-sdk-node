@@ -59,9 +59,7 @@ describe('Configuration loader', function () {
     process.env.STORMPATH_CLIENT_APIKEY_ID = uuid();
     process.env.STORMPATH_CLIENT_APIKEY_SECRET = uuid();
 
-    after(function () {
-      restoreEnv();
-    });
+    after(restoreEnv);
 
     loader.load(function (err, config) {
       if (err) {
@@ -121,9 +119,7 @@ describe('Configuration loader', function () {
     process.env.STORMPATH_APPLICATION_HREF = 'http://api.stormpath.com/v1/applications/' + uuid(),
     process.env.STORMPATH_APPLICATION_NAME = uuid();
 
-    after(function () {
-      restoreEnv();
-    });
+    after(restoreEnv);
 
     loader.load(function (err, config) {
       assert.isFalse(!!err);
@@ -237,6 +233,59 @@ describe('Configuration loader', function () {
 
   testLoadStormpathConfig('yml', yaml.dump);
   testLoadStormpathConfig('json', JSON.stringify);
+
+  it('should load config from file before environment', function (done) {
+    var restoreEnv = common.snapshotEnv();
+
+    process.env.STORMPATH_CLIENT_APIKEY_ID = uuid();
+    process.env.STORMPATH_CLIENT_APIKEY_SECRET = uuid();
+    process.env.STORMPATH_APPLICATION_HREF = 'http://api.stormpath.com/v1/applications/' + uuid();
+
+    after(restoreEnv);
+
+    var homeConfig = {
+      client: {
+        apiKey: {
+          id: uuid(),
+          secret: uuid()
+        }
+      }
+    };
+
+    var appConfig = {
+      client: {
+        apiKey: {
+          secret: uuid()
+        }
+      },
+      application: {
+        href: 'http://api.stormpath.com/v1/applications/' + uuid()
+      }
+    };
+
+    setupFakeFs([{
+      path: expandHomeDir('~/.stormpath/stormpath.json'),
+      content: JSON.stringify(homeConfig)
+    }, {
+      path: process.cwd() + '/stormpath.json',
+      content: JSON.stringify(appConfig)
+    }]);
+
+    loader.load(function (err, config) {
+      assert.isNull(err);
+
+      assert.isTrue(!!config);
+      assert.isTrue(!!config.client);
+      assert.isTrue(!!config.application);
+      assert.isTrue(!!config.client.apiKey);
+
+      assert.equal(config.client.apiKey.id, process.env.STORMPATH_CLIENT_APIKEY_ID);
+      assert.equal(config.client.apiKey.secret, process.env.STORMPATH_CLIENT_APIKEY_SECRET);
+      assert.equal(config.application.href, process.env.STORMPATH_APPLICATION_HREF);
+
+      done();
+    });
+  });
 
   it('should extend config with custom config object', function (done) {
     setupFakeFs();
