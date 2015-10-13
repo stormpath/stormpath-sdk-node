@@ -45,6 +45,12 @@ describe('Configuration loader', function () {
     });
   });
 
+  after(function () {
+    if (fakeFs) {
+      fakeFs.unpatch();
+    }
+  });
+
   // Cleanup functions that should run directly after all "it" tests.
   // This is because mocha does not offer this functionality at the moment.
   // I.e. mocha's after() is queued and executed after all tests have run.
