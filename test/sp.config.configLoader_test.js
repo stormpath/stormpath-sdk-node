@@ -114,9 +114,9 @@ describe('Configuration loader', function () {
 
     var restoreEnv = common.snapshotEnv();
 
-    process.env.STORMPATH_CLIENT_APIKEY_ID = uuid(),
-    process.env.STORMPATH_CLIENT_APIKEY_SECRET = uuid(),
-    process.env.STORMPATH_APPLICATION_HREF = 'http://api.stormpath.com/v1/applications/' + uuid(),
+    process.env.STORMPATH_CLIENT_APIKEY_ID = uuid();
+    process.env.STORMPATH_CLIENT_APIKEY_SECRET = uuid();
+    process.env.STORMPATH_APPLICATION_HREF = 'http://api.stormpath.com/v1/applications/' + uuid();
     process.env.STORMPATH_APPLICATION_NAME = uuid();
 
     after(restoreEnv);
