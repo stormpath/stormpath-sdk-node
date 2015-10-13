@@ -25,6 +25,17 @@ function random(){
   return '' + Math.random()*Date.now();
 }
 
+function clone(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function snapshotEnv() {
+  var originalEnv = clone(process.env);
+  return function restore() {
+    process.env = originalEnv;
+  };
+}
+
 function assertAccessTokenResponse(response){
   assert.isDefined(response.accessTokenResponse);
   assert.isDefined(response.accessTokenResponse.access_token);
@@ -56,6 +67,7 @@ module.exports = {
   Stormpath: Stormpath,
   random: random,
   uuid: uuid,
+  snapshotEnv: snapshotEnv,
   assertPasswordGrantResponse: assertPasswordGrantResponse,
   assertAccessTokenResponse: assertAccessTokenResponse
 };
