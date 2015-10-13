@@ -32,7 +32,14 @@ function clone(value) {
 function snapshotEnv() {
   var originalEnv = clone(process.env);
   return function restore() {
-    process.env = originalEnv;
+    for (var key in process.env) {
+      if (!(key in originalEnv)) {
+        delete process.env[key];
+      }
+    }
+    for (var key in originalEnv) {
+      process.env[key] = originalEnv[key];
+    }
   };
 }
 
