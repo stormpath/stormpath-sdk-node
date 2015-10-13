@@ -41,7 +41,7 @@
     "test": "grunt"
   },
   "dependencies": {
-    "async": "~0.7.0",
+    "async": "~1.4.2",
     "deep-extend": "^0.4.0",
     "flat": "^1.6.0",
     "glob": "3",
