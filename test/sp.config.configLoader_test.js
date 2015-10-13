@@ -8,7 +8,6 @@ var FakeFS = require('fake-fs');
 var common = require('./common');
 var assert = common.assert;
 
-var stormpathConfig = require('stormpath-config');
 var configLoader = require('../lib/configLoader');
 
 describe('Configuration loader', function () {
@@ -70,8 +69,9 @@ describe('Configuration loader', function () {
     afterIt.push(restoreEnv);
 
     loader.load(function (err, config) {
-      assert.isNotNull(err);
+      assert.isUndefined(config);
 
+      assert.isNotNull(err);
       assert.equal(err.message, 'API key ID and secret is required.');
 
       done();
