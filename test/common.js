@@ -25,6 +25,25 @@ function random(){
   return '' + Math.random()*Date.now();
 }
 
+function clone(value) {
+  return JSON.parse(JSON.stringify(value));
+}
+
+function snapshotEnv() {
+  var originalEnv = clone(process.env);
+  return function restore() {
+    var key;
+    for (key in process.env) {
+      if (!(key in originalEnv)) {
+        delete process.env[key];
+      }
+    }
+    for (key in originalEnv) {
+      process.env[key] = originalEnv[key];
+    }
+  };
+}
+
 function assertAccessTokenResponse(response){
   assert.isDefined(response.accessTokenResponse);
   assert.isDefined(response.accessTokenResponse.access_token);
@@ -56,6 +75,7 @@ module.exports = {
   Stormpath: Stormpath,
   random: random,
   uuid: uuid,
+  snapshotEnv: snapshotEnv,
   assertPasswordGrantResponse: assertPasswordGrantResponse,
   assertAccessTokenResponse: assertAccessTokenResponse
 };

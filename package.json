@@ -78,7 +78,6 @@
     "mocha": "~2.3.3",
     "mocha-sinon": "~1.1.0",
     "nock": "~0.27.2",
-    "nodeenv": "^0.2.1",
     "sinon": "~1.7.3",
     "sinon-chai": "~2.4.0",
     "time-grunt": "~0.2.0",

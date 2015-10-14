@@ -1,7 +1,6 @@
 var fs = require('fs');
 var uuid = require('uuid');
 var yaml = require('js-yaml');
-var nodeenv = require('nodeenv');
 var expandHomeDir = require('expand-home-dir');
 
 var FakeFS = require('fake-fs');
@@ -9,11 +8,10 @@ var FakeFS = require('fake-fs');
 var common = require('./common');
 var assert = common.assert;
 
-var stormpathConfig = require('stormpath-config');
 var configLoader = require('../lib/configLoader');
 
 describe('Configuration loader', function () {
-  var loader, fakeFs;
+  var loader, fakeFs, afterIt;
 
   // Sets up our fake file system with mock files.
   function setupFakeFs(files) {
@@ -41,6 +39,7 @@ describe('Configuration loader', function () {
   }
 
   before(function () {
+    afterIt = [];
     loader = configLoader({
       skipRemoteConfig: true
     });
@@ -52,16 +51,34 @@ describe('Configuration loader', function () {
     }
   });
 
-  it('should load without configuration', function(done) {
+  // Cleanup functions that should run directly after all "it" tests.
+  // This is because mocha does not offer this functionality at the moment.
+  // I.e. mocha's after() is queued and executed after all tests have run.
+  afterEach(function () {
+    while (afterIt.length) {
+      afterIt.shift()();
+    }
+  });
+
+  it('should error when not providing api key', function (done) {
     setupFakeFs();
 
-    loader.load(function (err, config) {
-      if (err) {
-        throw err;
-      }
+    var restoreEnv = common.snapshotEnv();
 
-      assert(!!config);
-      assert(config instanceof stormpathConfig.Config);
+    // Remove any STORMPATH environment keys.
+    for (var key in process.env) {
+      if (key.indexOf('STORMPATH_') === 0) {
+        delete process.env[key];
+      }
+    }
+
+    afterIt.push(restoreEnv);
+
+    loader.load(function (err, config) {
+      assert.isUndefined(config);
+
+      assert.isNotNull(err);
+      assert.equal(err.message, 'API key ID and secret is required.');
 
       done();
     });
@@ -71,7 +88,9 @@ describe('Configuration loader', function () {
     setupFakeFs();
 
     loader.load(function (err, config) {
-      assert.isFalse(!!err);
+      if (err) {
+        throw err;
+      }
 
       assert.isTrue(!!config);
 
@@ -106,21 +125,14 @@ describe('Configuration loader', function () {
   it('should load configuration from the environment', function (done) {
     setupFakeFs();
 
-    var env = {
-      STORMPATH_CLIENT_APIKEY_ID: uuid(),
-      STORMPATH_CLIENT_APIKEY_SECRET: uuid(),
-      STORMPATH_APPLICATION_HREF: 'http://api.stormpath.com/v1/applications/' + uuid(),
-      STORMPATH_APPLICATION_NAME: uuid()
-    };
+    var restoreEnv = common.snapshotEnv();
 
-    var restoreEnv;
-    nodeenv(env, function (restore) {
-      restoreEnv = restore;
-    });
+    process.env.STORMPATH_CLIENT_APIKEY_ID = uuid();
+    process.env.STORMPATH_CLIENT_APIKEY_SECRET = uuid();
+    process.env.STORMPATH_APPLICATION_HREF = 'http://api.stormpath.com/v1/applications/' + uuid();
+    process.env.STORMPATH_APPLICATION_NAME = uuid();
 
-    after(function () {
-      restoreEnv();
-    });
+    afterIt.push(restoreEnv);
 
     loader.load(function (err, config) {
       assert.isFalse(!!err);
@@ -130,18 +142,31 @@ describe('Configuration loader', function () {
       assert.isTrue(!!config.client.apiKey);
       assert.isTrue(!!config.application);
 
-      assert.equal(config.client.apiKey.id, env.STORMPATH_CLIENT_APIKEY_ID);
-      assert.equal(config.client.apiKey.secret, env.STORMPATH_CLIENT_APIKEY_SECRET);
-      assert.equal(config.application.href, env.STORMPATH_APPLICATION_HREF);
-      assert.equal(config.application.name, env.STORMPATH_APPLICATION_NAME);
+      assert.equal(config.client.apiKey.id, process.env.STORMPATH_CLIENT_APIKEY_ID);
+      assert.equal(config.client.apiKey.secret, process.env.STORMPATH_CLIENT_APIKEY_SECRET);
+      assert.equal(config.application.href, process.env.STORMPATH_APPLICATION_HREF);
+      assert.equal(config.application.name, process.env.STORMPATH_APPLICATION_NAME);
 
       done();
     });
   });
 
   function testLoadStormpathConfig(ext, serializeFn) {
+    function removeStormpathEnv() {
+      var restore = common.snapshotEnv();
+
+      delete process.env['STORMPATH_CLIENT_APIKEY_ID'];
+      delete process.env['STORMPATH_CLIENT_APIKEY_SECRET'];
+      delete process.env['STORMPATH_APPLICATION_HREF'];
+      delete process.env['STORMPATH_APPLICATION_NAME'];
+
+      return restore;
+    }
+
     describe('should load stormpath.' + ext + ' config', function () {
       it('from stormpath home folder', function (done) {
+        afterIt.push(removeStormpathEnv());
+
         var homeConfig = {
           client: {
             apiKey: {
@@ -171,6 +196,8 @@ describe('Configuration loader', function () {
       });
 
       it('from application directory while overriding home folder', function (done) {
+        afterIt.push(removeStormpathEnv());
+
         var homeConfig = {
           client: {
             apiKey: {
@@ -219,6 +246,59 @@ describe('Configuration loader', function () {
 
   testLoadStormpathConfig('yml', yaml.dump);
   testLoadStormpathConfig('json', JSON.stringify);
+
+  it('should load config from file before environment', function (done) {
+    var restoreEnv = common.snapshotEnv();
+
+    process.env.STORMPATH_CLIENT_APIKEY_ID = uuid();
+    process.env.STORMPATH_CLIENT_APIKEY_SECRET = uuid();
+    process.env.STORMPATH_APPLICATION_HREF = 'http://api.stormpath.com/v1/applications/' + uuid();
+
+    afterIt.push(restoreEnv);
+
+    var homeConfig = {
+      client: {
+        apiKey: {
+          id: uuid(),
+          secret: uuid()
+        }
+      }
+    };
+
+    var appConfig = {
+      client: {
+        apiKey: {
+          secret: uuid()
+        }
+      },
+      application: {
+        href: 'http://api.stormpath.com/v1/applications/' + uuid()
+      }
+    };
+
+    setupFakeFs([{
+      path: expandHomeDir('~/.stormpath/stormpath.json'),
+      content: JSON.stringify(homeConfig)
+    }, {
+      path: process.cwd() + '/stormpath.json',
+      content: JSON.stringify(appConfig)
+    }]);
+
+    loader.load(function (err, config) {
+      assert.isNull(err);
+
+      assert.isTrue(!!config);
+      assert.isTrue(!!config.client);
+      assert.isTrue(!!config.application);
+      assert.isTrue(!!config.client.apiKey);
+
+      assert.equal(config.client.apiKey.id, process.env.STORMPATH_CLIENT_APIKEY_ID);
+      assert.equal(config.client.apiKey.secret, process.env.STORMPATH_CLIENT_APIKEY_SECRET);
+      assert.equal(config.application.href, process.env.STORMPATH_APPLICATION_HREF);
+
+      done();
+    });
+  });
 
   it('should extend config with custom config object', function (done) {
     setupFakeFs();
