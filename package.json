@@ -46,7 +46,7 @@
     "flat": "^1.6.0",
     "glob": "3",
     "jwt-simple": "~0.2.0",
-    "lodash": "~2.4.1",
+    "lodash": "~3.10.1",
     "memcached": "~0.2.8",
     "moment": "~2.8.3",
     "njwt": "^0.2.2",
