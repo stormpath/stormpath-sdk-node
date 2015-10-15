@@ -44,7 +44,7 @@
     "async": "~0.7.0",
     "deep-extend": "^0.4.0",
     "flat": "^1.6.0",
-    "glob": "3",
+    "glob": "5.0.15",
     "jwt-simple": "~0.2.0",
     "lodash": "~3.10.1",
     "memcached": "~0.2.8",
