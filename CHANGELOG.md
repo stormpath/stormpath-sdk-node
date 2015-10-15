@@ -1,5 +1,11 @@
 # stormpath-sdk-node Change Log
 
+### 0.13.2
+
+- Changed: Config files are now loaded before environment config.
+- Fixed: Error: API key ID and secret is required.
+- Fixed: Passing Redis client to config causes "Maximum call stack size exceeded" with deep-extend.
+
 ### 0.13.1
 
 Moving `lodash` to dependencies, it was incorrectly placed in the dev dependencies
