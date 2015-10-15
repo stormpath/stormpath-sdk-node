@@ -54,7 +54,7 @@
     "properties-parser": "~0.2.3",
     "redis": "~2.2.3",
     "request": "~2.40.0",
-    "stormpath-config": "0.0.7",
+    "stormpath-config": "0.0.8",
     "underscore": "~1.5.2",
     "underscore.string": "~3.2.2"
   },

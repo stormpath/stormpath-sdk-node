@@ -11,7 +11,7 @@ var assert = common.assert;
 var configLoader = require('../lib/configLoader');
 
 describe('Configuration loader', function () {
-  var loader, fakeFs, afterIt;
+  var loader, fakeFs, afterIt = [];
 
   // Sets up our fake file system with mock files.
   function setupFakeFs(files) {
@@ -38,8 +38,7 @@ describe('Configuration loader', function () {
     fakeFs.patch();
   }
 
-  before(function () {
-    afterIt = [];
+  beforeEach(function () {
     loader = configLoader({
       skipRemoteConfig: true
     });
@@ -79,6 +78,46 @@ describe('Configuration loader', function () {
 
       assert.isNotNull(err);
       assert.equal(err.message, 'API key ID and secret is required.');
+
+      done();
+    });
+  });
+
+  it('should load api key from apikey config in root', function (done) {
+    setupFakeFs();
+
+    var restoreEnv = common.snapshotEnv();
+
+    // Remove any STORMPATH environment keys.
+    for (var key in process.env) {
+      if (key.indexOf('STORMPATH_') === 0) {
+        delete process.env[key];
+      }
+    }
+
+    afterIt.push(restoreEnv);
+
+    var dummyApiKey = {
+      id: uuid(),
+      secret: uuid()
+    };
+
+    loader = configLoader({
+      skipRemoteConfig: true,
+      apiKey: dummyApiKey
+    });
+
+    loader.load(function (err, config) {
+      assert.isNull(err);
+
+      assert.isNotNull(config);
+      assert.isNotNull(config.apiKey);
+      assert.isNotNull(config.client.apiKey);
+      assert.deepEqual(config.client.apiKey, {
+        file: null,
+        id: dummyApiKey.id,
+        secret: dummyApiKey.secret
+      });
 
       done();
     });
