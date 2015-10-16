@@ -18,16 +18,22 @@ function assertUnauthenticatedResponse(done){
   };
 }
 
-function assertJwtAuthenticationResult(done){
+function assertJwtAuthenticationResult(localValidation, done){
   return function(err,response){
     assert.isNull(err);
+
     assert.instanceOf(response, JwtAuthenticationResult);
     assert.isDefined(response, 'jwt');
     assert.isDefined(response, 'expandedJwt');
+
+    if (localValidation) {
+      assert.isDefined(response, 'localValidation');
+      assert.equal(response.localValidation, true);
+    }
+
     done();
   };
 }
-
 
 describe('OAuthAuthenticator',function(){
 
@@ -173,12 +179,11 @@ describe('OAuthAuthenticator',function(){
     });
 
     it('should validate access tokens from Bearer header and return a JwtAuthenticationResult',function(done){
-
       authenticator.authenticate({
         headers: {
           authorization: 'Bearer ' + passwordGrantResponse.accessToken
         }
-      },assertJwtAuthenticationResult(done));
+      },assertJwtAuthenticationResult(true, done));
     });
 
     it('should return 401 if the access token is not signed by the application',function(done){
@@ -228,7 +233,7 @@ describe('OAuthAuthenticator',function(){
         headers: {
           authorization: 'Bearer ' + passwordGrantResponse.accessToken.toString()
         }
-      },assertJwtAuthenticationResult(done));
+      },assertJwtAuthenticationResult(false, done));
     });
   });
 
