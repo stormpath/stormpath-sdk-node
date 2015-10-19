@@ -11,9 +11,6 @@
 
 var stormpath = require('stormpath');
 
-var homeDir = process.env[(process.platform === 'win32' ? 'USERPROFILE' : 'HOME')];
-var apiKeyFilePath = homeDir + '/.stormpath/apiKey.properties';
-
 //helper function to prevent any data collisions in the tenant while running the quickstart:
 function unique(aString) {
   return aString + '-' + require('node-uuid').v4().toString();
@@ -25,16 +22,11 @@ var client, application, account, group = null;
 var accountEmail = unique('jlpicard') + '@mailinator.com';
 
 // ==================================================
-// Step 1 - Load the API Key file and create a Client
+// Step 1 - Create a client and wait for it to ready
 // ==================================================
-stormpath.loadApiKey(apiKeyFilePath, function (err, apiKey) {
-  if (err) throw err;
+var client = new stormpath.Client();
 
-  client = new stormpath.Client({apiKey: apiKey});
-
-  //client is available, kick off the quickstart steps:
-  createApplication();
-});
+client.on('ready', createApplication);
 
 // ==================================================
 // Step 2 - Register an application with Stormpath
