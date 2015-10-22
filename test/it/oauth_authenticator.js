@@ -29,6 +29,8 @@ function assertJwtAuthenticationResult(localValidation, done){
     if (localValidation) {
       assert.isDefined(response, 'localValidation');
       assert.equal(response.localValidation, true);
+    } else {
+      assert.isUndefined(response.localValidation);
     }
 
     done();
@@ -148,7 +150,6 @@ describe('OAuthAuthenticator',function(){
   });
 
   it('should reject expired tokens',function(done){
-
     new stormpath.OAuthPasswordGrantRequestAuthenticator(application2)
       .authenticate({
         username: newAccount.username,
@@ -171,41 +172,47 @@ describe('OAuthAuthenticator',function(){
   });
 
   describe('with local authentication',function(){
-
     var authenticator;
 
     before(function(){
-      authenticator = new stormpath.OAuthAuthenticator(application).withLocalValidation();
+      authenticator = new stormpath.OAuthAuthenticator(application);
+    });
+
+    it('should set localValidation on object', function () {
+      assert.isFalse(authenticator.localValidation);
+      authenticator.withLocalValidation();
+      assert.isTrue(authenticator.localValidation);
     });
 
     it('should validate access tokens from Bearer header and return a JwtAuthenticationResult',function(done){
+      authenticator.withLocalValidation();
       authenticator.authenticate({
         headers: {
           authorization: 'Bearer ' + passwordGrantResponse.accessToken
         }
-      },assertJwtAuthenticationResult(true, done));
+      }, assertJwtAuthenticationResult(true, done));
     });
 
     it('should return 401 if the access token is not signed by the application',function(done){
+      authenticator.withLocalValidation();
       authenticator.authenticate({
         headers: {
           authorization: 'Bearer ' + unsignedToken
         }
-      },assertUnauthenticatedResponse(done));
+      }, assertUnauthenticatedResponse(done));
     });
 
     it('should return 401 if the token is expired',function(done){
+      authenticator.withLocalValidation();
       authenticator.authenticate({
         headers: {
           authorization: 'Bearer ' + expiredToken
         }
-      },assertUnauthenticatedResponse(done));
+      }, assertUnauthenticatedResponse(done));
     });
-
   });
 
   describe('with remote authentication',function(){
-
     var authenticator;
 
     before(function(){
