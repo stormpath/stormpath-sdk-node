@@ -1,5 +1,14 @@
 # stormpath-sdk-node Change Log
 
+### 0.13.3
+
+- Fixed: old environment variables (STORMPATH_API_KEY_ID and
+  STORMPATH_API_KEY_SECRET) were not being read.  They are now being read again
+  for backwards compatibility
+
+- Fixed: OAuthAuthenticator was not passing local validation option to the
+  JwtAuthenticator
+
 ### 0.13.2
 
 - Changed: Config files are now loaded before environment config.
