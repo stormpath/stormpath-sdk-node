@@ -2,12 +2,11 @@
 
 ### 0.13.3
 
-- Fixed: old environment variables (STORMPATH_API_KEY_ID and
+- Fixed: Old environment variables (STORMPATH_API_KEY_ID and
   STORMPATH_API_KEY_SECRET) were not being read.  They are now being read again
-  for backwards compatibility
-
+  for backwards compatibility.
 - Fixed: OAuthAuthenticator was not passing local validation option to the
-  JwtAuthenticator
+  JwtAuthenticator.
 
 ### 0.13.2
 
