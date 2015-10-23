@@ -13,6 +13,20 @@ var configLoader = require('../lib/configLoader');
 describe('Configuration loader', function () {
   var loader, fakeFs, afterIt = [];
 
+  // Removes any Stormpath environment variables
+  // and provides a callback to restore them.
+  function removeStormpathEnv() {
+    var restore = common.snapshotEnv();
+
+    for (var key in process.env) {
+      if (key.indexOf('STORMPATH_') === 0) {
+        delete process.env[key];
+      }
+    }
+
+    return restore;
+  }
+
   // Sets up our fake file system with mock files.
   function setupFakeFs(files) {
     // If we already have a fake fs, then unpatch
@@ -164,14 +178,12 @@ describe('Configuration loader', function () {
   it('should load configuration from the environment', function (done) {
     setupFakeFs();
 
-    var restoreEnv = common.snapshotEnv();
+    afterIt.push(removeStormpathEnv());
 
     process.env.STORMPATH_CLIENT_APIKEY_ID = uuid();
     process.env.STORMPATH_CLIENT_APIKEY_SECRET = uuid();
     process.env.STORMPATH_APPLICATION_HREF = 'http://api.stormpath.com/v1/applications/' + uuid();
     process.env.STORMPATH_APPLICATION_NAME = uuid();
-
-    afterIt.push(restoreEnv);
 
     loader.load(function (err, config) {
       assert.isFalse(!!err);
@@ -190,18 +202,64 @@ describe('Configuration loader', function () {
     });
   });
 
+  it('should load legacy api key from the environment', function (done) {
+    setupFakeFs();
+
+    afterIt.push(removeStormpathEnv());
+
+    process.env.STORMPATH_API_KEY_ID = uuid();
+    process.env.STORMPATH_API_KEY_SECRET = uuid();
+
+    loader.load(function (err, config) {
+      assert.isFalse(!!err);
+
+      assert.isTrue(!!config);
+      assert.isTrue(!!config.apiKey);
+      assert.isTrue(!!config.client);
+      assert.isTrue(!!config.client.apiKey);
+
+      assert.equal(config.apiKey.id, process.env.STORMPATH_API_KEY_ID);
+      assert.equal(config.apiKey.secret, process.env.STORMPATH_API_KEY_SECRET);
+      assert.equal(config.client.apiKey.id, process.env.STORMPATH_API_KEY_ID);
+      assert.equal(config.client.apiKey.secret, process.env.STORMPATH_API_KEY_SECRET);
+
+      done();
+    });
+  });
+
+  it('should load legacy api key from user provided config', function (done) {
+    afterIt.push(removeStormpathEnv());
+
+    setupFakeFs();
+
+    var customConfig = {
+      skipRemoteConfig: true,
+      apiKey: {
+        id: uuid(),
+        secret: uuid()
+      }
+    };
+
+    var loader = configLoader(customConfig);
+
+    loader.load(function (err, config) {
+      assert.isNull(err);
+
+      assert.isTrue(!!config);
+      assert.isTrue(!!config.apiKey);
+      assert.isTrue(!!config.client);
+      assert.isTrue(!!config.client.apiKey);
+
+      assert.equal(config.apiKey.id, customConfig.apiKey.id);
+      assert.equal(config.apiKey.secret, customConfig.apiKey.secret);
+      assert.equal(config.client.apiKey.id, customConfig.apiKey.id);
+      assert.equal(config.client.apiKey.secret, customConfig.apiKey.secret);
+
+      done();
+    });
+  });
+
   function testLoadStormpathConfig(ext, serializeFn) {
-    function removeStormpathEnv() {
-      var restore = common.snapshotEnv();
-
-      delete process.env['STORMPATH_CLIENT_APIKEY_ID'];
-      delete process.env['STORMPATH_CLIENT_APIKEY_SECRET'];
-      delete process.env['STORMPATH_APPLICATION_HREF'];
-      delete process.env['STORMPATH_APPLICATION_NAME'];
-
-      return restore;
-    }
-
     describe('should load stormpath.' + ext + ' config', function () {
       it('from stormpath home folder', function (done) {
         afterIt.push(removeStormpathEnv());
@@ -287,13 +345,11 @@ describe('Configuration loader', function () {
   testLoadStormpathConfig('json', JSON.stringify);
 
   it('should load config from file before environment', function (done) {
-    var restoreEnv = common.snapshotEnv();
+    afterIt.push(removeStormpathEnv());
 
     process.env.STORMPATH_CLIENT_APIKEY_ID = uuid();
     process.env.STORMPATH_CLIENT_APIKEY_SECRET = uuid();
     process.env.STORMPATH_APPLICATION_HREF = 'http://api.stormpath.com/v1/applications/' + uuid();
-
-    afterIt.push(restoreEnv);
 
     var homeConfig = {
       client: {
@@ -340,6 +396,8 @@ describe('Configuration loader', function () {
   });
 
   it('should extend config with custom config object', function (done) {
+    afterIt.push(removeStormpathEnv());
+
     setupFakeFs();
 
     var customConfig = {

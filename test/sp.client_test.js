@@ -145,8 +145,8 @@ describe('Client', function () {
 
       client.on('ready', function () {
         resetEnvVars();
-        assert.equal(client.config.apiKey.id,'1');
-        assert.equal(client.config.apiKey.secret,'2');
+        assert.equal(client.config.client.apiKey.id,'1');
+        assert.equal(client.config.client.apiKey.secret,'2');
         done();
       });
     });
