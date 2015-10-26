@@ -1,4 +1,10 @@
 ---
+# 'apiKey' might feel redundant since 'client.apiKey' is what is being used.
+# But for backward-compability we need to have this here.
+apiKey:
+  file: null
+  id: null
+  secret: null
 client:
   apiKey:
     file: null
