@@ -60,7 +60,7 @@
   },
   "devDependencies": {
     "benchmark": "^1.0.0",
-    "chai": "~1.8.1",
+    "chai": "~3.3.0",
     "coveralls": "^2.11.4",
     "expand-home-dir": "0.0.2",
     "fake-fs": "^0.5.0",
