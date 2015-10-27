@@ -79,7 +79,7 @@
     "mocha-sinon": "~1.1.0",
     "nock": "~0.27.2",
     "sinon": "~1.17.2",
-    "sinon-chai": "~2.4.0",
+    "sinon-chai": "~2.8.0",
     "time-grunt": "~1.2.2",
     "tmp": "0.0.26",
     "uuid": "^2.0.1"
