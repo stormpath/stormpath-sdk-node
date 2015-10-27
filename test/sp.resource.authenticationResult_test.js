@@ -8,7 +8,7 @@ var DataStore = require('../lib/ds/DataStore');
 describe('Resources: ', function () {
   "use strict";
   describe('Authentication Result resource', function () {
-    var dataStore = new DataStore({apiKey: {id: 1, secret: 2}});
+    var dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
     describe('get accounts', function () {
       describe('if accounts not set', function () {
         //var authcResult = new AuthenticationResult();

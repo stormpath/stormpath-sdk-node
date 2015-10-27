@@ -59,7 +59,7 @@ describe('Client Credential Authentication',function(){
 
     it('should return an access token',function(done){
       assert.isString(accessToken);
-      var secret = client._dataStore.requestExecutor.options.apiKey.secret;
+      var secret = client._dataStore.requestExecutor.options.client.apiKey.secret;
       nJwt.verify(accessToken,secret,function(err,jwt){
         if(err){ throw err; }
         // The subject should be the account

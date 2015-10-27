@@ -16,14 +16,14 @@ describe('ds:', function () {
 
     describe('when constructed', function () {
       describe('and request executor not provided in config', function () {
-        var ds = new DataStore({apiKey: {id: 1, secret: 2}});
+        var ds = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
         it('should create instance of default RequestExecutor', function () {
           ds.requestExecutor.should.be.an.instanceof(RequestExecutor);
         });
       });
 
       describe('and request executor was provided in config', function () {
-        var reqExec = new RequestExecutor({apiKey: {id: 1, secret: 2}});
+        var reqExec = new RequestExecutor({client: {apiKey: {id: 1, secret: 2}}});
         var ds = new DataStore({requestExecutor: reqExec});
         it('should reuse provided request executor instance', function () {
           ds.requestExecutor.should.be.equal(reqExec);
@@ -44,8 +44,12 @@ describe('ds:', function () {
 
     describe('getResource()', function () {
       var ds = new DataStore({
-        cacheOptions: { store: 'memory' },
-        apiKey: {id: 1, secret: 2}
+        cacheOptions: {
+          store: 'memory'
+        },
+        client: {
+          apiKey: {id: 1, secret: 2}
+        }
       });
 
       describe('without required params', function () {
@@ -167,7 +171,9 @@ describe('ds:', function () {
               tti: 60
             }
           },
-          apiKey: {id: 1, secret: 2}
+          client: {
+            apiKey: {id: 1, secret: 2}
+          }
         });
 
         var href = '/tenants/3' + random();
@@ -216,7 +222,9 @@ describe('ds:', function () {
               tti: 60
             }
           },
-          apiKey: {id: 1, secret: 2}
+          client: {
+            apiKey: {id: 1, secret: 2}
+          }
         });
 
         var href = '/tenants/3' + random();
@@ -251,7 +259,9 @@ describe('ds:', function () {
             tti: 60
           }
         },
-        apiKey: {id: 1, secret: 2}
+        client: {
+          apiKey: {id: 1, secret: 2}
+        }
       });
 
       var href = '/tenants/3' + random();
@@ -317,7 +327,9 @@ describe('ds:', function () {
           ttl: 60,
           tti: 60
         },
-        apiKey: {id: 1, secret: 2}
+        client: {
+          apiKey: {id: 1, secret: 2}
+        }
       });
 
       var href = '/tenants/2' + random();
@@ -369,7 +381,9 @@ describe('ds:', function () {
           ttl: 60,
           tti: 60
         },
-        apiKey: {id: 1, secret: 2}
+        client: {
+          apiKey: {id: 1, secret: 2}
+        }
       });
 
       var href = '/tenants/2' + random();

@@ -69,7 +69,7 @@ describe('Resources: ', function () {
         });
 
         describe('if items already converted', function () {
-          var ds = new DataStore({apiKey: apiKey});
+          var ds = new DataStore({client: {apiKey: apiKey}});
           var data = {items: [
             new Tenant({href: ''}, ds),
             new Tenant({href: ''}, ds)
@@ -168,7 +168,7 @@ describe('Resources: ', function () {
 
       describe('with items list', function () {
         var cr, sandbox, iteratorSpy, cbSpy, getResourceStub;
-        var ds = new DataStore({apiKey: apiKey});
+        var ds = new DataStore({client: {apiKey: apiKey}});
         var data = {
           offset: 0,
           items:[
@@ -210,7 +210,7 @@ describe('Resources: ', function () {
       describe('when all items in current page are processed', function () {
         var sandbox;
         var cr, iteratorSpy, getResourceStub;
-        var ds = new DataStore({apiKey: apiKey});
+        var ds = new DataStore({client: {apiKey: apiKey}});
         var query = {q: 'boom!'};
         var data = {
           href: 'test_href',
@@ -269,7 +269,7 @@ describe('Resources: ', function () {
     });
 
     describe('async methods with pagination', function(){
-      var ds = new DataStore({apiKey: {id:1, secret: 2}});
+      var ds = new DataStore({client: {apiKey: {id:1, secret: 2}}});
 
       function test(method){
         return function(){

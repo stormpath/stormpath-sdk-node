@@ -22,7 +22,7 @@ describe('Resources: ', function () {
         before(function () {
           sandbox = sinon.sandbox.create();
           // arrange
-          dataStore = new DataStore({apiKey: {id: 1, secret: 2}});
+          dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
           fieldName = 'field_name_to_remove';
           dcrJSON = {
             href: 'some_href',
@@ -66,7 +66,7 @@ describe('Resources: ', function () {
 
     describe('when fetched via resource.getCustomData',function(){
       var resource;
-      var dataStore = new DataStore({apiKey: {id: 1, secret: 2}});
+      var dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
       var sandbox = sinon.sandbox.create();
       var cacheSpy = sinon.spy(dataStore.cacheHandler.cacheManager.caches.customData,'put');
       var parentHref = 'http://api.stormpath.com/v1/accounts/' + common.uuid();
@@ -100,7 +100,7 @@ describe('Resources: ', function () {
       var resource, dataStore, saveResourceStub, sandbox;
 
       before(function(){
-        dataStore = new DataStore({apiKey: {id: 1, secret: 2}});
+        dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
         resource = instantiate(Account, {
           href: common.uuid(),
           customData:{

@@ -25,12 +25,12 @@ describe('ds:', function () {
         });
       });
       describe('create with required options', function () {
-        var reqExec = new RequestExecutor({apiKey: apiKey});
+        var reqExec = new RequestExecutor({client: {apiKey: apiKey}});
         it('should instantiate request authenticator', function () {
           reqExec.requestAuthenticator.should.be.ok;
         });
         it('should store options', function () {
-          reqExec.options.apiKey.should.be.equal(apiKey);
+          reqExec.options.client.apiKey.should.be.equal(apiKey);
         });
         it('should set headers user agent as stormpath-sdk', function () {
           reqExec.options.headers['User-Agent'].should
@@ -40,7 +40,7 @@ describe('ds:', function () {
 
     });
     describe('call to execute', function () {
-      var reqExec = new RequestExecutor({apiKey: apiKey});
+      var reqExec = new RequestExecutor({client: {apiKey: apiKey} });
 
       function exec(req, cb) {
         return function () {

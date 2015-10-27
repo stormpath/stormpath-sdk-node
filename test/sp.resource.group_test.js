@@ -12,7 +12,7 @@ var GroupMembership = require('../lib/resource/GroupMembership');
 describe('Resources: ', function () {
   "use strict";
   describe('Group resource', function () {
-    var dataStore = new DataStore({apiKey: {id: 1, secret: 2}});
+    var dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
 
     describe('add account', function () {
       describe('if group href not set', function () {

@@ -11,7 +11,7 @@ var DataStore = require('../lib/ds/DataStore');
 
 describe('Resources: ', function () {
   describe('Tenant resource class', function () {
-    var dataStore = new DataStore({apiKey: {id: 1, secret: 2}});
+    var dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
     describe('get applications', function () {
       describe('if application not set', function () {
         //var tenant = new Tenant();
