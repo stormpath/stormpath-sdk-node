@@ -13,7 +13,7 @@ var BASE_URL = u.BASE_URL;
 describe('Resources: ', function () {
   "use strict";
   describe('Account Store Mapping resource', function () {
-    var dataStore = new DataStore({apiKey: {id: 1, secret: 2}});
+    var dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
 
     describe('get application', function () {
       var asm, appData, app, app2, accountStoreMapping;

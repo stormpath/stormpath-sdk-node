@@ -57,7 +57,7 @@ describe('OAuthAuthenticator',function(){
 
         expiredToken = nJwt.create(
             {hello:'world'},
-            application.dataStore.requestExecutor.options.apiKey.secret
+            application.dataStore.requestExecutor.options.client.apiKey.secret
           ).setExpiration(new Date().getTime())
           .compact();
 

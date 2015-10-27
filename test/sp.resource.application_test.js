@@ -27,10 +27,12 @@ describe('Resources: ', function () {
   describe('Application resource', function () {
 
     var dataStore = new DataStore({
-      apiKey: {
-        id: 1,
-        // this secret will decrypt the api keys correctly
-        secret: '6b2c3912-4779-49c1-81e7-23c204f43d2d'
+      client: {
+        apiKey: {
+          id: 1,
+          // this secret will decrypt the api keys correctly
+          secret: '6b2c3912-4779-49c1-81e7-23c204f43d2d'
+        }
       }
     });
     describe('authenticate account', function () {
@@ -38,7 +40,7 @@ describe('Resources: ', function () {
 
       describe('createIdSiteUrl', function () {
         var clientApiKeySecret = uuid();
-        var dataStore = new DataStore({apiKey: {id: '1', secret: clientApiKeySecret}});
+        var dataStore = new DataStore({client: {apiKey: {id: '1', secret: clientApiKeySecret}}});
         var app = {
           href:'http://api.stormpath.com/v1/applications/' + uuid()
         };
@@ -74,7 +76,7 @@ describe('Resources: ', function () {
 
       describe('createIdSiteUrl with logout option', function () {
         var clientApiKeySecret = uuid();
-        var dataStore = new DataStore({apiKey: {id: '1', secret: clientApiKeySecret}});
+        var dataStore = new DataStore({client:{apiKey: {id: '1', secret: clientApiKeySecret}}});
         var app = {
           href:'http://api.stormpath.com/v1/applications/' + uuid()
         };
@@ -114,7 +116,12 @@ describe('Resources: ', function () {
           self.clientApiKeySecret = uuid();
           self.clientApiKeyId = uuid();
           var dataStore = new DataStore({
-            apiKey: {id: self.clientApiKeyId, secret: self.clientApiKeySecret}
+            client: {
+              apiKey: {
+                id: self.clientApiKeyId,
+                secret: self.clientApiKeySecret
+              }
+            }
           });
           var app = {href:'http://api.stormpath.com/v1/applications/'+uuid()};
           self.application = new Application(app, dataStore);
@@ -1113,7 +1120,7 @@ describe('Resources: ', function () {
     describe('resend verification email', function () {
       var app, createResourceStub;
       var options = {login:uuid()};
-      var dataStore = new DataStore({apiKey: {id: 1, secret: 2}});
+      var dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
       before(function (done) {
 
         app = new Application(

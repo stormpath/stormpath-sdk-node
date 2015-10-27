@@ -19,10 +19,12 @@ describe('Resources: ', function () {
   "use strict";
   describe('Account resource class', function () {
     var dataStore = new DataStore({
-      apiKey: {
-        id: 1,
-        // this secret will decrypt the api keys correctly
-        secret: '6b2c3912-4779-49c1-81e7-23c204f43d2d'
+      client: {
+        apiKey: {
+          id: 1,
+          // this secret will decrypt the api keys correctly
+          secret: '6b2c3912-4779-49c1-81e7-23c204f43d2d'
+        }
       }
     });
 

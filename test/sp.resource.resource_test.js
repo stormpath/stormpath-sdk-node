@@ -13,7 +13,7 @@ describe('Resources: ', function () {
         var resource, ds;
         var obj = {data: 'boom!', data2: 'boom2!'};
         before(function () {
-          ds = new DataStore({apiKey:apiKey});
+          ds = new DataStore({client: {apiKey:apiKey}});
           resource = new Resource(obj, ds);
         });
 
@@ -49,7 +49,7 @@ describe('Resources: ', function () {
         var resource, ds;
         var hack = 'boom!';
         before(function () {
-          ds = new DataStore({apiKey:apiKey});
+          ds = new DataStore({client: {apiKey:apiKey}});
           ds.hack = hack;
 
           resource = new Resource(ds);

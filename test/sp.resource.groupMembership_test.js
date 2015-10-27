@@ -8,7 +8,7 @@ var DataStore = require('../lib/ds/DataStore');
 
 describe('Resources: ', function () {
   describe('Group Membership resource', function () {
-    var dataStore = new DataStore({apiKey: {id: 1, secret: 2}});
+    var dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
 
     describe('get account', function () {
       describe('if group membership href not set', function () {

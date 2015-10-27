@@ -10,7 +10,7 @@ var DataStore = require('../lib/ds/DataStore');
 describe('Resources: ', function () {
   describe('InstanceResource class', function(){
 
-    var ds = new DataStore({apiKey:{id:1,secret:2}});
+    var ds = new DataStore({client: {apiKey:{id:1,secret:2}}});
     var app = {href: '/href'};
     var instanceResource = new InstanceResource({
       applications: app,

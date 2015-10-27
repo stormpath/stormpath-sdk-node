@@ -1,5 +1,9 @@
 # stormpath-sdk-node Change Log
 
+### 0.13.4
+
+- Refactor: DataStore and RequestExecutor now uses `options.client.apiKey` instead of `options.apiKey`.
+
 ### 0.13.3
 
 - Fixed: Old environment variables (STORMPATH_API_KEY_ID and

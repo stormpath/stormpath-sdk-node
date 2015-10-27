@@ -305,7 +305,7 @@ describe('Application.authenticateApiRequest',function(){
         before(function(done){
 
           var decodedJwt = nJwt.verify(accessToken,
-            client._dataStore.requestExecutor.options.apiKey.secret,'HS256');
+            client._dataStore.requestExecutor.options.client.apiKey.secret,'HS256');
           decodedJwt.body.scope += ' things-i-cant-have';
           var tamperedToken = nJwt.create(decodedJwt.body,'not the same key','HS256').compact();
           var requestObject = {
@@ -569,7 +569,7 @@ describe('Application.authenticateApiRequest',function(){
       },function(err,value){
         result = [err,value];
         decodedAccessToken = nJwt.verify(result[1].tokenResponse.access_token,
-          client._dataStore.requestExecutor.options.apiKey.secret,'HS256');
+          client._dataStore.requestExecutor.options.client.apiKey.secret,'HS256');
         done();
       });
     });
@@ -620,7 +620,7 @@ describe('Application.authenticateApiRequest',function(){
         result = [err,value];
         tokenResponse = value.tokenResponse;
         decodedAccessToken = nJwt.verify(result[1].tokenResponse.access_token,
-          client._dataStore.requestExecutor.options.apiKey.secret,'HS256');
+          client._dataStore.requestExecutor.options.client.apiKey.secret,'HS256');
         done();
       });
     });
