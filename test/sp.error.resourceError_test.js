@@ -2,6 +2,8 @@ var ResourceError = require('../lib/error/ResourceError');
 
 describe('Error:', function () {
   describe('Resource Error', function () {
+    var resourceUri = 'http://localhost/test';
+
     var response = {
       status: 400,
       code: 100500,
@@ -9,10 +11,15 @@ describe('Error:', function () {
       developerMessage: 'hi dev',
       moreInfo: 'boom!'
     };
-    var re = new ResourceError(response);
+
+    var re = new ResourceError(resourceUri, response);
 
     it('should inherit from error', function () {
       re.should.be.an.instanceof(Error);
+    });
+
+    it('should dispose resource uri', function () {
+      re.uri.should.be.equal(resourceUri);
     });
 
     it('should dispose response fields', function () {
