@@ -1,5 +1,11 @@
 # stormpath-sdk-node Change Log
 
+### 0.13.5
+
+**Not Yet Released**
+
+-Fixed OAuth error responses to include the error code `invalid_client`, where appropriate
+
 ### 0.13.4
 
 - Refactor: DataStore and RequestExecutor now uses `options.client.apiKey` instead of `options.apiKey`.
