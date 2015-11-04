@@ -16,19 +16,16 @@ describe('Client', function() {
   describe('creation', function() {
     it('should not throw', function(done) {
       assert.doesNotThrow(function () {
-        helpers.loadApiKey(function(apiKey) {
-          var client = new stormpath.Client({
-            apiKey: apiKey,
-            skipRemoteConfig: true
-          });
+        var client = new stormpath.Client({
+          skipRemoteConfig: true
+        });
 
-          client.on('error', function (err) {
-            throw err;
-          });
+        client.on('error', function (err) {
+          throw err;
+        });
 
-          client.on('ready', function () {
-            done();
-          });
+        client.on('ready', function () {
+          done();
         });
       });
     });

@@ -7,44 +7,26 @@ var common = require('../common');
 var uuid = common.uuid;
 var stormpath = common.Stormpath;
 
+var loadedClient = null;
 var hasCleanupRun = false;
 var testRunId = uuid.v4().split('-')[0];
 
-function loadApiKey(cb) {
-  var id = process.env.STORMPATH_CLIENT_APIKEY_ID;
-  var secret = process.env.STORMPATH_CLIENT_APIKEY_SECRET;
-  var homeDir = process.env[(process.platform === 'win32' ? 'USERPROFILE' : 'HOME')] || '';
-  var apiKeyFilePath = homeDir + '/.stormpath/apiKey.properties';
-
-  if (id && secret) {
-    return process.nextTick(function() {
-      cb(new stormpath.ApiKey(id, secret));
-    });
+function getClient(cb) {
+  if (loadedClient) {
+    return cb(loadedClient);
   }
 
-  stormpath.loadApiKey(apiKeyFilePath, function(err, apiKey) {
-    if (err) {
-      throw err;
-    }
-
-    cb(apiKey);
+  var client = new stormpath.Client({
+    skipRemoteConfig: true
   });
-}
 
-function getClient(cb) {
-  loadApiKey(function(apiKey) {
-    var client = new stormpath.Client({
-      apiKey: apiKey,
-      skipRemoteConfig: true
-    });
+  client.on('error', function (err) {
+    throw err;
+  });
 
-    client.on('error', function (err) {
-      throw err;
-    });
-
-    client.on('ready', function () {
-      cb(client);
-    });
+  client.on('ready', function () {
+    loadedClient = client;
+    cb(client);
   });
 }
 
@@ -168,7 +150,6 @@ function getDefaultAccountStore(application,done){
 module.exports = {
   getDefaultAccountStore: getDefaultAccountStore,
   createApplication: createApplication,
-  loadApiKey: loadApiKey,
   getClient: getClient,
   uniqId: uniqId,
   fakeAccount: fakeAccount,
