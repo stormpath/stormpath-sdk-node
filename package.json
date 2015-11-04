@@ -52,7 +52,7 @@
     "njwt": "^0.2.2",
     "node-uuid": "~1.4.1",
     "properties-parser": "~0.2.3",
-    "redis": "~2.2.3",
+    "redis": "~2.3.0",
     "request": "~2.40.0",
     "stormpath-config": "0.0.12",
     "underscore": "~1.5.2",
