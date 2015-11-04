@@ -4,7 +4,7 @@
 
 **Not Yet Released**
 
--Fixed OAuth error responses to include the error code `invalid_client`, where appropriate
+- Fixed OAuth error responses to include the error code `invalid_client`, where appropriate.
 
 ### 0.13.4
 
