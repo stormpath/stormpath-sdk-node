@@ -4,7 +4,7 @@ var helpers = require('./helpers');
 var assert = common.assert;
 
 var AuthenticationResult = require('../../lib/resource/AuthenticationResult');
-var AuthenticationResult = require('../../lib/resource/AuthenticationResult');
+
 describe('Application.authenticateApiRequest',function(){
 
   var app, account, apiKey, client;
