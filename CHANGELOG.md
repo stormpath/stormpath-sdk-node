@@ -3,7 +3,7 @@
 ### 0.13.5
 
 - Fixed OAuth error responses to include the error code `invalid_client`, where appropriate.
-- Updated dependencies (see latest package.json)
+- Updated dependencies (see latest package.json).
 - Test improvements (cleaning up IT resources, caching client for speed).
 
 ### 0.13.4
