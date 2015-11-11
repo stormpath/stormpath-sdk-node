@@ -24,6 +24,7 @@ function assertJwtAuthenticationResult(done){
     assert.instanceOf(response, JwtAuthenticationResult);
     assert.isDefined(response, 'jwt');
     assert.isDefined(response, 'expandedJwt');
+    assert.isDefined(response.account);
     done();
   };
 }
