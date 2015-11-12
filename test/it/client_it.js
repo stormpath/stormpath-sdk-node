@@ -44,11 +44,35 @@ describe('Client', function() {
     });
 
     it('should get an access token resource',function(done){
-      accountCase.client.getAccessToken(accountCase.passwordGrantResult.stormpathAccessTokenHref,function(err,resource){
+      accountCase.client.getAccessToken('/accessTokens/' + accountCase.passwordGrantResult.accessToken.body.jti, function(err,resource){
         if(err){
           done(err);
         }else{
           assert(resource instanceof require('../../lib/resource/AccessToken'));
+          done();
+        }
+      });
+    });
+  });
+
+  describe('getRefreshToken',function(){
+    var AccountRefreshTokenFixture = require('../fixtures/account-token');
+    var accountCase = new AccountRefreshTokenFixture();
+
+    before(function(done) {
+      accountCase.before(done);
+    });
+
+    after(function(done) {
+      accountCase.after(done);
+    });
+
+    it('should get a refresh token resource',function(done){
+      accountCase.client.getRefreshToken('/refreshTokens/' + accountCase.passwordGrantResult.refreshToken.body.jti, function(err,resource){
+        if(err){
+          done(err);
+        }else{
+          assert(resource instanceof require('../../lib/resource/RefreshToken'));
           done();
         }
       });
