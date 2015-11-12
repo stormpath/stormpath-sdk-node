@@ -67,7 +67,7 @@ describe('Client', function() {
       accountCase.after(done);
     });
 
-    it('should get an refresh token resource',function(done){
+    it('should get a refresh token resource',function(done){
       accountCase.client.getRefreshToken('/refreshTokens/' + accountCase.passwordGrantResult.refreshToken.body.jti, function(err,resource){
         if(err){
           done(err);
