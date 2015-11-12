@@ -133,6 +133,42 @@ describe('OAuthAuthenticator',function(){
     });
   });
 
+  it('should error when trying to authenticate with invalid id site token', function(done){
+    var authenticator = stormpath.OAuthAuthenticator(application);
+    authenticator.authenticate({
+      body: {
+        grant_type: 'id_site_token',
+        id_site_token: 'abc'
+      }
+    },function(err,result){
+      assert.isUndefined(result);
+
+      assert.isNotNull(err);
+      assert.equal(err.status, 400);
+      assert.equal(err.code, 10017); // 10017 = Token is invalid.
+
+      done();
+    });
+  });
+
+  it('should error when trying to authenticate with invalid refresh token', function(done){
+    var authenticator = stormpath.OAuthAuthenticator(application);
+    authenticator.authenticate({
+      body: {
+        grant_type: 'refresh_token',
+        refresh_token: 'abc'
+      }
+    },function(err,result){
+      assert.isUndefined(result);
+
+      assert.isNotNull(err);
+      assert.equal(err.status, 400);
+      assert.equal(err.code, 10017); // 10017 = Token is invalid.
+
+      done();
+    });
+  });
+
   it('should return 401 if no auth information is given',function(done){
     var authenticator = stormpath.OAuthAuthenticator(application);
     authenticator.authenticate({},assertUnauthenticatedResponse(done));
