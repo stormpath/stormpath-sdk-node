@@ -1,7 +1,7 @@
 ## Account
 
 An Account is a unique identity within a [Directory](directory), with a
-unique username and/or email address.  An Account can log in to an
+unique username and email address.  An Account can log in to an
 [Application](application) using either the email address or username
 associated with it.  Accounts can represent your end users (*people*), but
 they can also be used to represent services, daemons, processes, or any
