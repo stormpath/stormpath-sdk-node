@@ -50,7 +50,7 @@
     "memcached": "~0.2.8",
     "moment": "~2.10.6",
     "njwt": "^0.2.2",
-    "node-uuid": "~1.4.1",
+    "node-uuid": "~1.4.7",
     "properties-parser": "~0.3.1",
     "redis": "~2.3.0",
     "request": "~2.66.0",
