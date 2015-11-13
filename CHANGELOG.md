@@ -1,5 +1,24 @@
 # stormpath-sdk-node Change Log
 
+### 0.14.1
+
+**Not Yet Released**
+
+### 0.14.0
+
+**Released November 12, 2015**
+
+- Implemented the ID Site Token Authenticator, allowing you to exchange and ID
+  Site Result JWT for a Stormpath Access Token (documentation coming soon).
+
+- Implemented `client.getRefreshToken()` for fetching refresh token resources.
+
+- Fixed: using local validation with the JWT authenticator would throw an
+  exception because the account property was not defined on the authentication
+  result object.
+
+- Updated `glob` dependency to 6.0.1
+
 ### 0.13.5
 
 - Fixed OAuth error responses to include the error code `invalid_client`, where appropriate.
