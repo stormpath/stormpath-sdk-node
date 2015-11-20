@@ -15,7 +15,6 @@ var Application = require('../lib/resource/Application');
 var DataStore = require('../lib/ds/DataStore');
 
 function makeTestClient (options) {
-  options.skipRemoteConfig = true;
   return new Client(options);
 }
 

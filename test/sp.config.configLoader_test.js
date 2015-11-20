@@ -53,9 +53,7 @@ describe('Configuration loader', function () {
   }
 
   beforeEach(function () {
-    loader = configLoader({
-      skipRemoteConfig: true
-    });
+    loader = configLoader();
   });
 
   after(function () {
@@ -117,7 +115,6 @@ describe('Configuration loader', function () {
     };
 
     loader = configLoader({
-      skipRemoteConfig: true,
       apiKey: dummyApiKey
     });
 
@@ -233,7 +230,6 @@ describe('Configuration loader', function () {
     setupFakeFs();
 
     var customConfig = {
-      skipRemoteConfig: true,
       apiKey: {
         id: uuid(),
         secret: uuid()
@@ -401,7 +397,6 @@ describe('Configuration loader', function () {
     setupFakeFs();
 
     var customConfig = {
-      skipRemoteConfig: true,
       client: {
         apiKey: {
           id: uuid(),

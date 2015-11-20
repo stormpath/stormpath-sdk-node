@@ -16,9 +16,7 @@ function getClient(cb) {
     return cb(loadedClient);
   }
 
-  var client = new stormpath.Client({
-    skipRemoteConfig: true
-  });
+  var client = new stormpath.Client();
 
   client.on('error', function (err) {
     throw err;
