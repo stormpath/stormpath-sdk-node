@@ -16,9 +16,7 @@ describe('Client', function() {
   describe('creation', function() {
     it('should not throw', function(done) {
       assert.doesNotThrow(function () {
-        var client = new stormpath.Client({
-          skipRemoteConfig: true
-        });
+        var client = new stormpath.Client();
 
         client.on('error', function (err) {
           throw err;

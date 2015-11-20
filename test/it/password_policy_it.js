@@ -9,7 +9,7 @@ describe('PasswordPolicy', function() {
     var client, directory;
 
     before(function (done) {
-      client = new Client({ skipRemoteConfig: true });
+      client = new Client();
 
       client.on('error', function (err) {
         done(err);
