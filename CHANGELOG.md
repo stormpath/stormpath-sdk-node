@@ -1,8 +1,22 @@
 # stormpath-sdk-node Change Log
 
-### 0.14.1
+### 0.15.1
 
 **Not Yet Released**
+
+### 0.15.0
+
+**Released November 20, 2015**
+
+* Updating this module's configuration strategy to not enrich the client with
+  application data, that is now moved into the `express-stormpath` module.
+
+* Updating these non-development dependencies:
+
+  * stormpath-config@0.13.0
+  * request@2.67.0
+  * properties-parser@0.3.1
+  * node-uuid@1.4.7
 
 ### 0.14.0
 

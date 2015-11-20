@@ -1,5 +1,12 @@
 # Upgrade Guide
 
+### Version 0.14.0 -> Version 0.15.0
+
+If you were relying on this module to enrich your client configuration with
+a Stormpath application and default account store, you will need to move
+that strategy, `EnrichClientFromRemoteConfigStrategy()`, into your application's
+client configuration strategy list (it is no longer done by this library).
+
 ### Version 0.13.5 -> Version 0.14.0
 
 No changes needed
