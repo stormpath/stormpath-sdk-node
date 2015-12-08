@@ -2,7 +2,20 @@
 
 ### 0.15.1
 
-**Not Yet Released**
+**Released December 8, 2015**
+
+* Updating production dependencies:
+
+  * jwt-simple-0.4.0
+  * memcached@2.2.1
+  * redis@2.4.1
+  * stormpath-config@0.15.0
+
+The upgrade to `stormpath-config` includes a fix for a bug with
+`client.cacheOptions.client`, where the client prototype was being mutated
+(resulting in an undefined method exception if you attempted to provide your
+own Redis client).
+
 
 ### 0.15.0
 
