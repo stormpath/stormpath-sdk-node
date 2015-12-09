@@ -69,7 +69,7 @@
     "grunt-mocha-test": "~0.12.7",
     "istanbul": "~0.4.0",
     "js-yaml": "^3.4.2",
-    "jsdoc": "^3.3.3",
+    "jsdoc": "^3.4.0",
     "jshint-stylish": "~2.1.0",
     "load-grunt-tasks": "~3.4.1",
     "lodash": "^4.0.1",
