@@ -37,7 +37,7 @@
   },
   "scripts": {
     "coverage": "node ./node_modules/istanbul/lib/cli cover ./node_modules/mocha/bin/_mocha",
-    "docs": "./node_modules/.bin/jsdoc -d ./apidocs/ -P ./package.json -r lib/",
+    "docs": "./node_modules/.bin/jsdoc -c jsdoc.json -d ./apidocs/ -P ./package.json -r lib/",
     "test": "grunt"
   },
   "dependencies": {
