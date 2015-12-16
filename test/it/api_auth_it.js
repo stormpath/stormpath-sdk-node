@@ -652,7 +652,7 @@ describe('Application.authenticateApiRequest',function(){
 
           decodedAccessToken = nJwt.verify(
             result[1].tokenResponse.access_token,
-            client._dataStore.requestExecutor.options.apiKey.secret,
+            client._dataStore.requestExecutor.options.client.apiKey.secret,
             'HS256'
           );
 
