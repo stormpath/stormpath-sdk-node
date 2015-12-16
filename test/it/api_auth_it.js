@@ -615,31 +615,6 @@ describe('Application.authenticateApiRequest',function(){
         });
       });
 
-      it('should return an error if called multiple times', function(done) {
-        var mochaErrorListener = process.listeners('uncaughtException').pop();
-
-        process.removeListener('uncaughtException', mochaErrorListener);
-
-        process.nextTick(function () {
-          process.listeners('uncaughtException').push(mochaErrorListener);
-        });
-
-        process.once('uncaughtException', function (err) {
-          assert.equal(err.message, 'Callback has already been called once. Assert that your scopeFactory doesn\'t return a result while also calling the callback.');
-          done();
-        });
-
-        app.authenticateApiRequest({
-          request: requestObject,
-          scopeFactory: function(account, requestedScope, callback){
-            callback(null, '123');
-            return ['123'];
-          }
-        },function(err){
-          assert.isNull(err);
-        });
-      });
-
       it('should call the scope factory with the requested scope', function(done) {
         app.authenticateApiRequest({
           request: requestObject,
