@@ -1,5 +1,13 @@
 # stormpath-sdk-node Change Log
 
+### 0.15.2
+
+**Released December 18, 2015**
+
+* Upgrade `stormpath-config` to `0.0.16`
+
+* Scope factory, for client_credentials workflow, can now be asynchronous.
+
 ### 0.15.1
 
 **Released December 8, 2015**
