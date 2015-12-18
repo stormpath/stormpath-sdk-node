@@ -1,5 +1,13 @@
 # Upgrade Guide
 
+### Version 0.15.1 -> Version 0.15.2
+
+No changes needed
+
+### Version 0.15.0 -> Version 0.15.1
+
+No changes needed
+
 ### Version 0.14.0 -> Version 0.15.0
 
 If you were relying on this module to enrich your client configuration with
