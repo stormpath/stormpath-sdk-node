@@ -249,6 +249,7 @@ describe('Application.authenticateApiRequest',function(){
   describe('with a previously issued access token',function(){
     var customScope = 'custom-scope';
     var accessToken;
+
     before(function(done){
       var requestObject = {
         headers: {
@@ -270,6 +271,7 @@ describe('Application.authenticateApiRequest',function(){
         done();
       });
     });
+
     describe('using Bearer authorization',function(){
       describe('and access_token is passed as Authorization: Bearer <token>',function(){
         var result;
@@ -300,6 +302,7 @@ describe('Application.authenticateApiRequest',function(){
           assert.equal(result[1].grantedScopes[0],customScope);
         });
       });
+
       describe('and access_token is tampered with',function(){
         var result;
         before(function(done){
@@ -545,21 +548,22 @@ describe('Application.authenticateApiRequest',function(){
   });
 
   describe('with a scope factory',function(){
-
     var result;
+    var requestObject;
     var requestedScope = 'scope-a scope-b';
     var givenScope = ['given-scope-a given-scope-b'];
     var scopeFactoryArgs;
     var decodedAccessToken;
 
     before(function(done){
-      var requestObject = {
+      requestObject = {
         headers: {
           'authorization': 'Basic ' + new Buffer([apiKey.id,apiKey.secret].join(':')).toString('base64')
         },
         method: 'POST',
         url: '/some/resource?grant_type=client_credentials&scope='+requestedScope
       };
+
       app.authenticateApiRequest({
         request: requestObject,
         scopeFactory: function(account,requestedScope){
@@ -596,6 +600,45 @@ describe('Application.authenticateApiRequest',function(){
       assert.equal(result[1].tokenResponse.scope,givenScope.join(' '));
     });
 
+    describe('that is given a callback', function () {
+      it('should return an error if given one', function(done) {
+        var expectedError = new Error('expected_error');
+
+        app.authenticateApiRequest({
+          request: requestObject,
+          scopeFactory: function(account, requestedScope, callback){
+            callback(expectedError);
+          }
+        },function(err){
+          assert.equal(err, expectedError);
+          done();
+        });
+      });
+
+      it('should call the scope factory with the requested scope', function(done) {
+        app.authenticateApiRequest({
+          request: requestObject,
+          scopeFactory: function(account, requestedScope, callback){
+            scopeFactoryArgs = [account, requestedScope];
+            callback(null, givenScope);
+          }
+        },function(err, value){
+          result = [err, value];
+
+          decodedAccessToken = nJwt.verify(
+            result[1].tokenResponse.access_token,
+            client._dataStore.requestExecutor.options.client.apiKey.secret,
+            'HS256'
+          );
+
+          var requestedScopes = requestedScope.split(' ');
+          assert.equal(scopeFactoryArgs[1][0], requestedScopes[0]);
+          assert.equal(scopeFactoryArgs[1][1], requestedScopes[1]);
+
+          done();
+        });
+      });
+    });
   });
 
   describe('with a custom ttl',function(){
