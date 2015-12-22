@@ -152,7 +152,7 @@ describe('Resources: ', function () {
 
         it('should throw unhandled exception', function () {
           addToGroupWithoutGroupHref.should
-            .throw(/cannot read property 'href' of undefined/i);
+            .throw(/cannot read property 'href' of null/i);
         });
       });
 

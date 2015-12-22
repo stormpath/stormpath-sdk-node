@@ -162,5 +162,39 @@ describe('util', function () {
     });
   });
 
+  describe('resolveArgs', function () {
+    var mockHref = 'http://mock.com/';
+    var mockOptions = {};
+    var mockCallback = function () {};
 
+    describe('when parsing args', function () {
+      it('should parse from left to right', function () {
+        var args = utils.resolveArgs([mockHref, null, null], ['href', 'options', 'callback']);
+        assert.equal(args.href, mockHref);
+        assert.equal(args.options, null);
+        assert.equal(args.callback, null);
+      });
+
+      it('should parse from right to left', function () {
+        var args = utils.resolveArgs([null, null, mockCallback], ['href', 'options', 'callback'], true);
+        assert.equal(args.href, null);
+        assert.equal(args.options, null);
+        assert.equal(args.callback, mockCallback);
+      });
+
+      it('should parse from left to right and alternate direction', function () {
+        var args = utils.resolveArgs([mockHref, null, mockCallback], ['href', 'options', 'callback']);
+        assert.equal(args.href, mockHref);
+        assert.equal(args.options, null);
+        assert.equal(args.callback, mockCallback);
+      });
+
+      it('should default to null when no args are provided', function () {
+        var args = utils.resolveArgs([], ['href', 'options', 'callback']);
+        assert.equal(args.href, null);
+        assert.equal(args.options, null);
+        assert.equal(args.callback, null);
+      });
+    });
+  });
 });
