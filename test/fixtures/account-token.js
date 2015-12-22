@@ -9,8 +9,8 @@ var helpers = require('../it/helpers');
 var OAuthPasswordGrantRequestAuthenticator = require('../../').OAuthPasswordGrantRequestAuthenticator;
 
 function AccountAccessTokenFixture(){
-  return this;
 }
+
 AccountAccessTokenFixture.prototype.before = function before(done) {
   var self = this;
   helpers.getClient(function(_client){
