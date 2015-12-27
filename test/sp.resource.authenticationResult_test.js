@@ -1,12 +1,15 @@
+"use strict";
+
 var common = require('./common');
 var sinon = common.sinon;
+var assert = common.assert;
+var timekeeper = common.timekeeper;
 
 var Account = require('../lib/resource/Account');
 var AuthenticationResult = require('../lib/resource/AuthenticationResult');
 var DataStore = require('../lib/ds/DataStore');
 
 describe('Resources: ', function () {
-  "use strict";
   describe('Authentication Result resource', function () {
     var dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
     describe('get accounts', function () {
@@ -21,6 +24,24 @@ describe('Resources: ', function () {
         //  getAccountsWithoutHref.should
         //    .throw(/cannot read property 'href' of undefined/i);
         //});
+      });
+
+      describe('if expiration is set', function () {
+        var app = {account: {href: 'boom!'}, dataStore: dataStore};
+
+        var result = new AuthenticationResult(app, dataStore);
+
+        result.application = app;
+        result.expiration = 9999;
+
+        it('should return jwt with specified expiration', function () {
+          timekeeper.freeze(0);
+
+          var jwt = result.getJwt();
+          assert.equal(jwt.body.exp, new Date().getTime() + result.expiration);
+
+          timekeeper.reset();
+        });
       });
 
       describe('if accounts are set', function () {
