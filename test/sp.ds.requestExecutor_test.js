@@ -120,7 +120,29 @@ describe('ds:', function () {
 
         reqExec.execute({uri: uri, method:'GET'}, cbSpy);
       });
-    });
 
+      it('should include HTTP details in message in case of request error', function (done) {
+        // This triggers one of the possible http request errors
+        var uri = 'http://doesntexist/v1/test';
+
+        var cbSpy = sinon.spy(function (err, body) {
+          err.should.be.an.instanceof(Error);
+
+          err.should.have.property('message')
+            .that.equal('Unable to execute http request GET http://doesntexist/v1/test: getaddrinfo ENOTFOUND doesntexist');
+
+          err.should.have.property('inner')
+            .that.is.an.instanceof(Error)
+            .and.property('code', 'ENOTFOUND');
+
+          expect(body).to.be.null;
+          cbSpy.should.have.been.calledOnce;
+
+          done();
+        });
+
+        reqExec.execute({uri: uri, method:'GET'}, cbSpy);
+      });
+    });
   });
 });
