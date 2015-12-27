@@ -128,6 +128,10 @@ describe('ds:', function () {
         var cbSpy = sinon.spy(function (err, body) {
           err.should.be.an.instanceof(Error);
 
+          err.should.have.property('stack')
+            .that.is.not.null.and
+            .that.is.not.undefined;
+
           err.should.have.property('message')
             .that.equal('Unable to execute http request GET http://doesntexist/v1/test: getaddrinfo ENOTFOUND doesntexist');
 
