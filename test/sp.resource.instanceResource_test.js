@@ -69,7 +69,7 @@ describe('Resources: ', function () {
           cb = function(err){error = err;};
           sandbox = sinon.sandbox.create();
           getResourceSpy = sandbox.spy(ds, 'getResource');
-          nock(u.BASE_URL).get(u.v1(app.href)).reply(200, {});
+          nock(u.BASE_URL).get(app.href).reply(200, {});
 
           instanceResource.get('applications', cb);
         });
@@ -93,7 +93,7 @@ describe('Resources: ', function () {
           ctor = Resource;
           sandbox = sinon.sandbox.create();
           getResourceSpy = sandbox.spy(ds, 'getResource');
-          nock(u.BASE_URL).get(u.v1(app.href)).reply(200, app);
+          nock(u.BASE_URL).get(app.href).reply(200, app);
 
           instanceResource.get('applications', ctor, cb);
         });
@@ -117,7 +117,7 @@ describe('Resources: ', function () {
           cb = function(err){error = err;};
           sandbox = sinon.sandbox.create();
           getResourceSpy = sandbox.spy(ds, 'getResource');
-          nock(u.BASE_URL).get(u.v1(app.href) + '?q='+query.q).reply(200, app);
+          nock(u.BASE_URL).get(app.href + '?q='+query.q).reply(200, app);
 
           instanceResource.get('applications', query, cb);
         });
@@ -138,7 +138,7 @@ describe('Resources: ', function () {
           query = {q:'boom!'};
           sandbox = sinon.sandbox.create();
           getResourceSpy = sandbox.spy(ds, 'getResource');
-          nock(u.BASE_URL).get(u.v1(app.href) + '?q='+query.q).reply(200, app);
+          nock(u.BASE_URL).get(app.href + '?q='+query.q).reply(200, app);
 
           instanceResource.get('applications', query, ctor, cb);
         });

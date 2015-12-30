@@ -299,7 +299,7 @@ describe('Resources: ', function () {
             accObj = {providerData: {href: providerDataObj.href}};
             app = new Account(accObj, dataStore);
 
-            nock(u.BASE_URL).get(u.v1(providerDataObj.href)).reply(200, providerDataObj);
+            nock(u.BASE_URL).get(providerDataObj.href).reply(200, providerDataObj);
 
             var args = [];
             if (data) {
@@ -341,7 +341,7 @@ describe('Resources: ', function () {
 
         it('should call cb without options', function () {
           cbSpy.should.have.been.calledOnce;
-          cbSpy.should.have.been.calledWith(undefined, undefined);
+          cbSpy.should.have.been.calledWith();
         });
       });
     });

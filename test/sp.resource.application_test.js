@@ -432,8 +432,9 @@ describe('Resources: ', function () {
           accountStore = { href: '/account/store/test/href'};
           application = new Application(app, dataStore);
           cbSpy = sinon.spy(done);
+
           nock(u.BASE_URL)
-            .post(u.v1(app.loginAttempts.href) + '?expand=account',{
+            .post(app.loginAttempts.href + '?expand=account',{
               value: utils.base64.encode(username + ":" + password),
               type: 'basic',
               accountStore: accountStore
@@ -561,7 +562,7 @@ describe('Resources: ', function () {
           done();
         });
         nock(u.BASE_URL)
-          .post(u.v1(app.passwordResetTokens.href + '/' + token  + '?expand=account'), { password: password })
+          .post(app.passwordResetTokens.href + '/' + token  + '?expand=account', { password: password })
           .reply(200, { account: acc });
 
         //Act
@@ -844,7 +845,7 @@ describe('Resources: ', function () {
             appObj = {accountStoreMappings: {href: asmObj.href}};
             app = new Application(appObj, dataStore);
 
-            nock(u.BASE_URL).get(u.v1(asmObj.href)).reply(200, asmObj);
+            nock(u.BASE_URL).get(asmObj.href).reply(200, asmObj);
 
             var args = [];
             if (data) {
@@ -883,7 +884,7 @@ describe('Resources: ', function () {
             appObj = {defaultAccountStoreMapping: {href: asmObj.href}};
             app = new Application(appObj, dataStore);
 
-            nock(u.BASE_URL).get(u.v1(asmObj.href)).reply(200, asmObj);
+            nock(u.BASE_URL).get(asmObj.href).reply(200, asmObj);
 
             var args = [];
             if (data) {
@@ -912,6 +913,7 @@ describe('Resources: ', function () {
       describe('with options', getDefaultAccountStore({}));
       describe('if default account store not set', function () {
         var appObj, app, cbSpy;
+
         before(function () {
           // assert
           appObj = {defaultAccountStoreMapping: null};
@@ -924,7 +926,7 @@ describe('Resources: ', function () {
 
         it('should call cb without options', function () {
           cbSpy.should.have.been.calledOnce;
-          cbSpy.should.have.been.calledWith(undefined, undefined);
+          cbSpy.should.have.been.calledWith();
         });
       });
     });
@@ -942,10 +944,10 @@ describe('Resources: ', function () {
         evokeSpy = sandbox.spy(app.dataStore, '_evict');
         cbSpy = sandbox.spy(done);
         nock(u.BASE_URL)
-          .get(u.v1(app.accountStoreMappings.href))
+          .get(app.accountStoreMappings.href)
           .reply(200, asmObj)
 
-          .post(u.v1('/accountStoreMappings'))
+          .post('/accountStoreMappings')
           .reply(201, function (uri, reqBody) {
             asm = JSON.parse(reqBody);
             asm.href = '/accountStoreMappings/href';
@@ -988,7 +990,7 @@ describe('Resources: ', function () {
             appObj = {defaultGroupStoreMapping: {href: asmObj.href}};
             app = new Application(appObj, dataStore);
 
-            nock(u.BASE_URL).get(u.v1(asmObj.href)).reply(200, asmObj);
+            nock(u.BASE_URL).get(asmObj.href).reply(200, asmObj);
 
             var args = [];
             if (data) {
@@ -1029,7 +1031,7 @@ describe('Resources: ', function () {
 
         it('should call cb without options', function () {
           cbSpy.should.have.been.calledOnce;
-          cbSpy.should.have.been.calledWith(undefined, undefined);
+          cbSpy.should.have.been.calledWith();
         });
       });
     });
@@ -1047,10 +1049,10 @@ describe('Resources: ', function () {
         evokeSpy = sinon.spy(app.dataStore, '_evict');
         cbSpy = sinon.spy(done);
         nock(u.BASE_URL)
-          .get(u.v1(app.accountStoreMappings.href))
+          .get(app.accountStoreMappings.href)
           .reply(200, asmObj)
 
-          .post(u.v1('/accountStoreMappings'))
+          .post('/accountStoreMappings')
           .reply(201, function (uri, reqBody) {
             asm = JSON.parse(reqBody);
             asm.href = '/accountStoreMappings/href';
@@ -1093,7 +1095,7 @@ describe('Resources: ', function () {
         app = new Application(appObj, dataStore);
         cbSpy = sinon.spy();
         nock(u.BASE_URL)
-          .post(u.v1('/accountStoreMappings'))
+          .post('/accountStoreMappings')
           .reply(201, function (uri, reqBody) {
             asm = JSON.parse(reqBody);
             asm.href = '/accountStoreMappings/href';
@@ -1154,7 +1156,7 @@ describe('Resources: ', function () {
         store = new Directory(storeObj, dataStore);
         cbSpy = sinon.spy();
         nock(u.BASE_URL)
-          .post(u.v1('/accountStoreMappings'))
+          .post('/accountStoreMappings')
           .reply(201, function (uri, reqBody) {
             asm = JSON.parse(reqBody);
             asm.href = '/accountStoreMappings/href';
@@ -1185,7 +1187,7 @@ describe('Resources: ', function () {
     //      //  appObj = {accounts: {href: accObj.href}};
     //      //  app = new Application(appObj, dataStore);
 
-    //      //  nock(u.BASE_URL).post(u.v1(accObj.href)).reply(isNew ? 201: 200, accObj);
+    //      //  nock(u.BASE_URL).post(accObj.href).reply(isNew ? 201: 200, accObj);
 
     //      //  var args = [{}];
     //      //  if (data) {

@@ -312,9 +312,9 @@ describe('Resources: ', function () {
             }
             applications = instantiate(Application, pages[0], {}, ds);
             // 3. nock
-            nock(u.BASE_URL).get(u.v1(applications.href)).reply(200,pages);
+            nock(u.BASE_URL).get(applications.href).reply(200,pages);
             for (i = 1; i < Math.ceil(n/100); i++) {
-              var ref = u.v1(applications.href) + '?' + querystring.stringify({offset: i * 100, limit: 100});
+              var ref = applications.href + '?' + querystring.stringify({offset: i * 100, limit: 100});
               nock(u.BASE_URL).get(ref).reply(200, pages[i]);
             }
             sandbox = sinon.sandbox.create();
@@ -407,9 +407,9 @@ describe('Resources: ', function () {
             }
             applications = instantiate(Application, pages[0], {}, ds);
             // 3. nock
-            nock(u.BASE_URL).get(u.v1(applications.href)).reply(200,pages);
+            nock(u.BASE_URL).get(applications.href).reply(200,pages);
             for (i = 1; i < Math.ceil(n/100); i++) {
-              var ref = u.v1(applications.href) + '?' + querystring.stringify({offset: i * 100, limit: 100});
+              var ref = applications.href + '?' + querystring.stringify({offset: i * 100, limit: 100});
               nock(u.BASE_URL).get(ref).reply(200, pages[i]);
             }
             sandbox = sinon.sandbox.create();
@@ -503,9 +503,9 @@ describe('Resources: ', function () {
             }
             applications = instantiate(Application, pages[0], {}, ds);
             // 3. nock
-            nock(u.BASE_URL).get(u.v1(applications.href)).reply(200,pages);
+            nock(u.BASE_URL).get(applications.href).reply(200,pages);
             for (i = 1; i < Math.ceil(n/100); i++) {
-              var ref = u.v1(applications.href) + '?' + querystring.stringify({offset: i * 100, limit: 100});
+              var ref = applications.href + '?' + querystring.stringify({offset: i * 100, limit: 100});
               nock(u.BASE_URL).get(ref).reply(200, pages[i]);
             }
             sandbox = sinon.sandbox.create();
@@ -605,9 +605,9 @@ describe('Resources: ', function () {
             }
             applications = instantiate(Application, pages[0], {}, ds);
             // 3. nock
-            nock(u.BASE_URL).get(u.v1(applications.href)).reply(200,pages);
+            nock(u.BASE_URL).get(applications.href).reply(200,pages);
             for (i = 1; i < Math.ceil(n/100); i++) {
-              var ref = u.v1(applications.href) + '?' + querystring.stringify({offset: i * 100, limit: 100});
+              var ref = applications.href + '?' + querystring.stringify({offset: i * 100, limit: 100});
               nock(u.BASE_URL).get(ref).reply(200, pages[i]);
             }
             sandbox = sinon.sandbox.create();
@@ -706,9 +706,9 @@ describe('Resources: ', function () {
             }
             applications = instantiate(Application, pages[0], {}, ds);
             // 3. nock
-            nock(u.BASE_URL).get(u.v1(applications.href)).reply(200,pages);
+            nock(u.BASE_URL).get(applications.href).reply(200,pages);
             for (i = 1; i < Math.ceil(n/100); i++) {
-              var ref = u.v1(applications.href) + '?' + querystring.stringify({offset: i * 100, limit: 100});
+              var ref = applications.href + '?' + querystring.stringify({offset: i * 100, limit: 100});
               nock(u.BASE_URL).get(ref).reply(200, pages[i]);
             }
             sandbox = sinon.sandbox.create();
@@ -807,9 +807,9 @@ describe('Resources: ', function () {
             }
             applications = instantiate(Application, pages[0], {}, ds);
             // 3. nock
-            nock(u.BASE_URL).get(u.v1(applications.href)).reply(200,pages);
+            nock(u.BASE_URL).get(applications.href).reply(200,pages);
             for (i = 1; i < Math.ceil(n/100); i++) {
-              var ref = u.v1(applications.href) + '?' + querystring.stringify({offset: i * 100, limit: 100});
+              var ref = applications.href + '?' + querystring.stringify({offset: i * 100, limit: 100});
               nock(u.BASE_URL).get(ref).reply(200, pages[i]);
             }
             sandbox = sinon.sandbox.create();

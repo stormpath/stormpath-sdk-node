@@ -26,14 +26,14 @@ describe('Resources: ', function () {
         // act
         async.parallel([
           function getApp(cb) {
-            nock(BASE_URL).get(u.v1(appData.href)).reply(200, appData);
+            nock(BASE_URL).get(appData.href).reply(200, appData);
             accountStoreMapping.getApplication(function (err, res) {
               app = res;
               cb();
             });
           },
           function getAppWithOptions(cb) {
-            nock(BASE_URL).get(u.v1(appData.href)).reply(200, appData);
+            nock(BASE_URL).get(appData.href).reply(200, appData);
             accountStoreMapping.getApplication({}, function (err, res) {
               app2 = res;
               cb();
@@ -69,14 +69,14 @@ describe('Resources: ', function () {
             // act
             async.parallel([
               function getApp(cb) {
-                nock(BASE_URL).get(u.v1(data.href)).reply(200, data);
+                nock(BASE_URL).get(data.href).reply(200, data);
                 accountStoreMapping.getAccountStore(function (err, res) {
                   resource = res;
                   cb();
                 });
               },
               function getAppWithOptions(cb) {
-                nock(BASE_URL).get(u.v1(data.href)).reply(200, data);
+                nock(BASE_URL).get(data.href).reply(200, data);
                 accountStoreMapping.getAccountStore({}, function (err, res) {
                   resource2 = res;
                   cb();
