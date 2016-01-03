@@ -48,7 +48,7 @@
     "jwt-simple": "~0.4.0",
     "lodash": "~3.10.1",
     "memcached": "~2.2.1",
-    "moment": "~2.10.6",
+    "moment": "~2.11.0",
     "njwt": "^0.2.2",
     "node-uuid": "~1.4.7",
     "properties-parser": "~0.3.1",
