@@ -17,7 +17,7 @@ var CollectionResource = require('../lib/resource/CollectionResource');
 var instantiate = require('../lib/resource/ResourceFactory').instantiate;
 var DataStore = require('../lib/ds/DataStore');
 
-function createMockApplicationCollection(items, offset, limit){
+function createMockApplicationCollection(items, offset, limit) {
   return {
     href: '/tenants/78KBoSJ5EkMD8OVmBV934Y/applications',
     offset: offset,
@@ -26,19 +26,16 @@ function createMockApplicationCollection(items, offset, limit){
   };
 }
 
-function createMockApplication(i){
-  return { href: '/applications/' + i,
-    name: 'testing ' + i,
-    description: i,
-    status: 'ENABLED'
-  };
-}
-
-function createNApps(n){
+function createMockApplications(n) {
   var items = [];
 
   for (var i = 0; i < n; i++){
-    items.push(createMockApplication(i));
+    items.push({
+      href: '/applications/' + i,
+      name: 'testing ' + i,
+      description: i,
+      status: 'ENABLED'
+    });
   }
 
   return items;
@@ -308,7 +305,7 @@ describe('Resources: ', function () {
           before(function(done){
             // set up:
             // 1. items
-            items = createNApps(n);
+            items = createMockApplications(n);
             // 2. create app collection resource
             for (i = 0; i < Math.ceil(n/100); i++){
               pages.push(createMockApplicationCollection(items, i*100, (i+1)*100));
@@ -379,7 +376,7 @@ describe('Resources: ', function () {
           before(function(done){
             // set up:
             // 1. items
-            items = createNApps(n);
+            items = createMockApplications(n);
             // 2. create app collection resource
             for (i = 0; i < Math.ceil(n/100); i++){
               pages.push(createMockApplicationCollection(items, i*100, (i+1)*100));
@@ -451,7 +448,7 @@ describe('Resources: ', function () {
           before(function(done){
             // set up:
             // 1. items
-            items = createNApps(n);
+            items = createMockApplications(n);
             // 2. create app collection resource
             for (i = 0; i < Math.ceil(n/100); i++){
               pages.push(createMockApplicationCollection(items, i*100, (i+1)*100));
@@ -531,7 +528,7 @@ describe('Resources: ', function () {
           before(function(done){
             // set up:
             // 1. items
-            items = createNApps(n);
+            items = createMockApplications(n);
             // 2. create app collection resource
             for (i = 0; i < Math.ceil(n/100); i++){
               pages.push(createMockApplicationCollection(items, i*100, (i+1)*100));
@@ -608,7 +605,7 @@ describe('Resources: ', function () {
           before(function(done){
             // set up:
             // 1. items
-            items = createNApps(n);
+            items = createMockApplications(n);
             // 2. create app collection resource
             for (i = 0; i < Math.ceil(n/100); i++){
               pages.push(createMockApplicationCollection(items, i*100, (i+1)*100));
@@ -685,7 +682,7 @@ describe('Resources: ', function () {
           before(function(done){
             // set up:
             // 1. items
-            items = createNApps(n);
+            items = createMockApplications(n);
             // 2. create app collection resource
             for (i = 0; i < Math.ceil(n/100); i++){
               pages.push(createMockApplicationCollection(items, i*100, (i+1)*100));
