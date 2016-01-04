@@ -59,7 +59,7 @@
     "underscore.string": "~3.2.2"
   },
   "devDependencies": {
-    "benchmark": "^1.0.0",
+    "benchmark": "^2.0.0",
     "chai": "~3.4.0",
     "coveralls": "^2.11.4",
     "expand-home-dir": "0.0.2",
