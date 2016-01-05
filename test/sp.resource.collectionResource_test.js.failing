@@ -766,13 +766,13 @@ describe('Resources: ', function () {
       describe('reduceRight', testReduce('reduceRight'));
       describe('foldr', testReduce('foldr'));*/
 
-      //describe('detect', test('detect'));
+      //describe('detect', testBoolean('detect'));
       //describe('detectSeries', testBoolean('detectSeries', 1));
       
       /*describe('sortBy', testSortBy('sortBy'));*/
       
-      //describe('some', test('some'));
-      //describe('any', test('any'));
+      //describe('some', testBoolean('some'));
+      //describe('any', testBoolean('any'));
       //describe('every', testBoolean('every'));
       //describe('all', testBoolean('all'));
 
