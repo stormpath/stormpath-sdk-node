@@ -129,6 +129,7 @@ describe('ds:', function () {
           err.should.be.an.instanceof(Error);
 
           err.should.have.property('stack')
+            .that.is.not.empty.and
             .that.is.not.null.and
             .that.is.not.undefined;
 
