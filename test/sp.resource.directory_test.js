@@ -394,7 +394,7 @@ describe('Resources: ', function () {
           sandbox.restore();
         });
 
-        it('should get organization mappingss', function () {
+        it('should get organization mappings', function () {
           cbSpy.should.have.been.calledTwice;
           getResourceStub.should.have.been.calledTwice;
 
