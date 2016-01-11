@@ -7,6 +7,8 @@ var u = common.u;
 
 var Account = require('../lib/resource/Account');
 var Group = require('../lib/resource/Group');
+var Organization = require('../lib/resource/Organization');
+var OrganizationAccountStoreMapping = require('../lib/resource/OrganizationAccountStoreMapping');
 var Tenant = require('../lib/resource/Tenant');
 var Provider = require('../lib/resource/Provider');
 var Directory = require('../lib/resource/Directory');
@@ -285,7 +287,7 @@ describe('Resources: ', function () {
             dirObj = {provider: {href: providerObj.href}};
             app = new Directory(dirObj, dataStore);
 
-            nock(u.BASE_URL).get(u.v1(providerObj.href)).reply(200, providerObj);
+            nock(u.BASE_URL).get(providerObj.href).reply(200, providerObj);
 
             var args = [];
             if (data) {
@@ -326,7 +328,83 @@ describe('Resources: ', function () {
 
         it('should call cb without options', function () {
           cbSpy.should.have.been.calledOnce;
-          cbSpy.should.have.been.calledWith(undefined, undefined);
+          cbSpy.should.have.been.calledWith();
+        });
+      });
+    });
+
+    describe('get organizations', function () {
+      describe('if organizations href are set', function () {
+        var opt = {};
+
+        var getResourceStub;
+        var sandbox = sinon.sandbox.create();
+        var app = { organizationMappings: { href: 'boom!' } };
+        var directory = new Directory(app, dataStore);
+        var cbSpy = sandbox.spy();
+
+        before(function () {
+          getResourceStub = sandbox.stub(dataStore, 'getResource', function (href, options, ctor, cb) {
+            cb();
+          });
+
+          directory.getOrganizations(cbSpy);
+          directory.getOrganizations(opt, cbSpy);
+        });
+
+        after(function () {
+          sandbox.restore();
+        });
+
+        it('should get organizations', function () {
+          cbSpy.should.have.been.calledTwice;
+          getResourceStub.should.have.been.calledTwice;
+
+          getResourceStub.should.have.been.calledWith(
+            app.organizations.href, null, Organization, cbSpy
+          );
+
+          getResourceStub.should.have.been.calledWith(
+            app.organizations.href, opt, Organization, cbSpy
+          );
+        });
+      });
+    });
+
+    describe('get organization mappings', function () {
+      describe('if organizationMappings href are set', function () {
+        var opt = {};
+
+        var getResourceStub;
+        var sandbox = sinon.sandbox.create();
+        var app = { organizationMappings: { href: 'boom!' } };
+        var directory = new Directory(app, dataStore);
+        var cbSpy = sandbox.spy();
+
+        before(function () {
+          getResourceStub = sandbox.stub(dataStore, 'getResource', function (href, options, ctor, cb) {
+            cb();
+          });
+
+          directory.getOrganizationMappings(cbSpy);
+          directory.getOrganizationMappings(opt, cbSpy);
+        });
+
+        after(function () {
+          sandbox.restore();
+        });
+
+        it('should get organization mappings', function () {
+          cbSpy.should.have.been.calledTwice;
+          getResourceStub.should.have.been.calledTwice;
+
+          getResourceStub.should.have.been.calledWith(
+            app.organizationMappings.href, null, OrganizationAccountStoreMapping, cbSpy
+          );
+
+          getResourceStub.should.have.been.calledWith(
+            app.organizationMappings.href, opt, OrganizationAccountStoreMapping, cbSpy
+          );
         });
       });
     });
