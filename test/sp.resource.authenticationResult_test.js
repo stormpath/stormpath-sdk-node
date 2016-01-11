@@ -1,14 +1,45 @@
+"use strict";
+
 var common = require('./common');
 var sinon = common.sinon;
+var assert = common.assert;
+var timekeeper = common.timekeeper;
 
 var Account = require('../lib/resource/Account');
 var AuthenticationResult = require('../lib/resource/AuthenticationResult');
 var DataStore = require('../lib/ds/DataStore');
 
 describe('Resources: ', function () {
-  "use strict";
   describe('Authentication Result resource', function () {
     var dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
+
+    describe('if ttl', function () {
+      describe('isn\'t set', function () {
+        it('should have a default value of 3600', function () {
+          var result = new AuthenticationResult();
+          assert.equal(result.ttl, 3600);
+        });
+      });
+
+      describe('is set', function () {
+        var app = {account: {href: 'boom!'}, dataStore: dataStore};
+
+        var result = new AuthenticationResult(app, dataStore);
+
+        result.application = app;
+        result.ttl = 9999;
+
+        it('should return jwt with specified ttl', function () {
+          timekeeper.freeze(0);
+
+          var jwt = result.getJwt();
+          assert.equal(jwt.body.exp, new Date().getTime() + result.ttl);
+
+          timekeeper.reset();
+        });
+      });
+    });
+
     describe('get accounts', function () {
       describe('if accounts not set', function () {
         //var authcResult = new AuthenticationResult();

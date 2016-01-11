@@ -12,6 +12,7 @@ var moment = require('moment');
 var sinonChai = require("sinon-chai");
 var uuid = require('node-uuid');
 var nock = require('nock');
+var timekeeper = require('timekeeper');
 
 var Stormpath = require('../lib');
 chai.use(sinonChai);
@@ -73,6 +74,7 @@ module.exports = {
   should: should,
   moment: moment,
   Stormpath: Stormpath,
+  timekeeper: timekeeper,
   random: random,
   uuid: uuid,
   snapshotEnv: snapshotEnv,
