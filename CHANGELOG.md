@@ -2,7 +2,7 @@
 
 ### 0.15.3
 
-**Released January 13, 2015**
+**Released January 13, 2016**
 
 * Upgraded `stormpath-config` to v0.0.17. Contains fix for when home
   environment isn't being set.
