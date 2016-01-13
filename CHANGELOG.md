@@ -1,5 +1,12 @@
 # stormpath-sdk-node Change Log
 
+### 0.15.4
+
+**Released January 13, 2016**
+
+* Upgraded `stormpath-config` to v0.0.18. Contains fix for when
+  absolute path is provided but home environment isn't set.
+
 ### 0.15.3
 
 **Released January 13, 2016**
