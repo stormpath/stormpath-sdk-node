@@ -11,11 +11,15 @@ var StormpathAssertionAuthenticator = stormpath.StormpathAssertionAuthenticator;
 var AssertionAuthenticationResult = stormpath.AssertionAuthenticationResult;
 
 describe('StormpathAssertionAuthenticator', function () {
-  var secret = '123';
-  var dataStore, authenticator;
+  var secret;
+  var application;
+  var authenticator;
 
   before(function () {
-    dataStore = new DataStore({
+    secret = '123';
+    application = {};
+
+    application.dataStore = new DataStore({
       client: {
         apiKey: {
           id: 'abc',
@@ -24,7 +28,7 @@ describe('StormpathAssertionAuthenticator', function () {
       }
     });
 
-    authenticator = new StormpathAssertionAuthenticator(dataStore);
+    authenticator = new StormpathAssertionAuthenticator(application);
   });
 
   describe('when new is called', function () {
@@ -33,7 +37,7 @@ describe('StormpathAssertionAuthenticator', function () {
     });
 
     it('creates a new object', function () {
-      var otherAuthenticator = new StormpathAssertionAuthenticator(dataStore);
+      var otherAuthenticator = new StormpathAssertionAuthenticator(application);
       assert.ok(authenticator);
       assert.notEqual(authenticator, otherAuthenticator);
     });
