@@ -29,11 +29,16 @@ describe('CacheHandler',function(){
     });
 
     describe('with a custom store constructor', function(){
+      var MockStore;
+      var cacheOptions;
+      var handler;
 
-      var MockStore = function(opts){
-        this._options = opts;
-      };
-      var cacheOptions= {
+      beforeEach(function () {
+        MockStore = function (opts) {
+          this._options = opts;
+        };
+
+        cacheOptions = {
           ttl: rand(),
           tti: rand(),
           options: {
@@ -41,9 +46,11 @@ describe('CacheHandler',function(){
             b: rand()
           },
           store: MockStore
-      };
-      var handler = new CacheHandler({
-        cacheOptions: cacheOptions
+        };
+
+        handler = new CacheHandler({
+          cacheOptions: cacheOptions
+        });
       });
 
       it('should construct the custom store with the global options', function(){
@@ -68,12 +75,14 @@ describe('CacheHandler',function(){
       customDataRegionPutSpy;
 
     describe('with a resource result',function(){
-      var result = {
-        href: '/v1/accounts/' + common.uuid(),
-        username: common.uuid()
-      };
+      var result;
 
       before(function(done) {
+        result = {
+          href: '/v1/accounts/' + common.uuid(),
+          username: common.uuid()
+        };
+
         cacheHandler = new CacheHandler();
         sandbox = sinon.sandbox.create();
         acountRegionPutSpy = sandbox.spy(cacheHandler.cacheManager.caches.accounts, 'put');
@@ -87,31 +96,36 @@ describe('CacheHandler',function(){
     });
 
     describe('with a resource result that cotains an expanded collection and a linked resource',function(){
-      var parentResourceHref = '/v1/accounts/' + common.uuid();
-      var result = {
-        'href': parentResourceHref,
-        'username': common.uuid(),
-        'groups': {
-          'href': parentResourceHref + '/groups',
-          'offset': 0,
-          'limit': 50,
-          'size': 2,
-          'items': [
-            {
-              'href': '/v1/groups/' + common.uuid(),
-              'name': common.uuid()
-            },
-            {
-              'href': '/v1/groups/' + common.uuid(),
-              'name': common.uuid()
-            }
-          ]
-        },
-        'directory': {
-          'href': '/v1/directories/' + common.uuid()
-        }
-      };
+      var parentResourceHref;
+      var result;
+
       before(function(done) {
+        parentResourceHref = '/v1/accounts/' + common.uuid();
+
+        result = {
+          'href': parentResourceHref,
+          'username': common.uuid(),
+          'groups': {
+            'href': parentResourceHref + '/groups',
+            'offset': 0,
+            'limit': 50,
+            'size': 2,
+            'items': [
+              {
+                'href': '/v1/groups/' + common.uuid(),
+                'name': common.uuid()
+              },
+              {
+                'href': '/v1/groups/' + common.uuid(),
+                'name': common.uuid()
+              }
+            ]
+          },
+          'directory': {
+            'href': '/v1/directories/' + common.uuid()
+          }
+        };
+
         cacheHandler = new CacheHandler();
         sandbox = sinon.sandbox.create();
         acountRegionPutSpy = sandbox.spy(cacheHandler.cacheManager.caches.accounts, 'put');
@@ -132,24 +146,29 @@ describe('CacheHandler',function(){
     });
 
     describe('with a collection result',function(){
-      var collectionHref = 'http://api.stormpath.com/v1/tenants/'+common.uuid()+'/groups';
-      var collectionResult = {
-        'href': collectionHref,
-        'offset': 0,
-        'limit': 50,
-        'size': 2,
-        'items': [
-          {
-            'href': 'http://api.stormpath.com/v1/groups/' + common.uuid(),
-            'name': common.uuid()
-          },
-          {
-            'href': 'http://api.stormpath.com/v1/groups/' + common.uuid(),
-            'name': common.uuid()
-          }
-        ]
-      };
+      var collectionHref;
+      var collectionResult;
+
       before(function(done) {
+        collectionHref = 'http://api.stormpath.com/v1/tenants/' + common.uuid() + '/groups';
+
+        collectionResult = {
+          'href': collectionHref,
+          'offset': 0,
+          'limit': 50,
+          'size': 2,
+          'items': [
+            {
+              'href': 'http://api.stormpath.com/v1/groups/' + common.uuid(),
+              'name': common.uuid()
+            },
+            {
+              'href': 'http://api.stormpath.com/v1/groups/' + common.uuid(),
+              'name': common.uuid()
+            }
+          ]
+        };
+
         cacheHandler = new CacheHandler();
         sandbox = sinon.sandbox.create();
         groupRegionPutSpy = sandbox.spy(cacheHandler.cacheManager.caches.groups, 'put');
@@ -161,34 +180,41 @@ describe('CacheHandler',function(){
     });
 
     describe('with a collection result where the collection items have expansions',function(){
-      var collectionHref = 'http://api.stormpath.com/v1/tenants/'+common.uuid()+'/groups?expand=customData';
-      var groupId1 = common.uuid();
-      var groupId2 = common.uuid();
-      var collectionResult = {
-        'href': collectionHref,
-        'offset': 0,
-        'limit': 50,
-        'size': 2,
-        'items': [
-          {
-            'href': 'http://api.stormpath.com/v1/groups/' + groupId1,
-            'name': common.uuid(),
-            'customData': {
-              'href': 'http://api.stormpath.com/v1/groups/' + groupId1 + '/customData',
-              'createdAt': new Date().toISOString()
-            }
-          },
-          {
-            'href': 'http://api.stormpath.com/v1/groups/' + groupId2,
-            'name': common.uuid(),
-            'customData': {
-              'href': 'http://api.stormpath.com/v1/groups/' + groupId2 + '/customData',
-              'createdAt': new Date().toISOString()
-            }
-          }
-        ]
-      };
+      var collectionHref;
+      var groupId1;
+      var groupId2;
+      var collectionResult;
+
       before(function(done) {
+        collectionHref = 'http://api.stormpath.com/v1/tenants/' + common.uuid() + '/groups?expand=customData';
+        groupId1 = common.uuid();
+        groupId2 = common.uuid();
+
+        collectionResult = {
+          'href': collectionHref,
+          'offset': 0,
+          'limit': 50,
+          'size': 2,
+          'items': [
+            {
+              'href': 'http://api.stormpath.com/v1/groups/' + groupId1,
+              'name': common.uuid(),
+              'customData': {
+                'href': 'http://api.stormpath.com/v1/groups/' + groupId1 + '/customData',
+                'createdAt': new Date().toISOString()
+              }
+            },
+            {
+              'href': 'http://api.stormpath.com/v1/groups/' + groupId2,
+              'name': common.uuid(),
+              'customData': {
+                'href': 'http://api.stormpath.com/v1/groups/' + groupId2 + '/customData',
+                'createdAt': new Date().toISOString()
+              }
+            }
+          ]
+        };
+
         cacheHandler = new CacheHandler();
         sandbox = sinon.sandbox.create();
         groupRegionPutSpy = sandbox.spy(cacheHandler.cacheManager.caches.groups, 'put');
@@ -207,15 +233,18 @@ describe('CacheHandler',function(){
 
 
     describe('with a resource result that contains an expanded resource',function(){
-      var result = {
-        href: '/v1/accounts/' + common.uuid(),
-        username: common.uuid(),
-        directory: {
-          href: '/v1/directories/' + common.uuid(),
-          name: common.uuid()
-        }
-      };
+      var result;
+
       before(function(done) {
+        result = {
+          href: '/v1/accounts/' + common.uuid(),
+          username: common.uuid(),
+          directory: {
+            href: '/v1/directories/' + common.uuid(),
+            name: common.uuid()
+          }
+        };
+
         cacheHandler = new CacheHandler();
         sandbox = sinon.sandbox.create();
         acountRegionPutSpy = sandbox.spy(cacheHandler.cacheManager.caches.accounts, 'put');

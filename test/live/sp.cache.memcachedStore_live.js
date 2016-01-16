@@ -8,10 +8,14 @@ var Cache = require('../../lib/cache/Cache');
 var memcachedActionTests = function(memcachedStore) {
 
     describe('set entry', function () {
-      var key = 'key' + random();
-      var val = 'val' + random();
+      var key;
+      var val;
       var entry;
+
       before(function (done) {
+        key = 'key' + random();
+        val = 'val' + random();
+
         memcachedStore.put(key, val, function () {
           memcachedStore.get(key, function (err, ent) {
             entry = ent;
@@ -31,9 +35,13 @@ var memcachedActionTests = function(memcachedStore) {
     });
 
     describe('get entry', function () {
-      var key = 'key' + random();
-      var val = 'val' + random();
+      var key;
+      var val;
+
       before(function (done) {
+        key = 'key' + random();
+        val = 'val' + random();
+
         memcachedStore.put(key, val, done);
       });
       after(function (done) {
@@ -58,9 +66,13 @@ var memcachedActionTests = function(memcachedStore) {
     });
 
     describe('delete entry', function () {
-      var key = 'key' + random();
-      var val = 'val' + random();
+      var key;
+      var val;
+
       before(function (done) {
+        key = 'key' + random();
+        val = 'val' + random();
+
         memcachedStore.put(key, val, done);
       });
       it('should remove entry from store', function (done) {
@@ -74,9 +86,13 @@ var memcachedActionTests = function(memcachedStore) {
     });
 
     describe('clear cache', function () {
-      var key = 'key' + random();
-      var val = 'val' + random();
+      var key;
+      var val;
+
       before(function (done) {
+        key = 'key' + random();
+        val = 'val' + random();
+
         memcachedStore.put(key, val, done);
       });
       it('should remove all entries from store', function (done) {
@@ -90,9 +106,13 @@ var memcachedActionTests = function(memcachedStore) {
     });
 
     describe('cache size', function () {
-      var key = 'key' + random();
-      var val = 'val' + random();
+      var key;
+      var val;
+
       before(function (done) {
+        key = 'key' + random();
+        val = 'val' + random();
+
         memcachedStore.clear(function(){
           memcachedStore.put(key, val, done);
         });

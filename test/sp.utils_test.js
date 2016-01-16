@@ -33,8 +33,13 @@ describe('util', function () {
   });
 
   describe('valueOf method', function(){
-    var obj = {test: 'me'};
-    var def = {all: 'ok'};
+    var obj;
+    var def;
+
+    beforeEach(function () {
+      obj = {test: 'me'};
+      def = {all: 'ok'};
+    });
 
     it('should return obj if obj not empty and default value not set', function(){
       var test = utils.valueOf(obj);
@@ -56,15 +61,24 @@ describe('util', function () {
   });
 
   describe('shallow copy', function(){
-    function Class(){}
-    Class.prototype.field = 'boom!';
-    var objToCopy = new Class();
-    objToCopy.prop = 'here I am';
-    var dest = new Class();
-    dest.prop = 'will be overridden';
-    dest.prop2 = 'should be in object';
+    var objToCopy;
+    var dest;
+    var result;
 
-    var result = utils.shallowCopy(objToCopy, dest);
+    function Class() {}
+
+    beforeEach(function () {
+      Class.prototype.field = 'boom!';
+
+      objToCopy = new Class();
+      objToCopy.prop = 'here I am';
+
+      dest = new Class();
+      dest.prop = 'will be overridden';
+      dest.prop2 = 'should be in object';
+
+      result = utils.shallowCopy(objToCopy, dest);
+    });
 
     it('should copy own fields', function(){
       dest.should.have.keys(['prop', 'prop2']);
@@ -109,8 +123,15 @@ describe('util', function () {
   });
 
   describe('base64', function(){
-    var test = 'boom!';
-    utils.base64.decode(utils.base64.encode(test)).should.be.equal(test);
+    var test;
+
+    beforeEach(function () {
+      test = 'boom!';
+    });
+
+    it('should be able to encode and decode without altering the data', function () {
+      utils.base64.decode(utils.base64.encode(test)).should.be.equal(test);
+    });
   });
 
   describe('isNumber', function(){

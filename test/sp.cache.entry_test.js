@@ -18,8 +18,10 @@ describe('Cache module',function(){
   describe('Cache Entry class', function(){
     describe('default arguments values ',function(){
       var sandbox;
-      var testTime = 100500;
+      var testTime;
+
       before(function(){
+        testTime = 100500;
         sandbox = sinon.sandbox.create();
         sandbox.useFakeTimers(testTime, 'Date');
       });
@@ -37,11 +39,18 @@ describe('Cache module',function(){
     });
 
     describe('constructor expecting', function(){
-      var entry = {};
-      var createdAt = new Date();
-      var lastAccessedAt = new Date();
-      var cacheEntry =
-        new CacheEntry(entry, createdAt.valueOf(), lastAccessedAt.valueOf());
+      var entry;
+      var createdAt;
+      var lastAccessedAt;
+      var cacheEntry;
+
+      beforeEach(function () {
+        entry = {};
+        createdAt = new Date();
+        lastAccessedAt = new Date();
+        cacheEntry = new CacheEntry(entry, createdAt.valueOf(), lastAccessedAt.valueOf());
+      });
+
       it('should store entry in it initial state', function(){
         cacheEntry.value.should.be.equal(entry);
       });
@@ -70,7 +79,12 @@ describe('Cache module',function(){
     });
 
     describe('call to touch method', function(){
-      var cacheEntry = createVoidCacheEntry();
+      var cacheEntry;
+
+      beforeEach(function () {
+        cacheEntry = createVoidCacheEntry();
+      });
+
       it('should change lastAccessedTime to current for cache entry', function(){
         var was = cacheEntry.lastAccessedAt;
 
@@ -82,7 +96,12 @@ describe('Cache module',function(){
 
     describe('call to isExpired', function(){
       describe('if entry is fresh', function(){
-        var cacheEntry = createVoidCacheEntry();
+        var cacheEntry;
+
+        beforeEach(function () {
+          cacheEntry = createVoidCacheEntry();
+        });
+
         it('should not be expired', function(){
           var notExpired = cacheEntry.isExpired(300,300);
           /* jshint -W030 */
@@ -91,8 +110,13 @@ describe('Cache module',function(){
       });
 
       describe('if entry is idle for to long', function(){
-        var cacheEntry = createVoidCacheEntry();
-        cacheEntry.lastAccessedAt -= 500*1000;
+        var cacheEntry;
+
+        beforeEach(function () {
+          cacheEntry = createVoidCacheEntry();
+          cacheEntry.lastAccessedAt -= 500 * 1000;
+        });
+
         it('should be expired', function(){
           var expired = cacheEntry.isExpired(300,300);
           /* jshint -W030 */
@@ -101,8 +125,13 @@ describe('Cache module',function(){
       });
 
       describe('if entry is created a long time ago', function(){
-        var cacheEntry = createVoidCacheEntry();
-        cacheEntry.createdAt -= 500*1000;
+        var cacheEntry;
+
+        beforeEach(function () {
+          cacheEntry = createVoidCacheEntry();
+          cacheEntry.createdAt -= 500 * 1000;
+        });
+
         it('should be expired', function(){
           var expired = cacheEntry.isExpired(300,300);
           /* jshint -W030 */
@@ -112,12 +141,18 @@ describe('Cache module',function(){
     });
 
     describe('call to toObject', function(){
-      var cacheEntry = createVoidCacheEntry();
-      var expectCreatedAt = moment.utc(cacheEntry.createdAt)
-        .format('YYYY-MM-DD HH:mm:ss.SSS');
-      var expectLastAccessedAt = moment.utc(cacheEntry.lastAccessedAt)
-        .format('YYYY-MM-DD HH:mm:ss.SSS');
-      var object = cacheEntry.toObject();
+      var cacheEntry;
+      var expectCreatedAt;
+      var expectLastAccessedAt;
+      var object;
+
+      beforeEach(function () {
+        cacheEntry = createVoidCacheEntry();
+        expectCreatedAt = moment.utc(cacheEntry.createdAt).format('YYYY-MM-DD HH:mm:ss.SSS');
+        expectLastAccessedAt = moment.utc(cacheEntry.lastAccessedAt).format('YYYY-MM-DD HH:mm:ss.SSS');
+        object = cacheEntry.toObject();
+      });
+
       it('should return current entry state with formatted dates', function(){
         object.createdAt.should.be.equal(expectCreatedAt);
         object.lastAccessedAt.should.be.equal(expectLastAccessedAt);
@@ -125,14 +160,21 @@ describe('Cache module',function(){
     });
 
     describe('call to type method parse', function(){
-      var cacheEntry = createVoidCacheEntry();
-      var expectCreatedAt = moment.utc(cacheEntry.createdAt)
-        .format('YYYY-MM-DD HH:mm:ss.SSS');
-      var expectLastAccessedAt = moment.utc(cacheEntry.lastAccessedAt)
-        .format('YYYY-MM-DD HH:mm:ss.SSS');
-      var parsedCacheEntry = CacheEntry.parse({
-        createdAt: expectCreatedAt,
-        lastAccessedAt: expectLastAccessedAt});
+      var cacheEntry;
+      var expectCreatedAt;
+      var expectLastAccessedAt;
+      var parsedCacheEntry;
+
+      beforeEach(function () {
+        cacheEntry = createVoidCacheEntry();
+        expectCreatedAt = moment.utc(cacheEntry.createdAt).format('YYYY-MM-DD HH:mm:ss.SSS');
+        expectLastAccessedAt = moment.utc(cacheEntry.lastAccessedAt).format('YYYY-MM-DD HH:mm:ss.SSS');
+
+        parsedCacheEntry = CacheEntry.parse({
+          createdAt: expectCreatedAt,
+          lastAccessedAt: expectLastAccessedAt
+        });
+      });
 
       it('should return instance of CacheEntry with utc time', function(){
         parsedCacheEntry.createdAt.should.be.equal(cacheEntry.createdAt);

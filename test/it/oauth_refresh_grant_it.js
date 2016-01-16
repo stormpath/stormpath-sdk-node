@@ -9,9 +9,11 @@ describe('OAuthRefreshTokenGrantRequestAuthenticator',function(){
 
   var application, refreshToken;
 
-  var newAccount = helpers.fakeAccount();
+  var newAccount;
 
   before(function(done){
+    newAccount = helpers.fakeAccount();
+
     helpers.createApplication(function(err,app){
       if(err){
         done(err);

@@ -34,9 +34,9 @@ describe('JwtAuthenticator',function(){
 
   var application, application2, passwordGrantResponse;
 
-  var newAccount = helpers.fakeAccount();
+  var newAccount;
 
-  var unsignedToken = nJwt.create({hello:'world'},'not a secret').compact();
+  var unsignedToken;
 
   var expiredToken;
   /*
@@ -44,6 +44,9 @@ describe('JwtAuthenticator',function(){
     has a very short access token ttl - for testing token expiration
    */
   before(function(done){
+    newAccount = helpers.fakeAccount();
+    unsignedToken = nJwt.create({hello:'world'},'not a secret').compact();
+
     helpers.createApplication(function(err,app){
       if(err){
         done(err);

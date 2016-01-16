@@ -11,7 +11,7 @@ var assert = common.assert;
 var configLoader = require('../lib/configLoader');
 
 describe('Configuration loader', function () {
-  var loader, fakeFs, afterIt = [];
+  var loader, fakeFs, afterIt;
 
   // Removes any Stormpath environment variables
   // and provides a callback to restore them.
@@ -53,6 +53,7 @@ describe('Configuration loader', function () {
   }
 
   beforeEach(function () {
+    afterIt = [];
     loader = configLoader();
   });
 

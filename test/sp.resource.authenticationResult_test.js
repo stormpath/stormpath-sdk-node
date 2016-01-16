@@ -11,7 +11,11 @@ var DataStore = require('../lib/ds/DataStore');
 
 describe('Resources: ', function () {
   describe('Authentication Result resource', function () {
-    var dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
+    var dataStore;
+
+    beforeEach(function () {
+      dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
+    });
 
     describe('if ttl', function () {
       describe('isn\'t set', function () {
@@ -22,12 +26,16 @@ describe('Resources: ', function () {
       });
 
       describe('is set', function () {
-        var app = {account: {href: 'boom!'}, dataStore: dataStore};
+        var app;
+        var result;
 
-        var result = new AuthenticationResult(app, dataStore);
+        beforeEach(function () {
+          app = {account: {href: 'boom!'}, dataStore: dataStore};
+          result = new AuthenticationResult(app, dataStore);
 
-        result.application = app;
-        result.ttl = 9999;
+          result.application = app;
+          result.ttl = 9999;
+        });
 
         it('should return jwt with specified ttl', function () {
           timekeeper.freeze(0);

@@ -11,7 +11,11 @@ var ResourceError = require('../lib/error/ResourceError');
 
 describe('ds:', function () {
   describe('RequestExecutor:', function () {
-    var apiKey = {id: 1, secret: 2};
+    var apiKey;
+
+    beforeEach(function () {
+      apiKey = {id: 1, secret: 2};
+    });
 
     describe('constructor', function () {
       describe('create without options', function () {
@@ -25,7 +29,12 @@ describe('ds:', function () {
         });
       });
       describe('create with required options', function () {
-        var reqExec = new RequestExecutor({client: {apiKey: apiKey}});
+        var reqExec;
+
+        beforeEach(function () {
+          reqExec = new RequestExecutor({client: {apiKey: apiKey}});
+        });
+
         it('should instantiate request authenticator', function () {
           reqExec.requestAuthenticator.should.be.ok;
         });
@@ -40,13 +49,17 @@ describe('ds:', function () {
 
     });
     describe('call to execute', function () {
-      var reqExec = new RequestExecutor({client: {apiKey: apiKey} });
+      var reqExec;
 
       function exec(req, cb) {
         return function () {
           reqExec.execute(req, cb);
         };
       }
+
+      beforeEach(function () {
+        reqExec = new RequestExecutor({client: {apiKey: apiKey} });
+      });
 
       it('should throw if called without req', function () {
         exec().should.throw(/Request argument is required/i);

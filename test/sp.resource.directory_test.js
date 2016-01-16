@@ -16,7 +16,11 @@ var DataStore = require('../lib/ds/DataStore');
 
 describe('Resources: ', function () {
   describe('Directory resource', function () {
-    var dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
+    var dataStore;
+
+    beforeEach(function () {
+      dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
+    });
 
     describe('get accounts', function () {
       describe('if accounts not set', function () {
@@ -335,15 +339,20 @@ describe('Resources: ', function () {
 
     describe('get organizations', function () {
       describe('if organizations href are set', function () {
-        var opt = {};
-
+        var opt;
         var getResourceStub;
-        var sandbox = sinon.sandbox.create();
-        var app = { organizationMappings: { href: 'boom!' } };
-        var directory = new Directory(app, dataStore);
-        var cbSpy = sandbox.spy();
+        var sandbox;
+        var app;
+        var directory;
+        var cbSpy;
 
         before(function () {
+          opt = {};
+          sandbox = sinon.sandbox.create();
+          app = { organizationMappings: { href: 'boom!' } };
+          directory = new Directory(app, dataStore);
+          cbSpy = sandbox.spy();
+
           getResourceStub = sandbox.stub(dataStore, 'getResource', function (href, options, ctor, cb) {
             cb();
           });
@@ -373,15 +382,20 @@ describe('Resources: ', function () {
 
     describe('get organization mappings', function () {
       describe('if organizationMappings href are set', function () {
-        var opt = {};
-
+        var opt;
         var getResourceStub;
-        var sandbox = sinon.sandbox.create();
-        var app = { organizationMappings: { href: 'boom!' } };
-        var directory = new Directory(app, dataStore);
-        var cbSpy = sandbox.spy();
+        var sandbox;
+        var app;
+        var directory;
+        var cbSpy;
 
         before(function () {
+          opt = {};
+          sandbox = sinon.sandbox.create();
+          app = { organizationMappings: { href: 'boom!' } };
+          directory = new Directory(app, dataStore);
+          cbSpy = sandbox.spy();
+
           getResourceStub = sandbox.stub(dataStore, 'getResource', function (href, options, ctor, cb) {
             cb();
           });

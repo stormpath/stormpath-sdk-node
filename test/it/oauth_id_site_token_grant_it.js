@@ -7,9 +7,11 @@ var stormpath = require('../../');
 
 describe('OAuthIdSiteTokenGrantAuthenticator',function(){
   var application;
-  var newAccount = helpers.fakeAccount();
+  var newAccount;
 
   before(function(done){
+    newAccount = helpers.fakeAccount();
+
     helpers.createApplication(function(err,app){
       application = app;
       application.createAccount(newAccount,done);

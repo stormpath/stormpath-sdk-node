@@ -247,10 +247,12 @@ describe('Application.authenticateApiRequest',function(){
   });
 
   describe('with a previously issued access token',function(){
-    var customScope = 'custom-scope';
+    var customScope;
     var accessToken;
 
     before(function(done){
+      customScope = 'custom-scope';
+
       var requestObject = {
         headers: {
           'authorization': 'Basic ' + new Buffer([apiKey.id,apiKey.secret].join(':')).toString('base64')
@@ -550,12 +552,15 @@ describe('Application.authenticateApiRequest',function(){
   describe('with a scope factory',function(){
     var result;
     var requestObject;
-    var requestedScope = 'scope-a scope-b';
-    var givenScope = ['given-scope-a given-scope-b'];
+    var requestedScope;
+    var givenScope;
     var scopeFactoryArgs;
     var decodedAccessToken;
 
     before(function(done){
+      requestedScope = 'scope-a scope-b';
+      givenScope = ['given-scope-a given-scope-b'];
+
       requestObject = {
         headers: {
           'authorization': 'Basic ' + new Buffer([apiKey.id,apiKey.secret].join(':')).toString('base64')
@@ -644,11 +649,13 @@ describe('Application.authenticateApiRequest',function(){
   describe('with a custom ttl',function(){
 
     var result;
-    var desiredTtl = 13;
+    var desiredTtl;
     var tokenResponse;
     var decodedAccessToken;
 
     before(function(done){
+      desiredTtl = 13;
+
       var requestObject = {
         headers: {
           'authorization': 'Basic ' + new Buffer([apiKey.id,apiKey.secret].join(':')).toString('base64')
