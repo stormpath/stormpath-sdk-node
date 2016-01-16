@@ -6,13 +6,21 @@ var MemoryStore = require('../lib/cache/MemoryStore');
 describe('Cache module', function () {
 
   describe('In memory cache store', function () {
-    var memoryStore = new MemoryStore();
+    var memoryStore;
+
+    beforeEach(function () {
+      memoryStore = new MemoryStore();
+    });
 
     describe('set entry', function () {
-      var key = 'key' + Date.now();
-      var val = 'val' + Date.now();
+      var key;
+      var val;
       var entry;
+
       before(function (done) {
+        key = 'key' + Date.now();
+        val = 'val' + Date.now();
+
         memoryStore.set(key, val, function () {
           memoryStore.get(key, function (err, ent) {
             entry = ent;
@@ -32,9 +40,13 @@ describe('Cache module', function () {
     });
 
     describe('get entry', function () {
-      var key = 'key' + Date.now();
-      var val = 'val' + Date.now();
+      var key;
+      var val;
+
       before(function (done) {
+        key = 'key' + Date.now();
+        val = 'val' + Date.now();
+
         memoryStore.set(key, val, done);
       });
       after(function (done) {
@@ -59,9 +71,13 @@ describe('Cache module', function () {
     });
 
     describe('delete entry', function () {
-      var key = 'key' + Date.now();
-      var val = 'val' + Date.now();
+      var key;
+      var val;
+
       before(function (done) {
+        key = 'key' + Date.now();
+        val = 'val' + Date.now();
+
         memoryStore.set(key, val, done);
       });
       it('should remove entry from store', function (done) {
@@ -75,9 +91,13 @@ describe('Cache module', function () {
     });
 
     describe('clear cache', function () {
-      var key = 'key' + Date.now();
-      var val = 'val' + Date.now();
+      var key;
+      var val;
+
       before(function (done) {
+        key = 'key' + Date.now();
+        val = 'val' + Date.now();
+
         memoryStore.set(key, val, done);
       });
       it('should remove all entries from store', function (done) {
@@ -91,9 +111,13 @@ describe('Cache module', function () {
     });
 
     describe('cache size', function () {
-      var key = 'key' + Date.now();
-      var val = 'val' + Date.now();
+      var key;
+      var val;
+
       before(function (done) {
+        key = 'key' + Date.now();
+        val = 'val' + Date.now();
+
         memoryStore.clear(function(){
           memoryStore.set(key, val, done);
         });

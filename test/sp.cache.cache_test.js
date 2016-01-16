@@ -52,11 +52,12 @@ describe('Cache module', function () {
     describe('get entry', function () {
       describe('if entry exists', function () {
         var sandbox, entry, hitsCounter;
-        var key = 'key' + random();
-        var key2 = 'key' + random();
-        var data = 'entry' + random();
-        var initialTime = 100500;
-        var tickDelta = 150;
+        var key;
+        var key2;
+        var data;
+        var initialTime;
+        var tickDelta;
+
         before(function (done) {
           function createCacheWithDifferentTTL(cache, done) {
             cache.ttl = 300;
@@ -69,7 +70,14 @@ describe('Cache module', function () {
               });
             });
           }
+
           sandbox = sinon.sandbox.create();
+          key = 'key' + random();
+          key2 = 'key' + random();
+          data = 'entry' + random();
+          initialTime = 100500;
+          tickDelta = 150;
+
           var clock = sandbox.useFakeTimers(initialTime, 'Date');
           hitsCounter = cache.stats.hits;
           cache.put(key, data, function () {
@@ -117,16 +125,22 @@ describe('Cache module', function () {
       });
 
       describe('if entry expired', function () {
-        var key = 'key' +  random();
-        var data = 'entry' + random();
+        var key ;
+        var data;
         var entry;
         var missCounter;
-        var initialTime = 100500;
-        var tickDelta = 310 * 1000;
+        var initialTime;
+        var tickDelta;
         var sandbox;
         var storeDeleteSpy;
+
         before(function (done) {
+          key = 'key' +  random();
+          data = 'entry' + random();
+          initialTime = 100500;
+          tickDelta = 310 * 1000;
           sandbox = sinon.sandbox.create();
+
           var clock = sandbox.useFakeTimers(initialTime, 'Date');
           storeDeleteSpy = sandbox.spy(cache.store, 'delete');
           missCounter = cache.stats.misses;
@@ -161,11 +175,14 @@ describe('Cache module', function () {
     });
 
     describe('put entry', function () {
-      var key = 'key' + random();
-      var data = 'data' + random();
+      var key;
+      var data;
       var sandbox;
       var statsPutSpy;
+
       before(function (done) {
+        key = 'key' + random();
+        data = 'data' + random();
         sandbox = sinon.sandbox.create();
         statsPutSpy = sandbox.spy(cache.stats, 'put');
         cache.put(key, data, done);
@@ -195,11 +212,13 @@ describe('Cache module', function () {
     });
 
     describe('delete entry', function () {
-      var key = 'key' + random();
-      var cb = function () {
-      };
+      var key;
+      var cb;
       var sandbox, statsDeleteSpy, storeDeleteSpy;
+
       before(function () {
+        key = 'key' + random();
+        cb = function () {};
         sandbox = sinon.sandbox.create();
         statsDeleteSpy = sandbox.spy(cache.stats, 'delete');
         storeDeleteSpy = sandbox.spy(cache.store, 'delete');
@@ -221,9 +240,11 @@ describe('Cache module', function () {
     });
 
     describe('clear cache', function () {
-      var cb = function () {};
+      var cb;
       var sandbox, statsClearSpy, storeClearSpy;
+
       before(function () {
+        cb = function () {};
         sandbox = sinon.sandbox.create();
         statsClearSpy = sandbox.spy(cache.stats, 'clear');
         storeClearSpy = sandbox.spy(cache.store, 'clear');
@@ -245,10 +266,11 @@ describe('Cache module', function () {
     });
 
     describe('cache size', function () {
-      var cb = function () {
-      };
+      var cb;
       var sandbox, storeSizeSpy;
+
       before(function () {
+        cb = function () {};
         sandbox = sinon.sandbox.create();
         storeSizeSpy = sandbox.spy(cache.store, 'size');
 
@@ -275,8 +297,10 @@ describe('Cache module', function () {
   });
 
   describe('Redis store', function(){
-    var opt = {cache:null}, sandbox;
+    var opt, sandbox;
+
     before(function(){
+      opt = {cache: null};
       sandbox = sinon.sandbox.create();
       var ms = new MemoryStore();
       _.extend(ms,{
@@ -301,8 +325,10 @@ describe('Cache module', function () {
   });
 
   describe('Memcached store', function(){
-    var opt = {cache:null}, sandbox;
+    var opt, sandbox;
+
     before(function(){
+      opt = {cache: null};
       sandbox = sinon.sandbox.create();
       var ms = new MemoryStore();
       ms._set = ms.set;

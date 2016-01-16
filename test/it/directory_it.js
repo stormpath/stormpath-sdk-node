@@ -52,9 +52,13 @@ describe('Directory',function(){
 
       describe('when saved and re-fetched',function(){
         var customDataAfterGet;
-        var propertyName = helpers.uniqId();
-        var propertyValue = helpers.uniqId();
+        var propertyName;
+        var propertyValue;
+
         before(function(done){
+          propertyName = helpers.uniqId();
+          propertyValue = helpers.uniqId();
+
           customData[propertyName] = propertyValue;
           customData.save(function(err){
             if(err){ throw err; }
@@ -100,9 +104,13 @@ describe('Directory',function(){
 
       describe('when saved and re-fetched',function(){
         var customDataAfterGet;
-        var propertyName = helpers.uniqId();
-        var propertyValue = helpers.uniqId();
+        var propertyName;
+        var propertyValue;
+
         before(function(done){
+          propertyName = helpers.uniqId();
+          propertyValue = helpers.uniqId();
+
           customData[propertyName] = propertyValue;
           customData.save(function(err){
             if(err){ throw err; }

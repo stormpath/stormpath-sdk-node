@@ -5,10 +5,15 @@ var ApiKey = require('../lib/authc/ApiKey');
 
 describe('authc', function () {
   describe('ApiKey class', function(){
-    var id = 'id';
-    var secret = 'boom!';
+    var id;
+    var secret;
+    var apiKey;
 
-    var apiKey = new ApiKey(id, secret);
+    beforeEach(function () {
+      id = 'id';
+      secret = 'boom!';
+      apiKey = new ApiKey(id, secret);
+    });
 
     it('should expose id and secret as fields', function(){
       apiKey.id.should.be.equal(id);

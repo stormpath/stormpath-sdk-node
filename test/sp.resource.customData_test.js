@@ -66,22 +66,29 @@ describe('Resources: ', function () {
 
     describe('when fetched via resource.getCustomData',function(){
       var resource;
-      var dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
-      var sandbox = sinon.sandbox.create();
-      var cacheSpy = sinon.spy(dataStore.cacheHandler.cacheManager.caches.customData,'put');
-      var parentHref = 'http://api.stormpath.com/v1/accounts/' + common.uuid();
-        resource = instantiate(Account,{
+      var dataStore;
+      var sandbox;
+      var cacheSpy;
+      var parentHref;
+      var customDataObject;
+
+      before(function(done){
+        dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
+        sandbox = sinon.sandbox.create();
+        cacheSpy = sinon.spy(dataStore.cacheHandler.cacheManager.caches.customData, 'put');
+        parentHref = 'http://api.stormpath.com/v1/accounts/' + common.uuid();
+
+        resource = instantiate(Account, {
           href: parentHref,
           customData: {
             href: parentHref + '/customData'
           }
         }, null, dataStore);
-      var customDataObject = {
-        href: resource.customData.href,
-        hello: 'world'
-      };
 
-      before(function(done){
+        customDataObject = {
+          href: resource.customData.href,
+          hello: 'world'
+        };
 
         sandbox.stub(dataStore.requestExecutor, 'execute', function (request) {
           // callback with a mock custom data resource
@@ -114,8 +121,11 @@ describe('Resources: ', function () {
 
       });
       describe('and reserved properties are added',function(){
-        var reserverdFieldName = 'createdAt';
+        var reserverdFieldName;
+
         before(function(){
+          reserverdFieldName = 'createdAt';
+
           resource.customData[reserverdFieldName] = common.uuid();
         });
         describe('and save is called on the parent resource',function(){
@@ -129,9 +139,13 @@ describe('Resources: ', function () {
         });
       });
       describe('and non-reserved properties are added',function(){
-        var customFieldName = 'myCustomProperty';
-        var customFieldValue = common.uuid();
+        var customFieldName;
+        var customFieldValue;
+
         before(function(){
+          customFieldName = 'myCustomProperty';
+          customFieldValue = common.uuid();
+
           resource.customData[customFieldName] = customFieldValue;
         });
         describe('and save is called on the parent resource',function(){

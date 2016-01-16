@@ -30,10 +30,13 @@ describe('Client', function() {
   });
 
   describe('getAccessToken',function(){
-    var AccountAccessTokenFixture = require('../fixtures/account-token');
-    var accountCase = new AccountAccessTokenFixture();
+    var AccountAccessTokenFixture;
+    var accountCase;
 
     before(function(done) {
+      AccountAccessTokenFixture = require('../fixtures/account-token');
+      accountCase = new AccountAccessTokenFixture();
+
       accountCase.before(done);
     });
 
@@ -54,10 +57,13 @@ describe('Client', function() {
   });
 
   describe('getRefreshToken',function(){
-    var AccountRefreshTokenFixture = require('../fixtures/account-token');
-    var accountCase = new AccountRefreshTokenFixture();
+    var AccountRefreshTokenFixture;
+    var accountCase;
 
     before(function(done) {
+      AccountRefreshTokenFixture = require('../fixtures/account-token');
+      accountCase = new AccountRefreshTokenFixture();
+
       accountCase.before(done);
     });
 
@@ -78,7 +84,11 @@ describe('Client', function() {
   });
 
   describe('getCurrentTenant', function() {
-    var Tenant = require('../../lib/resource/Tenant');
+    var Tenant;
+
+    before(function() {
+      Tenant = require('../../lib/resource/Tenant');
+    });
 
     it('should not err', function(done) {
       helpers.getClient(function(client) {

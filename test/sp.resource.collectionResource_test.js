@@ -19,7 +19,12 @@ var DataStore = require('../lib/ds/DataStore');
 
 describe('Resources: ', function () {
   "use strict";
-  var apiKey = {id: 1, secret: 2};
+  var apiKey;
+
+  beforeEach(function () {
+    apiKey = {id: 1, secret: 2};
+  });
+
   describe('CollectionResource class', function () {
     describe('constructor: ', function () {
       /*data, dataStore, query, InstanceCtor*/
@@ -35,11 +40,15 @@ describe('Resources: ', function () {
 
       describe('if provided data don`t have items:', function () {
         var cr;
-        var data = {};
+        var data;
 
         function createCollectionResource() {
           cr = new CollectionResource(data);
         }
+
+        beforeEach(function () {
+          data = {};
+        });
 
         it('should not throw exception', function () {
           createCollectionResource.should.not.throw();
@@ -52,12 +61,17 @@ describe('Resources: ', function () {
 
       describe('if provided data has items:', function () {
         describe('if items is a raw json', function () {
-          var data = {items: [
-            {href: ''},
-            {href: ''}
-          ]};
+          var data;
           var cr;
+
           before(function () {
+            data = {
+              items: [
+                {href: ''},
+                {href: ''}
+              ]
+            };
+
             cr = new CollectionResource(data);
           });
 
@@ -69,13 +83,20 @@ describe('Resources: ', function () {
         });
 
         describe('if items already converted', function () {
-          var ds = new DataStore({client: {apiKey: apiKey}});
-          var data = {items: [
-            new Tenant({href: ''}, ds),
-            new Tenant({href: ''}, ds)
-          ]};
+          var ds;
+          var data;
           var cr;
+
           before(function () {
+            ds = new DataStore({client: {apiKey: apiKey}});
+
+            data = {
+              items: [
+                new Tenant({href: ''}, ds),
+                new Tenant({href: ''}, ds)
+              ]
+            };
+
             cr = new CollectionResource(data);
           });
 
@@ -99,8 +120,13 @@ describe('Resources: ', function () {
 
       describe('if query provided:', function () {
         var cr;
-        var data = {}, query = {};
+        var data;
+        var query;
+
         before(function () {
+          data = {};
+          query = {};
+
           cr = new CollectionResource(data, query);
         });
         it('query field should be undefined', function () {
@@ -168,15 +194,20 @@ describe('Resources: ', function () {
 
       describe('with items list', function () {
         var cr, sandbox, iteratorSpy, cbSpy, getResourceStub;
-        var ds = new DataStore({client: {apiKey: apiKey}});
-        var data = {
-          offset: 0,
-          items:[
-          new Tenant({href:''}, ds),
-          new Tenant({href:''}, ds)
-        ]};
+        var ds;
+        var data;
 
         before(function () {
+          ds = new DataStore({client: {apiKey: apiKey}});
+
+          data = {
+            offset: 0,
+            items: [
+              new Tenant({href: ''}, ds),
+              new Tenant({href: ''}, ds)
+            ]
+          };
+
           cr = new CollectionResource(data, null, Tenant, ds);
           sandbox = sinon.sandbox.create();
           iteratorSpy = sandbox.spy(iterator);
@@ -210,33 +241,43 @@ describe('Resources: ', function () {
       describe('when all items in current page are processed', function () {
         var sandbox;
         var cr, iteratorSpy, getResourceStub;
-        var ds = new DataStore({client: {apiKey: apiKey}});
-        var query = {q: 'boom!'};
-        var data = {
-          href: 'test_href',
-          query: query,
-          offset: 0,
-          limit: 2,
-          items:[
-            new Tenant({href:''}, ds),
-            new Tenant({href:''}, ds)
-          ]};
-
-        var nextQuery = {
-          q: query.q,
-          offset: 2,
-          limit: 100
-        };
-        var data2 = {
-          query: query,
-          offset: 2,
-          limit: 2,
-          items:[
-            new Tenant({href:''}, ds),
-            new Tenant({href:''}, ds)
-          ]};
+        var ds;
+        var query;
+        var data;
+        var nextQuery;
+        var data2;
 
         before(function (done) {
+          ds = new DataStore({client: {apiKey: apiKey}});
+          query = {q: 'boom!'};
+
+          data = {
+            href: 'test_href',
+            query: query,
+            offset: 0,
+            limit: 2,
+            items:[
+              new Tenant({href: ''}, ds),
+              new Tenant({href: ''}, ds)
+            ]
+          };
+
+          nextQuery = {
+            q: query.q,
+            offset: 2,
+            limit: 100
+          };
+
+          data2 = {
+            query: query,
+            offset: 2,
+            limit: 2,
+            items: [
+              new Tenant({href: ''}, ds),
+              new Tenant({href: ''}, ds)
+            ]
+          };
+
           sandbox = sinon.sandbox.create();
 
           getResourceStub = sandbox.stub(ds, 'getResource',
@@ -269,11 +310,16 @@ describe('Resources: ', function () {
     });
 
     describe('async methods with pagination', function(){
-      var ds = new DataStore({client: {apiKey: {id:1, secret: 2}}});
+      var ds;
+
+      beforeEach(function () {
+        ds = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
+      });
 
       function test(method){
         return function(){
-          var n = 250;
+          var n;
+
           function createAppsCollection(items, offset, limit){
             return {
               href: '/tenants/78KBoSJ5EkMD8OVmBV934Y/applications',
@@ -299,10 +345,13 @@ describe('Resources: ', function () {
             return items;
           }
 
-          var i, items, pages = [], applications;
+          var i, items, pages, applications;
           var sandbox, iteratorSpy, callbackSpy, asyncIteratorSpy, asyncCallbackSpy;
 
           before(function(done){
+            n = 250;
+            pages = [];
+
             // set up:
             // 1. items
             items = createNApps(n);
@@ -368,7 +417,8 @@ describe('Resources: ', function () {
 
       function testLimit(method){
         return function(){
-          var n = 250;
+          var n;
+
           function createAppsCollection(items, offset, limit){
             return {
               href: '/tenants/78KBoSJ5EkMD8OVmBV934Y/applications',
@@ -394,10 +444,13 @@ describe('Resources: ', function () {
             return items;
           }
 
-          var i, items, pages = [], applications;
+          var i, items, pages, applications;
           var sandbox, iteratorSpy, callbackSpy, asyncIteratorSpy, asyncCallbackSpy;
 
           before(function(done){
+            n = 250;
+            pages = [];
+
             // set up:
             // 1. items
             items = createNApps(n);
@@ -463,8 +516,8 @@ describe('Resources: ', function () {
 
       function testBoolean(method, shouldBeCalledCount){
         return function(){
-          var n = 250;
-          shouldBeCalledCount = shouldBeCalledCount || n;
+          var n;
+
           function createAppsCollection(items, offset, limit){
             return {
               href: '/tenants/78KBoSJ5EkMD8OVmBV934Y/applications',
@@ -490,10 +543,14 @@ describe('Resources: ', function () {
             return items;
           }
 
-          var i, items, pages = [], applications;
+          var i, items, pages, applications;
           var sandbox, iteratorSpy, callbackSpy, asyncIteratorSpy, asyncCallbackSpy;
 
           before(function(done){
+            n = 250;
+            shouldBeCalledCount = shouldBeCalledCount || n;
+            pages = [];
+
             // set up:
             // 1. items
             items = createNApps(n);
@@ -566,7 +623,8 @@ describe('Resources: ', function () {
 
       function testCheck(method){
         return function(){
-          var n = 250;
+          var n;
+
           function createAppsCollection(items, offset, limit){
             return {
               href: '/tenants/78KBoSJ5EkMD8OVmBV934Y/applications',
@@ -592,10 +650,13 @@ describe('Resources: ', function () {
             return items;
           }
 
-          var i, items, pages = [], applications;
+          var i, items, pages, applications;
           var sandbox, iteratorSpy, callbackSpy, asyncIteratorSpy, asyncCallbackSpy;
 
           before(function(done){
+            n = 250;
+            pages = [];
+
             // set up:
             // 1. items
             items = createNApps(n);
@@ -667,7 +728,8 @@ describe('Resources: ', function () {
 
       function testSortBy(method){
         return function(){
-          var n = 250;
+          var n;
+
           function createAppsCollection(items, offset, limit){
             return {
               href: '/tenants/78KBoSJ5EkMD8OVmBV934Y/applications',
@@ -693,10 +755,13 @@ describe('Resources: ', function () {
             return items;
           }
 
-          var i, items, pages = [], applications;
+          var i, items, pages, applications;
           var sandbox, iteratorSpy, callbackSpy, asyncIteratorSpy, asyncCallbackSpy;
 
           before(function(done){
+            n = 250;
+            pages = [];
+
             // set up:
             // 1. items
             items = createNApps(n);
@@ -768,7 +833,8 @@ describe('Resources: ', function () {
 
       function testReduce(method){
         return function(){
-          var n = 250;
+          var n;
+
           function createAppsCollection(items, offset, limit){
             return {
               href: '/tenants/78KBoSJ5EkMD8OVmBV934Y/applications',
@@ -794,10 +860,13 @@ describe('Resources: ', function () {
             return items;
           }
 
-          var i, items, pages = [], applications;
+          var i, items, pages, applications;
           var sandbox, iteratorSpy, callbackSpy, asyncIteratorSpy, asyncCallbackSpy;
 
           before(function(done){
+            n = 250;
+            pages = [];
+
             // set up:
             // 1. items
             items = createNApps(n);

@@ -8,7 +8,12 @@ describe('Cache module',function(){
 
   describe('Cache Manager class', function(){
     describe('By default', function(){
-      var manager = new CacheManager();
+      var manager;
+
+      beforeEach(function () {
+        manager = new CacheManager();
+      });
+
       it('cache should be empty', function(){
         /* jshint -W030 */
         manager.caches.should.deep.equal({});
@@ -20,9 +25,13 @@ describe('Cache module',function(){
     });
 
     describe('create cache',function(){
-      var manager = new CacheManager();
-      var region = common.uuid();
+      var manager;
+      var region;
+
       before(function(){
+        manager = new CacheManager();
+        region = common.uuid();
+
         manager.createCache(region);
       });
       it('should create cache instance', function(){
@@ -34,9 +43,13 @@ describe('Cache module',function(){
     });
 
     describe('get cache',function(){
-      var manager = new CacheManager();
-      var region = common.uuid();
+      var manager;
+      var region;
+
       before(function(){
+        manager = new CacheManager();
+        region = common.uuid();
+
         manager.createCache(region);
       });
       it('should return cache instance', function(){

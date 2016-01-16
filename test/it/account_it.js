@@ -12,10 +12,10 @@ var CustomData = require('../../lib/resource/CustomData');
 var AccountAccessTokenFixture = require('../fixtures/account-token');
 
 describe('Account', function() {
-
-  var fixture = new AccountAccessTokenFixture();
+  var fixture;
 
   before(function(done) {
+    fixture = new AccountAccessTokenFixture();
     fixture.before(done);
   });
 
@@ -90,10 +90,13 @@ describe('Account', function() {
 
       describe('when saved and re-fetched', function() {
         var customDataAfterGet;
-        var propertyName = helpers.uniqId();
-        var propertyValue = helpers.uniqId();
+        var propertyName;
+        var propertyValue;
 
         before(function(done) {
+          propertyName = helpers.uniqId();
+          propertyValue = helpers.uniqId();
+
           customData[propertyName] = propertyValue;
 
           customData.save(function(err) {
@@ -145,10 +148,13 @@ describe('Account', function() {
 
       describe('when saved and re-fetched', function() {
         var customDataAfterGet;
-        var propertyName = helpers.uniqId();
-        var propertyValue = helpers.uniqId();
+        var propertyName;
+        var propertyValue;
 
         before(function(done) {
+          propertyName = helpers.uniqId();
+          propertyValue = helpers.uniqId();
+
           customData[propertyName] = propertyValue;
 
           customData.save(function(err) {

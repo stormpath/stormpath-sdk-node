@@ -12,15 +12,23 @@ var GroupMembership = require('../lib/resource/GroupMembership');
 describe('Resources: ', function () {
   "use strict";
   describe('Group resource', function () {
-    var dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
+    var dataStore;
+
+    beforeEach(function () {
+      dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
+    });
 
     describe('add account', function () {
       describe('if group href not set', function () {
-        var group = new Group(dataStore);
+        var group;
 
         function addAccountWithoutGroupHref() {
           group.addAccount();
         }
+
+        beforeEach(function () {
+          group = new Group(dataStore);
+        });
 
         it('should throw unhandled exception', function () {
           addAccountWithoutGroupHref.should
@@ -30,10 +38,15 @@ describe('Resources: ', function () {
 
       describe('if group href is set', function () {
         var sandbox, group, createResourceStub, cbSpy, grp, opt;
-        var account = {href: 'boom1!'};
-        var accountHref = 'boom2!';
-        var createGroupMembershipHref = '/groupMemberships';
+        var account;
+        var accountHref;
+        var createGroupMembershipHref;
+
         before(function () {
+          account = {href: 'boom1!'};
+          accountHref = 'boom2!';
+          createGroupMembershipHref = '/groupMemberships';
+
           sandbox = sinon.sandbox.create();
           opt = {};
           grp = {href: 'acc_boom', groupMemberships: {href: 'boom!'}};
@@ -160,11 +173,15 @@ describe('Resources: ', function () {
 
     describe('get account membership', function () {
       describe('if account membership not set', function () {
-        var group = new Group(dataStore);
+        var group;
 
         function getAccountMembershipsWithoutHref() {
           group.getAccountMemberships();
         }
+
+        beforeEach(function () {
+          group = new Group(dataStore);
+        });
 
         it('should throw unhandled exception', function () {
           getAccountMembershipsWithoutHref.should
@@ -232,11 +249,15 @@ describe('Resources: ', function () {
 
       describe('get custom data', function () {
         describe('if custom data not set', function () {
-          var account = new Account(dataStore);
+          var account;
 
           function getCustomDataWithoutHref() {
             account.getCustomData();
           }
+
+          beforeEach(function () {
+            account = new Account(dataStore);
+          });
 
           it('should throw unhandled exception', function () {
             getCustomDataWithoutHref.should

@@ -16,15 +16,26 @@ describe('ds:', function () {
 
     describe('when constructed', function () {
       describe('and request executor not provided in config', function () {
-        var ds = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
+        var ds;
+
+        beforeEach(function () {
+          ds = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
+        });
+
         it('should create instance of default RequestExecutor', function () {
           ds.requestExecutor.should.be.an.instanceof(RequestExecutor);
         });
       });
 
       describe('and request executor was provided in config', function () {
-        var reqExec = new RequestExecutor({client: {apiKey: {id: 1, secret: 2}}});
-        var ds = new DataStore({requestExecutor: reqExec});
+        var reqExec;
+        var ds;
+
+        beforeEach(function () {
+          reqExec = new RequestExecutor({client: {apiKey: {id: 1, secret: 2}}});
+          ds = new DataStore({requestExecutor: reqExec});
+        });
+
         it('should reuse provided request executor instance', function () {
           ds.requestExecutor.should.be.equal(reqExec);
         });
@@ -43,13 +54,17 @@ describe('ds:', function () {
     });
 
     describe('getResource()', function () {
-      var ds = new DataStore({
-        cacheOptions: {
-          store: 'memory'
-        },
-        client: {
-          apiKey: {id: 1, secret: 2}
-        }
+      var ds;
+
+      beforeEach(function () {
+        ds = new DataStore({
+          cacheOptions: {
+            store: 'memory'
+          },
+          client: {
+            apiKey: {id: 1, secret: 2}
+          }
+        });
       });
 
       describe('without required params', function () {
@@ -63,14 +78,18 @@ describe('ds:', function () {
       });
 
       describe('when resource is already cached', function () {
-
-        var resource = {
-          href: '/tenants/' + common.uuid(),
-          data: common.uuid()
-        };
-        var cbSpy = sinon.spy();
+        var resource;
+        var cbSpy;
         var sandbox, cacheGetSpy, reqExecSpy;
+
         before(function (done) {
+          resource = {
+            href: '/tenants/' + common.uuid(),
+            data: common.uuid()
+          };
+
+          cbSpy = sinon.spy();
+
           sandbox = sinon.sandbox.create();
           reqExecSpy = sandbox.spy(ds.requestExecutor, 'execute');
           var cache = ds.cacheHandler.cacheManager.getCache('tenants');
@@ -100,13 +119,18 @@ describe('ds:', function () {
        });*/
 
       describe('when resource is not in cache', function () {
-        var resource = {
-          href: '/tenants/' + common.uuid(),
-          data: common.uuid()
-        };
-        var cbSpy = sinon.spy();
+        var resource;
+        var cbSpy;
         var sandbox, cacheGetSpy, cachePutSpy, reqExecStub;
+
         before(function () {
+          resource = {
+            href: '/tenants/' + common.uuid(),
+            data: common.uuid()
+          };
+
+          cbSpy = sinon.spy();
+
           sandbox = sinon.sandbox.create();
           var cache = ds.cacheHandler.cacheManager.getCache('tenants');
           cacheGetSpy = sandbox.spy(cache, 'get');
@@ -138,11 +162,16 @@ describe('ds:', function () {
       });
 
       describe('if href not cached', function () {
-        var href = '/directory/2' + random();
-        var data = {'data': random()};
-        var cbSpy = sinon.spy();
+        var href;
+        var data;
+        var cbSpy;
         var sandbox, reqExecStub;
+
         before(function () {
+          href = '/directory/2' + random();
+          data = {'data': random()};
+          cbSpy = sinon.spy();
+
           sandbox = sinon.sandbox.create();
           reqExecStub = sandbox.stub(ds.requestExecutor, 'execute', function (req, cb) {
             cb(null, data);
@@ -163,24 +192,30 @@ describe('ds:', function () {
       });
 
       describe('request error handling', function () {
-        var ds = new DataStore({
-          cacheOptions: {
-            tenants: {
-              store: MemoryStore,
-              ttl: 60,
-              tti: 60
-            }
-          },
-          client: {
-            apiKey: {id: 1, secret: 2}
-          }
-        });
-
-        var href = '/tenants/3' + random();
-        var cbSpy = sinon.spy();
-        var error = new Error();
+        var ds;
+        var href;
+        var cbSpy;
+        var error;
         var sandbox, reqExecStub;
+
         before(function () {
+          ds = new DataStore({
+            cacheOptions: {
+              tenants: {
+                store: MemoryStore,
+                ttl: 60,
+                tti: 60
+              }
+            },
+            client: {
+              apiKey: {id: 1, secret: 2}
+            }
+          });
+
+          href = '/tenants/3' + random();
+          cbSpy = sinon.spy();
+          error = new Error();
+
           sandbox = sinon.sandbox.create();
           reqExecStub = sandbox.stub(ds.requestExecutor, 'execute', function (req, cb) {
             cb(error);
@@ -214,23 +249,28 @@ describe('ds:', function () {
       });
 
       describe('request undefined state handling', function () {
-        var ds = new DataStore({
-          cacheOptions: {
-            tenants: {
-              store: MemoryStore,
-              ttl: 60,
-              tti: 60
-            }
-          },
-          client: {
-            apiKey: {id: 1, secret: 2}
-          }
-        });
-
-        var href = '/tenants/3' + random();
-        var cbSpy = sinon.spy();
+        var ds;
+        var href;
+        var cbSpy;
         var sandbox, reqExecStub;
+
         before(function () {
+          ds = new DataStore({
+            cacheOptions: {
+              tenants: {
+                store: MemoryStore,
+                ttl: 60,
+                tti: 60
+              }
+            },
+            client: {
+              apiKey: {id: 1, secret: 2}
+            }
+          });
+
+          href = '/tenants/3' + random();
+          cbSpy = sinon.spy();
+
           sandbox = sinon.sandbox.create();
           reqExecStub = sandbox.stub(ds.requestExecutor, 'execute', function (req, cb) {
             cb(null, null);
@@ -251,29 +291,39 @@ describe('ds:', function () {
     });
 
     describe('createResource:', function () {
-      var ds = new DataStore({
-        cacheOptions: {
-          tenants: {
-            store: MemoryStore,
-            ttl: 60,
-            tti: 60
-          }
-        },
-        client: {
-          apiKey: {id: 1, secret: 2}
-        }
-      });
-
-      var href = '/tenants/3' + random();
-      var query = {q: 'all'};
-      var data = {'data': random()};
-      var response = {
-        href: href,
-        data: random()
-      };
-      var cbSpy = sinon.spy();
+      var ds;
+      var href;
+      var query;
+      var data;
+      var response;
+      var cbSpy;
       var sandbox, cachePutSpy, reqExecStub, requestSpy;
+
       before(function () {
+        ds = new DataStore({
+          cacheOptions: {
+            tenants: {
+              store: MemoryStore,
+              ttl: 60,
+              tti: 60
+            }
+          },
+          client: {
+            apiKey: {id: 1, secret: 2}
+          }
+        });
+
+        href = '/tenants/3' + random();
+        query = {q: 'all'};
+        data = {'data': random()};
+
+        response = {
+          href: href,
+          data: random()
+        };
+
+        cbSpy = sinon.spy();
+
         sandbox = sinon.sandbox.create();
         var cache = ds.cacheHandler.cacheManager.getCache('tenants');
         cachePutSpy = sandbox.spy(cache, 'put');
@@ -321,23 +371,30 @@ describe('ds:', function () {
     });
 
     describe('save resource', function () {
-      var ds = new DataStore({
-        cacheOptions: {
-          store: 'memory',
-          ttl: 60,
-          tti: 60
-        },
-        client: {
-          apiKey: {id: 1, secret: 2}
-        }
-      });
-
-      var href = '/tenants/2' + random();
-      var data = {'data': random()};
-      var response = {'data': data, href: href};
-      var cbSpy = sinon.spy();
+      var ds;
+      var href;
+      var data;
+      var response;
+      var cbSpy;
       var sandbox, cachePutSpy, reqExecStub, requestSpy;
+
       before(function () {
+        ds = new DataStore({
+          cacheOptions: {
+            store: 'memory',
+            ttl: 60,
+            tti: 60
+          },
+          client: {
+            apiKey: {id: 1, secret: 2}
+          }
+        });
+
+        href = '/tenants/2' + random();
+        data = {'data': random()};
+        response = {'data': data, href: href};
+        cbSpy = sinon.spy();
+
         sandbox = sinon.sandbox.create();
         var cache = ds.cacheHandler.cacheManager.getCache('tenants');
         cachePutSpy = sandbox.spy(cache, 'put');
@@ -375,23 +432,30 @@ describe('ds:', function () {
     });
 
     describe('delete resource', function () {
-      var ds = new DataStore({
-        cacheOptions: {
-          store: MemoryStore,
-          ttl: 60,
-          tti: 60
-        },
-        client: {
-          apiKey: {id: 1, secret: 2}
-        }
-      });
-
-      var href = '/tenants/2' + random();
-      var data = {'data': random()};
-      var response = {'data': data, href: href};
-      var cbSpy = sinon.spy();
+      var ds;
+      var href;
+      var data;
+      var response;
+      var cbSpy;
       var sandbox, cacheDeleteSpy, reqExecStub, requestSpy;
+
       before(function () {
+        ds = new DataStore({
+          cacheOptions: {
+            store: MemoryStore,
+            ttl: 60,
+            tti: 60
+          },
+          client: {
+            apiKey: {id: 1, secret: 2}
+          }
+        });
+
+        href = '/tenants/2' + random();
+        data = {'data': random()};
+        response = {'data': data, href: href};
+        cbSpy = sinon.spy();
+
         sandbox = sinon.sandbox.create();
         var cache = ds.cacheHandler.cacheManager.getCache('tenants');
         cacheDeleteSpy = sandbox.spy(cache, 'delete');
