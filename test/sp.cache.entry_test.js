@@ -85,12 +85,14 @@ describe('Cache module',function(){
         cacheEntry = createVoidCacheEntry();
       });
 
-      it('should change lastAccessedTime to current for cache entry', function(){
+      it('should change lastAccessedTime to current for cache entry', function(done){
         var was = cacheEntry.lastAccessedAt;
 
-        cacheEntry.touch();
-
-        cacheEntry.lastAccessedAt.should.be.gt(was);
+        setTimeout(function () {
+          cacheEntry.touch();
+          cacheEntry.lastAccessedAt.should.be.gt(was);
+          done();
+        }, 20);
       });
     });
 
