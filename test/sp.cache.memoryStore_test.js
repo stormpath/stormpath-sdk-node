@@ -8,7 +8,7 @@ describe('Cache module', function () {
   describe('In memory cache store', function () {
     var memoryStore;
 
-    beforeEach(function () {
+    before(function () {
       memoryStore = new MemoryStore();
     });
 

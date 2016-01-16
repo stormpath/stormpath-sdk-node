@@ -10,7 +10,7 @@ describe('Resources: ', function () {
     describe('constructor', function () {
       var apiKey;
 
-      beforeEach(function () {
+      before(function () {
         apiKey = {id: 'id', secret: 'secret'};
       });
 

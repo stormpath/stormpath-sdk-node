@@ -20,7 +20,7 @@ describe('Resources: ', function () {
   describe('Account resource class', function () {
     var dataStore;
 
-    beforeEach(function () {
+    before(function () {
       dataStore = new DataStore({
         client: {
           apiKey: {
@@ -40,7 +40,7 @@ describe('Resources: ', function () {
           account.getGroups();
         }
 
-        beforeEach(function () {
+        before(function () {
           account = new Account(dataStore);
         });
 
@@ -93,7 +93,7 @@ describe('Resources: ', function () {
           account.getGroupMemberships();
         }
 
-        beforeEach(function () {
+        before(function () {
           account = new Account(dataStore);
         });
 
@@ -146,7 +146,7 @@ describe('Resources: ', function () {
           account.addToGroup();
         }
 
-        beforeEach(function () {
+        before(function () {
           account = new Account(dataStore);
         });
 
@@ -268,7 +268,7 @@ describe('Resources: ', function () {
             account.getCustomData();
           }
 
-          beforeEach(function () {
+          before(function () {
             account = new Account(dataStore);
           });
 

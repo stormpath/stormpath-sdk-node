@@ -21,7 +21,7 @@ describe('Resources: ', function () {
   "use strict";
   var apiKey;
 
-  beforeEach(function () {
+  before(function () {
     apiKey = {id: 1, secret: 2};
   });
 
@@ -46,7 +46,7 @@ describe('Resources: ', function () {
           cr = new CollectionResource(data);
         }
 
-        beforeEach(function () {
+        before(function () {
           data = {};
         });
 
@@ -312,7 +312,7 @@ describe('Resources: ', function () {
     describe('async methods with pagination', function(){
       var ds;
 
-      beforeEach(function () {
+      before(function () {
         ds = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
       });
 

@@ -18,7 +18,7 @@ describe('Resources: ', function () {
   describe('Directory resource', function () {
     var dataStore;
 
-    beforeEach(function () {
+    before(function () {
       dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
     });
 

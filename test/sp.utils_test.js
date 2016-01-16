@@ -36,7 +36,7 @@ describe('util', function () {
     var obj;
     var def;
 
-    beforeEach(function () {
+    before(function () {
       obj = {test: 'me'};
       def = {all: 'ok'};
     });
@@ -67,7 +67,7 @@ describe('util', function () {
 
     function Class() {}
 
-    beforeEach(function () {
+    before(function () {
       Class.prototype.field = 'boom!';
 
       objToCopy = new Class();
@@ -125,7 +125,7 @@ describe('util', function () {
   describe('base64', function(){
     var test;
 
-    beforeEach(function () {
+    before(function () {
       test = 'boom!';
     });
 

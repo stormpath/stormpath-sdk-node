@@ -52,7 +52,7 @@ describe('Configuration loader', function () {
     fakeFs.patch();
   }
 
-  beforeEach(function () {
+  before(function () {
     afterIt = [];
     loader = configLoader();
   });

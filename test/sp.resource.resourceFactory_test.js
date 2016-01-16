@@ -21,7 +21,7 @@ describe('Resources: ', function () {
     describe('if data is a collection resource', function(){
       var data;
 
-      beforeEach(function () {
+      before(function () {
         data = {
           href: '',
           items: [{href: ''}, {href: ''}],
@@ -43,7 +43,7 @@ describe('Resources: ', function () {
     describe('if data is a resource', function(){
       var data;
 
-      beforeEach(function () {
+      before(function () {
         data = {href: ''};
       });
 

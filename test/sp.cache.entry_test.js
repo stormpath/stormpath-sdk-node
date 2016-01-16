@@ -44,7 +44,7 @@ describe('Cache module',function(){
       var lastAccessedAt;
       var cacheEntry;
 
-      beforeEach(function () {
+      before(function () {
         entry = {};
         createdAt = new Date();
         lastAccessedAt = new Date();
@@ -81,7 +81,7 @@ describe('Cache module',function(){
     describe('call to touch method', function(){
       var cacheEntry;
 
-      beforeEach(function () {
+      before(function () {
         cacheEntry = createVoidCacheEntry();
       });
 
@@ -98,7 +98,7 @@ describe('Cache module',function(){
       describe('if entry is fresh', function(){
         var cacheEntry;
 
-        beforeEach(function () {
+        before(function () {
           cacheEntry = createVoidCacheEntry();
         });
 
@@ -112,7 +112,7 @@ describe('Cache module',function(){
       describe('if entry is idle for to long', function(){
         var cacheEntry;
 
-        beforeEach(function () {
+        before(function () {
           cacheEntry = createVoidCacheEntry();
           cacheEntry.lastAccessedAt -= 500 * 1000;
         });
@@ -127,7 +127,7 @@ describe('Cache module',function(){
       describe('if entry is created a long time ago', function(){
         var cacheEntry;
 
-        beforeEach(function () {
+        before(function () {
           cacheEntry = createVoidCacheEntry();
           cacheEntry.createdAt -= 500 * 1000;
         });
@@ -146,7 +146,7 @@ describe('Cache module',function(){
       var expectLastAccessedAt;
       var object;
 
-      beforeEach(function () {
+      before(function () {
         cacheEntry = createVoidCacheEntry();
         expectCreatedAt = moment.utc(cacheEntry.createdAt).format('YYYY-MM-DD HH:mm:ss.SSS');
         expectLastAccessedAt = moment.utc(cacheEntry.lastAccessedAt).format('YYYY-MM-DD HH:mm:ss.SSS');
@@ -165,7 +165,7 @@ describe('Cache module',function(){
       var expectLastAccessedAt;
       var parsedCacheEntry;
 
-      beforeEach(function () {
+      before(function () {
         cacheEntry = createVoidCacheEntry();
         expectCreatedAt = moment.utc(cacheEntry.createdAt).format('YYYY-MM-DD HH:mm:ss.SSS');
         expectLastAccessedAt = moment.utc(cacheEntry.lastAccessedAt).format('YYYY-MM-DD HH:mm:ss.SSS');
