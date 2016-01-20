@@ -18,7 +18,7 @@ var Stormpath = require('../lib');
 chai.use(sinonChai);
 
 function u(){}
-u.BASE_URL = 'https://api.stormpath.com/v1';
+u.BASE_URL = 'https://api.stormpath.com';
 /** adds '/v1' to relative URL, to work with nock request mocker  */
 u.v1 = function(s){return '/v1' + s;};
 
