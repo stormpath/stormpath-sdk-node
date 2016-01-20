@@ -994,9 +994,9 @@ describe('Resources: ', function () {
           app.getDefaultAccountStore(cbSpy);
         });
 
-        it('should call cb without options', function () {
+        it('should call cb without arguments', function () {
           cbSpy.should.have.been.calledOnce;
-          cbSpy.should.have.been.calledWith(undefined, undefined);
+          cbSpy.should.have.been.calledWithExactly();
         });
       });
     });
@@ -1099,9 +1099,9 @@ describe('Resources: ', function () {
           app.getDefaultGroupStore(cbSpy);
         });
 
-        it('should call cb without options', function () {
+        it('should call cb without arguments', function () {
           cbSpy.should.have.been.calledOnce;
-          cbSpy.should.have.been.calledWith(undefined, undefined);
+          cbSpy.should.have.been.calledWithExactly();
         });
       });
     });

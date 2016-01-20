@@ -330,9 +330,9 @@ describe('Resources: ', function () {
           app.getProviderData(cbSpy);
         });
 
-        it('should call cb without options', function () {
+        it('should call cb without arguments', function () {
           cbSpy.should.have.been.calledOnce;
-          cbSpy.should.have.been.calledWith();
+          cbSpy.should.have.been.calledWithExactly();
         });
       });
     });
