@@ -566,7 +566,18 @@ describe('Resources: ', function () {
             sandbox = sinon.sandbox.create();
             // 4. iterator and callback spies
             function iterator(item, cb){
-              cb(item.description % 2 === 0);
+              var result = true;
+
+              switch (method) {
+                case 'detect':
+                case 'some':
+                case 'any':
+                  result = false;
+              }
+
+              cb(result);
+
+              return result;
             }
             iteratorSpy = sandbox.spy(iterator);
             asyncIteratorSpy = sandbox.spy(iterator);
