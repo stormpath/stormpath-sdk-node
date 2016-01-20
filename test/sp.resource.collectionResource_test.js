@@ -515,9 +515,9 @@ describe('Resources: ', function () {
       }
 
       function testBoolean(method, shouldBeCalledCount){
-        return function(){
-          var n;
+        shouldBeCalledCount = shouldBeCalledCount || 250;
 
+        return function(){
           function createAppsCollection(items, offset, limit){
             return {
               href: '/tenants/78KBoSJ5EkMD8OVmBV934Y/applications',
@@ -547,21 +547,19 @@ describe('Resources: ', function () {
           var sandbox, iteratorSpy, callbackSpy, asyncIteratorSpy, asyncCallbackSpy;
 
           before(function(done){
-            n = 250;
-            shouldBeCalledCount = shouldBeCalledCount || n;
             pages = [];
 
             // set up:
             // 1. items
-            items = createNApps(n);
+            items = createNApps(shouldBeCalledCount);
             // 2. create app collection resource
-            for (i = 0; i < Math.ceil(n/100); i++){
+            for (i = 0; i < Math.ceil(shouldBeCalledCount/100); i++){
               pages.push(createAppsCollection(items, i*100, (i+1)*100));
             }
             applications = instantiate(Application, pages[0], {}, ds);
             // 3. nock
             nock(u.BASE_URL).get(u.v1(applications.href)).reply(200,pages);
-            for (i = 1; i < Math.ceil(n/100); i++) {
+            for (i = 1; i < Math.ceil(shouldBeCalledCount/100); i++) {
               var ref = u.v1(applications.href) + '?' + querystring.stringify({offset: i * 100, limit: 100});
               nock(u.BASE_URL).get(ref).reply(200, pages[i]);
             }
@@ -595,17 +593,17 @@ describe('Resources: ', function () {
             sandbox.restore();
           });
 
+          it('should call iterator '+ shouldBeCalledCount +' times', function(){
+            iteratorSpy.should.have.been.calledBefore(callbackSpy);
+            iteratorSpy.callCount.should.be.equal(shouldBeCalledCount);
+          });
+
           it('should call iterators with same arguments', function(){
             for (var i = 0; i < shouldBeCalledCount; i++){
               var asyncArgs = asyncIteratorSpy.getCall(i).args;
               var args = iteratorSpy.getCall(i).args;
               asyncArgs[0].should.be.deep.equal(_.pick(args[0], 'href', 'name', 'description', 'status'));
             }
-          });
-
-          it('should call iterator '+ shouldBeCalledCount +' times', function(){
-            iteratorSpy.should.have.been.calledBefore(callbackSpy);
-            iteratorSpy.callCount.should.be.equal(shouldBeCalledCount);
           });
 
           it('should call callback once', function(){
