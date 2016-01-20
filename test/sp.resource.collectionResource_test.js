@@ -619,13 +619,6 @@ describe('Resources: ', function () {
 
           it('should call callback once', function(){
             callbackSpy.should.have.been.calledOnce;
-            var asyncArgs = asyncCallbackSpy.getCall(0).args[0];
-            var args = callbackSpy.getCall(0).args[0];
-            if (asyncArgs !== true && asyncArgs !== false){
-              args = _.pick(callbackSpy.getCall(0).args[0], 'href', 'name', 'description', 'status');
-            }
-
-            args.should.be.deep.equal(asyncArgs);
           });
         };
       }
