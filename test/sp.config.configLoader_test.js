@@ -10,7 +10,10 @@ var assert = common.assert;
 var configLoader = require('../lib/configLoader');
 
 describe('Configuration loader', function () {
-  var loader, fakeFs, afterIt;
+  var loader;
+  var fakeFs;
+  var restoreEnv;
+  var dummyApiKey;
 
   // Removes any Stormpath environment variables
   // and provides a callback to restore them.
@@ -51,40 +54,27 @@ describe('Configuration loader', function () {
     fakeFs.patch();
   }
 
-  before(function () {
-    afterIt = [];
+  beforeEach(function () {
+    setupFakeFs();
+
+    dummyApiKey = {
+      id: '2d61b041-5c03-4c17-9e67-7e3c58f38f10',
+      secret: 'ed1e3c35-f01e-4f23-9bc6-bafa1baa0346'
+    };
+
+    restoreEnv = removeStormpathEnv();
     loader = configLoader();
   });
 
-  after(function () {
+  afterEach(function () {
+    restoreEnv();
+
     if (fakeFs) {
       fakeFs.unpatch();
     }
   });
 
-  // Cleanup functions that should run directly after all "it" tests.
-  // This is because mocha does not offer this functionality at the moment.
-  // I.e. mocha's after() is queued and executed after all tests have run.
-  afterEach(function () {
-    while (afterIt.length) {
-      afterIt.shift()();
-    }
-  });
-
   it('should error when not providing api key', function (done) {
-    setupFakeFs();
-
-    var restoreEnv = common.snapshotEnv();
-
-    // Remove any STORMPATH environment keys.
-    for (var key in process.env) {
-      if (key.indexOf('STORMPATH_') === 0) {
-        delete process.env[key];
-      }
-    }
-
-    afterIt.push(restoreEnv);
-
     loader.load(function (err, config) {
       assert.isUndefined(config);
 
@@ -96,24 +86,6 @@ describe('Configuration loader', function () {
   });
 
   it('should load api key from apikey config in root', function (done) {
-    setupFakeFs();
-
-    var restoreEnv = common.snapshotEnv();
-
-    // Remove any STORMPATH environment keys.
-    for (var key in process.env) {
-      if (key.indexOf('STORMPATH_') === 0) {
-        delete process.env[key];
-      }
-    }
-
-    afterIt.push(restoreEnv);
-
-    var dummyApiKey = {
-      id: '2d61b041-5c03-4c17-9e67-7e3c58f38f10',
-      secret: 'ed1e3c35-f01e-4f23-9bc6-bafa1baa0346'
-    };
-
     loader = configLoader({
       apiKey: dummyApiKey
     });
@@ -135,7 +107,9 @@ describe('Configuration loader', function () {
   });
 
   it('should load the default configuration', function (done) {
-    setupFakeFs();
+    loader = configLoader({
+      apiKey: dummyApiKey
+    });
 
     loader.load(function (err, config) {
       if (err) {
@@ -173,10 +147,6 @@ describe('Configuration loader', function () {
   });
 
   it('should load configuration from the environment', function (done) {
-    setupFakeFs();
-
-    afterIt.push(removeStormpathEnv());
-
     process.env.STORMPATH_CLIENT_APIKEY_ID = '0f6f34ce-6718-4e1b-afdd-ec5ea6d48373';
     process.env.STORMPATH_CLIENT_APIKEY_SECRET = 'c40948e7-f07b-4b19-95bc-b9c545f8b7ff';
     process.env.STORMPATH_APPLICATION_HREF = 'http://api.stormpath.com/v1/applications/12ae87cc-66bf-4d8c-bde9-f516a752e4b4';
@@ -200,10 +170,6 @@ describe('Configuration loader', function () {
   });
 
   it('should load legacy api key from the environment', function (done) {
-    setupFakeFs();
-
-    afterIt.push(removeStormpathEnv());
-
     process.env.STORMPATH_API_KEY_ID = '85a1b6c7-1411-44a1-83c0-e66c638d683c';
     process.env.STORMPATH_API_KEY_SECRET = '2b35a567-bc7c-43e3-9007-3742e1fffef5';
 
@@ -225,10 +191,6 @@ describe('Configuration loader', function () {
   });
 
   it('should load legacy api key from user provided config', function (done) {
-    afterIt.push(removeStormpathEnv());
-
-    setupFakeFs();
-
     var customConfig = {
       apiKey: {
         id: 'ea585cca-fbb4-475f-9c3f-10e9ba4eea91',
@@ -236,7 +198,7 @@ describe('Configuration loader', function () {
       }
     };
 
-    var loader = configLoader(customConfig);
+    loader = configLoader(customConfig);
 
     loader.load(function (err, config) {
       assert.isNull(err);
@@ -258,8 +220,6 @@ describe('Configuration loader', function () {
   function testLoadStormpathConfig(ext, serializeFn) {
     describe('should load stormpath.' + ext + ' config', function () {
       it('from stormpath home folder', function (done) {
-        afterIt.push(removeStormpathEnv());
-
         var homeConfig = {
           client: {
             apiKey: {
@@ -270,6 +230,9 @@ describe('Configuration loader', function () {
         };
 
         setupFakeFs([{
+          path: '~/.stormpath/stormpath.' + ext,
+          content: serializeFn(homeConfig)
+        }, {
           path: expandHomeDir('~/.stormpath/stormpath.' + ext),
           content: serializeFn(homeConfig)
         }]);
@@ -289,8 +252,6 @@ describe('Configuration loader', function () {
       });
 
       it('from application directory while overriding home folder', function (done) {
-        afterIt.push(removeStormpathEnv());
-
         var homeConfig = {
           client: {
             apiKey: {
@@ -312,6 +273,9 @@ describe('Configuration loader', function () {
         };
 
         setupFakeFs([{
+          path: '~/.stormpath/stormpath.' + ext,
+          content: serializeFn(homeConfig)
+        }, {
           path: expandHomeDir('~/.stormpath/stormpath.' + ext),
           content: serializeFn(homeConfig)
         }, {
@@ -341,8 +305,6 @@ describe('Configuration loader', function () {
   testLoadStormpathConfig('json', JSON.stringify);
 
   it('should load config from file before environment', function (done) {
-    afterIt.push(removeStormpathEnv());
-
     process.env.STORMPATH_CLIENT_APIKEY_ID = '617937ab-60fe-45cf-a92c-dfcf3fc5e581';
     process.env.STORMPATH_CLIENT_APIKEY_SECRET = '91472ae6-35bf-4ad1-af9a-622538b94449';
     process.env.STORMPATH_APPLICATION_HREF = 'http://api.stormpath.com/v1/applications/079ed9bc-d88e-472e-94e2-ce3180764ceb';
@@ -392,10 +354,6 @@ describe('Configuration loader', function () {
   });
 
   it('should extend config with custom config object', function (done) {
-    afterIt.push(removeStormpathEnv());
-
-    setupFakeFs();
-
     var customConfig = {
       client: {
         apiKey: {
@@ -405,7 +363,7 @@ describe('Configuration loader', function () {
       }
     };
 
-    var loader = configLoader(customConfig);
+    loader = configLoader(customConfig);
 
     loader.load(function (err, config) {
       assert.isNull(err);
