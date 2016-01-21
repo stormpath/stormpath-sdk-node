@@ -13,6 +13,8 @@ describe('ds:', function () {
   describe('RequestExecutor:', function () {
     var apiKey;
 
+    this.timeout(10000);
+
     before(function () {
       apiKey = {id: 1, secret: 2};
     });
