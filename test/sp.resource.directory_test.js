@@ -306,8 +306,8 @@ describe('Resources: ', function () {
             app.getProvider.apply(app, args);
           });
           it('should get provider', function () {
-            provider.href.should.be.equal(provider.href);
-            provider.name.should.be.equal(provider.name);
+            provider.href.should.be.equal(providerObj.href);
+            provider.name.should.be.equal(providerObj.name);
           });
 
           it('should be an instance of Provider', function () {
