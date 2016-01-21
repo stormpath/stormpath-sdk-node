@@ -338,7 +338,7 @@ describe('Resources: ', function () {
     });
 
     describe('get organizations', function () {
-      describe('if organizations href are set', function () {
+      describe('if organizations href is set', function () {
         var opt;
         var getResourceStub;
         var sandbox;
@@ -349,7 +349,7 @@ describe('Resources: ', function () {
         before(function () {
           opt = {};
           sandbox = sinon.sandbox.create();
-          app = { organizationMappings: { href: 'boom!' } };
+          app = { organizations: { href: 'boom!' } };
           directory = new Directory(app, dataStore);
           cbSpy = sandbox.spy();
 
