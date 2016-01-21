@@ -9,7 +9,7 @@ var Tenant = require('../../lib/resource/Tenant');
 describe('Tenant', function() {
   var client, tenant;
 
-  this.timeout(20000);
+  this.timeout(120000);
 
   before(function(done) {
     helpers.getClient(function(_client) {
