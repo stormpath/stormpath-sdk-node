@@ -514,10 +514,10 @@ describe('Resources: ', function () {
         };
       }
 
-      function testBoolean(method, shouldBeCalledCount){
-        shouldBeCalledCount = shouldBeCalledCount || 250;
-
+      function testBoolean(method){
         return function(){
+          var shouldBeCalledCount = 250;
+
           function createAppsCollection(items, offset, limit){
             return {
               href: '/tenants/78KBoSJ5EkMD8OVmBV934Y/applications',
@@ -570,6 +570,7 @@ describe('Resources: ', function () {
 
               switch (method) {
                 case 'detect':
+                case 'detectSeries':
                 case 'some':
                 case 'any':
                   result = false;
@@ -954,11 +955,11 @@ describe('Resources: ', function () {
       describe('foldl', testReduce('foldl'));
       describe('reduceRight', testReduce('reduceRight'));
       describe('foldr', testReduce('foldr'));
-      describe('detect', testBoolean('detect', 100));
-      describe('detectSeries', testBoolean('detectSeries', 1));
+      describe('detect', testBoolean('detect'));
+      describe('detectSeries', testBoolean('detectSeries'));
       describe('sortBy', testSortBy('sortBy'));
-      describe('some', testBoolean('some', 100));
-      describe('any', testBoolean('any', 100));
+      describe('some', testBoolean('some'));
+      describe('any', testBoolean('any'));
       describe('every', testBoolean('every'));
       describe('all', testBoolean('all'));
       describe('concat', test('concat'));
