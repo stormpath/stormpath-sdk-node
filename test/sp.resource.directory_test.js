@@ -291,7 +291,7 @@ describe('Resources: ', function () {
             dirObj = {provider: {href: providerObj.href}};
             app = new Directory(dirObj, dataStore);
 
-            nock(u.BASE_URL).get(providerObj.href).reply(200, providerObj);
+            nock(u.BASE_URL).get(u.v1(providerObj.href)).reply(200, providerObj);
 
             var args = [];
             if (data) {
@@ -299,7 +299,7 @@ describe('Resources: ', function () {
             }
             args.push(function cb(err, prov) {
               provider = prov;
-              done();
+              done(err);
             });
 
             // act
