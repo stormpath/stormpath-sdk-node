@@ -50,8 +50,8 @@ function fakeAccount(){
  * @returns string - The name of the calling file.
  */
 function getFriendlyCallerName() {
+  var friendlyName = 'unknown';
   var err = new Error();
-
   var originalPrepareStackTrace = Error.prepareStackTrace;
 
   Error.prepareStackTrace = function (err, stack) {
@@ -65,7 +65,8 @@ function getFriendlyCallerName() {
       var callerfile = err.stack.shift().getFileName();
 
       if(currentfile !== callerfile) {
-        return path.basename(callerfile).replace('.js', '');
+        friendlyName = path.basename(callerfile).replace('.js', '');
+        break;
       }
     }
   } catch (err) {
@@ -73,7 +74,7 @@ function getFriendlyCallerName() {
 
   Error.prepareStackTrace = originalPrepareStackTrace;
 
-  return 'unknown';
+  return friendlyName;
 }
 
 /**

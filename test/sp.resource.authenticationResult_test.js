@@ -13,7 +13,7 @@ describe('Resources: ', function () {
   describe('Authentication Result resource', function () {
     var dataStore;
 
-    beforeEach(function () {
+    before(function () {
       dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
     });
 
@@ -29,7 +29,7 @@ describe('Resources: ', function () {
         var app;
         var result;
 
-        beforeEach(function () {
+        before(function () {
           app = {account: {href: 'boom!'}, dataStore: dataStore};
           result = new AuthenticationResult(app, dataStore);
 

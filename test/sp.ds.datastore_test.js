@@ -18,7 +18,7 @@ describe('ds:', function () {
       describe('and request executor not provided in config', function () {
         var ds;
 
-        beforeEach(function () {
+        before(function () {
           ds = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
         });
 
@@ -31,7 +31,7 @@ describe('ds:', function () {
         var reqExec;
         var ds;
 
-        beforeEach(function () {
+        before(function () {
           reqExec = new RequestExecutor({client: {apiKey: {id: 1, secret: 2}}});
           ds = new DataStore({requestExecutor: reqExec});
         });
@@ -56,7 +56,7 @@ describe('ds:', function () {
     describe('getResource()', function () {
       var ds;
 
-      beforeEach(function () {
+      before(function () {
         ds = new DataStore({
           cacheOptions: {
             store: 'memory'

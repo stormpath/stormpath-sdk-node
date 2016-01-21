@@ -6,7 +6,7 @@ describe('Cache module',function(){
   describe('Cache Stats class', function(){
     var stats;
 
-    beforeEach(function () {
+    before(function () {
       stats = new CacheStats();
     });
 

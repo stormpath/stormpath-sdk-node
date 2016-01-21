@@ -14,7 +14,7 @@ describe('Resources: ', function () {
   describe('Group resource', function () {
     var dataStore;
 
-    beforeEach(function () {
+    before(function () {
       dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
     });
 
@@ -26,7 +26,7 @@ describe('Resources: ', function () {
           group.addAccount();
         }
 
-        beforeEach(function () {
+        before(function () {
           group = new Group(dataStore);
         });
 
@@ -179,7 +179,7 @@ describe('Resources: ', function () {
           group.getAccountMemberships();
         }
 
-        beforeEach(function () {
+        before(function () {
           group = new Group(dataStore);
         });
 
@@ -255,7 +255,7 @@ describe('Resources: ', function () {
             account.getCustomData();
           }
 
-          beforeEach(function () {
+          before(function () {
             account = new Account(dataStore);
           });
 
