@@ -1,5 +1,17 @@
 # stormpath-sdk-node Change Log
 
+### 0.15.5
+
+**Released January 21, 2016**
+
+* Fixed: `collection.every(iterator, callback)`.  The callback was being invoked
+  on every page request to the API (it should only be called once the entire
+  collection has been paginated).
+
+* Tests have been improved for readability.
+
+* Test runner has been fixed, all unit tests are now running.
+
 ### 0.15.4
 
 **Released January 13, 2016**
