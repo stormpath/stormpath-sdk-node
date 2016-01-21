@@ -6,7 +6,9 @@
 
 * Fixed: `collection.every(iterator, callback)`.  The callback was being invoked
   on every page request to the API (it should only be called once the entire
-  collection has been paginated).
+  collection has been paginated).  The iteration would be aborted if the
+  iterator returned `false`.  This is now fixed, and the iterator continues
+  regardless of the return value of the iterator (as `every` should do).
 
 * Tests have been improved for readability.
 
