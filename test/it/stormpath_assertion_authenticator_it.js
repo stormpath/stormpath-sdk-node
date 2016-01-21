@@ -4,22 +4,27 @@ var common = require('../common');
 var DataStore = require('../../lib/ds/DataStore');
 
 var jwt = common.jwt;
+var sinon = common.sinon;
 var assert = common.assert;
 var stormpath = common.Stormpath;
 
 var StormpathAssertionAuthenticator = stormpath.StormpathAssertionAuthenticator;
 var AssertionAuthenticationResult = stormpath.AssertionAuthenticationResult;
 
+/* jshint -W030 */
 describe('StormpathAssertionAuthenticator', function () {
   var secret;
-  var application;
-  var authenticator;
+  var sandbox;
+  var dataStore;
+  var expireAt;
+  var validToken;
+  var getResourceStub;
+  var mockAccount;
 
   before(function () {
     secret = '123';
-    application = {};
 
-    application.dataStore = new DataStore({
+    dataStore = new DataStore({
       client: {
         apiKey: {
           id: 'abc',
@@ -28,63 +33,130 @@ describe('StormpathAssertionAuthenticator', function () {
       }
     });
 
-    authenticator = new StormpathAssertionAuthenticator(application);
-  });
+    sandbox = sinon.sandbox.create();
 
-  describe('when new is called', function () {
-    it('returns a StormpathAssertionAuthenticator instance', function () {
-      assert.instanceOf(authenticator, StormpathAssertionAuthenticator);
+    expireAt = new Date().getTime() + (60 * 60 * 1);
+    mockAccount = { href: 'http://stormpath.mock/api/v1/account/123' };
+
+    getResourceStub = sandbox.stub(dataStore, 'getResource', function (href, data, callback) {
+      callback(null, mockAccount);
     });
 
-    it('creates a new object', function () {
-      var otherAuthenticator = new StormpathAssertionAuthenticator(application);
-      assert.ok(authenticator);
-      assert.notEqual(authenticator, otherAuthenticator);
-    });
+    validToken = jwt.create({ sub: mockAccount.href }, secret)
+      .setExpiration(expireAt)
+      .compact();
   });
 
-  describe('when authenticating', function () {
-    it('fails when passed an invalid jwt', function (done) {
-      authenticator.authenticate('invalid-jwt', function (err, result) {
-        assert.isOk(err);
-        assert.isUndefined(result);
-        assert.equal(err.message, 'Jwt cannot be parsed');
-        assert.equal(err.statusCode, 401);
-        done();
+  after(function () {
+    sandbox.restore();
+  });
+
+  describe('result', function () {
+    describe('when created', function () {
+      var result;
+
+      before(function () {
+        result = new AssertionAuthenticationResult(dataStore, { token: validToken });
+      });
+
+      describe('with dataStore', function () {
+        it('should set dataStore', function () {
+          assert.equal(result.dataStore, dataStore);
+        });
+      });
+
+      describe('with token', function () {
+        it('should set token', function () {
+          assert.equal(result.token, validToken);
+        });
+
+        it('should set account', function () {
+          assert.ok(result.account);
+          assert.equal(result.account.href, mockAccount.href);
+        });
       });
     });
 
-    it('fails when valid jwt is passed but missing account href (sub)', function (done) {
-      var expireAt = new Date().getTime() + (60 * 60 * 1);
+    describe('when getAccount() is called', function () {
+      var result;
 
-      var validToken = jwt.create({}, secret)
-        .setExpiration(expireAt)
-        .compact();
+      before(function () {
+        result = new AssertionAuthenticationResult(dataStore, { token: validToken });
+      });
 
-      authenticator.authenticate(validToken, function (err, result) {
-        assert.isOk(err);
-        assert.isNotOk(result);
-        assert.equal(err.message, 'Stormpath Account HREF (sub) in JWT not provided.');
-        done();
+      it('should call the account href from the token', function (done) {
+        result.getAccount(function () {
+          getResourceStub.should.have.been.calledOnce;
+          getResourceStub.should.have.been.calledWith(mockAccount.href);
+          done();
+        });
+      });
+
+      it('should call the callback with the account result', function (done) {
+        result.getAccount(function (err, result) {
+          assert.notOk(err);
+          assert.deepEqual(result, mockAccount);
+          done();
+        });
+      });
+    });
+  });
+
+  describe('authenticator', function () {
+    var application;
+    var authenticator;
+
+    before(function () {
+      application = { dataStore: dataStore };
+      authenticator = new StormpathAssertionAuthenticator(application);
+    });
+
+    describe('when created', function () {
+      it('returns a StormpathAssertionAuthenticator instance', function () {
+        assert.instanceOf(authenticator, StormpathAssertionAuthenticator);
+      });
+
+      it('creates a new object', function () {
+        var otherAuthenticator = new StormpathAssertionAuthenticator(application);
+        assert.ok(authenticator);
+        assert.notEqual(authenticator, otherAuthenticator);
       });
     });
 
-    it('succeeds when passed a valid jwt', function (done) {
-      var expireAt = new Date().getTime() + (60 * 60 * 1);
-      var fakeAccountHref = 'http://stormpath.fake/api/v1/account/123';
+    describe('when authenticating', function () {
+      it('fails when passed an invalid jwt', function (done) {
+        authenticator.authenticate('invalid-jwt', function (err, result) {
+          assert.isOk(err);
+          assert.isUndefined(result);
+          assert.equal(err.message, 'Jwt cannot be parsed');
+          assert.equal(err.statusCode, 401);
+          done();
+        });
+      });
 
-      var validToken = jwt.create({sub: fakeAccountHref}, secret)
-        .setExpiration(expireAt)
-        .compact();
+      it('fails when valid token is passed but missing account href (sub)', function (done) {
+        var validEmptyToken = jwt.create({}, secret)
+          .setExpiration(expireAt)
+          .compact();
 
-      authenticator.authenticate(validToken, function (err, result) {
-        assert.isNotOk(err);
-        assert.isOk(result);
-        assert.instanceOf(result, AssertionAuthenticationResult);
-        assert.equal(result.jwt, validToken);
-        assert.isOk(result.expandedJwt);
-        assert.equal(result.expandedJwt.body.sub, fakeAccountHref);
-        done();
+        authenticator.authenticate(validEmptyToken, function (err, result) {
+          assert.isOk(err);
+          assert.isNotOk(result);
+          assert.equal(err.message, 'Stormpath Account HREF (sub) in JWT not provided.');
+          done();
+        });
+      });
+
+      it('succeeds when passed a valid token', function (done) {
+        authenticator.authenticate(validToken, function (err, result) {
+          assert.isNotOk(err);
+          assert.isOk(result);
+          assert.instanceOf(result, AssertionAuthenticationResult);
+          assert.equal(result.token, validToken);
+          assert.isOk(result.expandedJwt);
+          assert.equal(result.expandedJwt.body.sub, mockAccount.href);
+          done();
+        });
       });
     });
   });
