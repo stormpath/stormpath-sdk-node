@@ -104,25 +104,97 @@ describe('ds:', function () {
         reqExec.execute({uri: uri, method:'GET'}, cbSpy);
       });
 
-      it('should include the original request error in case of request error', function (done) {
-        var cbSpy;
-        // This triggers one of the possible http request errors
-        var uri = 'http://doesntexist/v1/test';
+      describe('in case of request error', function () {
+        var uri;
+        var method;
+        var error;
+        var body;
 
-        function cb(err, body) {
-          err.should.be.an.instanceof(Error);
-          err.should.have.property('inner')
-            .that.is.an.instanceof(Error)
-            .and.property('code', 'ENOTFOUND');
-          expect(body).to.be.null;
-          cbSpy.should.have.been.calledOnce;
-          done();
+        function executeRequest(done) {
+          var cbSpy = sinon.spy(function () {
+            error = arguments[0];
+            body = arguments[1];
+            done();
+          });
+
+          reqExec.execute({uri: uri, method: method}, cbSpy);
         }
-        cbSpy = sinon.spy(cb);
 
-        reqExec.execute({uri: uri, method:'GET'}, cbSpy);
+        beforeEach(function () {
+          // This triggers one of the possible http request errors
+          uri = 'http://doesntexist/v1/test';
+        });
+
+        describe('when request method is GET', function () {
+          beforeEach(function (done) {
+            method = 'GET';
+            executeRequest(done);
+          });
+
+          describe('body', function () {
+            it('should be null', function () {
+              expect(body).to.be.null;
+            });
+          });
+
+          describe('error', function () {
+            it('should be an instance of Error', function () {
+              error.should.be.an.instanceof(Error);
+            });
+
+            describe('stack property', function () {
+              it('should not be empty/null/undefined', function () {
+                error.should.have.property('stack')
+                  .that.is.not.empty.and
+                  .that.is.not.null.and
+                  .that.is.not.undefined;
+              });
+            });
+
+            describe('inner property', function () {
+              it('should be an instance of Error', function () {
+                error.should.have.property('inner')
+                  .that.is.an.instanceof(Error);
+              });
+
+              it('should have the "code" property set to "ENOTFOUND"', function () {
+                error.inner.should.have.property('code', 'ENOTFOUND');
+              });
+            });
+
+            describe('message property', function () {
+              it('should include request method', function () {
+                error.should.have.property('message');
+                error.message.should.include(method);
+              });
+
+              it('should include request uri', function () {
+                error.message.should.include(uri);
+              });
+
+              it('should include error.inner.code', function () {
+                error.message.should.include(error.inner.code);
+              });
+            });
+          });
+        });
+
+        describe('when request method is undefined', function () {
+          beforeEach(function (done) {
+            method = undefined;
+            executeRequest(done);
+          });
+
+          describe('error', function () {
+            describe('message property', function () {
+              it('should include request method as "GET"', function () {
+                error.should.have.property('message');
+                error.message.should.include('GET');
+              });
+            });
+          });
+        });
       });
     });
-
   });
 });
