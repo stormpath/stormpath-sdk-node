@@ -21,7 +21,7 @@ describe('Resources: ', function () {
   "use strict";
   var apiKey;
 
-  beforeEach(function () {
+  before(function () {
     apiKey = {id: 1, secret: 2};
   });
 
@@ -46,7 +46,7 @@ describe('Resources: ', function () {
           cr = new CollectionResource(data);
         }
 
-        beforeEach(function () {
+        before(function () {
           data = {};
         });
 
@@ -312,7 +312,7 @@ describe('Resources: ', function () {
     describe('async methods with pagination', function(){
       var ds;
 
-      beforeEach(function () {
+      before(function () {
         ds = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
       });
 
@@ -514,9 +514,9 @@ describe('Resources: ', function () {
         };
       }
 
-      function testBoolean(method, shouldBeCalledCount){
+      function testBoolean(method){
         return function(){
-          var n;
+          var shouldBeCalledCount = 250;
 
           function createAppsCollection(items, offset, limit){
             return {
@@ -547,28 +547,38 @@ describe('Resources: ', function () {
           var sandbox, iteratorSpy, callbackSpy, asyncIteratorSpy, asyncCallbackSpy;
 
           before(function(done){
-            n = 250;
-            shouldBeCalledCount = shouldBeCalledCount || n;
             pages = [];
 
             // set up:
             // 1. items
-            items = createNApps(n);
+            items = createNApps(shouldBeCalledCount);
             // 2. create app collection resource
-            for (i = 0; i < Math.ceil(n/100); i++){
+            for (i = 0; i < Math.ceil(shouldBeCalledCount/100); i++){
               pages.push(createAppsCollection(items, i*100, (i+1)*100));
             }
             applications = instantiate(Application, pages[0], {}, ds);
             // 3. nock
             nock(u.BASE_URL).get(u.v1(applications.href)).reply(200,pages);
-            for (i = 1; i < Math.ceil(n/100); i++) {
+            for (i = 1; i < Math.ceil(shouldBeCalledCount/100); i++) {
               var ref = u.v1(applications.href) + '?' + querystring.stringify({offset: i * 100, limit: 100});
               nock(u.BASE_URL).get(ref).reply(200, pages[i]);
             }
             sandbox = sinon.sandbox.create();
             // 4. iterator and callback spies
             function iterator(item, cb){
-              cb(item.description % 2 === 0);
+              var result = true;
+
+              switch (method) {
+                case 'detect':
+                case 'detectSeries':
+                case 'some':
+                case 'any':
+                  result = false;
+              }
+
+              cb(result);
+
+              return result;
             }
             iteratorSpy = sandbox.spy(iterator);
             asyncIteratorSpy = sandbox.spy(iterator);
@@ -595,6 +605,11 @@ describe('Resources: ', function () {
             sandbox.restore();
           });
 
+          it('should call iterator '+ shouldBeCalledCount +' times', function(){
+            iteratorSpy.should.have.been.calledBefore(callbackSpy);
+            iteratorSpy.callCount.should.be.equal(shouldBeCalledCount);
+          });
+
           it('should call iterators with same arguments', function(){
             for (var i = 0; i < shouldBeCalledCount; i++){
               var asyncArgs = asyncIteratorSpy.getCall(i).args;
@@ -603,20 +618,8 @@ describe('Resources: ', function () {
             }
           });
 
-          it('should call iterator '+ shouldBeCalledCount +' times', function(){
-            iteratorSpy.should.have.been.calledBefore(callbackSpy);
-            iteratorSpy.callCount.should.be.equal(shouldBeCalledCount);
-          });
-
           it('should call callback once', function(){
             callbackSpy.should.have.been.calledOnce;
-            var asyncArgs = asyncCallbackSpy.getCall(0).args[0];
-            var args = callbackSpy.getCall(0).args[0];
-            if (asyncArgs !== true && asyncArgs !== false){
-              args = _.pick(callbackSpy.getCall(0).args[0], 'href', 'name', 'description', 'status');
-            }
-
-            args.should.be.deep.equal(asyncArgs);
           });
         };
       }
@@ -952,11 +955,11 @@ describe('Resources: ', function () {
       describe('foldl', testReduce('foldl'));
       describe('reduceRight', testReduce('reduceRight'));
       describe('foldr', testReduce('foldr'));
-      describe('detect', testBoolean('detect', 100));
-      describe('detectSeries', testBoolean('detectSeries', 1));
+      describe('detect', testBoolean('detect'));
+      describe('detectSeries', testBoolean('detectSeries'));
       describe('sortBy', testSortBy('sortBy'));
-      describe('some', testBoolean('some', 100));
-      describe('any', testBoolean('any', 100));
+      describe('some', testBoolean('some'));
+      describe('any', testBoolean('any'));
       describe('every', testBoolean('every'));
       describe('all', testBoolean('all'));
       describe('concat', test('concat'));

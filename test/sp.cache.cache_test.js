@@ -297,10 +297,11 @@ describe('Cache module', function () {
   });
 
   describe('Redis store', function(){
-    var opt, sandbox;
+    var opt = {};
+    var sandbox;
 
     before(function(){
-      opt = {cache: null};
+      opt.cache = null;
       sandbox = sinon.sandbox.create();
       var ms = new MemoryStore();
       _.extend(ms,{
@@ -325,10 +326,11 @@ describe('Cache module', function () {
   });
 
   describe('Memcached store', function(){
-    var opt, sandbox;
+    var opt = {};
+    var sandbox;
 
     before(function(){
-      opt = {cache: null};
+      opt.cache = null;
       sandbox = sinon.sandbox.create();
       var ms = new MemoryStore();
       ms._set = ms.set;

@@ -10,7 +10,7 @@ describe('Cache module',function(){
     describe('By default', function(){
       var manager;
 
-      beforeEach(function () {
+      before(function () {
         manager = new CacheManager();
       });
 

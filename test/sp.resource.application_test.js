@@ -27,7 +27,7 @@ describe('Resources: ', function () {
   describe('Application resource', function () {
     var dataStore;
 
-    beforeEach(function () {
+    before(function () {
       dataStore = new DataStore({
         client: {
           apiKey: {
@@ -42,7 +42,7 @@ describe('Resources: ', function () {
     describe('authenticate account', function () {
       var authRequest;
 
-      beforeEach(function () {
+      before(function () {
         authRequest = {username: 'test'};
       });
 
@@ -56,7 +56,7 @@ describe('Resources: ', function () {
         var params;
         var path;
 
-        beforeEach(function () {
+        before(function () {
           clientApiKeySecret = uuid();
           dataStore = new DataStore({client: {apiKey: {id: '1', secret: clientApiKeySecret}}});
 
@@ -105,7 +105,7 @@ describe('Resources: ', function () {
         var params;
         var path;
 
-        beforeEach(function () {
+        before(function () {
           clientApiKeySecret = uuid();
           dataStore = new DataStore({client:{apiKey: {id: '1', secret: clientApiKeySecret}}});
 
@@ -187,7 +187,7 @@ describe('Resources: ', function () {
         describe('without a callbackUri',function(){
           var test;
 
-          beforeEach(function () {
+          before(function () {
             test = new SsoResponseTest();
           });
 
@@ -994,9 +994,9 @@ describe('Resources: ', function () {
           app.getDefaultAccountStore(cbSpy);
         });
 
-        it('should call cb without options', function () {
+        it('should call cb without arguments', function () {
           cbSpy.should.have.been.calledOnce;
-          cbSpy.should.have.been.calledWith(undefined, undefined);
+          cbSpy.should.have.been.calledWithExactly();
         });
       });
     });
@@ -1099,9 +1099,9 @@ describe('Resources: ', function () {
           app.getDefaultGroupStore(cbSpy);
         });
 
-        it('should call cb without options', function () {
+        it('should call cb without arguments', function () {
           cbSpy.should.have.been.calledOnce;
-          cbSpy.should.have.been.calledWith(undefined, undefined);
+          cbSpy.should.have.been.calledWithExactly();
         });
       });
     });
@@ -1302,7 +1302,7 @@ describe('Resources: ', function () {
       var decryptedSecret;
       var callCount;
 
-      beforeEach(function () {
+      before(function () {
         appHref = 'https://api.stormpath.com/v1/applications/someapp';
 
         application = new Application({

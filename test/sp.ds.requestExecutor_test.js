@@ -13,7 +13,9 @@ describe('ds:', function () {
   describe('RequestExecutor:', function () {
     var apiKey;
 
-    beforeEach(function () {
+    this.timeout(10 * 1000);
+
+    before(function () {
       apiKey = {id: 1, secret: 2};
     });
 
@@ -31,7 +33,7 @@ describe('ds:', function () {
       describe('create with required options', function () {
         var reqExec;
 
-        beforeEach(function () {
+        before(function () {
           reqExec = new RequestExecutor({client: {apiKey: apiKey}});
         });
 
@@ -57,7 +59,7 @@ describe('ds:', function () {
         };
       }
 
-      beforeEach(function () {
+      before(function () {
         reqExec = new RequestExecutor({client: {apiKey: apiKey} });
       });
 

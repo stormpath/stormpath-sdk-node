@@ -9,7 +9,7 @@ describe('authc', function () {
     var secret;
     var apiKey;
 
-    beforeEach(function () {
+    before(function () {
       id = 'id';
       secret = 'boom!';
       apiKey = new ApiKey(id, secret);

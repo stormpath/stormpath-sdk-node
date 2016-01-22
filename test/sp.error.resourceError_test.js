@@ -5,7 +5,7 @@ describe('Error:', function () {
     var response;
     var re;
 
-    beforeEach(function () {
+    before(function () {
       response = {
         status: 400,
         code: 100500,

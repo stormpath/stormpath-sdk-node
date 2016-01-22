@@ -18,7 +18,7 @@ describe('Resources: ', function () {
   describe('Directory resource', function () {
     var dataStore;
 
-    beforeEach(function () {
+    before(function () {
       dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
     });
 
@@ -291,7 +291,7 @@ describe('Resources: ', function () {
             dirObj = {provider: {href: providerObj.href}};
             app = new Directory(dirObj, dataStore);
 
-            nock(u.BASE_URL).get(providerObj.href).reply(200, providerObj);
+            nock(u.BASE_URL).get(u.v1(providerObj.href)).reply(200, providerObj);
 
             var args = [];
             if (data) {
@@ -299,15 +299,15 @@ describe('Resources: ', function () {
             }
             args.push(function cb(err, prov) {
               provider = prov;
-              done();
+              done(err);
             });
 
             // act
             app.getProvider.apply(app, args);
           });
           it('should get provider', function () {
-            provider.href.should.be.equal(provider.href);
-            provider.name.should.be.equal(provider.name);
+            provider.href.should.be.equal(providerObj.href);
+            provider.name.should.be.equal(providerObj.name);
           });
 
           it('should be an instance of Provider', function () {
@@ -330,15 +330,15 @@ describe('Resources: ', function () {
           app.getProviderData(cbSpy);
         });
 
-        it('should call cb without options', function () {
+        it('should call cb without arguments', function () {
           cbSpy.should.have.been.calledOnce;
-          cbSpy.should.have.been.calledWith();
+          cbSpy.should.have.been.calledWithExactly();
         });
       });
     });
 
     describe('get organizations', function () {
-      describe('if organizations href are set', function () {
+      describe('if organizations href is set', function () {
         var opt;
         var getResourceStub;
         var sandbox;
@@ -349,7 +349,7 @@ describe('Resources: ', function () {
         before(function () {
           opt = {};
           sandbox = sinon.sandbox.create();
-          app = { organizationMappings: { href: 'boom!' } };
+          app = { organizations: { href: 'boom!' } };
           directory = new Directory(app, dataStore);
           cbSpy = sandbox.spy();
 

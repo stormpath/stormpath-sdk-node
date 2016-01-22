@@ -15,7 +15,7 @@ describe('Authorization module', function () {
     getAuthenticator = require('../lib/authc').getAuthenticator;
   });
 
-  beforeEach(function () {
+  before(function () {
     apiKey = {id: 'stormpath_apiKey_id', secret: 'stormpath_apiKey_secret'};
   });
 
@@ -56,7 +56,7 @@ describe('Authorization module', function () {
   describe('Basic auth', function () {
     var auth;
 
-    beforeEach(function () {
+    before(function () {
       auth = getAuthenticator({apiKey: apiKey, authenticationScheme: 'basic'});
     });
 

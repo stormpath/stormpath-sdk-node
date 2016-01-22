@@ -13,7 +13,7 @@ describe('Resources: ', function () {
     var app;
     var instanceResource;
 
-    beforeEach(function () {
+    before(function () {
       ds = new DataStore({client: {apiKey:{id: 1,secret: 2}}});
       app = {href: '/href'};
 

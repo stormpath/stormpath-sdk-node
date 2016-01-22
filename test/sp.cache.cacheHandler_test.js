@@ -33,7 +33,7 @@ describe('CacheHandler',function(){
       var cacheOptions;
       var handler;
 
-      beforeEach(function () {
+      before(function () {
         MockStore = function (opts) {
           this._options = opts;
         };
