@@ -86,6 +86,14 @@ angular.module('docsApp', [
         templateUrl: 'views/tenant.html',
         controller: 'MainCtrl'
       })
+      .when('/stormpathAssertionAuthenticator', {
+        templateUrl: 'views/stormpathAssertionAuthenticator.html',
+        controller: 'MainCtrl'
+      })
+      .when('/samlIdpUrlBuilder', {
+        templateUrl: 'views/samlIdpUrlBuilder.html',
+        controller: 'MainCtrl'
+      })
       .otherwise({
         redirectTo: '/home'
       });

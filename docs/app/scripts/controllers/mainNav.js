@@ -211,6 +211,18 @@ function items() {
       anchor('getCustomData'),
       anchor('getDirectories'),
       anchor('verifyAccountEmail')
+    ]),
+
+    item('StormpathAssertionAuthenticator', 'stormpathAssertionAuthenticator', [
+      anchor('Overview', 'top'),
+      anchor('constructor'),
+      anchor('authenticate')
+    ]),
+
+    item('SamlIdpUrlBuilder', 'samlIdpUrlBuilder', [
+      anchor('Overview', 'top'),
+      anchor('constructor'),
+      anchor('build')
     ])
   ];
 }
