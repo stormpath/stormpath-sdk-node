@@ -13,6 +13,7 @@ var sinonChai = require("sinon-chai");
 var uuid = require('node-uuid');
 var nock = require('nock');
 var timekeeper = require('timekeeper');
+var jwt = require('njwt');
 
 var Stormpath = require('../lib');
 chai.use(sinonChai);
@@ -77,6 +78,7 @@ module.exports = {
   timekeeper: timekeeper,
   random: random,
   uuid: uuid,
+  jwt: jwt,
   snapshotEnv: snapshotEnv,
   assertPasswordGrantResponse: assertPasswordGrantResponse,
   assertAccessTokenResponse: assertAccessTokenResponse

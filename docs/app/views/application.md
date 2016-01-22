@@ -555,6 +555,52 @@ app.get('/logout', function(req, res) {
 
 ---
 
+<a name="getSamlPolicy"></a>
+### <span class="member">method</span> getSamlPolicy(*[options,]* callback)
+
+Retrieves the application's [SamlPolicy](samlPolicy) and provides it to the specified `callback`.
+
+#### Usage
+
+```javascript
+application.getSamlPolicy(function(err, samlPolicy) {
+  console.log(samlPolicy);
+});
+```
+
+#### Parameters
+
+<table class="table table-striped table-hover table-curved">
+  <thead>
+    <tr>
+      <th>Parameter</th>
+      <th>Type</th>
+      <th>Presence</th>
+      <th>Description<th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>_`options`_</td>
+      <td>`object`</td>
+      <td>_optional_</td>
+      <td>Name/value pairs to use as query parameters, for example, for [resource expansion](http://docs.stormpath.com/rest/product-guide/#link-expansion).</td>
+    </tr>
+    <tr>
+      <td>`callback`</td>
+      <td>function</td>
+      <td>required</td>
+      <td>The callback to execute upon resource retrieval. The 1st parameter is an `Error` object.  The 2nd parameter is the retrieved [SamlPolicy](samlPolicy) resource.</td>
+        </tr>
+  </tbody>
+</table>
+
+#### Returns
+
+void; the retrieved `SamlPolicy` resource will be provided to the `callback` as the callback's second parameter.
+
+---
+
 <a name="getAccounts"></a>
 ### <span class="member">method</span> getAccounts(*[options,]* callback)
 
