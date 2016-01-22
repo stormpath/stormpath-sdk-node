@@ -36,6 +36,9 @@ describe('AssertionAuthenticationResult', function () {
     var data = {
       account: {
         href: mockAccount.href
+      },
+      dataStore: {
+        foo: 'this dataStore propety should be ignored, as it will already be defined by the first dataStore parmater'
       }
     };
 
@@ -63,6 +66,14 @@ describe('AssertionAuthenticationResult', function () {
   });
 
   describe('.getAccount()', function () {
+
+    it('should error if no account is defined', function(done) {
+      new AssertionAuthenticationResult({},{}).getAccount(function(err){
+        assert.isOk(err);
+        assert.equal(err.message, 'Unable to get account. Account HREF not specified.');
+        done();
+      });
+    });
 
     it('should call the callback with the account result', function (done) {
       authenticationResult.getAccount(function (err, result) {
