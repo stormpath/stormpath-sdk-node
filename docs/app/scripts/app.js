@@ -38,6 +38,10 @@ angular.module('docsApp', [
         templateUrl: 'views/application.html',
         controller: 'MainCtrl'
       })
+      .when('/assertionAuthenticationResult', {
+        templateUrl: 'views/assertionAuthenticationResult.html',
+        controller: 'MainCtrl'
+      })
       .when('/authenticationResult', {
         templateUrl: 'views/authenticationResult.html',
         controller: 'MainCtrl'

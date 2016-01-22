@@ -78,7 +78,7 @@ function items() {
     item('AccountStoreMapping', 'accountStoreMapping', [
       anchor('Overview', 'top'),
       anchor('getApplication'),
-      anchor('getAccountStore'),
+      anchor('getAccountStore')
     ]),
 
     item('Application', null, [
@@ -105,6 +105,11 @@ function items() {
       anchor('getDefaultGroupStore'),
       anchor('setDefaultGroupStore'),
       anchor('addAccountStore')
+    ]),
+
+    item('AssertionAuthenticationResult', 'assertionAuthenticationResult', [
+      anchor('Overview', 'top'),
+      anchor('getAccount')
     ]),
 
     item('AuthenticationResult', 'authenticationResult', [
@@ -203,14 +208,10 @@ function items() {
       anchor('Overview', 'top')
     ]),
 
-    item('Tenant', null, [
+    item('SamlIdpUrlBuilder', 'samlIdpUrlBuilder', [
       anchor('Overview', 'top'),
-      anchor('createApplication'),
-      anchor('createDirectory'),
-      anchor('getApplications'),
-      anchor('getCustomData'),
-      anchor('getDirectories'),
-      anchor('verifyAccountEmail')
+      anchor('constructor'),
+      anchor('build')
     ]),
 
     item('StormpathAssertionAuthenticator', 'stormpathAssertionAuthenticator', [
@@ -219,10 +220,14 @@ function items() {
       anchor('authenticate')
     ]),
 
-    item('SamlIdpUrlBuilder', 'samlIdpUrlBuilder', [
+    item('Tenant', null, [
       anchor('Overview', 'top'),
-      anchor('constructor'),
-      anchor('build')
+      anchor('createApplication'),
+      anchor('createDirectory'),
+      anchor('getApplications'),
+      anchor('getCustomData'),
+      anchor('getDirectories'),
+      anchor('verifyAccountEmail')
     ])
   ];
 }

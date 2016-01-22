@@ -1,6 +1,9 @@
 ## SamlIdpUrlBuilder
 
-Provides the ability to build SAML IDP redirect URLs.
+Provides the ability to build SAML IDP redirect URLs.  This is done when Stormpath is initiating a redirect to a SAML IDP.
+
+For more informaiton, please see
+[Authenticating Against a SAML Directory](http://docs.stormpath.com/rest/product-guide/latest/auth_n.html#authenticating-against-a-saml-directory).
 
 ---
 
@@ -34,7 +37,7 @@ var builder = new stormpath.SamlIdpUrlBuilder(application);
       <td>`application`</td>
       <td>[`Application`](application)</td>
       <td>required</td>
-      <td>Stormpath [Application](application) to build SAML IDP URLs for.</td>
+      <td>Stormpath [Application](application) that will issue the redirect.  This application must be mapped to the relevant SAML Directories.</td>
     </tr>
   </tbody>
 </table>
@@ -82,7 +85,11 @@ builder.build(function(err, url) {
       <td>_`options`_</td>
       <td>`object`</td>
       <td>_optional_</td>
-      <td>Name/value pairs to use as query parameters. See the Body section of [SAML Authentication JWT](https://docs.stormpath.com/rest/product-guide/latest/005_auth_n.html#saml-authentication-jwt) for available options.</td>
+      <td>
+      Optional claims for the [SAML Authentication JWT](http://docs.stormpath.com/rest/product-guide/latest/auth_n.html#saml-authentication-jwt).
+      Use these claims to control the callback url (`cb_url`), token state (`state`), and account store target (`ash` or `onk`).
+      The required claims will be set automatically.
+      </td>
     </tr>
     <tr>
       <td>`callback`</td>

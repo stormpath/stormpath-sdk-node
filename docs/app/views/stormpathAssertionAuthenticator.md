@@ -1,6 +1,8 @@
 ## StormpathAssertionAuthenticator
 
 Provides the ability to authenticate with Stormpath JWTs (`stormpath_token`).
+Your application will recieve these tokens when a user is redirected to your application from a SAML provider, or from ID Site.
+This token asserts the user that authenticated.
 
 ---
 
@@ -34,7 +36,7 @@ var authenticator = new stormpath.StormpathAssertionAuthenticator(application);
       <td>`application`</td>
       <td>[`Application`](application)</td>
       <td>required</td>
-      <td>Stormpath [Application](application) to authenticate with.</td>
+      <td>Stormpath [Application](application) to authenticate against.</td>
     </tr>
   </tbody>
 </table>
@@ -48,15 +50,18 @@ A new [`StormpathAssertionAuthenticator`](stormpathAssertionAuthenticator) insta
 
 
 <a name="authenticate"></a>
-### <span class="member">method</span> authenticate(stormpathToken, callback)
+### <span class="member">method</span> authenticate(stormpath_token, callback)
 
-Authenticates a `stormpathToken` and calls the provided callback with the result.
+Authenticates a `stormpath_token` and returns a [AssertionAuthenticationResult](assertionAuthenticationResult), which
+can provide the [Account](account) that has authenticated.
+
+The `stormpath_token` is the value of the `jwtResponse` parameter in the callback URL, e.g. `https://myapp.com/samlCallback?jwtResponse=<stormpath_token>`.
 
 
 #### Usage
 
 ```javascript
-authenticator.authenticate(stormpathToken, function(err, authenticationResult) {
+authenticator.authenticate(stormpath_token, function(err, authenticationResult) {
   if (err) {
     console.error(err);
     return;
@@ -79,16 +84,16 @@ authenticator.authenticate(stormpathToken, function(err, authenticationResult) {
   </thead>
   <tbody>
     <tr>
-      <td>`stormpathToken`</td>
+      <td>`stormpath_token`</td>
       <td>`string`</td>
       <td>required</td>
-      <td>A Stormpath JWT (`stormpath_token`).</td>
+      <td>A Stormpath JWT, from a ID Site Callback or SAML Callback.</td>
     </tr>
     <tr>
       <td>`callback`</td>
       <td>`function`</td>
       <td>required</td>
-      <td>The callback to execute upon server response. The 1st parameter is an [error](Error).  The 2nd parameter is an AssertionAuthenticationResult instance.</td>
+      <td>The callback to execute upon server response. The 1st parameter is an [error](Error).  The 2nd parameter is an [AssertionAuthenticationResult](assertionAuthenticationResult) instance.</td>
     </tr>
   </tbody>
 </table>
@@ -97,5 +102,5 @@ authenticator.authenticate(stormpathToken, function(err, authenticationResult) {
 #### Returns
 
 If the request fails, the callback's first parameter (`err`) will report the
-failure.  If the request succeeds, a AssertionAuthenticationResult instance
+failure.  If the request succeeds, a [AssertionAuthenticationResult](assertionAuthenticationResult) instance
 will be provided to the callback as the callback's second parameter.
