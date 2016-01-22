@@ -17,15 +17,15 @@ describe('StormpathAssertionAuthenticator', function () {
   var sandbox;
   var dataStore;
   var expireAt;
+  var errorToken;
   var validToken;
-  var getResourceStub;
   var mockAccount;
 
   before(function () {
     secret = '123';
 
     dataStore = new DataStore({
-      client: {
+      client: {
         apiKey: {
           id: 'abc',
           secret: secret
@@ -38,9 +38,13 @@ describe('StormpathAssertionAuthenticator', function () {
     expireAt = new Date().getTime() + (60 * 60 * 1);
     mockAccount = { href: 'http://stormpath.mock/api/v1/account/123' };
 
-    getResourceStub = sandbox.stub(dataStore, 'getResource', function (href, data, callback) {
+    sandbox.stub(dataStore, 'getResource', function (href, data, callback) {
       callback(null, mockAccount);
     });
+
+    errorToken = jwt.create({ err: 'Error message from Stormpath API' }, secret)
+      .setExpiration(expireAt)
+      .compact();
 
     validToken = jwt.create({ sub: mockAccount.href }, secret)
       .setExpiration(expireAt)
@@ -49,57 +53,6 @@ describe('StormpathAssertionAuthenticator', function () {
 
   after(function () {
     sandbox.restore();
-  });
-
-  describe('result', function () {
-    describe('when created', function () {
-      var result;
-
-      before(function () {
-        result = new AssertionAuthenticationResult(dataStore, { token: validToken });
-      });
-
-      describe('with dataStore', function () {
-        it('should set dataStore', function () {
-          assert.equal(result.dataStore, dataStore);
-        });
-      });
-
-      describe('with token', function () {
-        it('should set token', function () {
-          assert.equal(result.token, validToken);
-        });
-
-        it('should set account', function () {
-          assert.ok(result.account);
-          assert.equal(result.account.href, mockAccount.href);
-        });
-      });
-    });
-
-    describe('when getAccount() is called', function () {
-      var result;
-
-      before(function () {
-        result = new AssertionAuthenticationResult(dataStore, { token: validToken });
-      });
-
-      it('should call the account href from the token', function (done) {
-        result.getAccount(function () {
-          getResourceStub.should.have.been.calledOnce;
-          getResourceStub.should.have.been.calledWith(mockAccount.href);
-          done();
-        });
-      });
-
-      it('should call the callback with the account result', function (done) {
-        result.getAccount(function (err, result) {
-          assert.notOk(err);
-          assert.deepEqual(result, mockAccount);
-          done();
-        });
-      });
-    });
   });
 
   describe('authenticator', function () {
@@ -147,12 +100,21 @@ describe('StormpathAssertionAuthenticator', function () {
         });
       });
 
+      it('returns an error if the JWT contains an error', function (done) {
+        authenticator.authenticate(errorToken, function (err, result) {
+          assert.isOk(err);
+          assert.isNotOk(result);
+          assert.equal(err.message, errorToken.err);
+          done();
+        });
+      });
+
       it('succeeds when passed a valid token', function (done) {
         authenticator.authenticate(validToken, function (err, result) {
           assert.isNotOk(err);
           assert.isOk(result);
           assert.instanceOf(result, AssertionAuthenticationResult);
-          assert.equal(result.token, validToken);
+          assert.equal(result.stormpath_token, validToken);
           assert.isOk(result.expandedJwt);
           assert.equal(result.expandedJwt.body.sub, mockAccount.href);
           done();
