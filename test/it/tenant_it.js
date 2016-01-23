@@ -31,7 +31,7 @@ describe('Tenant', function() {
   });
 
   describe('getAccounts',function(){
-    var directory, account;
+    var directory;
     var accounts;
     var fakeAccount;
 
@@ -47,9 +47,8 @@ describe('Tenant', function() {
             directory = _directory;
             directory.createAccount(
               fakeAccount,
-              function(err,_account){
+              function(err){
                 if(err){ throw err; }
-                account = _account;
                 tenant.getAccounts(function(err,collection){
                   if(err){ throw err; }
                   collection.each(function(account,next){
@@ -64,6 +63,10 @@ describe('Tenant', function() {
       });
     });
 
+    after(function(done){
+      directory.delete(done);
+    });
+
     it('should contain the created account',function(){
       var found = accounts.filter(function(account){
         return account.email === fakeAccount.email;
@@ -75,6 +78,7 @@ describe('Tenant', function() {
   });
 
   describe('getGroups',function(){
+    var directory;
     var groups;
     var groupName;
 
@@ -87,8 +91,8 @@ describe('Tenant', function() {
         client.createDirectory(
           {name: helpers.uniqId()},
           function(err, _directory) {
-
-            _directory.createGroup(
+            directory = _directory;
+            directory.createGroup(
               {name: groupName},
               function(err){
                 if(err){ throw err; }
@@ -104,6 +108,10 @@ describe('Tenant', function() {
           }
         );
       });
+    });
+
+    after(function(done){
+      directory.delete(done);
     });
 
     it('should contain the created group',function(){

@@ -26,6 +26,10 @@ describe('SamlIdpUrlBuilder', function () {
     });
   });
 
+  after(function(done){
+    helpers.cleanupApplicationAndStores(application, done);
+  });
+
   describe('.build()', function () {
     describe('without options', function () {
       it('should return a valid url', function (done) {
