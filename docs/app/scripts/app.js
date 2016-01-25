@@ -38,6 +38,10 @@ angular.module('docsApp', [
         templateUrl: 'views/application.html',
         controller: 'MainCtrl'
       })
+      .when('/assertionAuthenticationResult', {
+        templateUrl: 'views/assertionAuthenticationResult.html',
+        controller: 'MainCtrl'
+      })
       .when('/authenticationResult', {
         templateUrl: 'views/authenticationResult.html',
         controller: 'MainCtrl'
@@ -84,6 +88,14 @@ angular.module('docsApp', [
       })
       .when('/tenant', {
         templateUrl: 'views/tenant.html',
+        controller: 'MainCtrl'
+      })
+      .when('/stormpathAssertionAuthenticator', {
+        templateUrl: 'views/stormpathAssertionAuthenticator.html',
+        controller: 'MainCtrl'
+      })
+      .when('/samlIdpUrlBuilder', {
+        templateUrl: 'views/samlIdpUrlBuilder.html',
         controller: 'MainCtrl'
       })
       .otherwise({

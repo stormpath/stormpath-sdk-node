@@ -18,23 +18,31 @@ var GroupMembership = require('../lib/resource/GroupMembership');
 describe('Resources: ', function () {
   "use strict";
   describe('Account resource class', function () {
-    var dataStore = new DataStore({
-      client: {
-        apiKey: {
-          id: 1,
-          // this secret will decrypt the api keys correctly
-          secret: '6b2c3912-4779-49c1-81e7-23c204f43d2d'
+    var dataStore;
+
+    before(function () {
+      dataStore = new DataStore({
+        client: {
+          apiKey: {
+            id: 1,
+            // this secret will decrypt the api keys correctly
+            secret: '6b2c3912-4779-49c1-81e7-23c204f43d2d'
+          }
         }
-      }
+      });
     });
 
     describe('get groups', function () {
       describe('if groups not set', function () {
-        var account = new Account(dataStore);
+        var account;
 
         function getGroupsWithoutHref() {
           account.getGroups();
         }
+
+        before(function () {
+          account = new Account(dataStore);
+        });
 
         it('should throw unhandled exception', function () {
           getGroupsWithoutHref.should
@@ -79,11 +87,15 @@ describe('Resources: ', function () {
 
     describe('get group membership', function () {
       describe('if group membership not set', function () {
-        var account = new Account(dataStore);
+        var account;
 
         function getGroupMembershipsWithoutHref() {
           account.getGroupMemberships();
         }
+
+        before(function () {
+          account = new Account(dataStore);
+        });
 
         it('should throw unhandled exception', function () {
           getGroupMembershipsWithoutHref.should
@@ -128,11 +140,15 @@ describe('Resources: ', function () {
 
     describe('add to group', function () {
       describe('if group href not set', function () {
-        var account = new Account(dataStore);
+        var account;
 
         function addToGroupWithoutGroupHref() {
           account.addToGroup();
         }
+
+        before(function () {
+          account = new Account(dataStore);
+        });
 
         it('should throw unhandled exception', function () {
           addToGroupWithoutGroupHref.should
@@ -142,10 +158,15 @@ describe('Resources: ', function () {
 
       describe('if group href is set', function () {
         var sandbox, account, createResourceStub, cbSpy, acc, opt;
-        var group = {href: 'boom1!'};
-        var groupHref = 'boom2!';
-        var createGroupMembershipHref = '/groupMemberships';
+        var group;
+        var groupHref;
+        var createGroupMembershipHref;
+
         before(function () {
+          group = {href: 'boom1!'};
+          groupHref = 'boom2!';
+          createGroupMembershipHref = '/groupMemberships';
+
           sandbox = sinon.sandbox.create();
           opt = {};
           acc = {href: 'acc_boom', groupMemberships: {href: 'boom!'}};
@@ -241,11 +262,15 @@ describe('Resources: ', function () {
 
       describe('get custom data', function () {
         describe('if custom data not set', function () {
-          var account = new Account(dataStore);
+          var account;
 
           function getCustomDataWithoutHref() {
             account.getCustomData();
           }
+
+          before(function () {
+            account = new Account(dataStore);
+          });
 
           it('should throw unhandled exception', function () {
             getCustomDataWithoutHref.should
@@ -339,34 +364,38 @@ describe('Resources: ', function () {
           app.getProviderData(cbSpy);
         });
 
-        it('should call cb without options', function () {
+        it('should call cb without arguments', function () {
           cbSpy.should.have.been.calledOnce;
-          cbSpy.should.have.been.calledWith(undefined, undefined);
+          cbSpy.should.have.been.calledWithExactly();
         });
       });
     });
 
     describe('createApiKey',function () {
-      var sandbox = sinon.sandbox.create();
-      var accountHref = 'accounts/'+uuid();
+      var sandbox;
+      var accountHref;
       var result, cacheResult, requestedOptions;
-
-      var creationResponse = {
-        "account": {
-          "href": "https://api.stormpath.com/v1/accounts/8897"
-        },
-        "href": "https://api.stormpath.com/v1/apiKeys/5678",
-        "id": "5678",
-        "secret": "NuUYYcIAjRYS+LiNBPhpu/p8iYP+jBltei1n1wxcMye3FTKRCTILpP/cD6Ynfvu6S4UokPM/SwuBaEn77aM3Ww==",
-        "status": "ENABLED",
-        "tenant": {
-          "href": "https://api.stormpath.com/v1/tenants/abc123"
-        }
-      };
-
-      var decryptedSecret = 'rncdUXr2dtjjQ5OyDdWRHRxncRW7K0OnU6/Wqf2iqdQ';
+      var creationResponse;
+      var decryptedSecret;
 
       before(function(done){
+        sandbox = sinon.sandbox.create();
+        accountHref = 'accounts/' + uuid();
+        decryptedSecret = 'rncdUXr2dtjjQ5OyDdWRHRxncRW7K0OnU6/Wqf2iqdQ';
+
+        creationResponse = {
+          'account': {
+            'href': 'https://api.stormpath.com/v1/accounts/8897'
+          },
+          'href': 'https://api.stormpath.com/v1/apiKeys/5678',
+          'id': '5678',
+          'secret': 'NuUYYcIAjRYS+LiNBPhpu/p8iYP+jBltei1n1wxcMye3FTKRCTILpP/cD6Ynfvu6S4UokPM/SwuBaEn77aM3Ww==',
+          'status': 'ENABLED',
+          'tenant': {
+            'href': 'https://api.stormpath.com/v1/tenants/abc123'
+          }
+        };
+
         sandbox.stub(dataStore.requestExecutor,'execute',function(requestOptions,cb) {
           requestedOptions = requestOptions;
           // hack - override the salt
@@ -411,11 +440,14 @@ describe('Resources: ', function () {
     });
 
     describe('getApiKeys',function () {
-      var sandbox = sinon.sandbox.create();
-      var accountHref = 'accounts/'+uuid();
+      var sandbox;
+      var accountHref;
       var result, requestedOptions;
 
       before(function(done){
+        sandbox = sinon.sandbox.create();
+        accountHref = 'accounts/' + uuid();
+
         sandbox.stub(dataStore.requestExecutor,'execute',function(requestOptions,cb) {
           requestedOptions = requestOptions;
 

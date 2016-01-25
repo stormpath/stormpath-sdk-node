@@ -165,8 +165,11 @@ describe('Application',function(){
   });
 
   describe('authenticateAccount',function(){
-    var fakeAccount = helpers.fakeAccount();
+    var fakeAccount;
+
     before(function(done){
+      fakeAccount = helpers.fakeAccount();
+
       directory.createAccount(fakeAccount,function(err,_account){
         if(err){ throw err; }
         account = _account;
@@ -272,9 +275,13 @@ describe('Application',function(){
 
       describe('when saved and re-fetched',function(){
         var customDataAfterGet;
-        var propertyName = helpers.uniqId();
-        var propertyValue = helpers.uniqId();
+        var propertyName;
+        var propertyValue;
+
         before(function(done){
+          propertyName = helpers.uniqId();
+          propertyValue = helpers.uniqId();
+
           customData[propertyName] = propertyValue;
           customData.save(function(err){
             if(err){ throw err; }

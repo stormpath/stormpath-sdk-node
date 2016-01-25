@@ -2,14 +2,20 @@ var ResourceError = require('../lib/error/ResourceError');
 
 describe('Error:', function () {
   describe('Resource Error', function () {
-    var response = {
-      status: 400,
-      code: 100500,
-      message: 'hi user',
-      developerMessage: 'hi dev',
-      moreInfo: 'boom!'
-    };
-    var re = new ResourceError(response);
+    var response;
+    var re;
+
+    before(function () {
+      response = {
+        status: 400,
+        code: 100500,
+        message: 'hi user',
+        developerMessage: 'hi dev',
+        moreInfo: 'boom!'
+      };
+
+      re = new ResourceError(response);
+    });
 
     it('should inherit from error', function () {
       re.should.be.an.instanceof(Error);

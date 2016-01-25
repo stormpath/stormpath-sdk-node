@@ -19,12 +19,16 @@ describe('Resources: ', function () {
     });
 
     describe('if data is a collection resource', function(){
-      var data = {
-        href:'',
-        items:[{href:''},{href:''}],
-        offset: 0,
-        limit: 5
-      };
+      var data;
+
+      before(function () {
+        data = {
+          href: '',
+          items: [{href: ''}, {href: ''}],
+          offset: 0,
+          limit: 5
+        };
+      });
 
       it('should return collection', function(){
         var coll = instantiate(Tenant, data);
@@ -37,7 +41,12 @@ describe('Resources: ', function () {
     });
 
     describe('if data is a resource', function(){
-      var data = {href: ''};
+      var data;
+
+      before(function () {
+        data = {href: ''};
+      });
+
       it('should return wrapped obj', function(){
         var coll = instantiate(Tenant, data);
 

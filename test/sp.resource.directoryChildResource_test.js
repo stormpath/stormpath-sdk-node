@@ -8,7 +8,11 @@ var DataStore = require('../lib/ds/DataStore');
 
 describe('Resources: ', function () {
   describe('Directory Child resource', function () {
-    var dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
+    var dataStore;
+
+    before(function () {
+      dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
+    });
 
     describe('get directory', function () {
       describe('if directory href not set', function () {

@@ -1,5 +1,45 @@
 # stormpath-sdk-node Change Log
 
+### 0.16.0
+
+**Released January 22, 2016**
+
+* SAML Support!  Please see the documentation of the `SamlIdpUrlBuilder`, for
+  initiating SAML redirects, and `StormpathAssertionAuthenticator`, for
+  consuming the callback assertion token from Stormpath.  Application resources
+  now have a `getSamlPolicy()` method, and `directory.getProvider()` will return
+  a `SamlProvider` instance if the directory is a SAML directory.
+
+* Improved error messages from our HTTP Request executor, to give better insight
+  on network failures between your application and our REST API.
+
+### 0.15.5
+
+**Released January 21, 2016**
+
+* Fixed: `collection.every(iterator, callback)`.  The callback was being invoked
+  on every page request to the API (it should only be called once the entire
+  collection has been paginated).  The iteration wouldn't be aborted if the
+  iterator returned `false`.  This is now fixed.
+
+* Tests have been improved for readability.
+
+* Test runner has been fixed, all unit tests are now running.
+
+### 0.15.4
+
+**Released January 13, 2016**
+
+* Upgraded `stormpath-config` to v0.0.18. Contains fix for when
+  absolute path is provided but home environment isn't set.
+
+### 0.15.3
+
+**Released January 13, 2016**
+
+* Upgraded `stormpath-config` to v0.0.17. Contains fix for when home
+  environment isn't being set.
+
 ### 0.15.2
 
 **Released December 18, 2015**

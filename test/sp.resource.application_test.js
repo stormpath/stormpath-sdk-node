@@ -25,35 +25,56 @@ var url = require('url');
 describe('Resources: ', function () {
   "use strict";
   describe('Application resource', function () {
+    var dataStore;
 
-    var dataStore = new DataStore({
-      client: {
-        apiKey: {
-          id: 1,
-          // this secret will decrypt the api keys correctly
-          secret: '6b2c3912-4779-49c1-81e7-23c204f43d2d'
+    before(function () {
+      dataStore = new DataStore({
+        client: {
+          apiKey: {
+            id: 1,
+            // this secret will decrypt the api keys correctly
+            secret: '6b2c3912-4779-49c1-81e7-23c204f43d2d'
+          }
         }
-      }
+      });
     });
+
     describe('authenticate account', function () {
-      var authRequest = {username: 'test'};
+      var authRequest;
+
+      before(function () {
+        authRequest = {username: 'test'};
+      });
 
       describe('createIdSiteUrl', function () {
-        var clientApiKeySecret = uuid();
-        var dataStore = new DataStore({client: {apiKey: {id: '1', secret: clientApiKeySecret}}});
-        var app = {
-          href:'http://api.stormpath.com/v1/applications/' + uuid()
-        };
-        var application = new Application(app, dataStore);
-        var clientState = uuid();
+        var clientApiKeySecret;
+        var dataStore;
+        var app;
+        var application;
+        var clientState;
+        var redirectUrl;
+        var params;
+        var path;
 
-        var redirectUrl = application.createIdSiteUrl({
-          callbackUri: 'https://stormpath.com',
-          state: clientState
+        before(function () {
+          clientApiKeySecret = uuid();
+          dataStore = new DataStore({client: {apiKey: {id: '1', secret: clientApiKeySecret}}});
+
+          app = {
+            href: 'http://api.stormpath.com/v1/applications/' + uuid()
+          };
+
+          application = new Application(app, dataStore);
+          clientState = uuid();
+
+          redirectUrl = application.createIdSiteUrl({
+            callbackUri: 'https://stormpath.com',
+            state: clientState
+          });
+
+          params = url.parse(redirectUrl,true).query;
+          path = url.parse(redirectUrl).pathname;
         });
-
-        var params = url.parse(redirectUrl,true).query;
-        var path = url.parse(redirectUrl).pathname;
 
         it('should create a request to /sso',function(){
           common.assert.equal(path,'/sso');
@@ -75,22 +96,35 @@ describe('Resources: ', function () {
 
 
       describe('createIdSiteUrl with logout option', function () {
-        var clientApiKeySecret = uuid();
-        var dataStore = new DataStore({client:{apiKey: {id: '1', secret: clientApiKeySecret}}});
-        var app = {
-          href:'http://api.stormpath.com/v1/applications/' + uuid()
-        };
-        var application = new Application(app, dataStore);
-        var clientState = uuid();
+        var clientApiKeySecret;
+        var dataStore;
+        var app;
+        var application;
+        var clientState;
+        var redirectUrl;
+        var params;
+        var path;
 
-        var redirectUrl = application.createIdSiteUrl({
-          callbackUri: 'https://stormpath.com',
-          state: clientState,
-          logout: true
+        before(function () {
+          clientApiKeySecret = uuid();
+          dataStore = new DataStore({client:{apiKey: {id: '1', secret: clientApiKeySecret}}});
+
+          app = {
+            href: 'http://api.stormpath.com/v1/applications/' + uuid()
+          };
+
+          application = new Application(app, dataStore);
+          clientState = uuid();
+
+          redirectUrl = application.createIdSiteUrl({
+            callbackUri: 'https://stormpath.com',
+            state: clientState,
+            logout: true
+          });
+
+          params = url.parse(redirectUrl,true).query;
+          path = url.parse(redirectUrl).pathname;
         });
-
-        var params = url.parse(redirectUrl,true).query;
-        var path = url.parse(redirectUrl).pathname;
 
         it('should create a request to /sso/logout',function(){
           common.assert.equal(path,'/sso/logout');
@@ -151,18 +185,26 @@ describe('Resources: ', function () {
 
       describe('handleIdSiteCallback',function(){
         describe('without a callbackUri',function(){
-          var test = new SsoResponseTest();
+          var test;
+
+          before(function () {
+            test = new SsoResponseTest();
+          });
+
           it('should throw the callbackUri required error',function(){
             common.assert.throws(test.before,errorMessages.ID_SITE_INVALID_CB_URI);
           });
         });
 
         describe('with out the responseUri argument',function(){
-          var test = new SsoResponseTest({
-            callbackUri: '/',
-            state: uuid()
-          });
+          var test;
+
           before(function(){
+            test = new SsoResponseTest({
+              callbackUri: '/',
+              state: uuid()
+            });
+
             test.before();
           });
           after(function(){
@@ -175,15 +217,22 @@ describe('Resources: ', function () {
 
 
         describe('with a valid jwt response',function(){
-          var accountHref = uuid();
-          var clientState = uuid();
-          var statusValue = uuid();
-          var test = new SsoResponseTest({
-            callbackUri: '/',
-            state: clientState
-          });
+          var accountHref;
+          var clientState;
+          var statusValue;
+          var test;
           var responseJwt;
+
           before(function(){
+            accountHref = uuid();
+            clientState = uuid();
+            statusValue = uuid();
+
+            test = new SsoResponseTest({
+              callbackUri: '/',
+              state: clientState
+            });
+
             test.before();
             responseJwt = {
               sub: accountHref,
@@ -229,12 +278,17 @@ describe('Resources: ', function () {
 
 
         describe('with an expired token',function(){
-          var accountHref = uuid();
+          var accountHref;
           var responseJwt;
-          var test = new SsoResponseTest({
-            callbackUri: '/'
-          });
+          var test;
+
           before(function(){
+            accountHref = uuid();
+
+            test = new SsoResponseTest({
+              callbackUri: '/'
+            });
+
             test.before();
             responseJwt = nJwt.create({
               sub: accountHref,
@@ -255,13 +309,17 @@ describe('Resources: ', function () {
         });
 
         describe('with a different client id (aud)',function(){
-          var accountHref = uuid();
-
+          var accountHref;
           var responseJwt;
-          var test = new SsoResponseTest({
-            callbackUri: '/'
-          });
+          var test;
+
           before(function(){
+            accountHref = uuid();
+
+            test = new SsoResponseTest({
+              callbackUri: '/'
+            });
+
             test.before();
             responseJwt = nJwt.create({
               sub: accountHref,
@@ -281,13 +339,17 @@ describe('Resources: ', function () {
         });
 
         describe('with an invalid exp value',function(){
-          var accountHref = uuid();
-
+          var accountHref;
           var responseJwt;
-          var test = new SsoResponseTest({
-            callbackUri: '/'
-          });
+          var test;
+
           before(function(){
+            accountHref = uuid();
+
+            test = new SsoResponseTest({
+              callbackUri: '/'
+            });
+
             test.before();
             responseJwt = nJwt.create({
               sub: accountHref,
@@ -308,11 +370,16 @@ describe('Resources: ', function () {
         });
 
         describe('with a replayed nonce',function(){
-          var accountHref = uuid();
-          var test = new SsoResponseTest({
-            callbackUri: '/'
-          });
+          var accountHref;
+          var test;
+
           before(function(){
+            accountHref = uuid();
+
+            test = new SsoResponseTest({
+              callbackUri: '/'
+            });
+
             test.before();
             var responseJwt = nJwt.create({
               sub: accountHref,
@@ -335,12 +402,17 @@ describe('Resources: ', function () {
         });
 
         describe('with an invalid signature',function(){
-          var clientState = uuid();
-          var test = new SsoResponseTest({
-            callbackUri: '/',
-            state: clientState
-          });
+          var clientState;
+          var test;
+
           before(function(){
+            clientState = uuid();
+
+            test = new SsoResponseTest({
+              callbackUri: '/',
+              state: clientState
+            });
+
             test.before();
             var responseJwt = nJwt.create({
               irt: test.givenNonce,
@@ -922,9 +994,9 @@ describe('Resources: ', function () {
           app.getDefaultAccountStore(cbSpy);
         });
 
-        it('should call cb without options', function () {
+        it('should call cb without arguments', function () {
           cbSpy.should.have.been.calledOnce;
-          cbSpy.should.have.been.calledWith(undefined, undefined);
+          cbSpy.should.have.been.calledWithExactly();
         });
       });
     });
@@ -1027,9 +1099,9 @@ describe('Resources: ', function () {
           app.getDefaultGroupStore(cbSpy);
         });
 
-        it('should call cb without options', function () {
+        it('should call cb without arguments', function () {
           cbSpy.should.have.been.calledOnce;
-          cbSpy.should.have.been.calledWith(undefined, undefined);
+          cbSpy.should.have.been.calledWithExactly();
         });
       });
     });
@@ -1119,9 +1191,12 @@ describe('Resources: ', function () {
 
     describe('resend verification email', function () {
       var app, createResourceStub;
-      var options = {login:uuid()};
-      var dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
+      var options;
+      var dataStore;
+
       before(function (done) {
+        options = {login: uuid()};
+        dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
 
         app = new Application(
           { href: uuid() , verificationEmails: {href:uuid()} },
@@ -1220,48 +1295,61 @@ describe('Resources: ', function () {
     //});
 
     describe('get apiKey',function(){
-      var appHref = 'https://api.stormpath.com/v1/applications/someapp';
-      var application = new Application({
-        href:appHref,
-        apiKeys: {
-          href: appHref + '/apiKeys'
-        }
-      }, dataStore);
+      var appHref;
+      var application;
+      var foundResponse;
+      var notFoundResponse;
+      var decryptedSecret;
+      var callCount;
 
-      var foundResponse = {
-        "offset" : 0,
-        "href" : "https://api.stormpath.com/v1/applications/1ux4vVy4SBeeLLfZtldtXj/apiKeys",
-        "limit" : 25,
-        "items" : [
-          {
-            "secret" : "NuUYYcIAjRYS+LiNBPhpu/p8iYP+jBltei1n1wxcMye3FTKRCTILpP/cD6Ynfvu6S4UokPM/SwuBaEn77aM3Ww==",
-            "status" : "ENABLED",
-            "account" : {
-              "href" : "https://api.stormpath.com/v1/accounts/Uu87kzssxEcnjmhC9uzwF"
-            },
-            "id" : "1S9H13Q61HLJHIVU7N357QI7U",
-            "tenant" : {
-              "href" : "https://api.stormpath.com/v1/tenants/eU0gloBbz42wGUtGXEjED"
-            },
-            "href" : "https://api.stormpath.com/v1/apiKeys/1S9H13Q61HLJHIVU7N357QI7U"
+      before(function () {
+        appHref = 'https://api.stormpath.com/v1/applications/someapp';
+
+        application = new Application({
+          href: appHref,
+          apiKeys: {
+            href: appHref + '/apiKeys'
           }
-        ]
-      };
+        }, dataStore);
 
-      var notFoundResponse = {
-        "offset" : 0,
-        "href" : "https://api.stormpath.com/v1/applications/1234/apiKeys",
-        "limit" : 25,
-        "items" : []
-      };
+        foundResponse = {
+          'offset': 0,
+          'href': 'https://api.stormpath.com/v1/applications/1ux4vVy4SBeeLLfZtldtXj/apiKeys',
+          'limit': 25,
+          'items': [
+            {
+              'secret': 'NuUYYcIAjRYS+LiNBPhpu/p8iYP+jBltei1n1wxcMye3FTKRCTILpP/cD6Ynfvu6S4UokPM/SwuBaEn77aM3Ww==',
+              'status': 'ENABLED',
+              'account': {
+                'href': 'https://api.stormpath.com/v1/accounts/Uu87kzssxEcnjmhC9uzwF'
+              },
+              'id': '1S9H13Q61HLJHIVU7N357QI7U',
+              'tenant': {
+                'href': 'https://api.stormpath.com/v1/tenants/eU0gloBbz42wGUtGXEjED'
+              },
+              'href': 'https://api.stormpath.com/v1/apiKeys/1S9H13Q61HLJHIVU7N357QI7U'
+            }
+          ]
+        };
 
-      var decryptedSecret = 'rncdUXr2dtjjQ5OyDdWRHRxncRW7K0OnU6/Wqf2iqdQ';
-      var callCount=0;
+        notFoundResponse = {
+          'offset': 0,
+          'href': 'https://api.stormpath.com/v1/applications/1234/apiKeys',
+          'limit': 25,
+          'items': []
+        };
+
+        decryptedSecret = 'rncdUXr2dtjjQ5OyDdWRHRxncRW7K0OnU6/Wqf2iqdQ';
+        callCount=0;
+      });
 
       describe('when apikey is found',function(){
-        var sandbox = sinon.sandbox.create();
+        var sandbox;
         var result, requestedOptions, cacheResult;
+
         before(function(done){
+          sandbox = sinon.sandbox.create();
+
           sandbox.stub(dataStore.requestExecutor,'execute',function(requestOptions,cb) {
             callCount++;
             // hack - override the salt
@@ -1302,8 +1390,11 @@ describe('Resources: ', function () {
       });
       describe('on second get',function(){
         var result;
-        var sandbox = sinon.sandbox.create();
+        var sandbox;
+
         before(function(done){
+          sandbox = sinon.sandbox.create();
+
           sandbox.stub(dataStore.requestExecutor,'execute',function(requestOptions,cb) {
             cb(null,_.extend({},foundResponse.items[0].account));
           });
@@ -1323,10 +1414,12 @@ describe('Resources: ', function () {
         });
       });
       describe('when apikey is not found',function(){
-        var sandbox = sinon.sandbox.create();
+        var sandbox;
         var result, requestedOptions;
 
         before(function(done){
+          sandbox = sinon.sandbox.create();
+
           sandbox.stub(dataStore.requestExecutor,'execute',function(requestOptions,cb) {
             requestedOptions = requestOptions;
             cb(null,notFoundResponse);

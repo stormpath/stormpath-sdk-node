@@ -9,6 +9,8 @@ var Tenant = require('../../lib/resource/Tenant');
 describe('Tenant', function() {
   var client, tenant;
 
+  this.timeout(60 * 2 * 1000);
+
   before(function(done) {
     helpers.getClient(function(_client) {
       client = _client;
@@ -30,9 +32,13 @@ describe('Tenant', function() {
 
   describe('getAccounts',function(){
     var directory, account;
-    var accounts = [];
-    var fakeAccount = helpers.fakeAccount();
+    var accounts;
+    var fakeAccount;
+
     before(function(done){
+      accounts = [];
+      fakeAccount = helpers.fakeAccount();
+
       helpers.getClient(function(_client){
         client = _client;
         client.createDirectory(
@@ -69,10 +75,13 @@ describe('Tenant', function() {
   });
 
   describe('getGroups',function(){
+    var groups;
+    var groupName;
 
-    var groups = [];
-    var groupName = helpers.uniqId();
     before(function(done){
+      groups = [];
+      groupName = helpers.uniqId();
+
       helpers.getClient(function(_client){
         client = _client;
         client.createDirectory(
@@ -127,9 +136,13 @@ describe('Tenant', function() {
 
       describe('when saved and re-fetched',function(){
         var customDataAfterGet;
-        var propertyName = helpers.uniqId();
-        var propertyValue = helpers.uniqId();
+        var propertyName;
+        var propertyValue;
+
         before(function(done){
+          propertyName = helpers.uniqId();
+          propertyValue = helpers.uniqId();
+
           customData[propertyName] = propertyValue;
           customData.save(function(err){
             if(err){ throw err; }
@@ -174,9 +187,13 @@ describe('Tenant', function() {
 
       describe('when saved and re-fetched',function(){
         var customDataAfterGet;
-        var propertyName = helpers.uniqId();
-        var propertyValue = helpers.uniqId();
+        var propertyName;
+        var propertyValue;
+
         before(function(done){
+          propertyName = helpers.uniqId();
+          propertyValue = helpers.uniqId();
+
           customData[propertyName] = propertyValue;
           customData.save(function(err){
             if(err){ throw err; }

@@ -4,7 +4,11 @@ describe('Cache module',function(){
 
   // make sens only for single instance!!!
   describe('Cache Stats class', function(){
-    var stats = new CacheStats();
+    var stats;
+
+    before(function () {
+      stats = new CacheStats();
+    });
 
     describe('if we put a new entry', function(){
       var putsCounter, sizeCounter;

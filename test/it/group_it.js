@@ -66,9 +66,13 @@ describe('Group',function(){
 
       describe('when saved and re-fetched',function(){
         var customDataAfterGet;
-        var propertyName = helpers.uniqId();
-        var propertyValue = helpers.uniqId();
+        var propertyName;
+        var propertyValue;
+
         before(function(done){
+          propertyName = helpers.uniqId();
+          propertyValue = helpers.uniqId();
+
           customData[propertyName] = propertyValue;
           customData.save(function(err){
             if(err){ throw err; }
@@ -114,9 +118,13 @@ describe('Group',function(){
 
       describe('when saved and re-fetched',function(){
         var customDataAfterGet;
-        var propertyName = helpers.uniqId();
-        var propertyValue = helpers.uniqId();
+        var propertyName;
+        var propertyValue;
+
         before(function(done){
+          propertyName = helpers.uniqId();
+          propertyValue = helpers.uniqId();
+
           customData[propertyName] = propertyValue;
           customData.save(function(err){
             if(err){ throw err; }
@@ -135,8 +143,10 @@ describe('Group',function(){
 
   describe('name',function(){
     var saveResult, getResult;
-    var newName = 'it-group-'+helpers.uniqId();
+    var newName;
+
     before(function(done){
+      newName = 'it-group-' + helpers.uniqId();
 
       group.name = newName;
       group.save(function(err){
@@ -158,8 +168,10 @@ describe('Group',function(){
 
   describe('description',function(){
     var saveResult, getResult;
-    var newDescription = 'it-group-description'+helpers.uniqId();
+    var newDescription;
+
     before(function(done){
+      newDescription = 'it-group-description' + helpers.uniqId();
 
       group.description = newDescription;
       group.save(function(err){

@@ -11,7 +11,12 @@ var DataStore = require('../lib/ds/DataStore');
 
 describe('Resources: ', function () {
   describe('Tenant resource class', function () {
-    var dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
+    var dataStore;
+
+    before(function () {
+      dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
+    });
+
     describe('get applications', function () {
       describe('if application not set', function () {
         //var tenant = new Tenant();
@@ -62,8 +67,10 @@ describe('Resources: ', function () {
 
     describe('create application', function () {
       var sandbox, tenant, createResourceStub, cbSpy, app, opt;
-      var createAppPath = '/applications';
+      var createAppPath;
+
       before(function () {
+        createAppPath = '/applications';
         sandbox = sinon.sandbox.create();
         app = {href: ''};
         opt = {};
@@ -146,8 +153,10 @@ describe('Resources: ', function () {
 
     describe('create directory', function () {
       var sandbox, tenant, createResourceStub, cbSpy, app, opt;
-      var createDirPath = '/directories';
+      var createDirPath;
+
       before(function () {
+        createDirPath = '/directories';
         sandbox = sinon.sandbox.create();
         app = {href: ''};
         opt = {};
@@ -183,11 +192,14 @@ describe('Resources: ', function () {
     describe('verify account email', function () {
       describe('with a successful token response',function(){
         var sandbox, tenant, tenantResult,cacheResult;
-        var accountResponse = {
-          href: '/v1/accounts/'+uuid(),
-          status: 'ENABLED'
-        };
+        var accountResponse;
+
         before(function (done) {
+          accountResponse = {
+            href: '/v1/accounts/' + uuid(),
+            status: 'ENABLED'
+          };
+
           sandbox = sinon.sandbox.create();
           tenant = new Tenant({href:'an href'}, dataStore);
 

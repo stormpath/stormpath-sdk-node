@@ -7,9 +7,11 @@ var stormpath = require('../../');
 
 describe('OAuthIdSiteTokenGrantAuthenticator',function(){
   var application;
-  var newAccount = helpers.fakeAccount();
+  var newAccount;
 
   before(function(done){
+    newAccount = helpers.fakeAccount();
+
     helpers.createApplication(function(err,app){
       application = app;
       application.createAccount(newAccount,done);
@@ -28,10 +30,5 @@ describe('OAuthIdSiteTokenGrantAuthenticator',function(){
   it('should be constructable without new operator',function(){
     var authenticator = new stormpath.OAuthIdSiteTokenGrantAuthenticator(application);
     assert.instanceOf(authenticator, stormpath.OAuthIdSiteTokenGrantAuthenticator);
-  });
-
-  it.skip('should create access tokens',function(){
-    // This will require a rountrip test with ID site
-    // Our express-stormpath module has some test code for this
   });
 });

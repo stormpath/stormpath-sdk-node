@@ -33,7 +33,11 @@ function clearEnvVars(){
 }
 
 describe('Client', function () {
-  var apiKey = {id: 1, secret: 2};
+  var apiKey;
+
+  before(function () {
+    apiKey = {id: 1, secret: 2};
+  });
 
   describe('constructor', function () {
     var client;
@@ -212,9 +216,10 @@ describe('Client', function () {
     describe('first call should get resource', function () {
 
       var sandbox, client, getResourceStub, cbSpy, err, tenant, onCurrentTenantCb;
-      var currentTenantHref = '/tenants/current';
+      var currentTenantHref;
 
       before(function (done) {
+        currentTenantHref = '/tenants/current';
         sandbox = sinon.sandbox.create();
         err = {error: 'boom!'};
         tenant = { href: 'foo'};
@@ -274,9 +279,10 @@ describe('Client', function () {
 
     describe('second and after call', function () {
       var sandbox, client, getResourceStub, cbSpy, err, tenant, onCurrentTenantCb;
-      var currentTenantHref = '/tenants/current';
+      var currentTenantHref;
 
       before(function (done) {
+        currentTenantHref = '/tenants/current';
         sandbox = sinon.sandbox.create();
         err = {error: 'boom!'};
         tenant = { href: 'foo'};
@@ -323,9 +329,10 @@ describe('Client', function () {
 
   describe('call to get resource', function () {
     var sandbox, client, getResourceStub, cbSpy;
-    var href = '/boom!';
+    var href;
 
     before(function (done) {
+      href = '/boom!';
       sandbox = sinon.sandbox.create();
       client = makeTestClient({apiKey: apiKey});
 
@@ -363,9 +370,10 @@ describe('Client', function () {
 
   describe('call to create resource', function () {
     var sandbox, client, createResourceStub, cbSpy;
-    var href = '/boom!';
+    var href;
 
     before(function (done) {
+      href = '/boom!';
       sandbox = sinon.sandbox.create();
       client = makeTestClient({apiKey: apiKey});
 
@@ -404,9 +412,10 @@ describe('Client', function () {
   describe('call to get accounts', function() {
     var cbSpy, client, err, sandbox, tenant;
     var getCurrentTenantStub, getTenantAccounts;
-    var returnError = false;
+    var returnError;
 
     before(function(done) {
+      returnError = false;
       sandbox = sinon.sandbox.create();
       err = {error: 'boom!'};
 
@@ -474,9 +483,10 @@ describe('Client', function () {
   describe('call to get groups', function() {
     var cbSpy, client, err, sandbox, tenant;
     var getCurrentTenantStub, getTenantGroups;
-    var returnError = false;
+    var returnError;
 
     before(function (done) {
+      returnError = false;
       sandbox = sinon.sandbox.create();
       err = {error: 'boom!'};
 
@@ -538,10 +548,10 @@ describe('Client', function () {
 
   describe('call to get applications', function () {
     var sandbox, client, getCurrentTenantStub, getTenantApplications,
-      cbSpy, err, tenant;
-    var returnError = false;
+      cbSpy, err, tenant, returnError;
 
     before(function (done) {
+      returnError = false;
       sandbox = sinon.sandbox.create();
       err = {error: 'boom!'};
       client = makeTestClient({apiKey: apiKey});
@@ -600,10 +610,10 @@ describe('Client', function () {
 
   describe('call to create application', function () {
     var sandbox, client, getCurrentTenantStub, createTenantApplication,
-      cbSpy, app, err, tenant;
-    var returnError = false;
+      cbSpy, app, err, tenant, returnError;
 
     before(function (done) {
+      returnError = false;
       sandbox = sinon.sandbox.create();
       err = {error: 'boom!'};app = {href: 'boom!'};
       client = makeTestClient({apiKey: apiKey});
@@ -662,10 +672,10 @@ describe('Client', function () {
 
   describe('call to get directories', function () {
     var sandbox, client, getCurrentTenantStub, getTenantDirectories,
-      cbSpy, err, tenant;
-    var returnError = false;
+      cbSpy, err, tenant, returnError;
 
     before(function (done) {
+      returnError = false;
       sandbox = sinon.sandbox.create();
       err = {error: 'boom!'};
       client = makeTestClient({apiKey: apiKey});
@@ -724,10 +734,10 @@ describe('Client', function () {
 
   describe('call to create Directory', function () {
     var sandbox, client, getCurrentTenantStub, createTenantDirectory,
-      cbSpy, app, err, tenant;
-    var returnError = false;
+      cbSpy, app, err, tenant, returnError;
 
     before(function (done) {
+      returnError = false;
       sandbox = sinon.sandbox.create();
       err = {error: 'boom!'};app = {href: 'boom!'};
       client = makeTestClient({apiKey: apiKey});

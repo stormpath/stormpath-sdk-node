@@ -9,10 +9,14 @@ var redis = require('redis');
 
 var redisActionTests = function(redisStore) {
     describe('set entry', function () {
-      var key = 'key' + random();
-      var val = 'val' + random();
+      var key;
+      var val;
       var entry;
+
       before(function (done) {
+        key = 'key' + random();
+        val = 'val' + random();
+
         redisStore.put(key, val, function () {
           redisStore.get(key, function (err, ent) {
             entry = ent;
@@ -32,9 +36,13 @@ var redisActionTests = function(redisStore) {
     });
 
     describe('get entry', function () {
-      var key = 'key' + random();
-      var val = 'val' + random();
+      var key;
+      var val;
+
       before(function (done) {
+        key = 'key' + random();
+        val = 'val' + random();
+
         redisStore.put(key, val, done);
       });
       after(function (done) {
@@ -59,9 +67,13 @@ var redisActionTests = function(redisStore) {
     });
 
     describe('delete entry', function () {
-      var key = 'key' + random();
-      var val = 'val' + random();
+      var key;
+      var val;
+
       before(function (done) {
+        key = 'key' + random();
+        val = 'val' + random();
+
         redisStore.put(key, val, done);
       });
       it('should remove entry from store', function (done) {
@@ -75,9 +87,13 @@ var redisActionTests = function(redisStore) {
     });
 
     describe('clear cache', function () {
-      var key = 'key' + random();
-      var val = 'val' + random();
+      var key;
+      var val;
+
       before(function (done) {
+        key = 'key' + random();
+        val = 'val' + random();
+
         redisStore.put(key, val, done);
       });
       it('should remove all entries from store', function (done) {
@@ -91,9 +107,13 @@ var redisActionTests = function(redisStore) {
     });
 
     describe('cache size', function () {
-      var key = 'key' + random();
-      var val = 'val' + random();
+      var key;
+      var val;
+
       before(function (done) {
+        key = 'key' + random();
+        val = 'val' + random();
+
         redisStore.clear(function(){
           redisStore.put(key, val, done);
         });

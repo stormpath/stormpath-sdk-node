@@ -9,13 +9,19 @@ var DataStore = require('../lib/ds/DataStore');
 
 describe('Resources: ', function () {
   describe('InstanceResource class', function(){
+    var ds;
+    var app;
+    var instanceResource;
 
-    var ds = new DataStore({client: {apiKey:{id:1,secret:2}}});
-    var app = {href: '/href'};
-    var instanceResource = new InstanceResource({
-      applications: app,
-      directory: {}
-    }, ds);
+    before(function () {
+      ds = new DataStore({client: {apiKey:{id: 1,secret: 2}}});
+      app = {href: '/href'};
+
+      instanceResource = new InstanceResource({
+        applications: app,
+        directory: {}
+      }, ds);
+    });
 
     describe('call to get resource', function(){
       describe('without property name', function(){
@@ -111,9 +117,11 @@ describe('Resources: ', function () {
       });
 
       describe('with optional query param', function(){
-        var query = {q:'asd'};
+        var query;
         var sandbox, error, cb, getResourceSpy;
+
         before(function(){
+          query = {q: 'asd'};
           cb = function(err){error = err;};
           sandbox = sinon.sandbox.create();
           getResourceSpy = sandbox.spy(ds, 'getResource');

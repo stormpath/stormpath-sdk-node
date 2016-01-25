@@ -8,9 +8,9 @@ describe('Client Credential Authentication',function(){
 
   var app, account, client, fakeAccount, accessToken;
 
-  fakeAccount = helpers.fakeAccount();
-
   before(function(done){
+    fakeAccount = helpers.fakeAccount();
+
     helpers.getClient(function(_client){
       client = _client;
 

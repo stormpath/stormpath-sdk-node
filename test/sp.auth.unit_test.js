@@ -8,8 +8,16 @@ var Buffer = require('buffer').Buffer;
 
 describe('Authorization module', function () {
   'use strict';
-  var getAuthenticator = require('../lib/authc').getAuthenticator;
-  var apiKey = {id: 'stormpath_apiKey_id', secret: 'stormpath_apiKey_secret'};
+  var getAuthenticator;
+  var apiKey;
+
+  before(function () {
+    getAuthenticator = require('../lib/authc').getAuthenticator;
+  });
+
+  before(function () {
+    apiKey = {id: 'stormpath_apiKey_id', secret: 'stormpath_apiKey_secret'};
+  });
 
   describe('constructor', function(){
     function createAuth(options){
@@ -46,7 +54,12 @@ describe('Authorization module', function () {
   });
 
   describe('Basic auth', function () {
-    var auth = getAuthenticator({apiKey: apiKey, authenticationScheme: 'basic'});
+    var auth;
+
+    before(function () {
+      auth = getAuthenticator({apiKey: apiKey, authenticationScheme: 'basic'});
+    });
+
     it('should sign request with base64 signature', function () {
       var req = {headers: {}};
       var basicAuthToken = new Buffer(apiKey.id + ':' + apiKey.secret)
@@ -58,10 +71,14 @@ describe('Authorization module', function () {
     });
   });
   describe('Digest auth', function () {
-    var uuid = require('node-uuid');
-    var auth = getAuthenticator({apiKey: apiKey, authenticationScheme:'SAUTHC1'});
+    var uuid;
+    var auth;
     var sandbox, guidStub;
+
     before(function () {
+      uuid = require('node-uuid');
+      auth = getAuthenticator({apiKey: apiKey, authenticationScheme:'SAUTHC1'});
+
       sandbox = sinon.sandbox.create();
       guidStub = sandbox.stub(uuid, 'v4', function () {
         return '3412d026-624e-4778-b02d-f9906f40fc4f';

@@ -8,11 +8,18 @@ var DataStore = require('../lib/ds/DataStore');
 describe('Resources: ', function () {
   describe('Resource base class', function () {
     describe('constructor', function () {
-      var apiKey = {id:'id', secret:'secret'};
+      var apiKey;
+
+      before(function () {
+        apiKey = {id: 'id', secret: 'secret'};
+      });
+
       describe('if called with 2 params', function () {
         var resource, ds;
-        var obj = {data: 'boom!', data2: 'boom2!'};
+        var obj;
+
         before(function () {
+          obj = {data: 'boom!', data2: 'boom2!'};
           ds = new DataStore({client: {apiKey:apiKey}});
           resource = new Resource(obj, ds);
         });
@@ -30,8 +37,10 @@ describe('Resources: ', function () {
 
       describe('if called only with data param', function () {
         var resource;
-        var obj = {data: 'boom!', data2: 'boom2!'};
+        var obj;
+
         before(function () {
+          obj = {data: 'boom!', data2: 'boom2!'};
           resource = new Resource(obj);
         });
 
@@ -47,8 +56,10 @@ describe('Resources: ', function () {
 
       describe('if called only with data store param', function () {
         var resource, ds;
-        var hack = 'boom!';
+        var hack;
+
         before(function () {
+          hack = 'boom!';
           ds = new DataStore({client: {apiKey:apiKey}});
           ds.hack = hack;
 
