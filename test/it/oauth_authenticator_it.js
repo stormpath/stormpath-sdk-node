@@ -159,6 +159,24 @@ describe('OAuthAuthenticator',function(){
     });
   });
 
+  it('should error when trying to authenticate with invalid stormpath token', function(done){
+    var authenticator = stormpath.OAuthAuthenticator(application);
+    authenticator.authenticate({
+      body: {
+        grant_type: 'stormpath_token',
+        stormpath_token: 'abc'
+      }
+    },function(err,result){
+      assert.isUndefined(result);
+
+      assert.isNotNull(err);
+      assert.equal(err.status, 400);
+      assert.equal(err.code, 10017); // 10017 = Token is invalid.
+
+      done();
+    });
+  });
+
   it('should error when trying to authenticate with invalid refresh token', function(done){
     var authenticator = stormpath.OAuthAuthenticator(application);
     authenticator.authenticate({
