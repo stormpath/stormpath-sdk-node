@@ -34,13 +34,7 @@ describe('Client Credential Authentication',function(){
   });
 
   after(function(done){
-
-    account.delete(function(){
-      app.delete(function(){
-        done();
-      });
-    });
-
+    helpers.cleanupApplicationAndStores(app,done);
   });
 
   describe('AuthenticationResult.getAccessToken()',function(){

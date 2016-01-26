@@ -19,7 +19,7 @@ describe('OAuthIdSiteTokenGrantAuthenticator',function(){
   });
 
   after(function(done){
-    application.delete(done);
+    helpers.cleanupApplicationAndStores(application, done);
   });
 
   it('should be constructable with new operator',function(){
