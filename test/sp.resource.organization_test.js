@@ -3,7 +3,6 @@
 var sinon = require('sinon');
 var assert = require('chai').assert;
 
-var DataStore = require('../lib/ds/DataStore');
 var Organization = require('../lib/resource/Organization');
 
 var sandbox = sinon.sandbox.create();
@@ -27,14 +26,10 @@ describe('resource/Organization.js', function () {
     var callbackReturn;
 
     beforeEach(function () {
-      dataStore = new DataStore({
-        client: {
-          apiKey: {
-            id: '82015e3b-917e-402a-bab2-2e9c8acf66c4',
-            secret: '3236ad0f-3b72-451c-b633-7e0a65c49ab0'
-          }
-        }
-      });
+      dataStore = {
+        createResource: function () {},
+        getResource: function () {}
+      };
 
       createResourceReturn = 'e70e3da7-122b-49b2-90ae-b54682caac58';
       getResourceReturn = '7a5bf9e1-7253-4117-a408-d54cd1b54f4e';
