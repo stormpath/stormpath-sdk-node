@@ -8,7 +8,7 @@ var Organization = require('../lib/resource/Organization');
 var sandbox = sinon.sandbox.create();
 
 /*jshint -W030 */
-describe('resource/Organization.js', function () {
+describe.only('resource/Organization.js', function () {
   afterEach(function () {
     sandbox.restore();
   });
@@ -227,22 +227,22 @@ describe('resource/Organization.js', function () {
       });
     });
 
-    describe('.getDefaultAccountStore(options, callback)', function () {
+    describe('.getDefaultAccountStoreMapping(options, callback)', function () {
       it('should pass the options to dataStore.getResource', function () {
-        organization.getDefaultAccountStore(options, callbackSpy);
+        organization.getDefaultAccountStoreMapping(options, callbackSpy);
 
         getResourceStub.should.have.been.calledOnce;
         getResourceStub.args[0][1].should.equal(options);
       });
 
       it('should pass the callback to dataStore.getResource', function () {
-        organization.getDefaultAccountStore(options, callbackSpy);
+        organization.getDefaultAccountStoreMapping(options, callbackSpy);
 
         getResourceStub.args[0][3].should.equal(callbackSpy);
       });
 
       it('should return the value from dataStore.getResource', function () {
-        var returnValue = organization.getDefaultAccountStore(options, callbackSpy);
+        var returnValue = organization.getDefaultAccountStoreMapping(options, callbackSpy);
 
         returnValue.should.equal(getResourceReturn);
       });
@@ -252,7 +252,7 @@ describe('resource/Organization.js', function () {
 
         beforeEach(function () {
           organization.defaultAccountStoreMapping = undefined;
-          returnValue = organization.getDefaultAccountStore(options, callbackSpy);
+          returnValue = organization.getDefaultAccountStoreMapping(options, callbackSpy);
         });
 
         it('should invoke the callback', function () {
@@ -269,15 +269,15 @@ describe('resource/Organization.js', function () {
       });
     });
 
-    describe('.getDefaultAccountStore(callback)', function () {
+    describe('.getDefaultAccountStoreMapping(callback)', function () {
       it('should pass the callback to dataStore.getResource', function () {
-        organization.getDefaultAccountStore(callbackSpy);
+        organization.getDefaultAccountStoreMapping(callbackSpy);
 
         getResourceStub.args[0][3].should.equal(callbackSpy);
       });
 
       it('should return the value from dataStore.getResource', function () {
-        var returnValue = organization.getDefaultAccountStore(callbackSpy);
+        var returnValue = organization.getDefaultAccountStoreMapping(callbackSpy);
 
         returnValue.should.equal(getResourceReturn);
       });
@@ -289,7 +289,7 @@ describe('resource/Organization.js', function () {
           sandbox.restore();
 
           organization.defaultAccountStoreMapping = undefined;
-          returnValue = organization.getDefaultAccountStore(callbackSpy);
+          returnValue = organization.getDefaultAccountStoreMapping(callbackSpy);
         });
 
         it('should invoke the callback', function () {
@@ -306,22 +306,22 @@ describe('resource/Organization.js', function () {
       });
     });
 
-    describe('.getDefaultGroupStore(options, callback)', function () {
+    describe('.getDefaultGroupStoreMapping(options, callback)', function () {
       it('should pass the options to dataStore.getResource', function () {
-        organization.getDefaultGroupStore(options, callbackSpy);
+        organization.getDefaultGroupStoreMapping(options, callbackSpy);
 
         getResourceStub.should.have.been.calledOnce;
         getResourceStub.args[0][1].should.equal(options);
       });
 
       it('should pass the callback to dataStore.getResource', function () {
-        organization.getDefaultGroupStore(options, callbackSpy);
+        organization.getDefaultGroupStoreMapping(options, callbackSpy);
 
         getResourceStub.args[0][3].should.equal(callbackSpy);
       });
 
       it('should return the value from dataStore.getResource', function () {
-        var returnValue = organization.getDefaultGroupStore(options, callbackSpy);
+        var returnValue = organization.getDefaultGroupStoreMapping(options, callbackSpy);
 
         returnValue.should.equal(getResourceReturn);
       });
@@ -331,7 +331,7 @@ describe('resource/Organization.js', function () {
 
         beforeEach(function () {
           organization.defaultGroupStoreMapping = undefined;
-          returnValue = organization.getDefaultGroupStore(options, callbackSpy);
+          returnValue = organization.getDefaultGroupStoreMapping(options, callbackSpy);
         });
 
         it('should invoke the callback', function () {
@@ -348,15 +348,15 @@ describe('resource/Organization.js', function () {
       });
     });
 
-    describe('.getDefaultGroupStore(callback)', function () {
+    describe('.getDefaultGroupStoreMapping(callback)', function () {
       it('should pass the callback to dataStore.getResource', function () {
-        organization.getDefaultGroupStore(callbackSpy);
+        organization.getDefaultGroupStoreMapping(callbackSpy);
 
         getResourceStub.args[0][3].should.equal(callbackSpy);
       });
 
       it('should return the value from dataStore.getResource', function () {
-        var returnValue = organization.getDefaultGroupStore(callbackSpy);
+        var returnValue = organization.getDefaultGroupStoreMapping(callbackSpy);
 
         returnValue.should.equal(getResourceReturn);
       });
@@ -366,7 +366,7 @@ describe('resource/Organization.js', function () {
 
         beforeEach(function () {
           organization.defaultGroupStoreMapping = undefined;
-          returnValue = organization.getDefaultGroupStore(callbackSpy);
+          returnValue = organization.getDefaultGroupStoreMapping(callbackSpy);
         });
 
         it('should invoke the callback', function () {
