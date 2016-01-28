@@ -8,7 +8,7 @@ var Organization = require('../lib/resource/Organization');
 var sandbox = sinon.sandbox.create();
 
 /*jshint -W030 */
-describe.only('resource/Organization.js', function () {
+describe('resource/Organization.js', function () {
   afterEach(function () {
     sandbox.restore();
   });
@@ -380,6 +380,144 @@ describe.only('resource/Organization.js', function () {
         it('should return the value from the callback', function () {
           returnValue.should.equal(callbackReturn);
         });
+      });
+    });
+
+    describe('.getDefaultAccountStore(options, callback)', function () {
+      var returnValue;
+      var getDefaultAccountStoreMappingReturn;
+      var fakeAccountStoreMapping;
+
+      beforeEach(function () {
+        getDefaultAccountStoreMappingReturn = 'ce6869a2-fa0c-44fc-a2d4-684f20274184';
+
+        fakeAccountStoreMapping = {
+          accountStore: {
+            href: 'c5e16996-cd90-4f1f-8fbf-2eb61dd8a6e5'
+          }
+        };
+
+        sandbox.stub(organization, 'getDefaultAccountStoreMapping', function (options, callback) {
+          callback(null, fakeAccountStoreMapping);
+
+          return getDefaultAccountStoreMappingReturn;
+        });
+
+        returnValue = organization.getDefaultAccountStore(options, callbackSpy);
+      });
+
+      it('should pass the options to dataStore.getResource', function () {
+        getResourceStub.should.have.been.calledOnce;
+        getResourceStub.args[0][1].should.equal(options);
+      });
+
+      it('should pass the callback to dataStore.getResource', function () {
+        getResourceStub.args[0][3].should.equal(callbackSpy);
+      });
+
+      it('should return the value from getDefaultAccountStoreMapping()', function () {
+        returnValue.should.equal(getDefaultAccountStoreMappingReturn);
+      });
+    });
+
+    describe('.getDefaultAccountStore(callback)', function () {
+      var returnValue;
+      var getDefaultAccountStoreMappingReturn;
+      var fakeAccountStoreMapping;
+
+      beforeEach(function () {
+        getDefaultAccountStoreMappingReturn = 'd5f67a2e-322c-4202-8126-f6250c7013f9';
+
+        fakeAccountStoreMapping = {
+          accountStore: {
+            href: '06ffdca9-0384-4963-971c-1ec47ddbbbe0'
+          }
+        };
+
+        sandbox.stub(organization, 'getDefaultAccountStoreMapping', function (options, callback) {
+          callback(null, fakeAccountStoreMapping);
+
+          return getDefaultAccountStoreMappingReturn;
+        });
+
+        returnValue = organization.getDefaultAccountStore(callbackSpy);
+      });
+
+      it('should pass the callback to dataStore.getResource', function () {
+        getResourceStub.args[0][3].should.equal(callbackSpy);
+      });
+
+      it('should return the value from getDefaultAccountStoreMapping()', function () {
+        returnValue.should.equal(getDefaultAccountStoreMappingReturn);
+      });
+    });
+
+    describe('.getDefaultGroupStore(options, callback)', function () {
+      var returnValue;
+      var getDefaultGroupStoreMappingReturn;
+      var fakeGroupStoreMapping;
+
+      beforeEach(function () {
+        getDefaultGroupStoreMappingReturn = '1f38e9a1-3c7e-43c9-8cac-c44d396a7934';
+
+        fakeGroupStoreMapping = {
+          accountStore: {
+            href: '0871adfa-17ee-4a56-aded-d27f19879435'
+          }
+        };
+
+        sandbox.stub(organization, 'getDefaultGroupStoreMapping', function (options, callback) {
+          callback(null, fakeGroupStoreMapping);
+
+          return getDefaultGroupStoreMappingReturn;
+        });
+
+        returnValue = organization.getDefaultGroupStore(options, callbackSpy);
+      });
+
+      it('should pass the options to dataStore.getResource', function () {
+        getResourceStub.should.have.been.calledOnce;
+        getResourceStub.args[0][1].should.equal(options);
+      });
+
+      it('should pass the callback to dataStore.getResource', function () {
+        getResourceStub.args[0][3].should.equal(callbackSpy);
+      });
+
+      it('should return the value from getDefaultGroupStoreMapping()', function () {
+        returnValue.should.equal(getDefaultGroupStoreMappingReturn);
+      });
+    });
+
+    describe('.getDefaultGroupStore(callback)', function () {
+      var returnValue;
+      var getDefaultGroupStoreMappingReturn;
+      var fakeGroupStoreMapping;
+
+      beforeEach(function () {
+        getDefaultGroupStoreMappingReturn = '9ae8777b-551d-43ba-870a-f2d7f1e36494';
+
+        fakeGroupStoreMapping = {
+          accountStore: {
+            href: '687ed043-277b-482a-8cbb-8b72bc84b7a1'
+          }
+        };
+
+        sandbox.stub(organization, 'getDefaultGroupStoreMapping', function (options, callback) {
+          callback(null, fakeGroupStoreMapping);
+
+          return getDefaultGroupStoreMappingReturn;
+        });
+
+        returnValue = organization.getDefaultGroupStore(callbackSpy);
+      });
+
+      it('should pass the callback to dataStore.getResource', function () {
+        getResourceStub.args[0][3].should.equal(callbackSpy);
+      });
+
+      it('should return the value from getDefaultGroupStoreMapping()', function () {
+        returnValue.should.equal(getDefaultGroupStoreMappingReturn);
       });
     });
 
