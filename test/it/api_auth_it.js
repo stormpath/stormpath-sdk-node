@@ -34,11 +34,7 @@ describe('Application.authenticateApiRequest',function(){
   });
 
   after(function(done){
-    account.delete(function(){
-      app.delete(function(){
-        done();
-      });
-    });
+    helpers.cleanupApplicationAndStores(app,done);
   });
 
   describe('with Authorization: Basic <key>:<secret> (1)',function(){

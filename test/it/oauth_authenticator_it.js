@@ -102,7 +102,12 @@ describe('OAuthAuthenticator',function(){
   });
 
   after(function(done){
-    application.delete(done);
+    helpers.cleanupApplicationAndStores(application,function(err){
+      if (err) {
+        return done(err);
+      }
+      helpers.cleanupApplicationAndStores(application2, done);
+    });
   });
 
   it('should be constructable with new operator',function(){

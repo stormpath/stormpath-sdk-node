@@ -29,11 +29,7 @@ describe('Account api keys',function(){
   });
 
   after(function(done){
-    account.delete(function(){
-      app.delete(function(){
-        done();
-      });
-    });
+    helpers.cleanupApplicationAndStores(app,done);
   });
 
   describe('createApiKey()',function(){

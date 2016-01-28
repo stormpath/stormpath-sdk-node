@@ -100,6 +100,27 @@ function cleanupOldApplications(callback) {
 }
 
 /**
+ * Deletes an application and any account stores that are mapped to it
+ * @param  {Application} application A stormpath application object
+ * @param  {Function} callback
+ */
+function cleanupApplicationAndStores(application, callback) {
+  application.getAccountStoreMappings(function (err, mappings) {
+    if(err){
+      return callback(err);
+    }
+    mappings.each(function(mapping, next){
+      mapping.getAccountStore(function(err, store){
+        if(err){
+          return next(err);
+        }
+        store.delete(next);
+      });
+    },callback);
+  });
+}
+
+/**
  * Create a new Stormpath Application for usage in tests.
  *
  * @function
@@ -148,6 +169,7 @@ function getDefaultAccountStore(application,done){
 
 module.exports = {
   getDefaultAccountStore: getDefaultAccountStore,
+  cleanupApplicationAndStores: cleanupApplicationAndStores,
   createApplication: createApplication,
   getClient: getClient,
   uniqId: uniqId,
