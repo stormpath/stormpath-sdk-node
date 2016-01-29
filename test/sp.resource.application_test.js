@@ -1019,7 +1019,7 @@ describe('Resources: ', function () {
 
           .post(u.v1('/accountStoreMappings'))
           .reply(201, function (uri, reqBody) {
-            asm = JSON.parse(reqBody);
+            asm = reqBody;
             asm.href = '/accountStoreMappings/href';
             return asm;
           });
@@ -1124,7 +1124,7 @@ describe('Resources: ', function () {
 
           .post(u.v1('/accountStoreMappings'))
           .reply(201, function (uri, reqBody) {
-            asm = JSON.parse(reqBody);
+            asm = reqBody;
             asm.href = '/accountStoreMappings/href';
             return asm;
           });
@@ -1167,7 +1167,7 @@ describe('Resources: ', function () {
         nock(u.BASE_URL)
           .post(u.v1('/accountStoreMappings'))
           .reply(201, function (uri, reqBody) {
-            asm = JSON.parse(reqBody);
+            asm = reqBody;
             asm.href = '/accountStoreMappings/href';
             done();
             return asm;
@@ -1231,7 +1231,7 @@ describe('Resources: ', function () {
         nock(u.BASE_URL)
           .post(u.v1('/accountStoreMappings'))
           .reply(201, function (uri, reqBody) {
-            asm = JSON.parse(reqBody);
+            asm = reqBody;
             asm.href = '/accountStoreMappings/href';
             done();
             return asm;
