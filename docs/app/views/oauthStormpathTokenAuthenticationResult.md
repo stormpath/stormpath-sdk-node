@@ -1,7 +1,9 @@
 ## OAuthStormpathTokenAuthenticationResult
 
-An `OAuthStormpathTokenAuthenticationResult` is returned by the [OAuthStormpathTokenAuthenticator](oauthStormpathTokenAuthenticator).
-It encapsulates an authentication result from an ID Site callback, and allows you to get the account that has authenticated.
+An `OAuthStormpathTokenAuthenticationResult` is returned by the
+[OAuthStormpathTokenAuthenticator](oauthStormpathTokenAuthenticator).
+It encapsulates an authentication result from an ID Site or SAML callback, and
+allows you to get the account that has authenticated.
 
 
 ---

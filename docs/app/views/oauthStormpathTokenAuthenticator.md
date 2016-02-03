@@ -1,7 +1,8 @@
 ## OAuthStormpathTokenAuthenticator
 
 Provides the ability to authenticate with Stormpath JWTs (`stormpath_token`).
-Your application will recieve this token when a user is redirected to your application from an ID Site.
+Your application will recieve this token when a user is redirected to your
+application from an ID Site or SAML provider.
 
 ---
 
@@ -54,7 +55,8 @@ A new [`OAuthStormpathTokenAuthenticator`](oauthStormpathTokenAuthenticator) ins
 Authenticates a `stormpath_token` and returns a [OAuthStormpathTokenAuthenticationResult](outhStormpathTokenAuthenticationResult), which
 can provide the [Account](account) that has authenticated.
 
-The `stormpath_token` is the value of the `jwtResponse` parameter in the callback URL, e.g. `https://myapp.com/idsite/callback?jwtResponse=<stormpath_token>`.
+The `stormpath_token` is the value of the `jwtResponse` parameter in the
+callback URL, e.g. `https://myapp.com/idSiteCallback?jwtResponse=<stormpath_token>`.
 
 
 #### Usage
@@ -89,7 +91,7 @@ authenticator.authenticate(data, function(err, authenticationResult) {
       <td>
         <p>An object literal, with the following properties:</p>
         <ul>
-          <li>`stormpath_token` - REQUIRED - A Stormpath JWT from an ID Site callback.</li>
+          <li>`stormpath_token` - REQUIRED - A Stormpath JWT from an ID Site or SAML callback.</li>
         </ul>
       </td>
     </tr>
