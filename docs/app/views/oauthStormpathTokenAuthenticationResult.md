@@ -1,9 +1,10 @@
-## AssertionAuthenticationResult
+## OAuthStormpathTokenAuthenticationResult
 
-An `AsssertionAuthenticationResult` is returned by the [StormpathAssertionAuthenticator](stormpathAssertionAuthenticator).
-It encapsulates an authentication result from ID Site Callback or SAML Callback, and allows you to get the account that has authenticated.
+An `OAuthStormpathTokenAuthenticationResult` is returned by the
+[OAuthStormpathTokenAuthenticator](oauthStormpathTokenAuthenticator).
+It encapsulates an authentication result from an ID Site or SAML callback, and
+allows you to get the account that has authenticated.
 
-**Since**: 0.16.0
 
 ---
 
@@ -15,7 +16,7 @@ Retrieves the [Account](account) object of the user that has authenticated.
 #### Usage
 
 ```javascript
-assertionAuthenticationResult.getAccount(function(err, account) {
+oauthStormpathTokenAuthenticationResult.getAccount(function(err, account) {
   console.log(account);
 });
 ```
@@ -49,18 +50,4 @@ assertionAuthenticationResult.getAccount(function(err, account) {
 
 #### Returns
 
-void; the retrieved [Account](account) resource will be provided to the `callback` as the callback's second parameter.
-
----
-
-<a name="stormpath_token"></a>
-### <span class="property">property</span> .stormpath_token <em>String</em>
-
-The original JWT that was returned to your application, as the `?jwtResponse=<stormpath_token>` parameter.
-
----
-
-<a name="expandedJwt"></a>
-### <span class="property">property</span> .expandedJwt <em>Object</em>
-
-The parsed `stormpath_token`.
+If the request fails, the callback's first parameter (err) will report the failure. If the request succeeds, a [Account](account) instance will be provided to the callback as the callback's second parameter.

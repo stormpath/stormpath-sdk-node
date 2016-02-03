@@ -167,10 +167,39 @@ function getDefaultAccountStore(application,done){
   });
 }
 
+/**
+ * Creates a Stormpath JWT from an application and account.
+ *
+ * @function
+ *
+ * @param {Application} application - Stormpath Application to authenticate with.
+ * @param {Account} account - Stormpath account to authenticate with.
+ *
+ * @returns string - The serialized Stormpath JWT.
+ */
+function createStormpathToken(application, account, apiKey) {
+  if (!apiKey) {
+    apiKey = application.dataStore.requestExecutor.options.client.apiKey;
+  }
+
+  var payload = {
+    sub: account.href,
+    iat: new Date().getTime() / 1000,
+    iss: application.href,
+    status: 'AUTHENTICATED',
+    aud: apiKey.id
+  };
+
+  var token = common.jwt.create(payload, apiKey.secret, 'HS256');
+
+  return token.compact();
+}
+
 module.exports = {
   getDefaultAccountStore: getDefaultAccountStore,
   cleanupApplicationAndStores: cleanupApplicationAndStores,
   createApplication: createApplication,
+  createStormpathToken: createStormpathToken,
   getClient: getClient,
   uniqId: uniqId,
   fakeAccount: fakeAccount,

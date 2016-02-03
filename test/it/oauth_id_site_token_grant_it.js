@@ -1,4 +1,3 @@
-
 var common = require('../common');
 var helpers = require('./helpers');
 var assert = common.assert;
@@ -28,7 +27,7 @@ describe('OAuthIdSiteTokenGrantAuthenticator',function(){
   });
 
   it('should be constructable without new operator',function(){
-    var authenticator = new stormpath.OAuthIdSiteTokenGrantAuthenticator(application);
+    var authenticator = stormpath.OAuthIdSiteTokenGrantAuthenticator(application);
     assert.instanceOf(authenticator, stormpath.OAuthIdSiteTokenGrantAuthenticator);
   });
 });
