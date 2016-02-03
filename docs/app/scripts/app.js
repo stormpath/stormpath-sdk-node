@@ -98,6 +98,14 @@ angular.module('docsApp', [
         templateUrl: 'views/samlIdpUrlBuilder.html',
         controller: 'MainCtrl'
       })
+      .when('/oauthStormpathTokenAuthenticator', {
+        templateUrl: 'views/oauthStormpathTokenAuthenticator.html',
+        controller: 'MainCtrl'
+      })
+      .when('/oauthStormpathTokenAuthenticationResult', {
+        templateUrl: 'views/oauthStormpathTokenAuthenticationResult.html',
+        controller: 'MainCtrl'
+      })
       .otherwise({
         redirectTo: '/home'
       });

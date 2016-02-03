@@ -220,6 +220,17 @@ function items() {
       anchor('authenticate')
     ]),
 
+    item('OAuthStormpathTokenAuthenticator', 'oauthStormpathTokenAuthenticator', [
+      anchor('Overview', 'top'),
+      anchor('constructor'),
+      anchor('authenticate')
+    ]),
+
+    item('OAuthStormpathTokenAuthenticationResult', 'oauthStormpathTokenAuthenticationResult', [
+      anchor('Overview', 'top'),
+      anchor('getAccount')
+    ]),
+
     item('Tenant', null, [
       anchor('Overview', 'top'),
       anchor('createApplication'),
