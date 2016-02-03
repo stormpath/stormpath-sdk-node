@@ -23,11 +23,11 @@ describe('OAuthIdSiteTokenGrantAuthenticator',function(){
 
   it('should be constructable with new operator',function(){
     var authenticator = new stormpath.OAuthIdSiteTokenGrantAuthenticator(application);
-    assert.typeOf(authenticator, 'Object');
+    assert.instanceOf(authenticator, stormpath.OAuthIdSiteTokenGrantAuthenticator);
   });
 
   it('should be constructable without new operator',function(){
     var authenticator = stormpath.OAuthIdSiteTokenGrantAuthenticator(application);
-    assert.typeOf(authenticator, 'Object');
+    assert.instanceOf(authenticator, stormpath.OAuthIdSiteTokenGrantAuthenticator);
   });
 });
