@@ -437,6 +437,19 @@ describe('resource/Organization.js', function () {
           callbackSpy.should.have.been.calledWithExactly(fakeError);
         });
       });
+
+      describe('when getDefaultAccountStoreMapping() returns null', function () {
+        beforeEach(function () {
+          fakeAccountStoreMapping = null;
+
+          organization.getDefaultAccountStore(options, callbackSpy);
+        });
+
+        it('should invoke the callback with null, null', function () {
+          callbackSpy.should.have.been.calledOnce;
+          callbackSpy.should.have.been.calledWithExactly(null, null);
+        });
+      });
     });
 
     describe('.getDefaultAccountStore(callback)', function () {
@@ -484,6 +497,19 @@ describe('resource/Organization.js', function () {
         it('should invoke the callback with the error', function () {
           callbackSpy.should.have.been.calledOnce;
           callbackSpy.should.have.been.calledWithExactly(fakeError);
+        });
+      });
+
+      describe('when getDefaultAccountStoreMapping() returns null', function () {
+        beforeEach(function () {
+          fakeAccountStoreMapping = null;
+
+          organization.getDefaultAccountStore(callbackSpy);
+        });
+
+        it('should invoke the callback with null, null', function () {
+          callbackSpy.should.have.been.calledOnce;
+          callbackSpy.should.have.been.calledWithExactly(null, null);
         });
       });
     });
@@ -542,6 +568,19 @@ describe('resource/Organization.js', function () {
           callbackSpy.should.have.been.calledWithExactly(fakeError);
         });
       });
+
+      describe('when getDefaultGroupStoreMapping() returns null', function () {
+        beforeEach(function () {
+          fakeAccountStoreMapping = null;
+
+          organization.getDefaultGroupStore(options, callbackSpy);
+        });
+
+        it('should invoke the callback with null, null', function () {
+          callbackSpy.should.have.been.calledOnce;
+          callbackSpy.should.have.been.calledWithExactly(null, null);
+        });
+      });
     });
 
     describe('.getDefaultGroupStore(callback)', function () {
@@ -589,6 +628,19 @@ describe('resource/Organization.js', function () {
         it('should invoke the callback with the error', function () {
           callbackSpy.should.have.been.calledOnce;
           callbackSpy.should.have.been.calledWithExactly(fakeError);
+        });
+      });
+
+      describe('when getDefaultGroupStoreMapping() returns null', function () {
+        beforeEach(function () {
+          fakeAccountStoreMapping = null;
+
+          organization.getDefaultGroupStore(callbackSpy);
+        });
+
+        it('should invoke the callback with null, null', function () {
+          callbackSpy.should.have.been.calledOnce;
+          callbackSpy.should.have.been.calledWithExactly(null, null);
         });
       });
     });
