@@ -2,7 +2,7 @@
 
 ### 0.17.0
 
-**Released January 22, 2016**
+**Released February 4, 2016**
 
 * Added the new `OAuthStormpathTokenAuthenticator`, this authenticator can be
   be used to exchange Stormpath assertion tokens for an OAuth2 Access Token and
