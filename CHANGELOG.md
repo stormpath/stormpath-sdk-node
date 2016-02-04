@@ -1,5 +1,36 @@
 # stormpath-sdk-node Change Log
 
+### 0.17.0
+
+**Released January 22, 2016**
+
+* Added the new `OAuthStormpathTokenAuthenticator`, this authenticator can be
+  be used to exchange Stormpath assertion tokens for an OAuth2 Access Token and
+  Refresh Token.  Stormpath assertion tokens are JWTs that are provided on
+  callback from ID Site or SAML providers.
+
+* Adding deprecation notice for `OAuthIdSiteTokenGrantAuthenticator`, please use
+  the new `OAuthStormpathTokenAuthenticator` instead.
+
+* Added the following methods to the Organization resource:
+ * createAccount()
+ * createAccount()
+ * getAccounts()
+ * getCustomData()
+ * getDefaultAccountStore()
+ * getDefaultGroupStore()
+ * getGroups()
+ * getIdSiteModel()
+
+* Internal refactor of argument parsing logic for all callback-based functions.
+
+* Updated production dependencies:
+
+ * `deep-extend@0.4.0` -> `deep-extend@0.4.1`
+ * `underscore.string@3.2.2` -> `underscore.string@3.2.3`
+ * `request@2.67.0` -> `request@2.69.0`
+ * `lodash@4.0.0` -> `lodash@4.0.1`
+
 ### 0.16.0
 
 **Released January 22, 2016**
