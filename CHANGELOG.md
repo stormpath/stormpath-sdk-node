@@ -22,7 +22,7 @@
  * getGroups()
  * getIdSiteModel()
 
-* Internal refactor or argument parsing logic for all callback-based functions.
+* Internal refactor of argument parsing logic for all callback-based functions.
 
 * Updated production dependencies:
 
