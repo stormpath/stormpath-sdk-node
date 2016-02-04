@@ -1,5 +1,10 @@
 # Upgrade Guide
 
+### Version 0.16.0 -> Version 0.17.0
+
+* `OAuthIdSiteTokenGrantAuthenticator` has been deprecated. Please use the
+new `OAuthStormpathTokenAuthenticator` instead.
+
 ### Version 0.15.5 -> Version 0.16.0
 
 No changes needed
