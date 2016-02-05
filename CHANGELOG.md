@@ -1,5 +1,14 @@
 # stormpath-sdk-node Change Log
 
+### 0.17.1
+
+**Released February 5, 2016**
+
+* Fixed: the `JwtAuthenticator` would throw errors during token validation.  It
+  now calls the provided callback instead.
+
+* Removed un-used dependencies `flat` and `glob`.
+
 ### 0.17.0
 
 **Released February 4, 2016**
@@ -23,6 +32,7 @@
  * getIdSiteModel()
 
 * Internal refactor of argument parsing logic for all callback-based functions.
+
 
 * Updated production dependencies:
 
