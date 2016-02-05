@@ -1,5 +1,9 @@
 # Upgrade Guide
 
+### Version 0.17.0 -> Version 0.17.1
+
+No changes needed
+
 ### Version 0.16.0 -> Version 0.17.0
 
 * `OAuthIdSiteTokenGrantAuthenticator` has been deprecated. Please use the
