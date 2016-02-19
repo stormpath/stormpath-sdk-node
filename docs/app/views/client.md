@@ -89,6 +89,17 @@ var client = new stormpath.Client(options);
       <td>Options object that must have at least an <code>apiKey</code> field.</td>
     </tr>
     <tr>
+      <td><code>options.baseUrl</code></td>
+      <td><code>string</code></td>
+      <td>optional</td>
+      <td>
+        The base URL for the Stormpath API.  The default is
+        `https://api.stormpath.com/v1`.  Shared Enterprise Cloud customers
+        should use `https://enterprise.stormpath.io/v1`.  Private deployments
+        should use their custom base URL.
+      </td>
+    </tr>
+    <tr>
       <td><code>options.cacheOptions</code></td>
       <td><code>object</code></td>
       <td>optional</td>

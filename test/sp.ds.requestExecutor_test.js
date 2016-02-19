@@ -10,14 +10,12 @@ var RequestExecutor = require('../lib/ds/RequestExecutor');
 var ResourceError = require('../lib/error/ResourceError');
 
 describe('ds:', function () {
+
+  var apiKey = {id: 1, secret: 2};
+
   describe('RequestExecutor:', function () {
-    var apiKey;
 
     this.timeout(10 * 1000);
-
-    before(function () {
-      apiKey = {id: 1, secret: 2};
-    });
 
     describe('constructor', function () {
       describe('create without options', function () {
@@ -52,7 +50,7 @@ describe('ds:', function () {
     });
     describe('call to execute', function () {
       var reqExec;
-
+      var mockHost = 'http://example.com';
       function exec(req, cb) {
         return function () {
           reqExec.execute(req, cb);
@@ -60,7 +58,7 @@ describe('ds:', function () {
       }
 
       before(function () {
-        reqExec = new RequestExecutor({client: {apiKey: apiKey} });
+        reqExec = new RequestExecutor({client: {apiKey: apiKey}, baseUrl: mockHost });
       });
 
       it('should throw if called without req', function () {
@@ -73,9 +71,9 @@ describe('ds:', function () {
 
       it('should return response', function (done) {
         var cbSpy;
-        var uri = 'http://example.com';
+        var uri = '/';
         var res = {test: 'boom'};
-        nock(uri).get('/').reply(200, res);
+        nock(mockHost).get(uri).reply(200, res);
         function cb(err, body) {
           expect(err).to.be.null;
           body.should.be.deep.equal(res);
@@ -89,10 +87,9 @@ describe('ds:', function () {
 
       it('should return resource error in case of incorrect request', function (done) {
         var cbSpy;
-        var host = 'https://api.stormpath.com';
-        var uri = host + '/v1/test';
+        var uri = '/doesntExist';
         var res = {test: 'boom'};
-        nock(host).get('/v1/test').reply(400, res);
+        nock(mockHost).get(uri).reply(400, res);
         function cb(err, body) {
           err.should.be.an.instanceof(ResourceError);
           expect(body).to.be.null;
@@ -104,11 +101,14 @@ describe('ds:', function () {
         reqExec.execute({uri: uri, method:'GET'}, cbSpy);
       });
 
-      describe('in case of request error', function () {
-        var uri;
+      describe('in case of network error', function () {
+        var uri = '/doesntExist';
         var method;
         var error;
         var body;
+
+        var mockHost = 'http://domain-that-doesnt-exist.stormpath.com';
+        var reqExec = new RequestExecutor({client: {apiKey: apiKey}, baseUrl: mockHost });
 
         function executeRequest(done) {
           var cbSpy = sinon.spy(function () {
@@ -119,11 +119,6 @@ describe('ds:', function () {
 
           reqExec.execute({uri: uri, method: method}, cbSpy);
         }
-
-        beforeEach(function () {
-          // This triggers one of the possible http request errors
-          uri = 'http://doesntexist/v1/test';
-        });
 
         describe('when request method is GET', function () {
           beforeEach(function (done) {
