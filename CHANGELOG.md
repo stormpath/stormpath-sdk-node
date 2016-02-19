@@ -1,5 +1,13 @@
 # stormpath-sdk-node Change Log
 
+### 0.17.3
+
+**Released February 19, 2016**
+
+Fixed the `baseUrl` option as used with `stormpath.Client({ baseUrl: 'xx'})`.
+Previously this option would cause an exception in the request executor, making
+it impossible to use an alternate base URL.
+
 ### 0.17.2
 
 **Released February 18, 2016**
