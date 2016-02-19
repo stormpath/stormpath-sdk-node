@@ -11,9 +11,7 @@ describe('Application.authenticateApiRequest',function(){
   before(function(done){
     helpers.getClient(function(_client){
       client = _client;
-      client.createApplication(
-        {name: helpers.uniqId()},
-        {createDirectory:true},
+      helpers.createApplication(
         function(err, _app) {
           if(err){ throw err; }
           app = _app;

@@ -59,15 +59,7 @@ AccountAccessTokenFixture.prototype.before = function before(done) {
   });
 };
 AccountAccessTokenFixture.prototype.after = function after(done) {
-  var application = this.application;
-  var directory = this.directory;
-
-  application.delete(function(err){
-    if (err) {
-      return done(err);
-    }
-    directory.delete(done);
-  });
+  helpers.cleanupApplicationAndStores(this.application, done);
 };
 
 module.exports = AccountAccessTokenFixture;
