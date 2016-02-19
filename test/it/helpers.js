@@ -116,7 +116,12 @@ function cleanupApplicationAndStores(application, callback) {
         }
         store.delete(next);
       });
-    },callback);
+    },function(err){
+      if(err){
+        return callback(err);
+      }
+      application.delete(callback);
+    });
   });
 }
 

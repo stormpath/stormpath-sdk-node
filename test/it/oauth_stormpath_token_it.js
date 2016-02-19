@@ -10,7 +10,7 @@ describe('OAuthStormpathTokenAuthenticator', function () {
   var account;
   var application;
 
-  beforeEach(function (done) {
+  before(function (done) {
     helpers.createApplication(function (err, newApplication) {
       if (err) {
         return done(err);
@@ -30,8 +30,8 @@ describe('OAuthStormpathTokenAuthenticator', function () {
     });
   });
 
-  afterEach(function (done) {
-    application.delete(done);
+  after(function (done) {
+    helpers.cleanupApplicationAndStores(application, done);
   });
 
   describe('when calling OAuthStormpathTokenAuthenticator(application)', function () {
@@ -85,13 +85,18 @@ describe('OAuthStormpathTokenAuthenticator', function () {
     var invalidToken;
     var authenticator;
 
-    beforeEach(function () {
+    beforeEach(function (done) {
       authenticator = new stormpath.OAuthStormpathTokenAuthenticator(application);
       validToken = helpers.createStormpathToken(application, account);
       invalidToken = helpers.createStormpathToken(application, account, {
         id: '92d472b3-6eeb-48b8-a342-b2df89c520e8',
         secret: 'bcf251b9-3da8-4020-b4d9-406ee749425d'
       });
+      /*
+        If the assertions run too quickly, the iat of the token will be in the
+        future and this will cause an iat validation error.
+       */
+      setTimeout(done,1000);
     });
 
     describe('without a data parameter', function () {

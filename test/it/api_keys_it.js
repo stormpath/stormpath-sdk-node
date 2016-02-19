@@ -11,9 +11,7 @@ describe('Account api keys',function(){
   before(function(done){
     helpers.getClient(function(_client){
       client = _client;
-      client.createApplication(
-        {name: helpers.uniqId()},
-        {createDirectory:true},
+      helpers.createApplication(
         function(err, _app) {
           app = _app;
           app.createAccount(
