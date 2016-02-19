@@ -1,5 +1,14 @@
 # stormpath-sdk-node Change Log
 
+### 0.17.2
+
+**Released February 18, 2016**
+
+* Updated production dependencies:
+
+ * `stormpath-config@0.0.18` -> `stormpath-config@0.0.20`
+ * `nock@7.0.2` -> `nock@7.2.1`
+
 ### 0.17.1
 
 **Released February 5, 2016**
