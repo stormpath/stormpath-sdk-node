@@ -41,10 +41,6 @@ describe('ds:', function () {
         it('should store options', function () {
           reqExec.options.client.apiKey.should.be.equal(apiKey);
         });
-        it('should set headers user agent as stormpath-sdk', function () {
-          reqExec.options.headers['User-Agent'].should
-            .match(/stormpath-sdk-node/i);
-        });
       });
 
     });
@@ -67,6 +63,23 @@ describe('ds:', function () {
 
       it('should throw if called without req.uri', function () {
         exec({}).should.throw(/request.uri field is required/i);
+      });
+
+      it('should call request with custom user agent', function (done) {
+        var uri = '/';
+        var res = {test: 'boom'};
+
+        var nockOptions = {
+          reqheaders: {
+            'User-Agent': function (headerValue) {
+              return (headerValue || '').match(/stormpath-sdk-node/i) !== null;
+            }
+          }
+        };
+
+        nock(mockHost, nockOptions).get(uri).reply(200, res);
+
+        reqExec.execute({uri: uri}, done);
       });
 
       it('should return response', function (done) {
