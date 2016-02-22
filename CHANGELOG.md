@@ -1,5 +1,12 @@
 # stormpath-sdk-node Change Log
 
+### 0.17.4
+
+**Released February 22, 2016**
+
+Internal change, on the request executor, to allow other Stormpath modules to
+set the User-Agent on a per-request basis.
+
 ### 0.17.3
 
 **Released February 19, 2016**
