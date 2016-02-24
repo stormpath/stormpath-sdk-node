@@ -53,7 +53,7 @@
     "request": "~2.69.0",
     "stormpath-config": "0.0.20",
     "underscore": "~1.5.2",
-    "underscore.string": "~3.2.3"
+    "underscore.string": "~3.3.4"
   },
   "devDependencies": {
     "benchmark": "^2.0.0",
