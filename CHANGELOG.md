@@ -1,5 +1,11 @@
 # stormpath-sdk-node Change Log
 
+### 0.17.5
+
+**Released March 2, 2016**
+
+* Updated dependency `stormpath-config` from version `0.0.20` to `0.0.22`.
+
 ### 0.17.4
 
 **Released February 22, 2016**
