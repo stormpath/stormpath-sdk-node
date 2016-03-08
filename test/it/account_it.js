@@ -1,8 +1,9 @@
 'use strict';
 
-var assert = require('assert');
-
 var helpers = require('./helpers');
+var common = require('../common');
+
+var assert = common.assert;
 
 var AccessToken = require('../../lib/resource/AccessToken');
 var RefreshToken = require('../../lib/resource/RefreshToken');
@@ -64,6 +65,28 @@ describe('Account', function() {
           assert(collection.items[0] instanceof RefreshToken);
           done();
         }
+      });
+    });
+  });
+
+  describe('when save() is called', function () {
+    describe('with invalid data', function () {
+      var account;
+
+      beforeEach(function () {
+        account = fixture.account;
+      });
+
+      it('should return an error', function (done) {
+        account.password = '1';
+        account.save(function (err) {
+          assert.isNotNull(err);
+          assert.equal(err.name, 'ResourceError');
+          assert.equal(err.status, 400);
+          assert.equal(err.code, 2007);
+          assert.equal(err.userMessage, 'Account password minimum length not satisfied.');
+          done();
+        });
       });
     });
   });
