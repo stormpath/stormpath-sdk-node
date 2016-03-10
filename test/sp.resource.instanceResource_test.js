@@ -1,7 +1,9 @@
 var common = require('./common');
-var sinon = common.sinon;
-var nock = common.nock;
+
 var u = common.u;
+var nock = common.nock;
+var sinon = common.sinon;
+var assert = common.assert;
 
 var Resource = require('../lib/resource/Resource');
 var InstanceResource = require('../lib/resource/InstanceResource');
@@ -23,7 +25,7 @@ describe('Resources: ', function () {
       }, ds);
     });
 
-    describe('call to get resource', function(){
+    describe('call to get()', function(){
       describe('without property name', function(){
         var sandbox, error, cb, getResourceSpy;
         before(function(){
@@ -161,7 +163,7 @@ describe('Resources: ', function () {
       });
     });
 
-    describe('call to save resource', function(){
+    describe('call to save()', function(){
       var sandbox, cb,  saveResourceSpy;
       before(function(){
         cb = function(){};
@@ -182,7 +184,7 @@ describe('Resources: ', function () {
       });
     });
 
-    describe('call to delete resource', function(){
+    describe('call to delete()', function(){
       var sandbox, cb,  deleteResourceSpy;
       before(function(){
         cb = function(){};
@@ -199,6 +201,40 @@ describe('Resources: ', function () {
         deleteResourceSpy.should.have.been.calledOnce;
         /* jshint +W030 */
         deleteResourceSpy.should.have.been.calledWith(instanceResource, cb);
+      });
+    });
+
+    describe('call to invalidate()', function () {
+      var sandbox, evictStub, evictedKeys;
+
+      before(function (done) {
+        evictedKeys = [];
+        sandbox = sinon.sandbox.create();
+
+        evictStub = sandbox.stub(ds, '_evict', function (key, callback) {
+          evictedKeys.push(key);
+          callback();
+        });
+
+        instanceResource.href = '32a0c55b-9fad-4aeb-8187-1149b4f980ce';
+        instanceResource.customData = {
+          href: instanceResource.href + '/ceb8c607-78ca-4cc0-872a-098e895ec1a5'
+        };
+
+        instanceResource.invalidate(done);
+      });
+
+      after(function () {
+        delete instanceResource['href'];
+        delete instanceResource['customData'];
+        sandbox.restore();
+      });
+
+      it('should invalidate the account and all of its child resources', function (done) {
+        assert.equal(evictedKeys.length, 2);
+        assert.equal(evictedKeys[0], instanceResource.href);
+        assert.equal(evictedKeys[1], instanceResource.customData.href);
+        done();
       });
     });
   });
