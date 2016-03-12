@@ -1,5 +1,19 @@
 # stormpath-sdk-node Change Log
 
+### 0.18.0
+
+**Released March 14, 2016**
+
+* Added an `invalidate()` method to resource objects.  This method will purge
+  the resource from the cache.
+
+* The `JwtAuthentictor` will now authenticate access tokens that have been
+  created by the client_credentials workflow.  Previously it would only
+  authenticate access tokens that were created by the password grant workflow.
+
+* Fixed: when calling `account.save()`, errors were swallowed.  They are now
+  passed to the callback, as expected.
+
 ### 0.17.5
 
 **Released March 2, 2016**
