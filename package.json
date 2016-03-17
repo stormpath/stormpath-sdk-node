@@ -37,7 +37,7 @@
   },
   "scripts": {
     "coverage": "node ./node_modules/istanbul/lib/cli cover ./node_modules/mocha/bin/_mocha",
-    "docs": "./node_modules/.bin/jsdoc -c jsdoc.json -d ./apidocs/ -P ./package.json -r lib/",
+    "docs": "./node_modules/.bin/jsdoc -c jsdoc.json -d ./apidocs/ -P ./package.json -r lib/ -t ./node_modules/ink-docstrap/template",
     "test": "grunt"
   },
   "dependencies": {
@@ -67,6 +67,7 @@
     "grunt-contrib-watch": "~1.0.0",
     "grunt-mocha-istanbul": "~5.0.1",
     "grunt-mocha-test": "~0.12.7",
+    "ink-docstrap": "^1.1.4",
     "istanbul": "^0.4.4",
     "js-yaml": "~3.6.1",
     "jsdoc": "^3.4.3",
