@@ -1,11 +1,12 @@
 {
-    "plugins": ["plugins/markdown"],
-    "templates": {
-
-      "linenums": true,
-      "outputSourceFiles": false,
-      "outputSourcePath": true,
-      "systemName": "Stormpath Node SDK",
-      "theme" : "cosmo"
-    }
+  "plugins": [
+    "plugins/markdown"
+  ],
+  "templates": {
+    "linenums": true,
+    "outputSourceFiles": false,
+    "outputSourcePath": true,
+    "systemName": "Stormpath Node SDK",
+    "theme": "cosmo"
+  }
 }
