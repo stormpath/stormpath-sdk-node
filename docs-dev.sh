@@ -1,6 +1,6 @@
 #!/bin/bash
 
 npm run docs
-httpster -d ./apidocs &
+./node_modules/httpster/bin/httpster -d ./apidocs &
 open http://localhost:3333
-nodemon -w lib/ -x "npm run docs" -e js
+./node_modules/nodemon/bin/nodemon.js -w lib/ -x "npm run docs" -e js
