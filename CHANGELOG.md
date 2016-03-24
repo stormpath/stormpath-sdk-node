@@ -1,5 +1,13 @@
 # stormpath-sdk-node Change Log
 
+### 0.18.1
+
+**Released March 23, 2016**
+
+* Updated development dependencies:
+
+ * `expand-home-dir@0.0.2` -> `expand-home-dir@0.0.3`
+
 ### 0.18.0
 
 **Released March 14, 2016**
