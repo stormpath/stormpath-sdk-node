@@ -12,6 +12,8 @@ An ongoing list of API cleanup that we need to do in our 1.0 release.
 
 * setDefaultAccountStore should only accept an object with an href property.
 
+* addAccountStore needs to be removed, in favor of createAccountStoreMapping
+
 ## API Authentication
 
 * We will no longer support access tokens in the URL, we will only accept it in the Authorization header
