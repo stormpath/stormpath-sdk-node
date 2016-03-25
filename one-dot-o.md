@@ -10,6 +10,8 @@ An ongoing list of API cleanup that we need to do in our 1.0 release.
 
 * Need to remove "getAccount" from the base AccountStoreMapping, it now exists on ApplicationAccountStoreMapping
 
+* setDefaultAccountStore should only accept an object with an href property.
+
 ## API Authentication
 
 * We will no longer support access tokens in the URL, we will only accept it in the Authorization header
