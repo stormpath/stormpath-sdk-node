@@ -1,5 +1,15 @@
 # stormpath-sdk-node Change Log
 
+### 0.18.2
+
+**Released March 24, 2016**
+
+Fixing a bug with the `JwtAuthenticator`.  If the local validation option was
+specified, and you gave it a JWT that was created by the client-credentials
+workflow, the `getAccount()` method would fail because the authentication result
+has an incorrect reference for the account HREF.  This bug was introduced in
+0.18.0 but is now fixed in this patch release.
+
 ### 0.18.1
 
 **Released March 23, 2016**
