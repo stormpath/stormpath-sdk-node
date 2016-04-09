@@ -65,7 +65,7 @@
     "grunt-cli": "~0.1.13",
     "grunt-contrib-jshint": "~0.11.3",
     "grunt-contrib-watch": "~1.0.0",
-    "grunt-mocha-istanbul": "~3.0.1",
+    "grunt-mocha-istanbul": "~4.0.2",
     "grunt-mocha-test": "~0.12.7",
     "istanbul": "~0.4.0",
     "js-yaml": "^3.4.2",
