@@ -45,7 +45,7 @@
     "deep-extend": "^0.4.1",
     "jwt-simple": "~0.4.0",
     "memcached": "~2.2.1",
-    "moment": "~2.12.0",
+    "moment": "~2.13.0",
     "njwt": "^0.2.2",
     "node-uuid": "~1.4.7",
     "properties-parser": "~0.3.1",
