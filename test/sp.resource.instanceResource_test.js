@@ -165,6 +165,7 @@ describe('Resources: ', function () {
 
     describe('call to save()', function(){
       var sandbox, cb,  saveResourceSpy;
+
       before(function(){
         cb = function(){};
         sandbox = sinon.sandbox.create();
@@ -172,6 +173,7 @@ describe('Resources: ', function () {
 
         instanceResource.save(cb);
       });
+
       after(function(){
         sandbox.restore();
       });
@@ -181,6 +183,59 @@ describe('Resources: ', function () {
         saveResourceSpy.should.have.been.calledOnce;
         /* jshint +W030 */
         saveResourceSpy.should.have.been.calledWith(instanceResource, cb);
+      });
+
+      describe('with custom data', function () {
+        var hasReservedFieldsSpy;
+        var hasRemovedPropertiesSpy;
+        var deleteReservedFieldsSpy;
+        var deleteRemovedPropertiesSpy;
+
+        before(function () {
+          var customDataMock = {
+            _hasReservedFields: function () {},
+            _hasRemovedProperties: function () {},
+            _deleteReservedFields: function () {},
+            _deleteRemovedProperties: function () {}
+          };
+
+          hasReservedFieldsSpy = sandbox.stub(customDataMock, '_hasReservedFields').returns(true);
+          hasRemovedPropertiesSpy = sandbox.stub(customDataMock, '_hasRemovedProperties').returns(true);
+          deleteReservedFieldsSpy = sandbox.stub(customDataMock, '_deleteReservedFields').returns(customDataMock);
+          deleteRemovedPropertiesSpy = sandbox.stub(customDataMock, '_deleteRemovedProperties');
+
+          instanceResource.customData = customDataMock;
+          instanceResource.save();
+        });
+
+        after(function () {
+          delete instanceResource['customData'];
+          sandbox.restore();
+        });
+
+        it('should call customData._hasReservedFields()', function () {
+          /* jshint -W030 */
+          hasReservedFieldsSpy.should.have.been.calledOnce;
+          /* jshint +W030 */
+        });
+
+        it('should call customData._deleteReservedFields()', function () {
+          /* jshint -W030 */
+          hasReservedFieldsSpy.should.have.been.calledOnce;
+          /* jshint +W030 */
+        });
+
+        it('should call customData._hasRemovedProperties()', function () {
+          /* jshint -W030 */
+          hasRemovedPropertiesSpy.should.have.been.calledOnce;
+          /* jshint +W030 */
+        });
+
+        it('should call customData._deleteRemovedProperties()', function () {
+          /* jshint -W030 */
+          deleteRemovedPropertiesSpy.should.have.been.calledOnce;
+          /* jshint +W030 */
+        });
       });
     });
 
