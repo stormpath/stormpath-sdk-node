@@ -4,6 +4,8 @@ An ongoing list of API cleanup that we need to do in our 1.0 release.
 
 ## Application API:
 
+* Do not use encodeURIComponent() for the state param when creating ID Site JWT requests.
+
 * I would like to rename Application.getAccount() -> Application.getProviderAccount()
 
 ## Account Store Mappings
