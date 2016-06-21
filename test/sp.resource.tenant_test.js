@@ -190,9 +190,11 @@ describe('Resources: ', function () {
     });
 
     describe('verify account email', function () {
+
       describe('with a successful token response',function(){
         var sandbox, tenant, tenantResult,cacheResult;
         var accountResponse;
+        var evictSpy;
 
         before(function (done) {
           accountResponse = {
@@ -202,6 +204,8 @@ describe('Resources: ', function () {
 
           sandbox = sinon.sandbox.create();
           tenant = new Tenant({href:'an href'}, dataStore);
+
+          evictSpy = sinon.spy(dataStore, '_evict');
 
           sandbox.stub(dataStore.requestExecutor, 'execute',
             // simulate a successful response
@@ -227,7 +231,10 @@ describe('Resources: ', function () {
         it('should callback with an Account intance',function(){
           assert(tenantResult[1] instanceof Account,true);
         });
-        it('should put the account in the cache',function(){
+        it('should evict the account from the cache',function(){
+          evictSpy.should.have.been.calledWith(accountResponse.href);
+        });
+        it('should put the updated account in the cache',function(){
           assert.deepEqual(cacheResult[1],accountResponse);
         });
       });

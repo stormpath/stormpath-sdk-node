@@ -10,5 +10,5 @@ sudo: false
 script: travis_retry npm test
 env:
   global:
-    - secure: YxflmHcSNi8hqNOY4a+gEyilWJeCpsl7Z/UUYegNchglahPEsuTlFNZk85tUTpqNBEYLBayD78GMwmy/MjOsOVhxsOBJxASHa+GNJ6z1jcv4hilPAV9KxABDpnPVvAdmXlWXNCa6FQQWuVR7th0cwAUyoDGhl7PX0/WTrLCWjyQ=
-    - secure: hnDlH09EmIh93nZ6OkTGI793JlLuQxPYCfImSuqdhejaxS8dRmyYQw+uqOfcJLSzdYkWtqNKJ3L9LC4rMwuys4DwtIzMFXvADPoV4KoVLyqAlZSgJ7iHTUS+1earTnfZ5+IVb5Vn3RKmwLHuE6bOozbBFOWkOsfQFXI94CQ4OFU=
+    - secure: axSfLtwNV9cKG+Y7UslwPddxyPbvbEwbyWDUt9ONRkFIpNAbtuRvjSSl2tAmJ9m9vFDV0I63shYaCkwz6gFiJDGRlYjWHqgBknm8jOBLYIk68mrSHzQZLdoAqoEhAe+UCJSvoQGkLeuPuVw5/lVWZ6Uv6dzSsU/8dVlsp23G9Hc=
+    - secure: RVyH3nRU3yjeVUCMkOYy7KuRG0bFHMANbQsEbxuZ2ad/KMYNNDJ/AfyO3Q5ojAj/uX59NLYyzyFODhXikEaFsIvgCHbGLkgBYSNIVUIdaS509KMOUwcN6ZDDUpVS21E2rEJwY7/BGenJKZJ1N3NLf6yqciS2KYoo7TVdnTaNUh8=
