@@ -1,5 +1,22 @@
 # stormpath-sdk-node Change Log
 
+### 0.18.3
+
+**Released June 22, 2016**
+
+* `Tenant.verifyAccountEmail()` will now evict the account from the cache before
+  the operation.  Previously it would replace the cache entry after the
+  operation, which can be problematic (stormpath/express-stormpath#448).
+
+* Fixed bug where `Organization.save()` would error if custom data had been
+  expanded (#455).
+
+* Updated production dependencies:
+
+ * `memcached@2.2.1` -> `memcached@2.2.2`
+ * `moment@2.12.0` -> `moment@2.13.0`
+ * `request@2.69.0` -> `request@2.72.0`
+
 ### 0.18.2
 
 **Released March 24, 2016**
