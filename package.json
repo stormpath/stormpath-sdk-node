@@ -58,7 +58,7 @@
   "devDependencies": {
     "benchmark": "^2.0.0",
     "chai": "~3.5.0",
-    "coveralls": "^2.11.4",
+    "coveralls": "^2.11.11",
     "expand-home-dir": "0.0.3",
     "fake-fs": "^0.5.0",
     "grunt": "~1.0.1",
