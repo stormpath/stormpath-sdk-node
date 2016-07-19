@@ -2,6 +2,10 @@
 
 An ongoing list of API cleanup that we need to do in our 1.0 release.
 
+## Error handling
+
+* err.userMessage should be err.message, there isn't a good reason to rename this property.
+
 ## Application API:
 
 * Do not use encodeURIComponent() for the state param when creating ID Site JWT requests.
