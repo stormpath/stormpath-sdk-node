@@ -1,5 +1,12 @@
 # stormpath-sdk-node Change Log
 
+**Released July 20, 2016**
+
+### 0.18.4
+
+* Fixed the client constructor to properly accept configuration loader instances
+  that are passed into this library.  Fixes stormpath/express-stormpath#463.
+
 ### 0.18.3
 
 **Released June 22, 2016**
