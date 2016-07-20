@@ -1,5 +1,21 @@
 # Upgrade Guide
 
+### Version 0.18.3 -> Version 0.18.4
+
+No changes needed
+
+### Version 0.18.2 -> Version 0.18.3
+
+No changes needed
+
+### Version 0.18.1 -> Version 0.18.2
+
+No changes needed
+
+### Version 0.18.0 -> Version 0.18.1
+
+No changes needed
+
 ### Version 0.17.5 -> Version 0.18.0
 
 No changes needed
