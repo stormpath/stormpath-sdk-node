@@ -132,7 +132,7 @@ describe('Client', function() {
       client.createOrganization({
         name: uuid()
       },function(err){
-        assert(err.userMessage.match(/Organization nameKey cannot be null/));
+        assert(err.developerMessage.match('Organization nameKey is required; it cannot be null, empty, or blank.'));
         done();
       });
     });

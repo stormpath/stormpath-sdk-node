@@ -123,7 +123,7 @@ describe('OAuthStormpathTokenAuthenticator', function () {
             assert.equal(err.name, 'ResourceError');
             assert.equal(err.status, 400); // Bad request
             assert.equal(err.code, 10017); // Token is invalid because verifying the signature of a JWT failed.
-            assert.equal(err.message, 'HTTP 400, Stormpath 10017 (http://docs.stormpath.com/errors/10017): Token is invalid because verifying the signature of a JWT failed.');
+            assert.equal(err.developerMessage, 'Token is invalid because verifying the signature of a JWT failed.');
             assert.notOk(authenticationResult);
             done();
           });
@@ -132,7 +132,7 @@ describe('OAuthStormpathTokenAuthenticator', function () {
 
       describe('and the token is valid', function () {
         it('should succeed with a OAuthStormpathTokenAuthenticationResult result', function (done) {
-          authenticator.authenticate({ stormpath_token: validToken }, function (err, authenticationResult) {
+          authenticator.authenticate({ stormpath_token: validToken }, function (err, authenticationResult) {
             assert.notOk(err);
             assert.ok(authenticationResult);
             assert.instanceOf(authenticationResult, stormpath.OAuthStormpathTokenAuthenticationResult);
@@ -148,12 +148,12 @@ describe('OAuthStormpathTokenAuthenticator', function () {
 
     describe('without a stormpath_token data property', function () {
       it('should fail with a token parameter error', function (done) {
-        authenticator.authenticate({}, function (err, authenticationResult) {
+        authenticator.authenticate({}, function (err, authenticationResult) {
           assert.ok(err);
           assert.equal(err.name, 'ResourceError');
           assert.equal(err.status, 400); // Bad request
           assert.equal(err.code, 2000); // Property value is required.
-          assert.equal(err.message, 'HTTP 400, Stormpath 2000 (http://docs.stormpath.com/errors/2000): token parameter cannot be null, empty, or blank.');
+          assert.equal(err.developerMessage, 'token parameter is required; it cannot be null, empty, or blank.');
           assert.notOk(authenticationResult);
           done();
         });
