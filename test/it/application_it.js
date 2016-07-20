@@ -7,6 +7,7 @@ var async = require('async');
 var CustomData = require('../../lib/resource/CustomData');
 var Application = require('../../lib/resource/Application');
 var ApplicationAccountStoreMapping = require('../../lib/resource/ApplicationAccountStoreMapping');
+var OAuthPolicy = require('../../lib/resource/OAuthPolicy');
 
 describe('Application',function(){
 
@@ -128,6 +129,19 @@ describe('Application',function(){
       assert.throws(function() {
         app.getAccount({ providerData: { providerId: 'google' } }, function() {});
       }, Error);
+    });
+  });
+
+  describe('.getOAuthPolicy', function() {
+    it('should return an OAuthPolicy instance', function(done){
+      app.getOAuthPolicy(function(err, oauthPolicy) {
+        if(err){
+          done(err);
+        }else{
+          assert(oauthPolicy instanceof OAuthPolicy);
+          done();
+        }
+      });
     });
   });
 
