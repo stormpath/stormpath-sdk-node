@@ -233,7 +233,7 @@ describe('Application',function(){
   /*
 
   TODO bring this test in once we can configure the directory
-  workflows via the REST api.  Right now yo'll get a 6101
+  workflows via the REST api. Right now you'll get a 6101
   error because the diretory has not been configured for
   verification emails
 
