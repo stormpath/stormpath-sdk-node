@@ -1,5 +1,20 @@
 # stormpath-sdk-node Change Log
 
+**Released July 20, 2016**
+
+### 0.18.4
+
+* Fixed the client constructor to properly accept configuration loader instances
+  that are passed into this library.  Fixes stormpath/express-stormpath#463.
+
+* Updated production dependencies:
+
+ * `async@1.5.0` -> `async@1.5.2`
+ * `moment@2.13.0` -> `moment@2.14.1`
+ * `njwt@0.2.2` -> `njwt@0.3.1`
+ * `redis@2.5.1` -> `redis@2.6.2`
+ * `request@2.72.0` -> `request@2.73.0`
+
 ### 0.18.3
 
 **Released June 22, 2016**
