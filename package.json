@@ -71,7 +71,7 @@
     "ink-docstrap": "^1.1.4",
     "istanbul": "^0.4.4",
     "js-yaml": "~3.6.1",
-    "jsdoc": "^3.4.3",
+    "jsdoc": "^3.4.0",
     "jshint-stylish": "~2.2.0",
     "load-grunt-tasks": "~3.5.0",
     "lodash": "^4.0.1",
