@@ -69,6 +69,14 @@ new stormpath.Client({
 });
 ```
 
+## ApiKey
+
+When fetching ApiKeys we are automatically expanding the account, see
+ApiKeyEncryptedOptions.  This does not appear to be necessary, and the result
+is an object-literal `account` object that exists on instances of ApiKey.  We
+should remove this expansion, and implement `getAccount()` on the ApiKey
+resource.
+
 ## OAuth
 
 * The class `JwtAuthenticationResult` should be removed, in favor of `OAuthPasswordGrantAuthenticationResult`.
