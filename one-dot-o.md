@@ -69,6 +69,33 @@ new stormpath.Client({
 });
 ```
 
+##
+
+Caching
+
+We should remove the dependency on Redis and Memcached, and instead expect that
+the developer will give us a configured client for the store of their choice. As
+such, the configuration would become much simpler and would look like this:
+
+```
+
+var redis = require("redis");
+var redisClient = redis.createClient();
+
+var cacheOptions = {
+  store: {
+    type: 'redis',
+    client: redisClient // now a required property
+  },
+  ttl: 300,
+  tti: 300
+};
+
+var client = new stormpath.Client({
+  cacheOptions: cacheOptions
+});
+```
+
 ## ApiKey
 
 When fetching ApiKeys we are automatically expanding the account, see
