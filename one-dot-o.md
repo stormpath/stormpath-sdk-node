@@ -69,9 +69,7 @@ new stormpath.Client({
 });
 ```
 
-##
-
-Caching
+## Caching
 
 We should remove the dependency on Redis and Memcached, and instead expect that
 the developer will give us a configured client for the store of their choice. As
@@ -125,3 +123,11 @@ resource.
 ## Miscellany
 
 * `Stregnth` should be renamed to `PasswordStrengthPolicy`, and PasswordPolicy.getStrength() should be getPasswordStrengthPolicy()
+
+* Remove jwt-simple library (some default error messages, for token validation, will change)
+
+## Todo
+
+* Continue defining what the OAuth and Authenticator interfaces should look like.
+
+* Determine if per-region cache settings are available and if not, do we have to break to get them.
