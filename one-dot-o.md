@@ -126,8 +126,14 @@ resource.
 
 * Remove jwt-simple library (some default error messages, for token validation, will change)
 
+* Remove client.createDirectories() and client.createApplications(), these are not necessary.
+
 ## Todo
 
 * Continue defining what the OAuth and Authenticator interfaces should look like.
 
 * Determine if per-region cache settings are available and if not, do we have to break to get them.
+
+* Document timeout options for the request library
+
+* Re-arrange methods to be alphabetical in individual files
