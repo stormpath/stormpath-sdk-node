@@ -107,6 +107,7 @@ describe('ds:', function () {
           err.should.be.an.instanceof(ResourceError);
           expect(body).to.be.null;
           cbSpy.should.have.been.calledOnce;
+          expect(err.url).to.equal(mockHost + uri);
           done();
         }
         cbSpy = sinon.spy(cb);
