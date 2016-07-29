@@ -128,6 +128,12 @@ resource.
 
 * Remove client.createDirectories() and client.createApplications(), these are not necessary.
 
+* Remove these methods in DataStore, they are not used:
+ * DataStore.orderBy()
+ * DataStore.expand()
+ * DataStore.search()
+ * DataStore.lean()
+
 ## Bugs
 
 * Expanded groups are not cast as CollectionResource type, account.groups becomes
