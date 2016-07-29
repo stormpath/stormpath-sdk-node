@@ -128,6 +128,11 @@ resource.
 
 * Remove client.createDirectories() and client.createApplications(), these are not necessary.
 
+## Bugs
+
+* Expanded groups are not cast as CollectionResource type, account.groups becomes
+  a generic object.  I think <reource>.<collection> should become an interable interface.
+
 ## Todo
 
 * Continue defining what the OAuth and Authenticator interfaces should look like.
