@@ -14,7 +14,9 @@ An ongoing list of API cleanup that we need to do in our 1.0 release.
 
 ## Account Store Mappings
 
-* Need to remove "getApplication" and "setApplication" from the base AccountStoreMapping, it now exists on ApplicationAccountStoreMapping
+* Need to remove "getApplication" from the base AccountStoreMapping, it now exists on ApplicationAccountStoreMapping
+
+* Remove "setApplication" as that's not necessary
 
 * setDefaultAccountStore should only accept an object with an href property.
 
@@ -133,6 +135,11 @@ resource.
  * DataStore.expand()
  * DataStore.search()
  * DataStore.lean()
+
+## Need to implement
+
+* AccessToken.getAccount()
+* AccessToken.getRefreshToken()
 
 ## Bugs
 
