@@ -144,6 +144,8 @@ resource.
 
 * Refactor setDefaultAccountStore and setDefaultGroupStore on Application and Organization, as that's massively not DRY right now.
 
+* Add a client.verifyAccountEmail proxy for tenant.verifyAccountEmail
+
 ## Need to implement
 
 * AccessToken.getAccount()
