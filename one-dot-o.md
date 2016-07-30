@@ -122,6 +122,8 @@ resource.
 * Add `getAccount()` to both AccessToken and RefreshToken resources, also add
   `getRefreshToken()` to AccessToken
 
+* Implement OAuthClientCredentialsAuthenticationResult, which is going to look very much like OAuthPasswordGrantAuthenticationResult
+
 ## Miscellany
 
 * `Stregnth` should be renamed to `PasswordStrengthPolicy`, and PasswordPolicy.getStrength() should be getPasswordStrengthPolicy()
@@ -135,6 +137,8 @@ resource.
  * DataStore.expand()
  * DataStore.search()
  * DataStore.lean()
+
+* Deprecate string option for application.sendPasswordResetEmail()
 
 ## Need to implement
 
