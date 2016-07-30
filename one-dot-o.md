@@ -140,6 +140,10 @@ resource.
 
 * Deprecate string option for application.sendPasswordResetEmail()
 
+* Application.getDefaultAccountStore is not properly named (see description)
+
+* Refactor setDefaultAccountStore and setDefaultGroupStore on Application and Organization, as that's massively not DRY right now.
+
 ## Need to implement
 
 * AccessToken.getAccount()
