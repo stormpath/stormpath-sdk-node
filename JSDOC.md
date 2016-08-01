@@ -37,10 +37,21 @@ easier to find the parts of this library that will help you with your use-case.
 
 ## Is There An Easier Library?
 
-Yes! If you use Express.js we have a deep integration that will
-serve Login & Registration pages for you, as well as many other default features
-that you would expect from a user management plugin.  Please head over to
-[express-stormpath][] module to learn more.
+Yes! Stormpath is designed for full-stack applications, so we provide higher-level
+libraries for the server and the browser.
+
+If you're using Express.js, you'll want to install [express-stormpath][] in your
+server.  This will provide the endpoints that can be used by your front-end for
+authentication and authorization.  On the front-end you will want to use one of
+our front-end libraries to complete the integration:
+
+- [Stormpath React SDK][]
+- [Stormpath AngularJS SDK][]
+
+If you are not using one of these front-end frameworks you can still integrate
+by making some simple JSON calls from your front-end application.  Each section
+of the [express-stormpath][] documentation will show you how to use the JSON API
+for these purposes.
 
 NOTE: The [express-stormpath][] module depends on this library, and makes it
 available to your Express application, so all the features of this library are
@@ -85,5 +96,7 @@ touch with a member of our team:
 * Open a Github Issue on this repository: [https://github.com/stormpath/stormpath-sdk-node](https://github.com/stormpath/stormpath-sdk-node)
 * Join us on our Slack channel: [https://talkstormpath.slack.com](https://talkstormpath.slack.com)
 
+[Stormpath AngularJS SDK]: https://github.com/stormpath/stormpath-sdk-angularjs
 [Stormpath Product Guide]: https://docs.stormpath.com/rest/product-guide/latest/
+[Stormpath React SDK]: https://github.com/stormpath/stormpath-sdk-react
 [express-stormpath]: https://docs.stormpath.com/nodejs/express/latest/
