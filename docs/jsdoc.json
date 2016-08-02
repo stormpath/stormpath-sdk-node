@@ -8,5 +8,8 @@
     "outputSourcePath": true,
     "systemName": "Stormpath Node SDK",
     "theme": "cosmo"
+  },
+  "opts": {
+    "template": "./docs/template"
   }
 }
