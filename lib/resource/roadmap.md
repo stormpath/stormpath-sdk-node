@@ -13,3 +13,9 @@
 1.0
 
 drop support for Node.js < 4.4.5, generators on the horizon
+
+implement linting in tests
+
+better collection interfaces
+
+ability to cache account group resources - make it easy to whitelist regions for caching
