@@ -146,6 +146,8 @@ resource.
 
 * Add a client.verifyAccountEmail proxy for tenant.verifyAccountEmail
 
+* Remove InstanceResource.get() as it does not appear to be used.
+
 ## Need to implement
 
 * AccessToken.getAccount()
