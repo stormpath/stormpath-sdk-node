@@ -41,7 +41,7 @@ Yes! Stormpath is designed for full-stack applications, so we provide higher-lev
 libraries for the server and the browser.
 
 If you're using Express.js, you'll want to install [express-stormpath][] in your
-server.  This will provide the endpoints that can be used by your front-end for
+server, that library will attach endpoints that can be used by your front-end for
 authentication and authorization.  On the front-end you will want to use one of
 our front-end libraries to complete the integration:
 
