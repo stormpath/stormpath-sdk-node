@@ -154,6 +154,8 @@ resource.
 
 * InstanceResource.prototype.invalidate should be returning errors, it's not our choice to ignore these.
 
+* StormpathAssertionAuthenticator() should take an API Key Pair as an optional second arguemnt.
+
 ## Need to implement
 
 * AccessToken.getAccount()
