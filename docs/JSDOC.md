@@ -94,7 +94,7 @@ touch with a member of our team:
 
 * Send an email to [support@stormpath.com](mailto:support@stormpath.com)
 * Open a Github Issue on this repository: [https://github.com/stormpath/stormpath-sdk-node](https://github.com/stormpath/stormpath-sdk-node)
-* Join us on our Slack channel: [https://talkstormpath.slack.com](https://talkstormpath.slack.com)
+* Join us on our Slack channel: [https://talkstormpath.shipit.xyz/](https://talkstormpath.shipit.xyz/)
 
 [Stormpath AngularJS SDK]: https://github.com/stormpath/stormpath-sdk-angularjs
 [Stormpath Product Guide]: https://docs.stormpath.com/rest/product-guide/latest/
