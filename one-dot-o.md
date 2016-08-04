@@ -124,6 +124,10 @@ resource.
 
 * Implement OAuthClientCredentialsAuthenticationResult, which is going to look very much like OAuthPasswordGrantAuthenticationResult
 
+* Remove OAuthIdSiteTokenGrantAuthenticator, replcaed by OAuthStormpathTokenAuthenticator
+
+* OAuthRefreshTokenGrantAuthenticationResult and JwtAuthenticationResult become OAuthAccessTokenResult
+
 ## Miscellany
 
 * `Stregnth` should be renamed to `PasswordStrengthPolicy`, and PasswordPolicy.getStrength() should be getPasswordStrengthPolicy()
@@ -148,6 +152,8 @@ resource.
 
 * Remove InstanceResource.get() as it does not appear to be used.
 
+* InstanceResource.prototype.invalidate should be returning errors, it's not our choice to ignore these.
+
 ## Need to implement
 
 * AccessToken.getAccount()
@@ -157,6 +163,10 @@ resource.
 
 * Expanded groups are not cast as CollectionResource type, account.groups becomes
   a generic object.  I think <reource>.<collection> should become an interable interface.
+
+## Refactoring
+
+I've been been omitting the fact that a Resoure will extend InstanceResource, because not all resources have the same abilities, e.g. some can be saved, some can be deleted.  We should refactor our prototypes to make it easier to mix methods together, and allow documentation to follow this path via @augments annotations.
 
 ## Todo
 
