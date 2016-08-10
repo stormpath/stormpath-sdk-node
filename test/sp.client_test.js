@@ -66,7 +66,7 @@ describe('Client', function () {
       expect(client._dataStore.requestExecutor.baseUrl).to.equal('https://api.stormpath.com/v1');
     });
     it('should allow me to change the base url',function(done){
-      var url = 'http://api.mydomain.com/';
+      var url = 'http://api.example.com/';
       var client = makeTestClient({apiKey: apiKey, baseUrl: url});
 
       client.on('error', function (err) {

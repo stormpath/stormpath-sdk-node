@@ -17,6 +17,7 @@ var AuthenticationResult = require('../lib/resource/AuthenticationResult');
 var AccountStoreMapping = require('../lib/resource/AccountStoreMapping');
 var ApiKey = require('../lib/resource/ApiKey');
 var DataStore = require('../lib/ds/DataStore');
+var PasswordResetToken = require('../lib/resource/PasswordResetToken');
 var nJwt = require('njwt');
 var nJwtProperties = require('njwt/properties');
 var uuid = require('node-uuid');
@@ -543,13 +544,14 @@ describe('Resources: ', function () {
 
       describe('if password reset tokens href are set', function () {
         var sandbox, application, app, createResourceStub, cbSpy, opt;
+        var mockTokenResourceResponse = {href:'/mockPassworResetResource'};
         before(function () {
           sandbox = sinon.sandbox.create();
           opt = 'userOrEmail';
           app = {passwordResetTokens: {href: 'boom!'}};
           application = new Application(app, dataStore);
-          createResourceStub = sandbox.stub(dataStore, 'createResource', function (href, options, cb) {
-            cb();
+          createResourceStub = sandbox.stub(dataStore, 'createResource', function (href, options, data, ctor, cb) {
+            cb(null, mockTokenResourceResponse);
           });
           cbSpy = sandbox.spy();
 
@@ -566,7 +568,9 @@ describe('Resources: ', function () {
           /* jshint +W030 */
 
           createResourceStub.should.have.been
-            .calledWith(app.passwordResetTokens.href, {email: opt}, cbSpy);
+            .calledWith(app.passwordResetTokens.href, null, {email: opt}, PasswordResetToken ,cbSpy);
+
+          cbSpy.should.have.been.calledWith(null,mockTokenResourceResponse);
         });
       });
     });

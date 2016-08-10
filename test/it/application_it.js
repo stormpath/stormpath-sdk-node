@@ -7,6 +7,7 @@ var async = require('async');
 var CustomData = require('../../lib/resource/CustomData');
 var Application = require('../../lib/resource/Application');
 var ApplicationAccountStoreMapping = require('../../lib/resource/ApplicationAccountStoreMapping');
+var OAuthPolicy = require('../../lib/resource/OAuthPolicy');
 
 describe('Application',function(){
 
@@ -131,6 +132,19 @@ describe('Application',function(){
     });
   });
 
+  describe('.getOAuthPolicy', function() {
+    it('should return an OAuthPolicy instance', function(done){
+      app.getOAuthPolicy(function(err, oauthPolicy) {
+        if(err){
+          done(err);
+        }else{
+          assert(oauthPolicy instanceof OAuthPolicy);
+          done();
+        }
+      });
+    });
+  });
+
   it('should be create-able',function(){
     assert.equal(creationResult[0],null); // did not error
     assert.instanceOf(app,Application);
@@ -219,7 +233,7 @@ describe('Application',function(){
   /*
 
   TODO bring this test in once we can configure the directory
-  workflows via the REST api.  Right now yo'll get a 6101
+  workflows via the REST api. Right now you'll get a 6101
   error because the diretory has not been configured for
   verification emails
 
