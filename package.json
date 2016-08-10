@@ -37,7 +37,7 @@
   },
   "scripts": {
     "coverage": "node ./node_modules/istanbul/lib/cli cover ./node_modules/mocha/bin/_mocha",
-    "docs": "./node_modules/.bin/jsdoc -d ./apidocs/ -P ./package.json -r lib/",
+    "docs": "./node_modules/.bin/jsdoc -c ./docs/jsdoc.json -d ./apidocs/ -P ./package.json -r lib/ --readme ./docs/JSDOC.md",
     "test": "grunt"
   },
   "dependencies": {
@@ -67,15 +67,18 @@
     "grunt-contrib-watch": "~1.0.0",
     "grunt-mocha-istanbul": "~5.0.1",
     "grunt-mocha-test": "~0.12.7",
+    "httpster": "^1.0.3",
+    "ink-docstrap": "^1.1.4",
     "istanbul": "^0.4.4",
     "js-yaml": "~3.6.1",
-    "jsdoc": "^3.3.3",
+    "jsdoc": "^3.4.0",
     "jshint-stylish": "~2.2.0",
     "load-grunt-tasks": "~3.5.0",
     "lodash": "^4.0.1",
     "mocha": "~2.5.3",
     "mocha-sinon": "~1.1.0",
     "nock": "~8.0.0",
+    "nodemon": "^1.9.1",
     "sinon": "~1.17.3",
     "sinon-chai": "~2.8.0",
     "time-grunt": "~1.4.0",

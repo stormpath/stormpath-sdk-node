@@ -1,6 +1,6 @@
 /*
   This fixture creates a new application, directory,
-  and account.  It issues an Oauth request for the
+  and account. It issues an Oauth request for the
   account, resulting in an access token and refresh
   token in the token collections for the account
  */

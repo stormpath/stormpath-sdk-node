@@ -1,5 +1,6 @@
 .coveralls.yml
 .env
+apidocs
 docs
 samples
 test
