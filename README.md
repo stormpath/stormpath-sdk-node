@@ -48,7 +48,7 @@ npm install stormpath
 
 Everything starts with a [Client][] instance, which you create like so:
 
-```
+```javascript
 // Assumes API keys are in environment variables, or stormpath.yaml
 
 var stormpath = require('stormpath');
@@ -59,7 +59,7 @@ var client = new stormpath.Client();
 With a [Client][] instance, you can do many operations, like fetching all of the
 accounts in your Stormpath Tenant:
 
-```
+```javascript
 // Fetch all the accounts in my Stormpath Tenant
 
 client.getAccounts(function(err, accountsCollection) {
@@ -136,5 +136,5 @@ This project is open-source via the [Apache 2.0 License](http://www.apache.org/l
 [Express-Stormpath]: https://github.com/stormpath/stormpath-express
 [Stormpath]: https://stormpath.com
 [Stormpath Angular SDK]: https://github.com/stormpath/stormpath-sdk-angularjs
-[Stormpath Node.js SDK Documentation]: https://docs.stormpath.com/nodejs/api/
+[Stormpath Node.js SDK Documentation]: https://docs.stormpath.com/nodejs/jsdoc/
 [Stormpath React SDK]: https://github.com/stormpath/stormpath-sdk-react
