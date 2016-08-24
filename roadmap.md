@@ -32,6 +32,8 @@ This is a rough list for now:
 
 - Refactor the client credentials workflow to use the REST API
 
+- Provide the ability to add custom claims to JWTs by creating a new JWT and signing it with the same API key.
+
 - Implement eslint in tests
 
 
