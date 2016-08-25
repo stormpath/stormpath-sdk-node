@@ -254,6 +254,7 @@ resource.  This is consistent with the way we handle account getting on other re
 ### Bugs
 
 * Expanded groups are not cast as CollectionResource type, account.groups becomes a generic object.  I think <resource>.<collection> should become an iterable interface.
+* Actually, expanded resources don't ever appear to be cast as their type.
 
 ### Refactoring
 
