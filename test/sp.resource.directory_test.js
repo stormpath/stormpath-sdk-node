@@ -9,6 +9,7 @@ var Account = require('../lib/resource/Account');
 var Group = require('../lib/resource/Group');
 var Organization = require('../lib/resource/Organization');
 var OrganizationAccountStoreMapping = require('../lib/resource/OrganizationAccountStoreMapping');
+var Schema = require('../lib/resource/Schema');
 var Tenant = require('../lib/resource/Tenant');
 var Provider = require('../lib/resource/Provider');
 var Directory = require('../lib/resource/Directory');
@@ -375,6 +376,49 @@ describe('Resources: ', function () {
 
           getResourceStub.should.have.been.calledWith(
             app.organizations.href, opt, Organization, cbSpy
+          );
+        });
+      });
+    });
+
+    describe('get account schema', function () {
+      describe('if accountSchema href is set', function () {
+        var opt;
+        var getResourceStub;
+        var sandbox;
+        var app;
+        var directory;
+        var cbSpy;
+
+        before(function () {
+          opt = {};
+          sandbox = sinon.sandbox.create();
+          app = { accountSchema: { href: 'boom!' } };
+          directory = new Directory(app, dataStore);
+          cbSpy = sandbox.spy();
+
+          getResourceStub = sandbox.stub(dataStore, 'getResource', function (href, options, ctor, cb) {
+            cb();
+          });
+
+          directory.getAccountSchema(cbSpy);
+          directory.getAccountSchema(opt, cbSpy);
+        });
+
+        after(function () {
+          sandbox.restore();
+        });
+
+        it('should get account schema', function () {
+          cbSpy.should.have.been.calledTwice;
+          getResourceStub.should.have.been.calledTwice;
+
+          getResourceStub.should.have.been.calledWith(
+            app.accountSchema.href, null, Schema, cbSpy
+          );
+
+          getResourceStub.should.have.been.calledWith(
+            app.accountSchema.href, opt, Schema, cbSpy
           );
         });
       });
