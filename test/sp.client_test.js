@@ -1023,13 +1023,14 @@ describe('Client', function () {
   });
 
   describe('call to get id sites', function () {
-    var sandbox, client, getResourceStub, cbSpy, href, opt;
+    var sandbox, cbSpy, err, app, client, tenant, getCurrentTenantStub,
+        getTennantIdSites, returnError;
+
     before(function (done) {
       sandbox = sinon.sandbox.create();
-      cbSpy = sandbox.spy();
-      opt = {};
-      href = '/boom!';
 
+      err = {error: 'boom!'};
+      app = {href: 'boom!'};
       client = makeTestClient({apiKey: apiKey});
 
       client.on('error', function (err) {
@@ -1037,34 +1038,50 @@ describe('Client', function () {
       });
 
       client.on('ready', function () {
-        getResourceStub = sandbox.stub(client._dataStore, 'getResource', function (href, options, ctor, cb) {
-          cb();
+        tenant = new Tenant({href: 'boom!'}, client._dataStore);
+        cbSpy = sandbox.spy();
+
+        getCurrentTenantStub = sandbox.stub(client, 'getCurrentTenant', function(cb){
+          if (returnError) {
+            return cb(err);
+          }
+          cb(null, tenant);
         });
 
-        // call without optional param
-        client.getIdSites(href, cbSpy);
-        // call with optional param
-        client.getIdSites(href, opt, cbSpy);
+        getTennantIdSites = sandbox.stub(tenant, 'getIdSites', function(options, cb) {
+          cb();
+        });
 
         done();
       });
     });
+
     after(function () {
       sandbox.restore();
     });
 
-    it('should get group', function () {
-      /* jshint -W030 */
-      getResourceStub.should.have.been.calledTwice;
-      cbSpy.should.have.been.calledTwice;
-      /* jshint +W030 */
-
+    it('should call tenant get id sites', function () {
       // call without optional param
-      getResourceStub.should.have.been
-        .calledWith(href, null, IdSiteModel, cbSpy);
-      // call with optional param
-      getResourceStub.should.have.been
-        .calledWith(href, opt, IdSiteModel, cbSpy);
+      client.getIdSites(cbSpy);
+      client.getIdSites({}, cbSpy);
+
+      getTennantIdSites.should.have.been.calledWith(null, cbSpy);
+      getTennantIdSites.should.have.been.calledWith({}, cbSpy);
+
+      /* jshint -W030 */
+      getCurrentTenantStub.should.have.been.calledTwice;
+      getTennantIdSites.should.have.been.calledTwice;
+      /* jshint +W030 */
+    });
+
+    it('should return error', function(){
+      returnError = true;
+      client.getIdSites(cbSpy);
+      cbSpy.should.have.been.calledWith(err);
+      /* jshint -W030 */
+      getCurrentTenantStub.should.have.been.calledThrice;
+      getTennantIdSites.should.have.been.calledTwice;
+      /* jshint +W030 */
     });
   });
 });
