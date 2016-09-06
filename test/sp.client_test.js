@@ -9,7 +9,6 @@ var Client = require('../lib/Client');
 var Account = require('../lib/resource/Account');
 var Group = require('../lib/resource/Group');
 var GroupMembership = require('../lib/resource/GroupMembership');
-var IdSiteModel = require('../lib/resource/IdSiteModel');
 var Directory = require('../lib/resource/Directory');
 var Tenant = require('../lib/resource/Tenant');
 var Application = require('../lib/resource/Application');
@@ -1024,7 +1023,7 @@ describe('Client', function () {
 
   describe('call to get id sites', function () {
     var sandbox, cbSpy, err, app, client, tenant, getCurrentTenantStub,
-        getTennantIdSites, returnError;
+        getTennantIdSiteModels, returnError;
 
     before(function (done) {
       sandbox = sinon.sandbox.create();
@@ -1048,7 +1047,7 @@ describe('Client', function () {
           cb(null, tenant);
         });
 
-        getTennantIdSites = sandbox.stub(tenant, 'getIdSites', function(options, cb) {
+        getTennantIdSiteModels = sandbox.stub(tenant, 'getIdSiteModels', function(options, cb) {
           cb();
         });
 
@@ -1065,12 +1064,12 @@ describe('Client', function () {
       client.getIdSites(cbSpy);
       client.getIdSites({}, cbSpy);
 
-      getTennantIdSites.should.have.been.calledWith(null, cbSpy);
-      getTennantIdSites.should.have.been.calledWith({}, cbSpy);
+      getTennantIdSiteModels.should.have.been.calledWith(null, cbSpy);
+      getTennantIdSiteModels.should.have.been.calledWith({}, cbSpy);
 
       /* jshint -W030 */
       getCurrentTenantStub.should.have.been.calledTwice;
-      getTennantIdSites.should.have.been.calledTwice;
+      getTennantIdSiteModels.should.have.been.calledTwice;
       /* jshint +W030 */
     });
 
@@ -1080,7 +1079,7 @@ describe('Client', function () {
       cbSpy.should.have.been.calledWith(err);
       /* jshint -W030 */
       getCurrentTenantStub.should.have.been.calledThrice;
-      getTennantIdSites.should.have.been.calledTwice;
+      getTennantIdSiteModels.should.have.been.calledTwice;
       /* jshint +W030 */
     });
   });
