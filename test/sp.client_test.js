@@ -800,7 +800,9 @@ describe('Client', function () {
     before(function (done) {
       sandbox = sinon.sandbox.create();
       cbSpy = sandbox.spy();
-      opt = {};href = '/boom!';
+      opt = {};
+      href = 'http://boom!/accounts/';
+
       client = makeTestClient({apiKey: apiKey});
 
       client.on('error', function (err) {
@@ -844,7 +846,8 @@ describe('Client', function () {
     before(function (done) {
       sandbox = sinon.sandbox.create();
       cbSpy = sandbox.spy();
-      opt = {};href = '/boom!';
+      opt = {};
+      href = 'http://boom!/applications/';
       client = makeTestClient({apiKey: apiKey});
 
       client.on('error', function (err) {
@@ -890,7 +893,7 @@ describe('Client', function () {
     before(function (done) {
       sandbox = sinon.sandbox.create();
       cbSpy = sandbox.spy();
-      opt = {};href = '/boom!';
+      opt = {};href = 'http://boom!/directories/';
       client = makeTestClient({apiKey: apiKey});
 
       client.on('error', function (err) {
@@ -936,7 +939,7 @@ describe('Client', function () {
     before(function (done) {
       sandbox = sinon.sandbox.create();
       cbSpy = sandbox.spy();
-      opt = {};href = '/boom!';
+      opt = {};href = 'http://boom!/groups/';
       client = makeTestClient({apiKey: apiKey});
 
       client.on('error', function (err) {
@@ -981,7 +984,7 @@ describe('Client', function () {
     before(function (done) {
       sandbox = sinon.sandbox.create();
       cbSpy = sandbox.spy();
-      opt = {};href = '/boom!';
+      opt = {};href = 'http://boom!/groupMemberships/';
 
       client = makeTestClient({apiKey: apiKey});
 

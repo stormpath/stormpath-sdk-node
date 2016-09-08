@@ -154,7 +154,7 @@ describe('Client', function() {
     });
     it('should handle errors',function(done){
       client.getOrganization('bad href',function(err){
-        assert(err.status === 404);
+        assert(err.message === 'Argument \'href\' (bad href) is not a valid Organization href.');
         done();
       });
     });

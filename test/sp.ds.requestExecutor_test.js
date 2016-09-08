@@ -47,22 +47,29 @@ describe('ds:', function () {
     describe('call to execute', function () {
       var reqExec;
       var mockHost = 'http://example.com';
-      function exec(req, cb) {
-        return function () {
-          reqExec.execute(req, cb);
-        };
-      }
 
       before(function () {
         reqExec = new RequestExecutor({client: {apiKey: apiKey}, baseUrl: mockHost });
       });
 
-      it('should throw if called without req', function () {
-        exec().should.throw(/Request argument is required/i);
+      it('should throw if called without callback', function () {
+        reqExec.execute.should.throw('Argument \'callback\' required. Unable to execute request.');
       });
 
-      it('should throw if called without req.uri', function () {
-        exec({}).should.throw(/request.uri field is required/i);
+      it('should return error if called without req', function (done) {
+        reqExec.execute(null, function (err) {
+          expect(err).to.exist;
+          expect(err.message).to.equal('Request argument is required.');
+          done();
+        });
+      });
+
+      it('should return error if called without req.uri', function (done) {
+        reqExec.execute({}, function (err) {
+          expect(err).to.exist;
+          expect(err.message).to.equal('request.uri field is required.');
+          done();
+        });
       });
 
       it('should call request with custom user agent', function (done) {
