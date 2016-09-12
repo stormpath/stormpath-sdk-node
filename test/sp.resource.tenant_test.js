@@ -286,8 +286,8 @@ describe('Resources: ', function () {
 
         cbSpy = sandbox.spy();
 
-        tenant.getIdSiteModels(opts, cbSpy);
-        tenant.getIdSiteModels(cbSpy);
+        tenant.getIdSites(opts, cbSpy);
+        tenant.getIdSites(cbSpy);
       });
 
       after(function () {
