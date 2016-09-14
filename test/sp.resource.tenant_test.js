@@ -7,6 +7,7 @@ var Account = require('../lib/resource/Account');
 var Tenant = require('../lib/resource/Tenant');
 var Application = require('../lib/resource/Application');
 var Directory = require('../lib/resource/Directory');
+var IdSiteModel = require('../lib/resource/IdSiteModel');
 var DataStore = require('../lib/ds/DataStore');
 
 describe('Resources: ', function () {
@@ -262,6 +263,45 @@ describe('Resources: ', function () {
           assert.notEqual(tenantResult[0],null);
           assert.equal(tenantResult[1],null);
         });
+      });
+    });
+
+    describe('call to get id sites', function () {
+      var sandbox, tenant, getResourceStub, opts, cbSpy;
+
+      before(function () {
+        sandbox = sinon.sandbox.create();
+
+        opts = {};
+
+        tenant = new Tenant({
+          idSites: {
+            href: 'boom!'
+          }
+        }, dataStore);
+
+        getResourceStub = sandbox.stub(dataStore, 'getResource', function (href, options, ctor, cb) {
+          cb();
+        });
+
+        cbSpy = sandbox.spy();
+
+        tenant.getIdSites(opts, cbSpy);
+        tenant.getIdSites(cbSpy);
+      });
+
+      after(function () {
+        sandbox.restore();
+      });
+
+      it('should process calls with and without params correctly', function () {
+        /* jshint -W030 */
+        getResourceStub.should.have.been.calledTwice;
+        cbSpy.should.have.been.calledTwice;
+        /* jshint +W030 */
+
+        getResourceStub.should.have.been.calledWith('boom!', null, IdSiteModel, cbSpy);
+        getResourceStub.should.have.been.calledWith('boom!', opts, IdSiteModel, cbSpy);
       });
     });
   });

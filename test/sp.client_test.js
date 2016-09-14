@@ -1020,4 +1020,67 @@ describe('Client', function () {
         .calledWith(href, opt, GroupMembership, cbSpy);
     });
   });
+
+  describe('call to get id sites', function () {
+    var sandbox, cbSpy, err, app, client, tenant, getCurrentTenantStub,
+        getTenantIdSites, returnError;
+
+    before(function (done) {
+      sandbox = sinon.sandbox.create();
+
+      err = {error: 'boom!'};
+      app = {href: 'boom!'};
+      client = makeTestClient({apiKey: apiKey});
+
+      client.on('error', function (err) {
+        throw err;
+      });
+
+      client.on('ready', function () {
+        tenant = new Tenant({href: 'boom!'}, client._dataStore);
+        cbSpy = sandbox.spy();
+
+        getCurrentTenantStub = sandbox.stub(client, 'getCurrentTenant', function(cb){
+          if (returnError) {
+            return cb(err);
+          }
+          cb(null, tenant);
+        });
+
+        getTenantIdSites = sandbox.stub(tenant, 'getIdSites', function(options, cb) {
+          cb();
+        });
+
+        done();
+      });
+    });
+
+    after(function () {
+      sandbox.restore();
+    });
+
+    it('should call tenant get id sites', function () {
+      // call without optional param
+      client.getIdSites(cbSpy);
+      client.getIdSites({}, cbSpy);
+
+      getTenantIdSites.should.have.been.calledWith(null, cbSpy);
+      getTenantIdSites.should.have.been.calledWith({}, cbSpy);
+
+      /* jshint -W030 */
+      getCurrentTenantStub.should.have.been.calledTwice;
+      getTenantIdSites.should.have.been.calledTwice;
+      /* jshint +W030 */
+    });
+
+    it('should return error', function(){
+      returnError = true;
+      client.getIdSites(cbSpy);
+      cbSpy.should.have.been.calledWith(err);
+      /* jshint -W030 */
+      getCurrentTenantStub.should.have.been.calledThrice;
+      getTenantIdSites.should.have.been.calledTwice;
+      /* jshint +W030 */
+    });
+  });
 });
