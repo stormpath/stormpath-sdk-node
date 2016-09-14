@@ -1023,7 +1023,7 @@ describe('Client', function () {
 
   describe('call to get id sites', function () {
     var sandbox, cbSpy, err, app, client, tenant, getCurrentTenantStub,
-        getTennantIdSites, returnError;
+        getTenantIdSites, returnError;
 
     before(function (done) {
       sandbox = sinon.sandbox.create();
@@ -1047,7 +1047,7 @@ describe('Client', function () {
           cb(null, tenant);
         });
 
-        getTennantIdSites = sandbox.stub(tenant, 'getIdSites', function(options, cb) {
+        getTenantIdSites = sandbox.stub(tenant, 'getIdSites', function(options, cb) {
           cb();
         });
 
@@ -1064,12 +1064,12 @@ describe('Client', function () {
       client.getIdSites(cbSpy);
       client.getIdSites({}, cbSpy);
 
-      getTennantIdSites.should.have.been.calledWith(null, cbSpy);
-      getTennantIdSites.should.have.been.calledWith({}, cbSpy);
+      getTenantIdSites.should.have.been.calledWith(null, cbSpy);
+      getTenantIdSites.should.have.been.calledWith({}, cbSpy);
 
       /* jshint -W030 */
       getCurrentTenantStub.should.have.been.calledTwice;
-      getTennantIdSites.should.have.been.calledTwice;
+      getTenantIdSites.should.have.been.calledTwice;
       /* jshint +W030 */
     });
 
@@ -1079,7 +1079,7 @@ describe('Client', function () {
       cbSpy.should.have.been.calledWith(err);
       /* jshint -W030 */
       getCurrentTenantStub.should.have.been.calledThrice;
-      getTennantIdSites.should.have.been.calledTwice;
+      getTenantIdSites.should.have.been.calledTwice;
       /* jshint +W030 */
     });
   });
