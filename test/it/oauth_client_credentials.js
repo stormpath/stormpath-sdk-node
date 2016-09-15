@@ -1,146 +1,142 @@
 var common = require('../common');
 var helpers = require('./helpers');
 var assert = common.assert;
-var sinon = common.sinon;
 
 var stormpath = require('../../');
 
-describe('client credentials authentication',function(){
-  var application;
+describe('OAuthClientCredentialsRequestAuthenticator', function() {
   var newAccount;
-  var sandbox;
-  var getResourceSpy;
-  var cbSpy;
-  var raiseError = false;
-  var fakeApiParams = {
-    apiKey: {
-      id: 'id',
-      secret: 'secret'
-    }
-  };
-  var fakeData = {
-    key: 'value'
-  };
+  var application;
 
   before(function(done) {
     newAccount = helpers.fakeAccount();
-    sandbox = sinon.sandbox.create();
 
     helpers.createApplication(function(err, app) {
       application = app;
       application.createAccount(newAccount, done);
     });
-
-    getResourceSpy = sinon.stub(application.dataStore, 'getResource', function(href, opts, cb) {
-      if (raiseError) {
-        cb(new Error('boom!'));
-      }
-
-      cb(null, fakeData);
-    });
-
-    cbSpy = sinon.spy();
   });
 
   after(function(done) {
     helpers.cleanupApplicationAndStores(application, done);
-    sandbox.restore();
   });
 
-  describe('OAuthClientCredentialsTokenGrantAuthenticator', function() {
-    it('should be constructable with the new operator', function() {
-      var auth = new stormpath.OAuthClientCredentialsRequestAuthenticator(application);
-      assert.instanceOf(auth, stormpath.OAuthClientCredentialsRequestAuthenticator);
+  describe('object construction', function() {
+    describe('with new operator', function() {
+      var auth;
+
+      before(function() {
+        auth = new stormpath.OAuthClientCredentialsRequestAuthenticator(application);
+      });
+
+      it('should return an instance of OAuthClientCredentialsAuthenticator', function() {
+        assert.instanceOf(auth. stormpath.OAuthClientCredentialsAuthenticator);
+      });
+
+      it('should return a new instance', function() {
+        var auth2 = new stormpath.OAuthClientCredentialsAuthenticator(application);
+
+        assert.notEqual(auth, auth2);
+      });
+
+      it('should construct an instance with the `application` property', function() {
+        assert.property(auth, 'application');
+        assert.equal(auth.application, application);
+      });
     });
 
-    it('should be constructable without the new operator', function() {
-      var auth = stormpath.OAuthClientCredentialsRequestAuthenticator(application);
-      assert.instanceOf(auth, stormpath.OAuthClientCredentialsRequestAuthenticator);
-    });
+    describe('without new operator', function() {
+      var auth;
 
-    it('should expect exactly two parameters - the data and the callback', function() {
-      var auth = new stormpath.OAuthClientCredentialsRequestAuthenticator(application);
-      assert.throws(auth.authorize.bind(auth.authorize), Error, 'Must call authenticate with (data,callback)');
-      assert.throws(auth.authorize.bind(auth.authorize, 1), Error, 'Must call authenticate with (data,callback)');
-      assert.doesNotThrow(auth.authorize.bind(auth.authorize, 1, 2), Error, 'Must call authenticate with (data,callback)');
-      assert.throws(auth.authorize.bind(auth.authorize, 1, 2, 3), Error, 'Must call authenticate with (data,callback)');
+      before(function() {
+        auth = stormpath.OAuthClientCredentialsRequestAuthenticator(application);
+      });
 
-      /* jshint -W030 */
-      getResourceSpy.should.have.been.calledOnce;
-      /* jshint +W030 */
-    });
+      it('should return an instance of OAuthClientCredentialsAuthenticator', function() {
+        assert.instanceOf(auth. stormpath.OAuthClientCredentialsAuthenticator);
+      });
 
-    it('should call the application\'s oAuth endpoint', function() {
-      var auth = stormpath.OAuthClientCredentialsRequestAuthenticator(application);
-      auth.authorize(fakeApiParams, cbSpy);
+      it('should return a new instance', function() {
+        var auth2 = stormpath.OAuthClientCredentialsAuthenticator(application);
 
-      /* jshint -W030 */
-      getResourceSpy.should.have.been.calledThrice;
-      getResourceSpy.should.have.been.calledWith(application.href + '/oauth/token');
-      cbSpy.should.have.been.calledOnce;
-      /* jshint +W030 */
-    });
+        assert.notEqual(auth, auth2);
+      });
 
-    it('should format the apiKey data object into a {client_id, client_secret, grant_type} object before calling the API', function() {
-      var formattedFakeData = {
-        client_id: 'id',
-        client_secret: 'secret',
-        grant_type: 'client_credentials'
-      };
-
-      var auth = stormpath.OAuthClientCredentialsRequestAuthenticator(application);
-      auth.authorize(fakeApiParams, cbSpy);
-
-      /* jshint -W030 */
-      getResourceSpy.should.have.been.calledThrice;
-      getResourceSpy.should.have.been.calledWith(application.href + '/oauth/token', formattedFakeData);
-      cbSpy.should.have.been.calledTwice;
-      /* jshint +W030 */
-    });
-
-    it('should construct an OAuthChildCredentialsAuthenticationResult from the REST API call on authentication success', function() {
-      var auth = stormpath.OAuthClientCredentialsRequestAuthenticator(application);
-      auth.authorize(fakeApiParams, cbSpy);
-
-      /* jshint -W030 */
-      cbSpy.should.have.been.called;
-      cbSpy.should.have.been.calledThrice;
-      /* jshint +W030 */
-
-      var spyCall = cbSpy.getCall(2);
-      //0 is error, 1 is object
-      assert.instanceOf(spyCall.args[1], stormpath.OAuthClientCredentialsTokenGrantAuthenticationResult);
-
-    });
-
-    it('should handle errors in the authorize method by passing them to the callback', function() {
-      raiseError = true;
-
-      var auth = stormpath.OAuthClientCredentialsRequestAuthenticator(application);
-      auth.authorize(fakeApiParams, cbSpy);
-
-      /* jshint -W030 */
-      cbSpy.should.have.been.called;
-      cbSpy.should.have.callCount(4);
-      cbSpy.should.have.been.calledWith(new Error('boom!'));
-      /* jshint +W030 */
-
-      raiseError = false;
+      it('should construct an instance with the `application` property', function() {
+        assert.property(auth, 'application');
+        assert.equal(auth.application, application);
+      });
     });
   });
 
-  describe('OAuthClientCredentialsTokenGrantAuthenticationResult', function() {
-    // xit('should return the correct account when #getAccount() is called', function() {
-    //
-    // });
-    //
-    // xit('should return  the correct access token when #getAccessToken() is called', function() {
-    //
-    // });
-    //
-    // xit('should return the correct refresh token when #getRefreshToken() is called', function() {
-    //
-    // });
-  });
+  describe('calling the #authenticate(data, callback) method', function() {
+    var auth = new stormpath.OAuthClientCredentialsRequestAuthenticator(application);
+    var apiKey = application.dataStore.requestExecutor.options.client.apiKey;
+    var badApiKey = {
+      id: 'id',
+      secret: 'secret'
+    };
 
+    describe('parameter validation', function() {
+      it('should throw an error if the `data` param is not provided, or not an object', function() {
+        assert.throws(auth.authorize.bind(auth), Error, 'The \'data\' parameter must be an object.');
+        assert.throws(auth.authorize.bind(auth, null), Error, 'The \'data\' parameter must be an object.');
+        assert.throws(auth.authorize.bind(auth, 'boom!'), Error, 'The \'data\' parameter must be an object.');
+        assert.doesNotThrow(auth.authorize.bind(auth, {}), Error, 'The \'data\' parameter must be an object.');
+      });
+
+      it('should throw an error if the `callback` param is not provided, or not a function', function() {
+        assert.throws(auth.authorize.bind(auth, {}), Error, 'The \'callback\' parameter must be a function.');
+        assert.throws(auth.authorize.bind(auth, {}, {}), Error, 'The \'callback\' parameter must be a function.');
+        assert.doesNotThrow(auth.authorize.bind(auth, {}, function() {}), Error, 'The \'callback\' parameter must be a function.');
+      });
+
+      it('should throw an error if the `data` param does not have an `apiKey` field', function() {
+        assert.throws(auth.authorize.bind(auth, {}, function() {}), Error, 'apiKey object within request is required');
+        assert.doesNotThrow(auth.authorize.bind(auth, {apiKey: null}, function() {}), Error, 'apiKey object within request is required');
+      });
+
+      it('should throw an error if the `data.apiKey` object does not contain the `id` and `secret` fields', function() {
+        assert.throws(auth.authorize.bind(auth, {apiKey: {}}, function() {}), Error, 'apiKey object must contain \'id\' and \'secret\' fields');
+        assert.throws(auth.authorize.bind(auth, {apiKey: {
+          id: 'id'
+        }}, function() {}), Error, 'apiKey object must contain \'id\' and \'secret\' fields');
+        assert.throws(auth.authorize.bind(auth, {apiKey: {
+          secret: 'secret'
+        }}, function() {}), Error, 'apiKey object must contain \'id\' and \'secret\' fields');
+        assert.doesNotThrow(auth.authorize.bind(auth, {apiKey: {
+          id: 'id',
+          secret: 'secret'
+        }}, function() {}), Error, 'apiKey object must contain \'id\' and \'secret\' fields');
+      });
+    });
+
+    describe('calling the method with correct number and type of parameters', function() {
+      describe('and the api key is valid', function() {
+        it('should succeed with an OAuthClientCredentialsAuthenticationResult', function() {
+          auth.authorize({apiKey: apiKey}, function(err, result) {
+            assert.notOk(err);
+            assert.ok(result);
+            assert.instanceOf(result, stormpath.OAuthClientCredentialsAuthenticationResult);
+          });
+        });
+      });
+
+      describe('and the api key is invalid', function() {
+        auth.authorize({apiKey: badApiKey}, function(err, result) {
+          assert.ok(err);
+          assert.equal(err.name, 'ResourceError');
+          assert.equal(err.status, 400);
+          assert.equal(err.code, 10019);
+          assert.equal(err.developerMessage, 'API Key Authentication failed because the API key or secret submitted is invalid.');
+          assert.notOk(result);
+        });
+      });
+    });
+
+    describe('returned OAuthClientCredentialsAuthenticationResult', function() {
+
+    });
+
+  });
 });
