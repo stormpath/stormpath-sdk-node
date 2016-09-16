@@ -2,13 +2,14 @@
 
 var assert = require('assert');
 var sinon = require('sinon');
+var uuid = require('uuid');
 
 var ApiKey = require('../lib/resource/ApiKey');
-var Account = require('../lib/resource/Account');
+var DataStore = require('../lib/ds/DataStore');
 
-describe('resource', function() {
+describe.only('resource', function() {
   describe('ApiKey', function() {
-    var apiKey, sandbox, cbSpy, getAccountStub, account;
+    var sandbox, cbSpy, apiKey, getResourceStub;
 
     before(function(done) {
       sandbox = sinon.sandbox.create();
@@ -16,18 +17,20 @@ describe('resource', function() {
 
       apiKey = new ApiKey({
         id: 'id',
-        secret: 'secret'
+        secret: 'secret',
+        account: {
+          href: '/boom'
+        }
       });
 
-      account = new Account({
-        givenName: 'm',
-        surname: 'd',
-        email: 'md@mailinator.com',
-        password: 'Test64!',
-      });
+      var clientApiKeySecret = uuid();
+      apiKey.dataStore = new DataStore({client:{apiKey: {id: '1', secret: clientApiKeySecret}}});
 
-      getAccountStub = sandbox.stub(apiKey, 'getAccount', function(cb) {
-        return cb(account);
+      getResourceStub = sinon.stub(apiKey.dataStore,'getResource',function(){
+        var args = Array.prototype.slice.call(arguments);
+        var href = args.shift();
+        var callback = args.pop();
+        callback(null, {href: href});
       });
 
       done();
@@ -42,10 +45,17 @@ describe('resource', function() {
     });
 
     describe('getAccount', function() {
-      it('should return an Account object', function() {
-        assert(account instanceof Account);
-        apiKey.getAccount(cbSpy);
-        sinon.assert.calledOnce(getAccountStub);
+      it('should return an Account object', function(done) {
+        apiKey.getAccount(function(err, acc) {
+          if (err) {
+            return done(err);
+          }
+
+          assert(acc.href === '/boom');
+          assert(getResourceStub.calledOnce);
+          
+          done();
+        });
       });
     });
   });
