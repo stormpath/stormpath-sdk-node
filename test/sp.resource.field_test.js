@@ -6,10 +6,8 @@ var sinon = common.sinon;
 var DataStore = require('../lib/ds/DataStore');
 var Field = require('../lib/resource/Field');
 
-describe('Field Resource', function(){
-
-  describe('save()', function(){
-
+describe('Field Resource', function () {
+  describe('save()', function () {
     var sandbox;
     var field;
     var dataStore;
@@ -26,18 +24,18 @@ describe('Field Resource', function(){
       }
     };
 
-    before(function(){
+    before(function () {
       dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
       sandbox = sinon.sandbox.create();
       field = new Field(mockField, dataStore);
       requestExecutorStub = sandbox.stub(dataStore.requestExecutor, 'execute');
     });
 
-    after(function(){
+    after(function () {
       sandbox.restore();
     });
 
-    it('should post the resource to the REST API', function(){
+    it('should post the resource to the REST API', function () {
       field.save();
       requestExecutorStub.should.have.been.calledWith({
         body: mockField,
