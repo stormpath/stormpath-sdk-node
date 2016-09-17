@@ -1,9 +1,11 @@
 var common = require('../common');
 var helpers = require('./helpers');
 var assert = common.assert;
-var sinon = common.sinon;
 
 var stormpath = require('../../');
+
+var Account = require('../../lib/resource/Account');
+var AccessToken = require('../../lib/resource/AccessToken');
 
 describe('OAuthClientCredentialsAuthenticator', function() {
   var newAccount;
@@ -13,8 +15,6 @@ describe('OAuthClientCredentialsAuthenticator', function() {
     newAccount = helpers.fakeAccount();
 
     helpers.createApplication(function(err, app) {
-      done(err);
-
       application = app;
       application.createAccount(newAccount, done);
     });
@@ -75,14 +75,39 @@ describe('OAuthClientCredentialsAuthenticator', function() {
   describe('calling the #authenticate(data, callback) method', function() {
     var auth;
     var apiKey;
+    var account;
     var badApiKey = {
       id: 'id',
       secret: 'secret'
     };
 
-    before(function() {
-      apiKey = application.dataStore.requestExecutor.options.client.apiKey;
+    before(function(done) {
       auth = new stormpath.OAuthClientCredentialsAuthenticator(application);
+
+      application.createAccount(helpers.fakeAccount(), function(err, accountResponse) {
+        if (err) {
+          return done(err);
+        }
+
+        account = accountResponse;
+
+        account.createApiKey(function(err, apiKeyResponse) {
+          if (err) {
+            return done(err);
+          }
+
+          apiKey = {
+            id: apiKeyResponse.id,
+            secret: apiKeyResponse.secret
+          };
+
+          done();
+        });
+      });
+    });
+
+    after(function() {
+      account.delete();
     });
 
     describe('parameter validation', function() {
@@ -100,7 +125,7 @@ describe('OAuthClientCredentialsAuthenticator', function() {
 
       it('should throw an error if the `data` param does not have an `apiKey` field', function() {
         assert.throws(auth.authenticate.bind(auth, {}, function() {}), Error, 'apiKey object within request is required');
-        assert.doesNotThrow(auth.authenticate.bind(auth, {apiKey: apiKey}, function() {}), /^apiKey object within request is required$/);
+        assert.doesNotThrow(auth.authenticate.bind(auth, {apiKey: {}}, function() {}), /^apiKey object within request is required$/);
       });
 
       it('should throw an error if the `data.apiKey` object does not contain the `id` and `secret` fields', function() {
@@ -122,6 +147,10 @@ describe('OAuthClientCredentialsAuthenticator', function() {
       describe('and the api key is valid', function() {
         it('should succeed with an OAuthClientCredentialsAuthenticationResult', function(done) {
           auth.authenticate({apiKey: apiKey}, function(err, result) {
+            if (err) {
+              return done(err);
+            }
+
             assert.notOk(err);
             assert.ok(result);
             assert.instanceOf(result, stormpath.OAuthClientCredentialsAuthenticationResult);
@@ -131,7 +160,7 @@ describe('OAuthClientCredentialsAuthenticator', function() {
       });
 
       describe('and the api key is invalid', function() {
-        it('should fail with a ResourceError', function(done) {
+        it('should fail with a ResourceError', function() {
           auth.authenticate({apiKey: badApiKey}, function(err, result) {
             assert.ok(err);
             assert.equal(err.name, 'ResourceError');
@@ -139,7 +168,6 @@ describe('OAuthClientCredentialsAuthenticator', function() {
             assert.equal(err.code, 10019);
             assert.equal(err.developerMessage, 'API Key Authentication failed because the API key or secret submitted is invalid.');
             assert.notOk(result);
-            done();
           });
         });
       });
@@ -151,7 +179,7 @@ describe('OAuthClientCredentialsAuthenticator', function() {
       before(function(done) {
         auth.authenticate({apiKey: apiKey}, function(err, result) {
           if (err) {
-            done(err);
+            return done(err);
           }
 
           authResult = result;
@@ -163,37 +191,27 @@ describe('OAuthClientCredentialsAuthenticator', function() {
         assert.property(authResult, 'accessTokenResponse');
       });
 
-      it('should fetch an Account via #getAccount', function() {
-        var callback = function(err, account) {
+      it('should fetch the correct Account via #getAccount', function() {
+        var getAccountCallback = function(err, accountResponse) {
           assert.notOk(err);
-          assert.ok(account);
-          assert.instanceOf(account, stormpath.Account);
+          assert.ok(accountResponse);
+          assert.instanceOf(accountResponse, Account);
+          assert.deepEqual(accountResponse, account);
         };
 
-        var cbSpy = sinon.spy(callback);
-
         assert.property(authResult, 'getAccount');
-        authResult.getAccount(callback);
-
-        /* jshint -W030 */
-        cbSpy.should.have.been.called;
-        /* jshint +W030 */
+        authResult.getAccount(getAccountCallback);
       });
 
       it('should fetch an AccessToken via #getAccessToken', function() {
-        var callback = function(err, accessToken) {
+        var getAccessTokenCallback = function(err, accessToken) {
           assert.notOk(err);
           assert.ok(accessToken);
-          assert.instanceOf(accessToken, stormpath.AccessToken);
+          assert.instanceOf(accessToken, AccessToken);
         };
-        var cbSpy = sinon.spy(callback);
 
         assert.property(authResult, 'getAccessToken');
-        authResult.getAccessToken(callback);
-
-        /* jshint -W030 */
-        cbSpy.should.have.been.called;
-        /* jshint +W030 */
+        authResult.getAccessToken(getAccessTokenCallback);
       });
     });
 
