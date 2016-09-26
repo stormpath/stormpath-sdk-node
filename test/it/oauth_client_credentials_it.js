@@ -111,10 +111,10 @@ describe('OAuthClientCredentialsAuthenticator', function() {
     });
 
     describe('parameter validation', function() {
-      it('should throw an error if the `data` param is not provided, or not an object', function() {
-        assert.throws(auth.authenticate.bind(auth), Error, 'The \'data\' parameter must be an object.');
-        assert.throws(auth.authenticate.bind(auth, 'boom!'), Error, 'The \'data\' parameter must be an object.');
-        assert.doesNotThrow(auth.authenticate.bind(auth, {}), /^The 'data' parameter must be an object\.$/);
+      it('should throw an error if the `authenticationRequest` param is not provided, or not an object', function() {
+        assert.throws(auth.authenticate.bind(auth), Error, 'The \'authenticationRequest\' parameter must be an object.');
+        assert.throws(auth.authenticate.bind(auth, 'boom!'), Error, 'The \'authenticationRequest\' parameter must be an object.');
+        assert.doesNotThrow(auth.authenticate.bind(auth, {}), /^The 'authenticationRequest' parameter must be an object\.$/);
       });
 
       it('should throw an error if the `callback` param is not provided, or not a function', function() {
@@ -123,12 +123,12 @@ describe('OAuthClientCredentialsAuthenticator', function() {
         assert.doesNotThrow(auth.authenticate.bind(auth, {}, function() {}), /^The 'callback' parameter must be a function\.$/);
       });
 
-      it('should throw an error if the `data` param does not have an `apiKey` field', function() {
+      it('should throw an error if the `authenticationRequest` param does not have an `apiKey` field', function() {
         assert.throws(auth.authenticate.bind(auth, {}, function() {}), Error, 'apiKey object within request is required');
         assert.doesNotThrow(auth.authenticate.bind(auth, {apiKey: {}}, function() {}), /^apiKey object within request is required$/);
       });
 
-      it('should throw an error if the `data.apiKey` object does not contain the `id` and `secret` fields', function() {
+      it('should throw an error if the `authenticationRequest.apiKey` object does not contain the `id` and `secret` fields', function() {
         assert.throws(auth.authenticate.bind(auth, {apiKey: {}}, function() {}), Error, 'apiKey object must contain \'id\' and \'secret\' fields');
         assert.throws(auth.authenticate.bind(auth, {apiKey: {
           id: 'id'
