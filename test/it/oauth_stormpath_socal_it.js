@@ -105,7 +105,7 @@ describe('OAuthStormpathSocialAuthenticator', function () {
     });
   });
 
-  describe('when calling authenticate(data, callback)', function () {
+  describe('when calling authenticate(authenticationRequest, callback)', function () {
     var invalidProviderId;
     var authenticator;
 
@@ -114,29 +114,29 @@ describe('OAuthStormpathSocialAuthenticator', function () {
       authenticator = new stormpath.OAuthStormpathSocialAuthenticator(application);
     });
 
-    describe('without a data parameter', function () {
+    describe('without a authenticationRequest parameter', function () {
       it('should throw an invalid parameter error', function () {
         assert.throws(function () {
           authenticator.authenticate();
-        }, 'The \'data\' parameter must be an object.');
+        }, 'The \'authenticationRequest\' parameter must be an object.');
       });
     });
 
-    describe('without a data.providerId parameter', function () {
+    describe('without a authenticationRequest.providerId parameter', function () {
       it('should throw an invalid parameter error', function () {
         assert.throws(function () {
           authenticator.authenticate({});
-        }, 'The \'data.providerId\' parameter must be a string.');
+        }, 'The \'authenticationRequest.providerId\' parameter must be a string.');
       });
     });
 
-    describe('without a data.code or a data.accessToken parameter', function () {
+    describe('without a authenticationRequest.code or a authenticationRequest.accessToken parameter', function () {
       it('should throw an invalid parameter error', function () {
         assert.throws(function () {
           authenticator.authenticate({
             providerId: invalidProviderId
           });
-        }, 'One of the parameters \'data.code\' or \'data.accessToken\' must be provided.');
+        }, 'One of the parameters \'authenticationRequest.code\' or \'authenticationRequest.accessToken\' must be provided.');
       });
     });
 
@@ -157,7 +157,7 @@ describe('OAuthStormpathSocialAuthenticator', function () {
       });
     });
 
-    describe('with an invalid data.providerId parameter', function () {
+    describe('with an invalid authenticationRequest.providerId parameter', function () {
       var invalidCode;
 
       beforeEach(function () {
@@ -180,7 +180,7 @@ describe('OAuthStormpathSocialAuthenticator', function () {
       });
     });
 
-    describe('with an invalid data.code parameter', function () {
+    describe('with an invalid authenticationRequest.code parameter', function () {
       var invalidCode;
 
       beforeEach(function () {
@@ -203,7 +203,7 @@ describe('OAuthStormpathSocialAuthenticator', function () {
       });
     });
 
-    describe('with an invalid data.accessToken paramter', function () {
+    describe('with an invalid authenticationRequest.accessToken paramter', function () {
       var invalidAccessToken;
 
       beforeEach(function () {
