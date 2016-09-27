@@ -75,7 +75,7 @@
       if (target.prop('tagName').toLowerCase() !== "a") {
         target = target.parent();
       }
-      var elScrollToId = target.attr('href').replace(/^#/, '') + ANCHOR_PREFIX;
+      var elScrollToId = target.closest('a').attr('href').replace(/^#/, '') + ANCHOR_PREFIX;
       var $el = $(document.getElementById(elScrollToId));
 
       var offsetTop = Math.min(maxScrollTo, elOffset($el));
