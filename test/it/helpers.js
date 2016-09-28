@@ -148,6 +148,28 @@ function createApplication(callback) {
   }
 }
 
+/**
+ * Create a new Stormpath Directory for usage in tests.
+ *
+ * @function
+ *
+ * @param {Object} options - Options for the Stormpath directory to create.
+ * @param {Function} callback - A callback to run when done.
+ */
+function createDirectory(options, callback) {
+  if (!options) {
+    options = {};
+  }
+
+  if (!options.name) {
+    options.name = pkg.name + ':' + getFriendlyCallerName() + ':' + testRunId + ':' + uuid.v4();
+  }
+
+  getClient(function (client) {
+    client.createDirectory(options, callback);
+  });
+}
+
 function fakeDirectory(){
   return {
     name: uniqId()
@@ -204,6 +226,7 @@ module.exports = {
   getDefaultAccountStore: getDefaultAccountStore,
   cleanupApplicationAndStores: cleanupApplicationAndStores,
   createApplication: createApplication,
+  createDirectory: createDirectory,
   createStormpathToken: createStormpathToken,
   getClient: getClient,
   uniqId: uniqId,
