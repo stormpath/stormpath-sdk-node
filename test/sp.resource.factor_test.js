@@ -204,10 +204,6 @@ describe('Factor', function() {
       createResourceStub.args[0][0].should.equal(factorData.challenges.href);
     });
 
-    // it('should pass the correct query params to DataStore#createResource', function() {
-    //   createResourceStub.args[0][1].should.equal(options);
-    // });
-
     it('should pass the correct data to DataStore#createResource', function() {
       createResourceStub.args[0][2].should.equal(challenge);
     });
