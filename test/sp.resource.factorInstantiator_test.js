@@ -24,6 +24,14 @@ describe('FactorInstantiator#Constructor', function() {
   it('should inherit from InstanceResource', function() {
     assert.equal(FactorConstructor.super_, InstanceResource);
   });
+
+  it('should construct an SmsFactor if type is SMS', function() {
+    assert.instanceOf(new FactorConstructor({type: 'SMS'}), SmsFactor);
+  });
+
+  it('should construct a GoogleAuthenticatorFactor if type is google-authenticator', function() {
+    assert.instanceOf(new FactorConstructor({type: 'google-authenticator'}), GoogleAuthenticatorFactor);
+  });
 });
 
 describe('FactorInstantiator#getConstructor', function() {
