@@ -68,13 +68,11 @@ describe('Phone resource', function() {
   });
 
   describe('#getAccount(options, callback)', function() {
-    var options;
     var callback;
 
     before(function() {
-      options = {q: 'jerry'};
       callback = sinon.spy();
-      phone.getAccount(options, callback);
+      phone.getAccount(callback);
     });
 
     it('should call dataStore#getResource', function() {
@@ -88,7 +86,7 @@ describe('Phone resource', function() {
     });
 
     it('should pass the options to dataStore#getResource', function() {
-      getResourceStub.args[0][1].should.equal(options);
+      getResourceStub.args[0][1].should.equal({});
     });
 
     it('should pass the constructor for Account to dataStore#getResource', function() {
