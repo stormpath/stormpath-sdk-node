@@ -85,7 +85,7 @@ describe('Phone resource', function() {
       getResourceStub.args[0][0].should.equal(phoneData.account.href);
     });
 
-    it('should pass the options to dataStore#getResource', function() {
+    it('should pass no options to dataStore#getResource', function() {
       getResourceStub.args[0][1].should.equal({});
     });
 
