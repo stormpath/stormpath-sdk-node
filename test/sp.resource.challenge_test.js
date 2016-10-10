@@ -4,7 +4,7 @@ var common = require('./common');
 var assert = common.assert;
 var sinon = common.sinon;
 
-var InstanceResource = require('../lib/resource/InstanceResource');
+var Resource = require('../lib/resource/Resource');
 var Challenge = require('../lib/resource/Challenge');
 var DataStore = require('../lib/ds/DataStore');
 var FactorInstantiator = require('../lib/resource/FactorInstantiator').Constructor;
@@ -23,7 +23,7 @@ var challengeData = {
   }
 };
 
-describe('Factor', function() {
+describe('Challenge', function() {
   var sandbox;
   var dataStore;
   var getResourceStub;
@@ -43,8 +43,8 @@ describe('Factor', function() {
   });
 
   describe('constructor', function() {
-    it('should inherit from InstanceResource', function() {
-      assert.instanceOf(challenge, InstanceResource);
+    it('should inherit from Resource', function() {
+      assert.instanceOf(challenge, Resource);
     });
 
     it('should call super_ with the same arguments', function() {
@@ -53,6 +53,11 @@ describe('Factor', function() {
       superSpy.should.have.been.calledWithExactly(challengeData, dataStore);
       /*jshint +W030 */
     });
+  });
+
+  it('should have a save method', function() {
+    assert.isDefined(challenge.save);
+    assert.isFunction(challenge.save);
   });
 
   describe('Challenge#getAccount', function() {

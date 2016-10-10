@@ -86,7 +86,9 @@ describe('Phone resource', function() {
     });
 
     it('should pass no options to dataStore#getResource', function() {
-      getResourceStub.args[0][1].should.equal({});
+      /*jshint -W030 */
+      getResourceStub.args[0][1].should.be.empty;
+      /*jshint +W030 */
     });
 
     it('should pass the constructor for Account to dataStore#getResource', function() {

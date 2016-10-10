@@ -170,13 +170,30 @@ describe('Factor', function() {
 
     describe('when there is no challenge', function() {
       var factor2;
+      var options;
+      var callback;
 
       before(function() {
-        factor2 = new Factor({});
+        factor2 = new Factor({
+          mostRecentChallenge: null
+        }, dataStore);
+        options = {query: 'boom!'};
+        callback = sinon.spy();
+
+        factor2.getMostRecentChallenge(options, callback);
       });
 
-      it('should return null', function() {
-        assert.equal(factor2.getMostRecentChallenge(), null);
+      it('should not call DataStore#getResource', function() {
+        /*jshint -W030 */
+        assert.isFalse(getResourceStub.callCount === 4);
+        /*jshint +W030 */
+      });
+
+      it('should call the callback with null as the second argument', function() {
+        /*jshint -W030 */
+        callback.should.have.been.called;
+        assert.isNull(callback.args[0][1]);
+        /*jshint +W030 */
       });
     });
   });
