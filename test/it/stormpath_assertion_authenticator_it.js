@@ -87,15 +87,15 @@ describe('StormpathAssertionAuthenticator', function () {
         });
       });
 
-      it('fails when valid token is passed but missing account href (sub)', function (done) {
+      it('succeeds when passed a valid token without an account href (sub)', function (done) {
         var validEmptyToken = jwt.create({}, secret)
           .setExpiration(expireAt)
           .compact();
 
         authenticator.authenticate(validEmptyToken, function (err, result) {
-          assert.isOk(err);
-          assert.isNotOk(result);
-          assert.equal(err.message, 'Stormpath Account HREF (sub) in JWT not provided.');
+          assert.isNotOk(err);
+          assert.isOk(result);
+          assert.isNull(result.account);
           done();
         });
       });
