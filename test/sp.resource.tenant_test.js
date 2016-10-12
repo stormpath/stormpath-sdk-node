@@ -7,7 +7,7 @@ var Account = require('../lib/resource/Account');
 var Tenant = require('../lib/resource/Tenant');
 var Application = require('../lib/resource/Application');
 var Directory = require('../lib/resource/Directory');
-var IdSiteModel = require('../lib/resource/IdSiteModel');
+var IdSite = require('../lib/resource/IdSite');
 var DataStore = require('../lib/ds/DataStore');
 
 describe('Resources: ', function () {
@@ -300,8 +300,8 @@ describe('Resources: ', function () {
         cbSpy.should.have.been.calledTwice;
         /* jshint +W030 */
 
-        getResourceStub.should.have.been.calledWith('boom!', null, IdSiteModel, cbSpy);
-        getResourceStub.should.have.been.calledWith('boom!', opts, IdSiteModel, cbSpy);
+        getResourceStub.should.have.been.calledWith('boom!', null, IdSite, cbSpy);
+        getResourceStub.should.have.been.calledWith('boom!', opts, IdSite, cbSpy);
       });
     });
   });

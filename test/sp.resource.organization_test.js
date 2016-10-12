@@ -62,7 +62,7 @@ describe('resource/Organization.js', function () {
         groups: {
           href: '1f8c3fc4-69eb-48b1-a078-1a249a76196b'
         },
-        idSiteModel: {
+        idSite: {
           href: '0967db49-93aa-48d2-b801-18ebd9dba53e'
         },
         accountStoreMappings: {
@@ -682,11 +682,11 @@ describe('resource/Organization.js', function () {
       });
     });
 
-    describe('.getIdSiteModel(options, callback)', function () {
+    describe('.getIdSite(options, callback)', function () {
       var returnValue;
 
       beforeEach(function () {
-        returnValue = organization.getIdSiteModel(options, callbackSpy);
+        returnValue = organization.getIdSite(options, callbackSpy);
       });
 
       it('should pass the options to dataStore.getResource', function () {
@@ -703,11 +703,11 @@ describe('resource/Organization.js', function () {
       });
     });
 
-    describe('.getIdSiteModel(callback)', function () {
+    describe('.getIdSite(callback)', function () {
       var returnValue;
 
       beforeEach(function () {
-        returnValue = organization.getIdSiteModel(callbackSpy);
+        returnValue = organization.getIdSite(callbackSpy);
       });
 
       it('should pass the callback to dataStore.getResource', function () {
