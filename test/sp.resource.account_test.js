@@ -546,7 +546,7 @@ describe('Resources: ', function () {
             type: 'sms'
           };
 
-          options = {query: 'boom!'};
+          options = {challenge: true};
           callback = sinon.spy();
 
           account.createFactor(factorData, options, callback);
@@ -560,6 +560,10 @@ describe('Resources: ', function () {
 
         it('should pass the correct href to DataStore#createResource', function() {
           createResourceStub.args[0][0].should.equal(accountData.factors.href);
+        });
+
+        it('should pass the correct query data to DataStore#createResource', function() {
+          createResourceStub.args[0][1].should.equal(options);
         });
 
         it('should pass the correct data to DataStore#createResource', function() {
