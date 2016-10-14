@@ -12,6 +12,7 @@ var GroupMembership = require('../lib/resource/GroupMembership');
 var Directory = require('../lib/resource/Directory');
 var Tenant = require('../lib/resource/Tenant');
 var Application = require('../lib/resource/Application');
+var SmtpServer = require('../lib/resource/SmtpServer');
 var DataStore = require('../lib/ds/DataStore');
 
 function makeTestClient (options) {
@@ -1081,6 +1082,52 @@ describe('Client', function () {
       getCurrentTenantStub.should.have.been.calledThrice;
       getTenantIdSites.should.have.been.calledTwice;
       /* jshint +W030 */
+    });
+  });
+
+  describe('call to getSmtpServer', function () {
+    var sandbox, client, getResourceStub, cbSpy, href, opt;
+
+    before(function (done) {
+      sandbox = sinon.sandbox.create();
+      cbSpy = sandbox.spy();
+      opt = {};
+      href = '/smtpServers/foo';
+      client = makeTestClient({apiKey: apiKey});
+
+      client.on('error', function (err) {
+        throw err;
+      });
+
+      client.on('ready', function () {
+        getResourceStub = sandbox.stub(client._dataStore, 'getResource', function (href, options, ctor, cb) {
+          cb();
+        });
+        // call without optional param
+        client.getSmtpServer(href, cbSpy);
+        // call with optional param
+        client.getSmtpServer(href, opt, cbSpy);
+
+        done();
+      });
+    });
+
+    after(function () {
+      sandbox.restore();
+    });
+
+    it('should get account', function () {
+      /* jshint -W030 */
+      getResourceStub.should.have.been.calledTwice;
+      cbSpy.should.have.been.calledTwice;
+      /* jshint +W030 */
+
+      // call without optional param
+      getResourceStub.should.have.been
+        .calledWith(href, null, SmtpServer, cbSpy);
+      // call with optional param
+      getResourceStub.should.have.been
+        .calledWith(href, opt, SmtpServer, cbSpy);
     });
   });
 });
