@@ -6,6 +6,8 @@ var sinon = common.sinon;
 
 var Factor = require('../lib/resource/Factor');
 var GoogleAuthenticatorFactor = require('../lib/resource/GoogleAuthenticatorFactor');
+var DataStore = require('../lib/ds/DataStore');
+var Challenge = require('../lib/resource/Challenge');
 
 var factorData = {
   href: 'https://api.stormpath.com/v1/factors/wzU29J38OcAyY1z8TeX1x',
@@ -29,11 +31,13 @@ describe('GoogleAuthenticatorFactor', function() {
   var dataStore;
   var factor;
   var superSpy;
+  var createResourceStub;
 
   before(function() {
-    dataStore = {};
+    dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
     superSpy = sinon.spy(GoogleAuthenticatorFactor, 'super_');
     factor = new GoogleAuthenticatorFactor(factorData, dataStore);
+    createResourceStub = sinon.stub(dataStore, 'createResource');
   });
 
   it('should inherit from Factor', function() {
@@ -42,5 +46,41 @@ describe('GoogleAuthenticatorFactor', function() {
 
   it('should call super_ with the same parameters', function() {
     superSpy.should.have.been.calledWithExactly(factorData, dataStore);
+  });
+
+  describe('SmsFactor#createChallenge', function() {
+    var callback;
+
+    before(function() {
+      callback = sinon.spy();
+
+      factor.createChallenge({}, {}, callback);
+    });
+
+    it('should call DataStore#createResource', function() {
+      /*jshint -W030 */
+      createResourceStub.should.have.been.calledOnce;
+      /*jshint +W030 */
+    });
+
+    it('should pass the correct href to DataStore#createResource', function() {
+      createResourceStub.args[0][0].should.equal(factorData.challenges.href);
+    });
+
+    it('should pass no options to DataStore#createResource', function() {
+      assert.isNull(createResourceStub.args[0][1]);
+    });
+
+    it('should pass the correct data to DataStore#createResource', function() {
+      assert.isNull(createResourceStub.args[0][2]);
+    });
+
+    it('should pass the correct constructor to DataStore#createResource', function() {
+      createResourceStub.args[0][3].should.equal(Challenge);
+    });
+
+    it('should pass the correct callback to DataStore#createResource', function() {
+      createResourceStub.args[0][4].should.equal(callback);
+    });
   });
 });
