@@ -48,7 +48,7 @@ describe('GoogleAuthenticatorFactor', function() {
     superSpy.should.have.been.calledWithExactly(factorData, dataStore);
   });
 
-  describe('SmsFactor#createChallenge', function() {
+  describe('GoogleAuthenticatorFactor#createChallenge', function() {
     var callback;
 
     before(function() {
