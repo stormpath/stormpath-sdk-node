@@ -27,6 +27,7 @@ describe('Challenge', function() {
   var sandbox;
   var dataStore;
   var getResourceStub;
+  var createResourceStub;
   var superSpy;
   var challenge;
 
@@ -34,6 +35,7 @@ describe('Challenge', function() {
     dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
     sandbox = sinon.sandbox.create();
     getResourceStub = sinon.stub(dataStore, 'getResource');
+    createResourceStub = sinon.stub(dataStore, 'createResource');
     superSpy = sandbox.spy(Challenge, 'super_');
     challenge = new Challenge(challengeData, dataStore);
   });
@@ -125,6 +127,40 @@ describe('Challenge', function() {
 
     it('should pass the correct callback to DataStore#getResource', function() {
       getResourceStub.args[1][3].should.equal(callback);
+    });
+  });
+
+  describe('Challenge#verifyCode', function() {
+    var code;
+    var callback;
+
+    before(function() {
+      code = '12345';
+      callback = sinon.spy();
+
+      challenge.verifyCode(code, callback);
+    });
+
+    it('should call DataStore#createResource', function() {
+      /*jshint -W030 */
+      createResourceStub.should.have.been.calledOnce;
+      /*jshint +W030 */
+    });
+
+    it('should pass the correct href to DataStore#createResource', function() {
+      createResourceStub.args[0][0].should.equal(challenge.href);
+    });
+
+    it('should pass the correct code to DataStore#createResource', function() {
+      createResourceStub.args[0][1].should.have.property('code', code);
+    });
+
+    it('should pass the correct constructor to DataStore#createResource', function() {
+      createResourceStub.args[0][2].should.eql(Challenge);
+    });
+
+    it('should pass the correct callback to DataStore#createResource', function() {
+      createResourceStub.args[0][3].should.equal(callback);
     });
   });
 });
