@@ -8,6 +8,7 @@ var Tenant = require('../lib/resource/Tenant');
 var Application = require('../lib/resource/Application');
 var Directory = require('../lib/resource/Directory');
 var IdSiteModel = require('../lib/resource/IdSiteModel');
+var SmtpServer = require('../lib/resource/SmtpServer');
 var DataStore = require('../lib/ds/DataStore');
 
 describe('Resources: ', function () {
@@ -187,6 +188,86 @@ describe('Resources: ', function () {
         // call with optional param
         createResourceStub.should.have.been
           .calledWith(createDirPath, opt, app, Directory, cbSpy);
+      });
+    });
+
+    describe('when calling .createSmtpServer()', function () {
+      var options;
+      var cbSpy;
+      var tenant;
+      var sandbox;
+      var smtpServer;
+      var createResourceStub;
+      var createSmtpServerPath;
+
+      before(function () {
+        options = {};
+        sandbox = sinon.sandbox.create();
+        createSmtpServerPath = '/smtpServers';
+        smtpServer = {name: '2dd1dfc4-08fa-4c1c-a721-af95f1bfe556'};
+        tenant = new Tenant({applications: {href: 'boom!'}}, dataStore);
+
+        createResourceStub = sandbox.stub(dataStore, 'createResource', function (arg1, arg2, arg3, arg4, callback) {
+          callback();
+        });
+
+        cbSpy = sandbox.spy();
+
+        tenant.createSmtpServer(smtpServer, cbSpy);
+        tenant.createSmtpServer(smtpServer, options, cbSpy);
+      });
+
+      after(function () {
+        sandbox.restore();
+      });
+
+      it('should call createResource with the /smtpServers path', function () {
+        /* jshint -W030 */
+        createResourceStub.should.have.been.calledTwice;
+        cbSpy.should.have.been.calledTwice;
+        /* jshint +W030 */
+
+        createResourceStub.should.have.been.calledWith(createSmtpServerPath, null, smtpServer, SmtpServer, cbSpy);
+        createResourceStub.should.have.been.calledWith(createSmtpServerPath, options, smtpServer, SmtpServer, cbSpy);
+      });
+    });
+
+    describe('when calling .getSmtpServers()', function () {
+      var sandbox, tenant, getResourceStub, opts, cbSpy;
+
+      before(function () {
+        sandbox = sinon.sandbox.create();
+
+        opts = {};
+
+        tenant = new Tenant({
+          smtpServers: {
+            href: 'boom!'
+          }
+        }, dataStore);
+
+        getResourceStub = sandbox.stub(dataStore, 'getResource', function (href, options, ctor, cb) {
+          cb();
+        });
+
+        cbSpy = sandbox.spy();
+
+        tenant.getSmtpServers(opts, cbSpy);
+        tenant.getSmtpServers(cbSpy);
+      });
+
+      after(function () {
+        sandbox.restore();
+      });
+
+      it('should call getResource with the smtpServers href', function () {
+        /* jshint -W030 */
+        getResourceStub.should.have.been.calledTwice;
+        cbSpy.should.have.been.calledTwice;
+        /* jshint +W030 */
+
+        getResourceStub.should.have.been.calledWith('boom!', null, SmtpServer, cbSpy);
+        getResourceStub.should.have.been.calledWith('boom!', opts, SmtpServer, cbSpy);
       });
     });
 
