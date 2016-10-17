@@ -63,14 +63,12 @@ describe('SmsFactor', function() {
   });
 
   describe('SmsFactor#getPhone', function() {
-    var options;
     var callback;
 
     before(function() {
-      options = {q: 'boom!'};
       callback = sinon.spy();
 
-      factor.getPhone(options, callback);
+      factor.getPhone({}, callback);
     });
 
     it('should call DataStore#getResource', function() {
@@ -83,8 +81,8 @@ describe('SmsFactor', function() {
       getResourceStub.args[0][0].should.equal(factorData.phone.href);
     });
 
-    it('should pass the correct data to DataStore#getResource', function() {
-      getResourceStub.args[0][1].should.equal(options);
+    it('should pass no data to DataStore#getResource', function() {
+      assert.isNull(getResourceStub.args[0][1]);
     });
 
     it('should pass the correct constructor to DataStore#getResource', function() {
