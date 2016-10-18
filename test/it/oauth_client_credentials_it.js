@@ -1,6 +1,7 @@
 var common = require('../common');
 var helpers = require('./helpers');
 var assert = common.assert;
+var sinon = common.sinon;
 
 var stormpath = require('../../');
 
@@ -169,6 +170,44 @@ describe('OAuthClientCredentialsAuthenticator', function() {
             assert.equal(err.developerMessage, 'API Key Authentication failed because the API key or secret submitted is invalid.');
             assert.notOk(result);
           });
+        });
+      });
+    });
+
+    describe('scope factory properties', function() {
+      var scopeFactoryFunction;
+      var scope;
+
+      before(function() {
+        scopeFactoryFunction = sinon.spy(function(authenticationResult, requestedScope, callback) {
+          callback(null, scope);
+        });
+
+        scope = 'test';
+
+        auth.setScopeFactory(scopeFactoryFunction);
+        auth.setScopeFactorySigningKey(application.dataStore.requestExecutor.options.client.apiKey.secret);
+      });
+
+      after(function() {
+        // Unset the scope factory props
+        auth.setScopeFactory();
+        auth.setScopeFactorySigningKey();
+      });
+
+      it('should call the scope factory function if the scope is defined, with the correct `requestedScope`', function(done) {
+        auth.authenticate({apiKey: apiKey, scope: scope}, function(err, result) {
+          if (err) {
+            return done(err);
+          }
+
+          /* jshint -W030 */
+          scopeFactoryFunction.should.have.been.calledOnce;
+          /* jshint +W030 */
+          scopeFactoryFunction.args[0][1].should.equal(scope);
+          assert.notOk(err);
+          assert.ok(result);
+          done();
         });
       });
     });
