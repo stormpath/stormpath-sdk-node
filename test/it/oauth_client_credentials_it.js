@@ -333,24 +333,23 @@ describe('OAuthClientCredentialsAuthenticator', function() {
       });
 
       describe('errors', function() {
-        var callback;
 
         before(function() {
           auth.setScopeFactorySigningKey();
-          callback = function(err, data) {
-            assert.ok(err);
-            assert.notOk(data);
-          };
         });
 
         after(function() {
           auth.setScopeFactorySigningKey(signingKey);
         });
 
-        it('should call the callback with an error if used with a factory function but without a key', function() {
-          assert.doesNotThrow(function() {
-            auth.authenticate({apiKey: apiKey, scope: scope}, callback);
-          }, Error);
+        it('should call the callback with an error if used with a factory function but without a key', function(done) {
+          var callback = function(err, data) {
+            assert.ok(err);
+            assert.notOk(data);
+            done();
+          };
+
+          auth.authenticate({apiKey: apiKey, scope: scope}, callback);
         });
       });
     });
