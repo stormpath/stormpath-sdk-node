@@ -3,10 +3,13 @@ var helpers = require('./helpers');
 var assert = common.assert;
 var sinon = common.sinon;
 
+var njwt = require('njwt');
+
 var stormpath = require('../../');
 
 var Account = require('../../lib/resource/Account');
 var AccessToken = require('../../lib/resource/AccessToken');
+var JwtAuthenticator = require('../../lib/jwt/jwt-authenticator');
 
 describe('OAuthClientCredentialsAuthenticator', function() {
   var newAccount;
@@ -23,6 +26,12 @@ describe('OAuthClientCredentialsAuthenticator', function() {
 
   after(function(done) {
     helpers.cleanupApplicationAndStores(application, done);
+  });
+
+  describe('inheritance', function() {
+    it('should inherit from ScopeFactoryAuthenticator', function() {
+      assert.equal(stormpath.OAuthClientCredentialsAuthenticator.super_.name, 'ScopeFactoryAuthenticator');
+    });
   });
 
   describe('object construction', function() {
@@ -177,6 +186,7 @@ describe('OAuthClientCredentialsAuthenticator', function() {
     describe('scope factory properties', function() {
       var scopeFactoryFunction;
       var scope;
+      var signingKey;
 
       before(function() {
         scopeFactoryFunction = sinon.spy(function(authenticationResult, requestedScope, callback) {
@@ -184,9 +194,10 @@ describe('OAuthClientCredentialsAuthenticator', function() {
         });
 
         scope = 'test';
+        signingKey = application.dataStore.requestExecutor.options.client.apiKey.secret;
 
         auth.setScopeFactory(scopeFactoryFunction);
-        auth.setScopeFactorySigningKey(application.dataStore.requestExecutor.options.client.apiKey.secret);
+        auth.setScopeFactorySigningKey(signingKey);
       });
 
       after(function() {
@@ -205,9 +216,141 @@ describe('OAuthClientCredentialsAuthenticator', function() {
           scopeFactoryFunction.should.have.been.calledOnce;
           /* jshint +W030 */
           scopeFactoryFunction.args[0][1].should.equal(scope);
-          assert.notOk(err);
           assert.ok(result);
           done();
+        });
+      });
+
+      it('should append a scope field from the factory to the result token, if the factory result is a truthy string', function(done) {
+        auth.authenticate({apiKey: apiKey, scope: scope}, function(err, result) {
+          if (err) {
+            return done(err);
+          }
+
+          /* jshint -W030 */
+          scopeFactoryFunction.should.have.been.calledTwice;
+          /* jshint +W030 */
+
+          // Decoded token
+          assert.ok(result);
+          assert.ok(result.accessToken);
+          assert.ok(result.accessToken.body);
+          assert.equal(result.accessToken.body.scope, scope);
+
+          // Manual decoding check
+          njwt.verify(result.accessTokenResponse.access_token, signingKey, function(err, token) {
+            assert.ok(token);
+            assert.ok(token.body);
+            assert.equal(token.body.scope, scope);
+            done();
+          });
+        });
+      });
+
+      it('should leave all the other fields in the header and body of the JWT untouched', function(done) {
+        var bodyField;
+
+        auth.authenticate({apiKey: apiKey, scope: scope}, function(err, authResponse) {
+          if (err) {
+            return done(err);
+          }
+
+          /* jshint -W030 */
+          scopeFactoryFunction.should.have.been.calledThrice;
+          /* jshint +W030 */
+
+          var originalToken = scopeFactoryFunction.args[2][0];
+          var token = authResponse.accessToken;
+
+          assert.deepEqual(originalToken.header, token.header);
+
+          for (bodyField in originalToken.body) {
+            if (originalToken.body.hasOwnProperty(bodyField)) {
+              assert.equal(originalToken.body[bodyField], token.body[bodyField]);
+            }
+          }
+
+          done();
+        });
+      });
+
+      describe('JwtAuthenticator validation', function() {
+        var authenticator;
+        var token;
+
+        before(function(done) {
+          authenticator = new JwtAuthenticator(application);
+          auth.authenticate({apiKey: apiKey, scope: scope}, function(err, resp) {
+            if (err) {
+              return done(err);
+            }
+            token = resp.accessTokenResponse.access_token;
+            done();
+          });
+        });
+
+        describe('without local validation', function() {
+          it('should validate the token', function(done) {
+            authenticator.authenticate(token, function(err, data) {
+              assert.notOk(err);
+              assert.ok(data);
+              done();
+            });
+          });
+
+          it('should yield a result containing the scope', function(done) {
+            authenticator.authenticate(token, function(err, data) {
+              assert.ok(data.expandedJwt);
+              assert.ok(data.expandedJwt.claims);
+              assert.equal(data.expandedJwt.claims.scope, scope);
+              done();
+            });
+          });
+        });
+
+        describe('with local validation', function() {
+          before(function() {
+            authenticator.withLocalValidation();
+          });
+
+          it('should validate the token', function(done) {
+            authenticator.authenticate(token, function(err, data) {
+              assert.notOk(err);
+              assert.ok(data);
+              done();
+            });
+          });
+
+          it('should yield a result containing the scope', function(done) {
+            authenticator.authenticate(token, function(err, data) {
+              assert.ok(data.expandedJwt);
+              assert.ok(data.expandedJwt.body);
+              assert.equal(data.expandedJwt.body.scope, scope);
+              done();
+            });
+          });
+        });
+      });
+
+      describe('errors', function() {
+        var callback;
+
+        before(function() {
+          auth.setScopeFactorySigningKey();
+          callback = function(err, data) {
+            assert.ok(err);
+            assert.notOk(data);
+          };
+        });
+
+        after(function() {
+          auth.setScopeFactorySigningKey(signingKey);
+        });
+
+        it('should call the callback with an error if used with a factory function but without a key', function() {
+          assert.doesNotThrow(function() {
+            auth.authenticate({apiKey: apiKey, scope: scope}, callback);
+          }, Error);
         });
       });
     });
