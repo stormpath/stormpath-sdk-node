@@ -324,8 +324,8 @@ describe('OAuthClientCredentialsAuthenticator', function() {
           it('should yield a result containing the scope', function(done) {
             authenticator.authenticate(token, function(err, data) {
               assert.ok(data.expandedJwt);
-              assert.ok(data.expandedJwt.body);
-              assert.equal(data.expandedJwt.body.scope, scope);
+              assert.ok(data.expandedJwt.claims);
+              assert.equal(data.expandedJwt.claims.scope, scope);
               done();
             });
           });
