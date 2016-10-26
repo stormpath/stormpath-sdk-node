@@ -5,8 +5,10 @@ var assert = common.assert;
 var sinon = common.sinon;
 var expect = common.expect;
 
-var Client = require('../lib/Client');
 var Account = require('../lib/resource/Account');
+var Challenge = require('../lib/resource/Challenge');
+var Client = require('../lib/Client');
+var FactorCtor = require('../lib/resource/FactorInstantiator').Constructor;
 var Group = require('../lib/resource/Group');
 var GroupMembership = require('../lib/resource/GroupMembership');
 var Directory = require('../lib/resource/Directory');
@@ -792,6 +794,101 @@ describe('Client', function () {
       getCurrentTenantStub.should.have.been.calledThrice;
       createTenantDirectory.should.have.been.calledTwice;
       /* jshint +W030 */
+    });
+  });
+
+  describe('call to get challenge', function () {
+    var sandbox, client, getResourceStub, cbSpy, href, opt;
+
+    before(function (done) {
+      sandbox = sinon.sandbox.create();
+      cbSpy = sandbox.spy();
+      opt = {};
+      href = 'http://boom!/challenges/';
+
+      client = makeTestClient({apiKey: apiKey});
+
+      client.on('error', function (err) {
+        throw err;
+      });
+
+      client.on('ready', function () {
+        getResourceStub = sandbox.stub(client._dataStore, 'getResource', function (href, options, ctor, cb) {
+          cb();
+        });
+        // call without optional param
+        client.getChallenge(href, cbSpy);
+        // call with optional param
+        client.getChallenge(href, opt, cbSpy);
+
+        done();
+      });
+    });
+
+    after(function () {
+      sandbox.restore();
+    });
+
+    it('should get challenge', function () {
+      /* jshint -W030 */
+      getResourceStub.should.have.been.calledTwice;
+      cbSpy.should.have.been.calledTwice;
+      /* jshint +W030 */
+
+      // call without optional param
+      getResourceStub.should.have.been
+        .calledWith(href, null, Challenge, cbSpy);
+      // call with optional param
+      getResourceStub.should.have.been
+        .calledWith(href, opt, Challenge, cbSpy);
+    });
+  });
+
+
+  describe('call to get factor', function () {
+    var sandbox, client, getResourceStub, cbSpy, href, opt;
+
+    before(function (done) {
+      sandbox = sinon.sandbox.create();
+      cbSpy = sandbox.spy();
+      opt = {};
+      href = 'http://boom!/factors/';
+
+      client = makeTestClient({apiKey: apiKey});
+
+      client.on('error', function (err) {
+        throw err;
+      });
+
+      client.on('ready', function () {
+        getResourceStub = sandbox.stub(client._dataStore, 'getResource', function (href, options, ctor, cb) {
+          cb();
+        });
+        // call without optional param
+        client.getFactor(href, cbSpy);
+        // call with optional param
+        client.getFactor(href, opt, cbSpy);
+
+        done();
+      });
+    });
+
+    after(function () {
+      sandbox.restore();
+    });
+
+    it('should get factor', function () {
+      /* jshint -W030 */
+      getResourceStub.should.have.been.calledTwice;
+      cbSpy.should.have.been.calledTwice;
+      /* jshint +W030 */
+
+      // call without optional param
+      getResourceStub.should.have.been
+        .calledWith(href, null, FactorCtor, cbSpy);
+      // call with optional param
+      getResourceStub.should.have.been
+        .calledWith(href, opt, FactorCtor, cbSpy);
     });
   });
 

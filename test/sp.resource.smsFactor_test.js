@@ -62,13 +62,13 @@ describe('SmsFactor', function() {
     });
   });
 
-  describe('SmsFactor#getPhone', function() {
+  describe('SmsFactor#getPhone()', function() {
     var callback;
 
     before(function() {
       callback = sinon.spy();
 
-      factor.getPhone({}, callback);
+      factor.getPhone(callback);
     });
 
     it('should call DataStore#getResource', function() {
@@ -91,6 +91,18 @@ describe('SmsFactor', function() {
 
     it('should pass the correct callback to DataStore#getResource', function() {
       getResourceStub.args[0][3].should.equal(callback);
+    });
+  });
+
+  describe('SmsFactor#getPhone(options)', function() {
+    var options = {};
+
+    before(function() {
+      factor.getPhone(options, sinon.spy());
+    });
+
+    it('should pass options to DataStore#createResource', function() {
+      assert.equal(getResourceStub.args[1][1], options);
     });
   });
 

@@ -7,6 +7,7 @@ var sinon = common.sinon;
 var InstanceResource = require('../lib/resource/InstanceResource');
 var FactorInstantiator = require('../lib/resource/FactorInstantiator');
 var FactorConstructor = FactorInstantiator.Constructor;
+var Factor = require('../lib/resource/Factor');
 var SmsFactor = require('../lib/resource/SmsFactor');
 var GoogleAuthenticatorFactor = require('../lib/resource/GoogleAuthenticatorFactor');
 
@@ -55,12 +56,8 @@ describe('FactorInstantiator#getConstructor', function() {
     assert.throws(getConstructor.bind(null, {}), Error, 'Factor instances must have a defined type');
   });
 
-  it('should throw an error if called with an invalid type parameter', function() {
-    assert.throws(
-      getConstructor.bind(null, {type: 'fake'}),
-      Error,
-      'Unknown factor type `fake`'
-    );
+  it('should return the base Factor type if called with an unknown type parameter', function() {
+    assert.equal(getConstructor({type: 'foo'}), Factor);
   });
 
   it('should not throw an error if called with a valid type (sms or google-authenticator)', function() {

@@ -50,11 +50,12 @@ describe('GoogleAuthenticatorFactor', function() {
 
   describe('GoogleAuthenticatorFactor#createChallenge', function() {
     var callback;
+    var options = {};
 
     before(function() {
       callback = sinon.spy();
 
-      factor.createChallenge({}, {}, callback);
+      factor.createChallenge(options, callback);
     });
 
     it('should call DataStore#createResource', function() {
@@ -67,11 +68,11 @@ describe('GoogleAuthenticatorFactor', function() {
       createResourceStub.args[0][0].should.equal(factorData.challenges.href);
     });
 
-    it('should pass no options to DataStore#createResource', function() {
-      assert.isNull(createResourceStub.args[0][1]);
+    it('should pass options to DataStore#createResource', function() {
+      assert.equal(createResourceStub.args[0][1], options);
     });
 
-    it('should pass the correct data to DataStore#createResource', function() {
+    it('should not pass a request body to DataStore#createResource', function() {
       assert.isNull(createResourceStub.args[0][2]);
     });
 

@@ -117,7 +117,7 @@ describe('Challenge', function() {
       getResourceStub.args[1][0].should.equal(challengeData.factor.href);
     });
 
-    it('should pass the correct data to DataStore#getResource', function() {
+    it('should pass the query options to DataStore#getResource', function() {
       getResourceStub.args[1][1].should.equal(options);
     });
 
@@ -130,7 +130,7 @@ describe('Challenge', function() {
     });
   });
 
-  describe('Challenge#verifyCode', function() {
+  describe('Challenge#verifyCode(code,callback)', function() {
     var code;
     var callback;
 
@@ -151,16 +151,32 @@ describe('Challenge', function() {
       createResourceStub.args[0][0].should.equal(challenge.href);
     });
 
+    it('should pass null query options to DataStore#createResource', function() {
+      assert.isNull(createResourceStub.args[0][1]);
+    });
+
     it('should pass the correct code to DataStore#createResource', function() {
-      createResourceStub.args[0][1].should.have.property('code', code);
+      createResourceStub.args[0][2].should.have.property('code', code);
     });
 
     it('should pass the correct constructor to DataStore#createResource', function() {
-      createResourceStub.args[0][2].should.eql(Challenge);
+      createResourceStub.args[0][3].should.eql(Challenge);
     });
 
     it('should pass the correct callback to DataStore#createResource', function() {
-      createResourceStub.args[0][3].should.equal(callback);
+      createResourceStub.args[0][4].should.equal(callback);
+    });
+  });
+
+  describe('Challenge#verifyCode(code,options,callback)', function() {
+    var options = {};
+
+    before(function() {
+      challenge.verifyCode('12345', options, sinon.spy());
+    });
+
+    it('should pass the query options to DataStore#createResource', function() {
+      assert.equal(createResourceStub.args[1][1], options);
     });
   });
 });
