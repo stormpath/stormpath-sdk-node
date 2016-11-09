@@ -7,6 +7,7 @@ var uuid = common.uuid;
 var assert = common.assert;
 var Group = require('../lib/resource/Group');
 var Account = require('../lib/resource/Account');
+var AccountLink = require('../lib/resource/AccountLink');
 var ApiKey = require('../lib/resource/ApiKey');
 var DataStore = require('../lib/ds/DataStore');
 var CustomData = require('../lib/resource/CustomData');
@@ -496,6 +497,129 @@ describe('Resources: ', function () {
       });
       it('should return ApiKey instances',function(){
         assert.instanceOf(result[1].items[0],ApiKey);
+      });
+    });
+
+    describe('get linked accounts', function() {
+      var sandbox;
+      var account;
+      var opts;
+      var getResourceStub;
+      var cbSpy;
+
+      before(function() {
+        sandbox = sinon.sandbox.create();
+        account = new Account({linkedAccounts: {href: 'boom!'}}, dataStore);
+        getResourceStub = sandbox.stub(dataStore, 'getResource',
+          function(href, options, ctor, cb) {
+            cb();
+          });
+
+        opts = {q: 'boom!'};
+
+        cbSpy = sandbox.spy();
+
+        account.getLinkedAccounts(cbSpy);
+        account.getLinkedAccounts(opts, cbSpy);
+      });
+
+      after(function() {
+        sandbox.restore();
+      });
+
+      it('should try to get the resources', function() {
+        /* jshint -W030 */
+        getResourceStub.should.have.been.calledTwice;
+        cbSpy.should.have.been.calledTwice;
+        /* jshint +W030 */
+
+        getResourceStub.should.have.been.calledWith('boom!', null, Account, cbSpy);
+        getResourceStub.should.have.been.calledWith('boom!', opts, Account, cbSpy);
+      });
+    });
+
+    describe('get account links', function() {
+      var sandbox;
+      var account;
+      var opts;
+      var getResourceStub;
+      var cbSpy;
+
+      before(function() {
+        sandbox = sinon.sandbox.create();
+        account = new Account({accountLinks: {href: 'boom!'}}, dataStore);
+        getResourceStub = sandbox.stub(dataStore, 'getResource',
+          function(href, options, ctor, cb) {
+            cb();
+          });
+
+        opts = {q: 'boom!'};
+
+        cbSpy = sandbox.spy();
+
+        account.getAccountLinks(cbSpy);
+        account.getAccountLinks(opts, cbSpy);
+      });
+
+      after(function() {
+        sandbox.restore();
+      });
+
+      it('should try to get the resources', function() {
+        /* jshint -W030 */
+        getResourceStub.should.have.been.calledTwice;
+        cbSpy.should.have.been.calledTwice;
+        /* jshint +W030 */
+
+        getResourceStub.should.have.been.calledWith('boom!', null, AccountLink, cbSpy);
+        getResourceStub.should.have.been.calledWith('boom!', opts, AccountLink, cbSpy);
+      });
+    });
+
+    describe('create account links', function() {
+      var sandbox;
+      var account;
+      var otherAccount;
+      var createResourceStub;
+      var cbSpy;
+
+      before(function() {
+        sandbox = sinon.sandbox.create();
+        account = new Account({href: 'boom!'}, dataStore);
+        otherAccount = new Account({href: 'baam!'});
+
+        createResourceStub = sandbox.stub(dataStore, 'createResource',
+          function(href, options, data, ctor, cb) {
+            cb();
+          });
+
+        cbSpy = sandbox.spy();
+
+        account.createAccountLink(otherAccount, cbSpy);
+      });
+
+      after(function() {
+        sandbox.restore();
+      });
+
+      it('should try to create the resource', function() {
+        /* jshint -W030 */
+        createResourceStub.should.have.been.calledOnce;
+        cbSpy.should.have.been.calledOnce;
+        /* jshint +W030 */
+
+        assert.equal(createResourceStub.args[0][0], '/accountLinks');
+        assert.equal(createResourceStub.args[0][1], null);
+        assert.deepEqual(createResourceStub.args[0][2], {
+          leftAccount: {
+            href: 'boom!'
+          },
+          rightAccount: {
+            href: 'baam!'
+          }
+        });
+        assert.equal(createResourceStub.args[0][3], AccountLink);
+        assert.equal(createResourceStub.args[0][4], cbSpy);
       });
     });
 
