@@ -8,6 +8,7 @@ var assert = common.assert;
 var AccessToken = require('../../lib/resource/AccessToken');
 var RefreshToken = require('../../lib/resource/RefreshToken');
 var Account = require('../../lib/resource/Account');
+var AccountLink = require('../../lib/resource/AccountLink');
 var CustomData = require('../../lib/resource/CustomData');
 
 var AccountAccessTokenFixture = require('../fixtures/account-token');
@@ -194,6 +195,75 @@ describe('Account', function() {
 
         it('should have the new property persisted', function() {
           assert.equal(customDataAfterGet[propertyName], propertyValue);
+        });
+      });
+    });
+  });
+
+  describe('account linking', function() {
+    var secondaryFixture;
+
+    before(function(done) {
+      secondaryFixture = new AccountAccessTokenFixture();
+      secondaryFixture.before(function() {
+        assert.equal(secondaryFixture.creationResult[0], null); // did not error
+        assert(secondaryFixture.account instanceof Account);
+        done();
+      });
+
+    });
+
+    after(function(done) {
+      secondaryFixture.after(done);
+    });
+
+    // Note: order of these tests matters, we need to create a link first!
+    describe('createAccountLink()', function() {
+      it('should create a link with a given second account', function(done) {
+        fixture.account.createAccountLink(secondaryFixture.account, function(err, link) {
+          if (err) {
+            return done(err);
+          }
+
+          assert(link instanceof AccountLink);
+          done();
+        });
+      });
+
+      it('should return an error if that link already exists', function(done) {
+        fixture.account.createAccountLink(secondaryFixture.account, function(err, link) {
+          assert.ok(err);
+          assert.notOk(link);
+          assert.equal(err.status, 409);
+          assert.equal(err.code, 7500);
+          assert.equal(err.userMessage, 'These accounts are already linked.');
+          done();
+        });
+      });
+    });
+
+    describe('getAccountLinks', function() {
+      it('should return a collection of account links', function(done) {
+        fixture.account.getAccountLinks(function(err, collection) {
+          if (err) {
+            return done(err);
+          }
+
+          assert(collection.items[0] instanceof AccountLink);
+          done();
+        });
+      });
+    });
+
+    describe('getLinkedAccounts()', function() {
+      it('should return a collection of linked accounts', function(done) {
+        fixture.account.getLinkedAccounts(function(err, collection) {
+          if (err) {
+            return done(err);
+          }
+
+          assert(collection.items[0] instanceof Account);
+          done();
         });
       });
     });
