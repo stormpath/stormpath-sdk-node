@@ -6,16 +6,18 @@ var sinon = common.sinon;
 var expect = common.expect;
 
 var Account = require('../lib/resource/Account');
+var Application = require('../lib/resource/Application');
 var Challenge = require('../lib/resource/Challenge');
 var Client = require('../lib/Client');
+var DataStore = require('../lib/ds/DataStore');
+var Directory = require('../lib/resource/Directory');
 var FactorCtor = require('../lib/resource/FactorInstantiator').Constructor;
 var Group = require('../lib/resource/Group');
 var GroupMembership = require('../lib/resource/GroupMembership');
-var Directory = require('../lib/resource/Directory');
-var Tenant = require('../lib/resource/Tenant');
-var Application = require('../lib/resource/Application');
+var Phone = require('../lib/resource/Phone');
 var SmtpServer = require('../lib/resource/SmtpServer');
-var DataStore = require('../lib/ds/DataStore');
+var Tenant = require('../lib/resource/Tenant');
+
 
 function makeTestClient (options) {
   return new Client(options);
@@ -889,6 +891,53 @@ describe('Client', function () {
       // call with optional param
       getResourceStub.should.have.been
         .calledWith(href, opt, FactorCtor, cbSpy);
+    });
+  });
+
+  describe('call to get phone', function () {
+    var sandbox, client, getResourceStub, cbSpy, href, opt;
+
+    before(function (done) {
+      sandbox = sinon.sandbox.create();
+      cbSpy = sandbox.spy();
+      opt = {};
+      href = 'http://boom!/phones/';
+
+      client = makeTestClient({apiKey: apiKey});
+
+      client.on('error', function (err) {
+        throw err;
+      });
+
+      client.on('ready', function () {
+        getResourceStub = sandbox.stub(client._dataStore, 'getResource', function (href, options, ctor, cb) {
+          cb();
+        });
+        // call without optional param
+        client.getPhone(href, cbSpy);
+        // call with optional param
+        client.getPhone(href, opt, cbSpy);
+
+        done();
+      });
+    });
+
+    after(function () {
+      sandbox.restore();
+    });
+
+    it('should get phone', function () {
+      /* jshint -W030 */
+      getResourceStub.should.have.been.calledTwice;
+      cbSpy.should.have.been.calledTwice;
+      /* jshint +W030 */
+
+      // call without optional param
+      getResourceStub.should.have.been
+        .calledWith(href, null, Phone, cbSpy);
+      // call with optional param
+      getResourceStub.should.have.been
+        .calledWith(href, opt, Phone, cbSpy);
     });
   });
 
