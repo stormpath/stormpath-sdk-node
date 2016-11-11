@@ -4,6 +4,7 @@ var sinon = require('sinon');
 var assert = require('chai').assert;
 
 var Organization = require('../lib/resource/Organization');
+var AccountLinkingPolicy = require('../lib/resource/AccountLinkingPolicy');
 
 var sandbox = sinon.sandbox.create();
 
@@ -67,6 +68,9 @@ describe('resource/Organization.js', function () {
         },
         accountStoreMappings: {
           href: 'c1913f98-e4f7-424c-a259-f48c8359e327'
+        },
+        accountLinkingPolicy: {
+          href: '78675b49-93aa-48d2-aa03-18ebd9dba54f'
         }
       };
 
@@ -753,6 +757,33 @@ describe('resource/Organization.js', function () {
 
       it('should return the value from dataStore.getResource', function () {
         returnValue.should.equal(getResourceReturn);
+      });
+    });
+
+    describe('.getAccountLinkingPolicy(opts, callback)', function() {
+      var opts;
+
+      beforeEach(function() {
+        opts = {
+          expand: 'tenant'
+        };
+
+        organization.getAccountLinkingPolicy(callbackSpy);
+        organization.getAccountLinkingPolicy(opts, callbackSpy);
+        console.log('Called these two jokers');
+      });
+
+      it('should pass the callback, and the options if present, to dataStore.getResource', function() {
+        /* jshint -W030 */
+        getResourceStub.should.have.been.calledTwice;
+        callbackSpy.should.have.been.calledTwice;
+        /* jshint +W030 */
+
+        getResourceStub.should.have.been
+          .calledWith(organization.accountLinkingPolicy.href, null, AccountLinkingPolicy, callbackSpy);
+
+        getResourceStub.should.have.been
+          .calledWith(organization.accountLinkingPolicy.href, opts, AccountLinkingPolicy, callbackSpy);
       });
     });
 
