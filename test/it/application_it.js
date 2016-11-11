@@ -3,6 +3,8 @@ var common = require('../common');
 var helpers = require('./helpers');
 var assert = common.assert;
 var async = require('async');
+var njwt = require('njwt');
+var url = require('url');
 
 var CustomData = require('../../lib/resource/CustomData');
 var Application = require('../../lib/resource/Application');
@@ -11,11 +13,12 @@ var OAuthPolicy = require('../../lib/resource/OAuthPolicy');
 
 describe('Application',function(){
 
-  var client, app, creationResult, directory, account, mapping;
+  var client, app, creationResult, directory, account, mapping, signingKey;
 
   before(function(done) {
     helpers.getClient(function(_client) {
       client = _client;
+      signingKey = client._dataStore.requestExecutor.options.client.apiKey.secret;
 
       client.createApplication({ name: helpers.uniqId()}, function(err, _app) {
         creationResult = [err, _app];
@@ -362,5 +365,31 @@ describe('Application',function(){
     // });
   });
 
+  describe('createIdSiteUrl', function () {
+
+    it('Should add require_mfa option to the JWT', function () {
+      var options = {
+        callbackUri: '/stormpathCallback',
+        require_mfa: ['sms']
+      };
+
+      var redirectUrl = app.createIdSiteUrl(options);
+      var jwt = njwt.verify(url.parse(redirectUrl,true).query.jwtRequest, signingKey);
+
+      assert.deepEqual(jwt.body.require_mfa, options.require_mfa);
+    });
+
+    it('Should add challenge option to the JWT', function () {
+      var options = {
+        callbackUri: '/stormpathCallback',
+        challenge: ['https://api.stormpath.com/v1/factors/:factorId']
+      };
+      var redirectUrl = app.createIdSiteUrl(options);
+
+      var jwt = njwt.verify(url.parse(redirectUrl,true).query.jwtRequest, signingKey);
+
+      assert.deepEqual(jwt.body.challenge, options.challenge);
+    });
+  });
 
 });

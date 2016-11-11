@@ -14,6 +14,10 @@ var instantiate = require('../lib/resource/ResourceFactory').instantiate;
 var ProviderData = require('../lib/resource/ProviderData');
 var CollectionResource = require('../lib/resource/CollectionResource');
 var GroupMembership = require('../lib/resource/GroupMembership');
+var FactorInstantiator = require('../lib/resource/FactorInstantiator').Constructor;
+var SmsFactor = require('../lib/resource/SmsFactor');
+var Phone = require('../lib/resource/Phone');
+
 
 describe('Resources: ', function () {
   "use strict";
@@ -494,7 +498,155 @@ describe('Resources: ', function () {
         assert.instanceOf(result[1].items[0],ApiKey);
       });
     });
-  });
 
+    describe('simple resource get/create tests', function() {
+      var sandbox;
+      var ds;
+      var getResourceStub;
+      var createResourceStub;
+      var account;
+      var accountData;
+
+      before(function() {
+        sandbox = sinon.sandbox.create();
+        ds = new DataStore({
+          client: {
+            apiKey: {
+              id: 1,
+              secret: 2
+            }
+          }
+        });
+        getResourceStub = sinon.stub(ds, 'getResource');
+        createResourceStub = sinon.stub(ds, 'createResource');
+
+        accountData = {
+          factors: {
+            href: 'factorshref'
+          },
+          phones: {
+            href: 'phoneshref'
+          }
+        };
+
+        account = new Account(accountData, ds);
+      });
+
+      after(function() {
+        sandbox.restore();
+      });
+
+      describe('createFactor', function() {
+        var factorData;
+        var options;
+        var callback;
+
+        before(function() {
+          factorData = {
+            type: 'sms'
+          };
+
+          options = {challenge: true};
+          callback = sinon.spy();
+
+          account.createFactor(factorData, options, callback);
+        });
+
+        it('should have called DataStore#createResource', function() {
+          /*jshint -W030 */
+          createResourceStub.should.have.been.calledOnce;
+          /*jshint +W030 */
+        });
+
+        it('should pass the correct href to DataStore#createResource', function() {
+          createResourceStub.args[0][0].should.equal(accountData.factors.href);
+        });
+
+        it('should pass the correct query data to DataStore#createResource', function() {
+          createResourceStub.args[0][1].should.equal(options);
+        });
+
+        it('should pass the correct data to DataStore#createResource', function() {
+          createResourceStub.args[0][2].should.equal(factorData);
+        });
+
+        it('should pass the correct constructor to DataStore#createResource', function() {
+          createResourceStub.args[0][3].should.equal(SmsFactor);
+        });
+
+        it('should pass the correct callback to DataStore#createResource', function() {
+          createResourceStub.args[0][4].should.equal(callback);
+        });
+      });
+
+      describe('getFactors', function() {
+        var options;
+        var callback;
+
+        before(function() {
+          options = {query: 'boom!'};
+          callback = sinon.spy();
+
+          account.getFactors(options, callback);
+        });
+
+        it('should have called DataStore#getResource', function() {
+          /*jshint -W030 */
+          getResourceStub.should.have.been.calledOnce;
+          /*jshint +W030 */
+        });
+
+        it('should pass the correct href to DataStore#getResource', function() {
+          getResourceStub.args[0][0].should.equal(accountData.factors.href);
+        });
+
+        it('should pass the correct options to DataStore#getResource', function() {
+          getResourceStub.args[0][1].should.equal(options);
+        });
+
+        it('should pass the correct constructor to DataStore#getResource', function() {
+          getResourceStub.args[0][2].should.equal(FactorInstantiator);
+        });
+
+        it('should pass the correct callback to DataStore#getResource', function() {
+          getResourceStub.args[0][3].should.equal(callback);
+        });
+      });
+
+      describe('getPhones', function() {
+        var options;
+        var callback;
+
+        before(function() {
+          options = {query: 'boom!'};
+          callback = sinon.spy();
+
+          account.getPhones(options, callback);
+        });
+
+        it('should have called DataStore#getResource', function() {
+          /*jshint -W030 */
+          getResourceStub.should.have.been.calledTwice;
+          /*jshint +W030 */
+        });
+
+        it('should pass the correct href to DataStore#getResource', function() {
+          getResourceStub.args[1][0].should.equal(accountData.phones.href);
+        });
+
+        it('should pass the correct options to DataStore#getResource', function() {
+          getResourceStub.args[1][1].should.equal(options);
+        });
+
+        it('should pass the correct constructor to DataStore#getResource', function() {
+          getResourceStub.args[1][2].should.equal(Phone);
+        });
+
+        it('should pass the correct callback to DataStore#getResource', function() {
+          getResourceStub.args[1][3].should.equal(callback);
+        });
+      });
+    });
+  });
 
 });
