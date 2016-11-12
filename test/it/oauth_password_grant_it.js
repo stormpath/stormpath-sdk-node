@@ -142,7 +142,7 @@ describe('OAuthPasswordGrantRequestAuthenticator',function(){
           scopeFactoryFunction.should.have.been.calledThrice;
           /* jshint +W030 */
 
-          var originalToken = scopeFactoryFunction.args[2][0];
+          var originalToken = njwt.verify(scopeFactoryFunction.args[2][0].access_token, auth.signingKey);
           var token = authResponse.accessToken;
 
           assert.deepEqual(originalToken.header, token.header);

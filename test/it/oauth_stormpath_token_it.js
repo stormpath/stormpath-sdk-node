@@ -252,7 +252,7 @@ describe('OAuthStormpathTokenAuthenticator', function () {
           spy.should.have.been.calledThrice;
           /* jshint +W030 */
 
-          var originalToken = spy.args[2][0];
+          var originalToken = njwt.verify(spy.args[2][0].access_token, auth.signingKey);
           var token = authResponse.accessToken;
 
           assert.deepEqual(originalToken.header, token.header);
