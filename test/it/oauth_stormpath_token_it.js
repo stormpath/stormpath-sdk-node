@@ -10,6 +10,7 @@ var sinon = common.sinon;
 var njwt = require('njwt');
 
 var JwtAuthenticator = require('../../lib/jwt/jwt-authenticator');
+var JwtAuthenticationResult = require('../../lib/jwt/jwt-authentication-result');
 
 describe('OAuthStormpathTokenAuthenticator', function () {
   var account;
@@ -182,6 +183,7 @@ describe('OAuthStormpathTokenAuthenticator', function () {
         auth = new stormpath.OAuthStormpathTokenAuthenticator(application);
         spy = sinon.spy();
         scopeFactoryFunction = function scopeFactoryFunction(authenticationResult, requestedScope, callback) {
+          assert.instanceOf(authenticationResult, JwtAuthenticationResult);
           spy(authenticationResult, requestedScope, callback);
           callback(null, scope);
         };

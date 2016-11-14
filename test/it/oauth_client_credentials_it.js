@@ -10,6 +10,7 @@ var stormpath = require('../../');
 var Account = require('../../lib/resource/Account');
 var AccessToken = require('../../lib/resource/AccessToken');
 var JwtAuthenticator = require('../../lib/jwt/jwt-authenticator');
+var JwtAuthenticationResult = require('../../lib/jwt/jwt-authentication-result');
 
 describe('OAuthClientCredentialsAuthenticator', function() {
   var newAccount;
@@ -190,6 +191,7 @@ describe('OAuthClientCredentialsAuthenticator', function() {
 
       before(function() {
         scopeFactoryFunction = sinon.spy(function(authenticationResult, requestedScope, callback) {
+          assert.instanceOf(authenticationResult, JwtAuthenticationResult);
           callback(null, scope);
         });
 

@@ -9,6 +9,7 @@ var njwt = require('njwt');
 var stormpath = require('../../');
 
 var JwtAuthenticator = require('../../lib/jwt/jwt-authenticator');
+var JwtAuthenticationResult = require('../../lib/jwt/jwt-authentication-result');
 
 describe('OAuthPasswordGrantRequestAuthenticator',function(){
 
@@ -74,6 +75,7 @@ describe('OAuthPasswordGrantRequestAuthenticator',function(){
 
       before(function() {
         scopeFactoryFunction = sinon.spy(function(authenticationResult, requestedScope, callback) {
+          assert.instanceOf(authenticationResult, JwtAuthenticationResult);
           callback(null, scope);
         });
 
