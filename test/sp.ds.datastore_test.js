@@ -346,7 +346,7 @@ describe('ds:', function () {
 
         it('should throw error', function () {
           callToCreateResourceWithInvalidResouceCtor
-            .should.throw(/constructor function.*InstanceResource/i);
+            .should.throw(/constructor function.*Resource/i);
         });
       });
 
