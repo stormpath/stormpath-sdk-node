@@ -44,13 +44,22 @@ describe('Tenant', function() {
         client.createDirectory(
           {name: helpers.uniqId()},
           function(err, _directory) {
+            if (err) {
+              return done(err);
+            }
+
             directory = _directory;
             directory.createAccount(
               fakeAccount,
               function(err){
-                if(err){ throw err; }
+                if (err) {
+                  return done(err);
+                }
+
                 tenant.getAccounts(function(err,collection){
-                  if(err){ throw err; }
+                  if (err) {
+                    return done(err);
+                  }
                   collection.each(function(account,next){
                     accounts.push(account);
                     next();
