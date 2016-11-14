@@ -191,23 +191,33 @@ describe('OAuthClientCredentialsAuthenticator', function() {
         assert.property(authResult, 'accessTokenResponse');
       });
 
-      it('should fetch the correct Account via #getAccount', function() {
+      it('should fetch the correct Account via #getAccount', function(done) {
         var getAccountCallback = function(err, accountResponse) {
+          if (err) {
+            return done(err);
+          }
+
           assert.notOk(err);
           assert.ok(accountResponse);
           assert.instanceOf(accountResponse, Account);
           assert.deepEqual(accountResponse, account);
+          done();
         };
 
         assert.property(authResult, 'getAccount');
         authResult.getAccount(getAccountCallback);
       });
 
-      it('should fetch an AccessToken via #getAccessToken', function() {
+      it('should fetch an AccessToken via #getAccessToken', function(done) {
         var getAccessTokenCallback = function(err, accessToken) {
+          if (err) {
+            return done(err);
+          }
+
           assert.notOk(err);
           assert.ok(accessToken);
           assert.instanceOf(accessToken, AccessToken);
+          done();
         };
 
         assert.property(authResult, 'getAccessToken');
