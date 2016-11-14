@@ -75,7 +75,7 @@ describe('OAuthAuthenticator',function(){
               }else{
                 application2 = app2;
                 /*
-                  We are setting the token ttl to 5 seconds, beacuse
+                  We are setting the token ttl to 4 seconds, because
                   we want to test expired tokens in this test (but do
                   not want tokens to expire before we've parsed them,
                   so not to set it to too little).
@@ -84,7 +84,7 @@ describe('OAuthAuthenticator',function(){
                   if(err){
                     done(err);
                   }else{
-                    policy.accessTokenTtl = 'PT5S';
+                    policy.accessTokenTtl = 'PT4S';
                     policy.save(function(err){
                       if(err){
                         done(err);

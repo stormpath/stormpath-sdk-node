@@ -144,7 +144,7 @@ describe('Tenant', function() {
 
       before(function(done){
         tenant.getCustomData(function(err,_customData){
-          if(err){ return done(err); }
+        if(err){ return done(err); }
           customData = _customData;
           done();
         });

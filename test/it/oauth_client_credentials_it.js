@@ -176,7 +176,7 @@ describe('OAuthClientCredentialsAuthenticator', function() {
     describe('returned OAuthClientCredentialsAuthenticationResult', function() {
       var authResult;
 
-      before(function(done) {
+      beforeEach(function(done) {
         auth.authenticate({apiKey: apiKey}, function(err, result) {
           if (err) {
             return done(err);
