@@ -44,13 +44,22 @@ describe('Tenant', function() {
         client.createDirectory(
           {name: helpers.uniqId()},
           function(err, _directory) {
+            if (err) {
+              return done(err);
+            }
+
             directory = _directory;
             directory.createAccount(
               fakeAccount,
               function(err){
-                if(err){ throw err; }
+                if (err) {
+                  return done(err);
+                }
+
                 tenant.getAccounts(function(err,collection){
-                  if(err){ throw err; }
+                  if (err) {
+                    return done(err);
+                  }
                   collection.each(function(account,next){
                     accounts.push(account);
                     next();
@@ -91,13 +100,17 @@ describe('Tenant', function() {
         client.createDirectory(
           {name: helpers.uniqId()},
           function(err, _directory) {
+            if (err) {
+              return done(err);
+            }
+
             directory = _directory;
             directory.createGroup(
               {name: groupName},
               function(err){
-                if(err){ throw err; }
+                if(err){ return done(err); }
                 tenant.getGroups(function(err,collection){
-                  if(err){ throw err; }
+                  if(err){ return done(err); }
                   collection.each(function(group,next){
                     groups.push(group);
                     next();
@@ -131,7 +144,7 @@ describe('Tenant', function() {
 
       before(function(done){
         tenant.getCustomData(function(err,_customData){
-          if(err){ throw err; }
+        if(err){ return done(err); }
           customData = _customData;
           done();
         });
