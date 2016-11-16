@@ -207,7 +207,38 @@ describe('JwtAuthenticator',function(){
     });
   });
 
+  describe('JwtAuthenticationResult', function() {
+    var authenticator;
+    var authResult;
 
+    before(function(done) {
+      authenticator = new stormpath.JwtAuthenticator(application);
+      authenticator.authenticate(passwordGrantResponse.accessToken.toString(), function(err, result) {
+        if (err) {
+          return done(err);
+        }
 
+        authResult = result;
+        done();
+      });
+    });
+
+    describe('#getAccount()', function() {
+      it('should support expansion options for the Account query', function(done) {
+        authResult.getAccount({expand: 'groups'}, function(err, account) {
+          if (err) {
+            return done(err);
+          }
+
+          assert.instanceOf(account, require('../../lib/resource/Account'));
+          assert.isDefined(account.groups);
+          assert.isDefined(account.groups.size);
+          assert.isDefined(account.groups.limit);
+          assert.isDefined(account.groups.offset);
+          assert.isDefined(account.groups.items);
+          done();
+        });
+      });
+    });
+  });
 });
-
