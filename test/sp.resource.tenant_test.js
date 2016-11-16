@@ -4,6 +4,7 @@ var sinon = common.sinon;
 var uuid = require('node-uuid');
 
 var Account = require('../lib/resource/Account');
+var AccountLink = require('../lib/resource/AccountLink');
 var Tenant = require('../lib/resource/Tenant');
 var Application = require('../lib/resource/Application');
 var Directory = require('../lib/resource/Directory');
@@ -383,6 +384,66 @@ describe('Resources: ', function () {
 
         getResourceStub.should.have.been.calledWith('boom!', null, IdSiteModel, cbSpy);
         getResourceStub.should.have.been.calledWith('boom!', opts, IdSiteModel, cbSpy);
+      });
+    });
+
+    describe('create account link', function () {
+      var sandbox;
+      var tenant;
+      var createResourceStub;
+      var cbSpy;
+      var opts;
+      var createAccLinkPath;
+      var leftAccount;
+      var rightAccount;
+
+      before(function () {
+        createAccLinkPath = '/accountLinks';
+        sandbox = sinon.sandbox.create();
+        opts = {};
+        tenant = new Tenant({}, dataStore);
+        createResourceStub = sandbox.stub(dataStore, 'createResource',
+          function (href, options, ctor, app, cb) {
+            cb();
+          });
+        cbSpy = sandbox.spy();
+
+        leftAccount = {
+          href: 'leftBoom!'
+        };
+
+        rightAccount = {
+          href: 'rightBoom!'
+        };
+
+        tenant.createAccountLink(leftAccount, rightAccount, cbSpy);
+        tenant.createAccountLink(leftAccount, rightAccount, opts, cbSpy);
+      });
+      after(function () {
+        sandbox.restore();
+      });
+
+      it('should create application', function () {
+        /* jshint -W030 */
+        createResourceStub.should.have.been.calledTwice;
+        cbSpy.should.have.been.calledTwice;
+        /* jshint +W030 */
+
+        var expectedLink = {
+          leftAccount: {
+            href: 'leftBoom!'
+          },
+          rightAccount: {
+            href: 'rightBoom!'
+          }
+        };
+
+        // call without optional param
+        createResourceStub.should.have.been
+          .calledWith(createAccLinkPath, null, expectedLink, AccountLink, cbSpy);
+        // call with optional param
+        createResourceStub.should.have.been
+          .calledWith(createAccLinkPath, opts, expectedLink, AccountLink, cbSpy);
       });
     });
   });

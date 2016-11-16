@@ -18,6 +18,7 @@ var AccountStoreMapping = require('../lib/resource/AccountStoreMapping');
 var ApiKey = require('../lib/resource/ApiKey');
 var DataStore = require('../lib/ds/DataStore');
 var PasswordResetToken = require('../lib/resource/PasswordResetToken');
+var AccountLinkingPolicy = require('../lib/resource/AccountLinkingPolicy');
 var nJwt = require('njwt');
 var nJwtProperties = require('njwt/properties');
 var uuid = require('node-uuid');
@@ -1256,6 +1257,55 @@ describe('Resources: ', function () {
         asm.accountStore.href.should.be.equal(storeObj.href);
         asm.application.href.should.be.equal(app.href);
         cbSpy.should.have.been.calledOnce;
+      });
+    });
+
+    describe('get account linking policy', function() {
+      var sandbox;
+      var application;
+      var getResourceStub;
+      var cbSpy;
+      var app;
+      var opts;
+
+      before(function() {
+        sandbox = sinon.sandbox.create();
+        app = {
+          accountLinkingPolicy: {
+            href: 'boom!'
+          }
+        };
+        opts = {
+          expand: 'boom!'
+        };
+        application = new Application(app, dataStore);
+        getResourceStub = sandbox.stub(dataStore, 'getResource', function(href, options, ctor, cb) {
+          cb();
+        });
+        cbSpy = sandbox.spy();
+
+        // call without optional param
+        application.getAccountLinkingPolicy(cbSpy);
+        // call with optional param
+        application.getAccountLinkingPolicy(opts, cbSpy);
+      });
+
+      after(function() {
+        sandbox.restore();
+      });
+
+      it('should should get the account linking policy', function() {
+        /* jshint -W030 */
+        getResourceStub.should.have.been.calledTwice;
+        cbSpy.should.have.been.calledTwice;
+        /* jshint +W030 */
+
+        // call without optional param
+        getResourceStub.should.have.been
+          .calledWith(app.accountLinkingPolicy.href, null, AccountLinkingPolicy, cbSpy);
+        // call with optional param
+        getResourceStub.should.have.been
+          .calledWith(app.accountLinkingPolicy.href, opts, AccountLinkingPolicy, cbSpy);
       });
     });
 
