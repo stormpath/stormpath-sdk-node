@@ -40,6 +40,12 @@ describe('OAuthStormpathTokenAuthenticator', function () {
     helpers.cleanupApplicationAndStores(application, done);
   });
 
+  describe('inheritance', function() {
+    it('should inherit from ScopeFactoryAuthenticator', function() {
+      assert.equal(stormpath.OAuthStormpathTokenAuthenticator.super_.name, 'ScopeFactoryAuthenticator');
+    });
+  });
+
   describe('when calling OAuthStormpathTokenAuthenticator(application)', function () {
     var instance;
 
