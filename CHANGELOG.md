@@ -1,5 +1,37 @@
 # stormpath-sdk-node Change Log
 
+### 0.19.0
+
+**Released November XX, 2016**
+
+New Features:
+
+* Add `stormpath_social` grant type support, see [Stormpath Social Grant Type](https://docs.stormpath.com/rest/product-guide/latest/auth_n.html?highlight=stormpath_social#social).
+* Add new `client_credentials` support, via [OAuthClientCredentialsAuthenticator]().  This new authenticator uses the Stormpath REST API for token management, see [Stormpath Client Credentials Grant type]();
+* Add SMTP server resource support (#555).
+
+Implemented the following getter methods:
+
+* [Directory.getAccountSchema()](https://docs.stormpath.com/nodejs/jsdoc/Directory.html#getAccountSchema__anchor)
+* [ApiKey.getAccount()](https://docs.stormpath.com/nodejs/jsdoc/ApiKey.html#getAccount__anchor)
+* [Organization.getAccount](https://docs.stormpath.com/nodejs/jsdoc/Organization.html#getAccount__anchor)
+* [Client.getIdSites()](https://docs.stormpath.com/nodejs/jsdoc/Client.html#getIdSites__anchor)
+* Client.getSmtpServers()
+* Client.createSmtpServer()
+
+Other improvements:
+* Added a cache region for Organization resources.
+* Fixed the link clicking issue on the JsDoc site: link text is now click-able.
+* Improved error handling and HREF validation (#535).
+
+Fixed bugs:
+
+* StormpathAssertionAuthenticator throws on LOGOUT callbacks (#547).
+* Expanded resources are not constructed as their type (#103).
+
+* Updated production dependencies:
+ * `moment@2.14.1` -> `moment@2.15.2`
+
 ### 0.18.5
 
 **Released August 11, 2016**
