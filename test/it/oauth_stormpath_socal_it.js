@@ -59,6 +59,12 @@ describe('OAuthStormpathSocialAuthenticator', function () {
     helpers.cleanupApplicationAndStores(application, done);
   });
 
+  describe('inheritance', function() {
+    it('should inherit from ScopeFactoryAuthenticator', function() {
+      assert.equal(stormpath.OAuthStormpathSocialAuthenticator.super_.name, 'ScopeFactoryAuthenticator');
+    });
+  });
+
   describe('when calling OAuthStormpathSocialAuthenticator(application)', function () {
     var instance;
 
