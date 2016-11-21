@@ -2,7 +2,7 @@
 
 ### 0.19.0
 
-**Released November 20, 2016**
+**Released November 21, 2016**
 
 New Features:
 
