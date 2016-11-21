@@ -6,23 +6,20 @@
 
 New Features:
 
-* Multi-Factor Authentication Support (MFA).  This library now implements all the necessary classes to easily interact with Stormpath's MFA features.  Please see [Using Multi-Factor Authentication](https://docs.stormpath.com/rest/product-guide/latest/auth_n.html#using-multi-factor-authentication), and these new classes:
+* Multi-Factor Authentication Support (MFA). This library now implements all the necessary classes to easily interact with Stormpath's MFA features. Please see [Using Multi-Factor Authentication](https://docs.stormpath.com/rest/product-guide/latest/auth_n.html#using-multi-factor-authentication), and these new classes:
   - [Challenge](https://docs.stormpath.com/nodejs/jsdoc/Challenge.html)
   - [GoogleAuthenticatorFactor](https://docs.stormpath.com/nodejs/jsdoc/GoogleAuthenticatorFactor.html)
   - [SmsFactor](https://docs.stormpath.com/nodejs/jsdoc/SmsFactor.html)
 
-* Account Linking support, allowing you to manually link accounts together, and modify the account linking policy of an Application or Organization.  See [Account Linking](https://docs.stormpath.com/rest/product-guide/latest/accnt_mgmt.html#account-linking), and these new methods:
+* Account Linking support, allowing you to manually link accounts together, and modify the account linking policy of an Application or Organization. See [Account Linking](https://docs.stormpath.com/rest/product-guide/latest/accnt_mgmt.html#account-linking), and these new methods:
   - [Account.createAccountLink()](https://docs.stormpath.com/nodejs/jsdoc/Account.html#createAccountLink__anchor)
   - [Application.getAccountLinkingPolicy()](https://docs.stormpath.com/nodejs/jsdoc/Application.html#getAccountLinkingPolicy__anchor)
   - [Organization.getAccountLinkingPolicy()](https://docs.stormpath.com/nodejs/jsdoc/Organization.html#getAccountLinkingPolicy__anchor)
   - [Tenant.createAccountLink()](https://docs.stormpath.com/nodejs/jsdoc/Tenant.html#createAccountLink__anchor)
 
-* Add support for the `client_credentials` workflow, via [OAuthClientCredentialsAuthenticator](https://docs.stormpath.com/nodejs/jsdoc/OAuthClientCredentialsAuthenticator.html).  This new authenticator uses the Stormpath REST API for token management, see [Stormpath Client Credentials Grant type](https://docs.stormpath.com/rest/product-guide/latest/auth_n.html#client-credentials).
-
-* Add scope factory support to all OAuth authenticator classes, you can use this feature to add custom scope to the OAuth tokens that Stormpath creates.  See [ScopeFactoryAuthenticator](https://docs.stormpath.com/nodejs/jsdoc/ScopeFactoryAuthenticator.html)
-
+* Add support for the `client_credentials` workflow, via [OAuthClientCredentialsAuthenticator](https://docs.stormpath.com/nodejs/jsdoc/OAuthClientCredentialsAuthenticator.html). This new authenticator uses the Stormpath REST API for token management, see [Stormpath Client Credentials Grant type](https://docs.stormpath.com/rest/product-guide/latest/auth_n.html#client-credentials).
+* Add scope factory support to all OAuth authenticator classes, you can use this feature to add custom scope to the OAuth tokens that Stormpath creates. See [ScopeFactoryAuthenticator](https://docs.stormpath.com/nodejs/jsdoc/ScopeFactoryAuthenticator.html)
 * Add `stormpath_social` grant type support, see [Stormpath Social Grant Type](https://docs.stormpath.com/rest/product-guide/latest/auth_n.html#social) and [OAuthStormpathTokenAuthenticator](https://docs.stormpath.com/nodejs/jsdoc/OAuthStormpathTokenAuthenticator.html).
-
 * Add SMTP server resource support, see [Customizing Your SMTP Server](https://docs.stormpath.com/rest/product-guide/latest/accnt_mgmt.html#customizing-your-smtp-server) and [SmtpServer](https://docs.stormpath.com/nodejs/jsdoc/SmtpServer.html)
 
 Implemented the following getter methods:
@@ -33,6 +30,7 @@ Implemented the following getter methods:
 * [Organization.getAccount](https://docs.stormpath.com/nodejs/jsdoc/Organization.html#getAccount__anchor)
 
 Other improvements:
+
 * Added a cache region for Organization resources.
 * Fixed the link clicking issue on the JsDoc site: link text is now click-able.
 * Improved error handling and HREF validation.
