@@ -78,7 +78,7 @@ describe('Authorization module', function () {
     var sandbox, guidStub;
 
     before(function () {
-      uuid = require('node-uuid');
+      uuid = require('uuid');
       auth = getAuthenticator({apiKey: apiKey, authenticationScheme:'SAUTHC1'});
 
       sandbox = sinon.sandbox.create();

@@ -21,7 +21,7 @@ var PasswordResetToken = require('../lib/resource/PasswordResetToken');
 var AccountLinkingPolicy = require('../lib/resource/AccountLinkingPolicy');
 var nJwt = require('njwt');
 var nJwtProperties = require('njwt/properties');
-var uuid = require('node-uuid');
+var uuid = require('uuid');
 var url = require('url');
 
 describe('Resources: ', function () {
