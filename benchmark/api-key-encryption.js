@@ -1,5 +1,5 @@
 var stormpath = require('../');
-var uuid = require('node-uuid');
+var uuid = require('uuid');
 var base64 = require('../lib/utils').base64;
 var Benchmark = require('benchmark');
 var async = require('async');

@@ -1,7 +1,7 @@
 var common = require('./common');
 var assert = common.assert;
 var sinon = common.sinon;
-var uuid = require('node-uuid');
+var uuid = require('uuid');
 
 var Account = require('../lib/resource/Account');
 var AccountLink = require('../lib/resource/AccountLink');
