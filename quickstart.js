@@ -13,7 +13,7 @@ var stormpath = require('stormpath');
 
 //helper function to prevent any data collisions in the tenant while running the quickstart:
 function unique(aString) {
-  return aString + '-' + require('node-uuid').v4().toString();
+  return aString + '-' + require('uuid').v4().toString();
 }
 
 //populated during the quickstart steps
