@@ -212,25 +212,12 @@ describe('OAuthAuthenticator',function(){
   });
 
   it('should reject expired tokens',function(done){
-    new stormpath.OAuthPasswordGrantRequestAuthenticator(application2)
-      .authenticate({
-        username: newAccount.username,
-        password: newAccount.password
-      },function(err,passwordGrantResponse){
-        if(err){
-          done(err);
-        }else{
-          setTimeout(function(){
-            new stormpath.OAuthAuthenticator(application2)
-              .authenticate({
-                headers: {
-                  authorization: 'Bearer ' + passwordGrantResponse.accessToken.toString()
-                }
-              },assertUnauthenticatedResponse(done));
-          },5000);
-        }
-      });
-
+    var authenticator = stormpath.OAuthAuthenticator(application);
+    authenticator.authenticate({
+      headers: {
+        Authorization: 'Bearer ' + expiredToken
+      }
+    }, assertUnauthenticatedResponse(done));
   });
 
   describe('with local authentication',function(){
