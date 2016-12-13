@@ -117,7 +117,7 @@ describe('WebConfig resource', function() {
     var getResourceStub;
     var sandbox;
     var dataStore;
-    var webConfig
+    var webConfig;
 
     before(function() {
       dataStore = new DataStore({client: {apiKey: {id: 1, secret: 2}}});
