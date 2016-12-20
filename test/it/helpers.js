@@ -185,13 +185,7 @@ function fakeDirectory(){
  * @param {Function} callback - A callback to run when done.
  */
 function getDefaultAccountStore(application,done){
-  application.getDefaultAccountStore(function(err,accountStoreMapping){
-    if(err){
-      done(err);
-    }else{
-      accountStoreMapping.getAccountStore(done);
-    }
-  });
+  application.getDefaultAccountStore(done);
 }
 
 /**

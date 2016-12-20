@@ -959,34 +959,35 @@ describe('Resources: ', function () {
     describe('get default account store', function () {
       function getDefaultAccountStore(data) {
         return function () {
-          var appObj, asmObj, app, asm;
+          var appObj, asmObj, app, store, storeObj;
           before(function (done) {
             // assert
-            asmObj = {href: '/account/store/mapping/href', name: 'asm name'};
+            asmObj = {href: '/account/store/mapping/href', accountStore: {href: '/account/store/directories/href'}, name: 'asm name'};
+            storeObj = {href: 'account/store/directories/href'};
             appObj = {defaultAccountStoreMapping: {href: asmObj.href}};
             app = new Application(appObj, dataStore);
 
-            nock(u.BASE_URL).get(u.v1(asmObj.href)).reply(200, asmObj);
+            nock(u.BASE_URL).get(u.v1(asmObj.href + '?expand=accountStore')).reply(200, asmObj);
+            nock(u.BASE_URL).get(u.v1(asmObj.accountStore.href)).reply(200, storeObj);
 
             var args = [];
             if (data) {
               args.push(data);
             }
-            args.push(function cb(err, mapping) {
-              asm = mapping;
+            args.push(function cb(err, accStore) {
+              store = accStore;
               done();
             });
 
             // act
             app.getDefaultAccountStore.apply(app, args);
           });
-          it('should get default account store mapping data', function () {
-            asm.href.should.be.equal(asm.href);
-            asm.name.should.be.equal(asm.name);
+          it('should get default account store data', function () {
+            store.href.should.be.equal(store.href);
           });
 
-          it('should be an instance of AccountStoreMapping', function () {
-            asm.should.be.an.instanceOf(AccountStoreMapping);
+          it('should be an instance of Directory', function () {
+            store.should.be.an.instanceOf(Directory);
           });
         };
       }
@@ -1064,21 +1065,23 @@ describe('Resources: ', function () {
     describe('get default group store', function () {
       function getDefaultGroupStore(data) {
         return function () {
-          var appObj, asmObj, app, asm;
+          var appObj, asmObj, app, store, storeObj;
           before(function (done) {
             // assert
-            asmObj = {href: '/account/store/mapping/href', name: 'asm name'};
+            asmObj = {href: '/account/store/mapping/href', name: 'asm name', accountStore: {href: '/account/store/directories/href'}};
+            storeObj = {href: '/account/store/directories/href'};
             appObj = {defaultGroupStoreMapping: {href: asmObj.href}};
             app = new Application(appObj, dataStore);
 
-            nock(u.BASE_URL).get(u.v1(asmObj.href)).reply(200, asmObj);
+            nock(u.BASE_URL).get(u.v1(asmObj.href + '?expand=accountStore')).reply(200, asmObj);
+            nock(u.BASE_URL).get(u.v1(asmObj.accountStore.href)).reply(200, storeObj);
 
             var args = [];
             if (data) {
               args.push(data);
             }
-            args.push(function cb(err, mapping) {
-              asm = mapping;
+            args.push(function cb(err, groupStore) {
+              store = groupStore;
               done();
             });
 
@@ -1086,12 +1089,11 @@ describe('Resources: ', function () {
             app.getDefaultGroupStore.apply(app, args);
           });
           it('should get default group store mapping data', function () {
-            asm.href.should.be.equal(asm.href);
-            asm.name.should.be.equal(asm.name);
+            store.href.should.be.equal(store.href);
           });
 
           it('should be an instance of AccountStoreMapping', function () {
-            asm.should.be.an.instanceOf(AccountStoreMapping);
+            store.should.be.an.instanceOf(Directory);
           });
         };
       }

@@ -18,6 +18,7 @@ describe('resource/Organization.js', function () {
     var dataStore;
     var createResourceStub;
     var getResourceStub;
+    var getResourceNestedStub;
     var createResourceReturn;
     var getResourceReturn;
     var appplication;
@@ -33,7 +34,10 @@ describe('resource/Organization.js', function () {
       };
 
       createResourceReturn = 'e70e3da7-122b-49b2-90ae-b54682caac58';
-      getResourceReturn = '7a5bf9e1-7253-4117-a408-d54cd1b54f4e';
+      getResourceReturn = {
+        href: '7a5bf9e1-7253-4117-a408-d54cd1b54f4e',
+        getResource: function() {}
+      };
 
       createResourceStub = sandbox.stub(dataStore, 'createResource', function (href, options, account, ctor, callback) {
         callback();
@@ -43,6 +47,12 @@ describe('resource/Organization.js', function () {
 
       getResourceStub = sandbox.stub(dataStore, 'getResource', function (href, options, ctor, callback) {
         callback();
+
+        return getResourceReturn;
+      });
+
+      getResourceNestedStub = sandbox.stub(getResourceReturn, 'getResource', function (href, options, ctor, cb) {
+        cb();
 
         return getResourceReturn;
       });
@@ -236,13 +246,6 @@ describe('resource/Organization.js', function () {
         organization.getDefaultAccountStoreMapping(options, callbackSpy);
 
         getResourceStub.should.have.been.calledOnce;
-        getResourceStub.args[0][1].should.equal(options);
-      });
-
-      it('should pass the callback to dataStore.getResource', function () {
-        organization.getDefaultAccountStoreMapping(options, callbackSpy);
-
-        getResourceStub.args[0][3].should.equal(callbackSpy);
       });
 
       it('should return the value from dataStore.getResource', function () {
@@ -274,12 +277,6 @@ describe('resource/Organization.js', function () {
     });
 
     describe('.getDefaultAccountStoreMapping(callback)', function () {
-      it('should pass the callback to dataStore.getResource', function () {
-        organization.getDefaultAccountStoreMapping(callbackSpy);
-
-        getResourceStub.args[0][3].should.equal(callbackSpy);
-      });
-
       it('should return the value from dataStore.getResource', function () {
         var returnValue = organization.getDefaultAccountStoreMapping(callbackSpy);
 
@@ -383,268 +380,6 @@ describe('resource/Organization.js', function () {
 
         it('should return the value from the callback', function () {
           returnValue.should.equal(callbackReturn);
-        });
-      });
-    });
-
-    describe('.getDefaultAccountStore(options, callback)', function () {
-      var returnValue;
-      var getDefaultAccountStoreMappingReturn;
-      var fakeAccountStoreMapping;
-      var fakeError;
-
-      beforeEach(function () {
-        getDefaultAccountStoreMappingReturn = 'ce6869a2-fa0c-44fc-a2d4-684f20274184';
-
-        fakeAccountStoreMapping = {
-          getAccountStore: sandbox.spy()
-        };
-
-        fakeError = null;
-
-        sandbox.stub(organization, 'getDefaultAccountStoreMapping', function (options, callback) {
-          callback(fakeError, fakeAccountStoreMapping);
-
-          return getDefaultAccountStoreMappingReturn;
-        });
-
-        returnValue = organization.getDefaultAccountStore(options, callbackSpy);
-      });
-
-      it('should pass the options to organizationAccountStoreMapping.getAccountStore()', function () {
-        var accountStoreSpy = fakeAccountStoreMapping.getAccountStore;
-
-        accountStoreSpy.should.have.been.calledOnce;
-        accountStoreSpy.args[0][0].should.equal(options);
-      });
-
-      it('should pass the callback to organizationAccountStoreMapping.getAccountStore()', function () {
-        var accountStoreSpy = fakeAccountStoreMapping.getAccountStore;
-
-        accountStoreSpy.should.have.been.calledOnce;
-        accountStoreSpy.args[0][1].should.equal(callbackSpy);
-      });
-
-      it('should return the value from getDefaultAccountStoreMapping()', function () {
-        returnValue.should.equal(getDefaultAccountStoreMappingReturn);
-      });
-
-      describe('when getDefaultAccountStoreMapping() returns an error', function () {
-        beforeEach(function () {
-          fakeError = '0bb3f89b-9f47-4b0a-9820-803e876932cd';
-
-          organization.getDefaultAccountStore(options, callbackSpy);
-        });
-
-        it('should invoke the callback with the error', function () {
-          callbackSpy.should.have.been.calledOnce;
-          callbackSpy.should.have.been.calledWithExactly(fakeError);
-        });
-      });
-
-      describe('when getDefaultAccountStoreMapping() returns null', function () {
-        beforeEach(function () {
-          fakeAccountStoreMapping = null;
-
-          organization.getDefaultAccountStore(options, callbackSpy);
-        });
-
-        it('should invoke the callback with null, null', function () {
-          callbackSpy.should.have.been.calledOnce;
-          callbackSpy.should.have.been.calledWithExactly(null, null);
-        });
-      });
-    });
-
-    describe('.getDefaultAccountStore(callback)', function () {
-      var returnValue;
-      var getDefaultAccountStoreMappingReturn;
-      var fakeAccountStoreMapping;
-      var fakeError;
-
-      beforeEach(function () {
-        getDefaultAccountStoreMappingReturn = '368f2329-e199-4020-b0e2-5fa00ffa2ad8';
-
-        fakeAccountStoreMapping = {
-          getAccountStore: sandbox.spy()
-        };
-
-        fakeError = null;
-
-        sandbox.stub(organization, 'getDefaultAccountStoreMapping', function (options, callback) {
-          callback(fakeError, fakeAccountStoreMapping);
-
-          return getDefaultAccountStoreMappingReturn;
-        });
-
-        returnValue = organization.getDefaultAccountStore(options, callbackSpy);
-      });
-
-      it('should pass the callback to organizationAccountStoreMapping.getAccountStore()', function () {
-        var accountStoreSpy = fakeAccountStoreMapping.getAccountStore;
-
-        accountStoreSpy.should.have.been.calledOnce;
-        accountStoreSpy.args[0][1].should.equal(callbackSpy);
-      });
-
-      it('should return the value from getDefaultAccountStoreMapping()', function () {
-        returnValue.should.equal(getDefaultAccountStoreMappingReturn);
-      });
-
-      describe('when getDefaultAccountStoreMapping() returns an error', function () {
-        beforeEach(function () {
-          fakeError = 'f7ae7b90-5604-448f-b6da-9432a2c37117';
-
-          organization.getDefaultAccountStore(options, callbackSpy);
-        });
-
-        it('should invoke the callback with the error', function () {
-          callbackSpy.should.have.been.calledOnce;
-          callbackSpy.should.have.been.calledWithExactly(fakeError);
-        });
-      });
-
-      describe('when getDefaultAccountStoreMapping() returns null', function () {
-        beforeEach(function () {
-          fakeAccountStoreMapping = null;
-
-          organization.getDefaultAccountStore(callbackSpy);
-        });
-
-        it('should invoke the callback with null, null', function () {
-          callbackSpy.should.have.been.calledOnce;
-          callbackSpy.should.have.been.calledWithExactly(null, null);
-        });
-      });
-    });
-
-    describe('.getDefaultGroupStore(options, callback)', function () {
-      var returnValue;
-      var getDefaultGroupStoreMappingReturn;
-      var fakeAccountStoreMapping;
-      var fakeError;
-
-      beforeEach(function () {
-        getDefaultGroupStoreMappingReturn = '605430a2-7680-45aa-af6c-217cab68438f';
-
-        fakeAccountStoreMapping = {
-          getAccountStore: sandbox.spy()
-        };
-
-        fakeError = null;
-
-        sandbox.stub(organization, 'getDefaultGroupStoreMapping', function (options, callback) {
-          callback(fakeError, fakeAccountStoreMapping);
-
-          return getDefaultGroupStoreMappingReturn;
-        });
-
-        returnValue = organization.getDefaultGroupStore(options, callbackSpy);
-      });
-
-      it('should pass the options to organizationAccountStoreMapping.getAccountStore()', function () {
-        var accountStoreSpy = fakeAccountStoreMapping.getAccountStore;
-
-        accountStoreSpy.should.have.been.calledOnce;
-        accountStoreSpy.args[0][0].should.equal(options);
-      });
-
-      it('should pass the callback to organizationAccountStoreMapping.getAccountStore()', function () {
-        var accountStoreSpy = fakeAccountStoreMapping.getAccountStore;
-
-        accountStoreSpy.should.have.been.calledOnce;
-        accountStoreSpy.args[0][1].should.equal(callbackSpy);
-      });
-
-      it('should return the value from getDefaultAccountStoreMapping()', function () {
-        returnValue.should.equal(getDefaultGroupStoreMappingReturn);
-      });
-
-      describe('when getDefaultGroupStoreMapping() returns an error', function () {
-        beforeEach(function () {
-          fakeError = 'd981c015-006f-4f9a-ad62-4d23ae60f36d';
-
-          organization.getDefaultGroupStore(options, callbackSpy);
-        });
-
-        it('should invoke the callback with the error', function () {
-          callbackSpy.should.have.been.calledOnce;
-          callbackSpy.should.have.been.calledWithExactly(fakeError);
-        });
-      });
-
-      describe('when getDefaultGroupStoreMapping() returns null', function () {
-        beforeEach(function () {
-          fakeAccountStoreMapping = null;
-
-          organization.getDefaultGroupStore(options, callbackSpy);
-        });
-
-        it('should invoke the callback with null, null', function () {
-          callbackSpy.should.have.been.calledOnce;
-          callbackSpy.should.have.been.calledWithExactly(null, null);
-        });
-      });
-    });
-
-    describe('.getDefaultGroupStore(callback)', function () {
-      var returnValue;
-      var getDefaultGroupStoreMappingReturn;
-      var fakeAccountStoreMapping;
-      var fakeError;
-
-      beforeEach(function () {
-        getDefaultGroupStoreMappingReturn = '88bdc0fe-8e85-4cd8-b3fe-a933c32a725f';
-
-        fakeAccountStoreMapping = {
-          getAccountStore: sandbox.spy()
-        };
-
-        fakeError = null;
-
-        sandbox.stub(organization, 'getDefaultGroupStoreMapping', function (options, callback) {
-          callback(fakeError, fakeAccountStoreMapping);
-
-          return getDefaultGroupStoreMappingReturn;
-        });
-
-        returnValue = organization.getDefaultGroupStore(callbackSpy);
-      });
-
-      it('should pass the callback to organizationAccountStoreMapping.getAccountStore()', function () {
-        var accountStoreSpy = fakeAccountStoreMapping.getAccountStore;
-
-        accountStoreSpy.should.have.been.calledOnce;
-        accountStoreSpy.args[0][1].should.equal(callbackSpy);
-      });
-
-      it('should return the value from getDefaultAccountStoreMapping()', function () {
-        returnValue.should.equal(getDefaultGroupStoreMappingReturn);
-      });
-
-      describe('when getDefaultGroupStoreMapping() returns an error', function () {
-        beforeEach(function () {
-          fakeError = 'f7796c82-97a7-46ff-8b89-39c08faa89e9';
-
-          organization.getDefaultGroupStore(callbackSpy);
-        });
-
-        it('should invoke the callback with the error', function () {
-          callbackSpy.should.have.been.calledOnce;
-          callbackSpy.should.have.been.calledWithExactly(fakeError);
-        });
-      });
-
-      describe('when getDefaultGroupStoreMapping() returns null', function () {
-        beforeEach(function () {
-          fakeAccountStoreMapping = null;
-
-          organization.getDefaultGroupStore(callbackSpy);
-        });
-
-        it('should invoke the callback with null, null', function () {
-          callbackSpy.should.have.been.calledOnce;
-          callbackSpy.should.have.been.calledWithExactly(null, null);
         });
       });
     });
@@ -770,7 +505,6 @@ describe('resource/Organization.js', function () {
 
         organization.getAccountLinkingPolicy(callbackSpy);
         organization.getAccountLinkingPolicy(opts, callbackSpy);
-        console.log('Called these two jokers');
       });
 
       it('should pass the callback, and the options if present, to dataStore.getResource', function() {
