@@ -146,15 +146,15 @@ function filter(apps, cb) {
   l.reset();
   var i = 0;
   function iterator(app, cb) {
-    cb(i++ % 2 === 0);
+    cb(null, i++ % 2 === 0);
   }
 
   async.series([
     function (cb) {
-      apps.filter(l.i(iterator), l.c(cb, 1));
+      apps.filter(l.i(iterator), l.c(cb));
     },
     function (cb) {
-      apps.filterSeries(l.i(iterator), l.c(cb, 1));
+      apps.filterSeries(l.i(iterator), l.c(cb));
     }
   ], cb);
 }
@@ -163,15 +163,15 @@ function reject(apps, cb) {
   l.reset();
   var i = 0;
   function iterator(app, cb) {
-    cb(i++ % 2 === 0);
+    cb(null, i++ % 2 === 0);
   }
 
   async.series([
     function (cb) {
-      apps.reject(l.i(iterator), l.c(cb, 1));
+      apps.reject(l.i(iterator), l.c(cb));
     },
     function (cb) {
-      apps.rejectSeries(l.i(iterator), l.c(cb, 1));
+      apps.rejectSeries(l.i(iterator), l.c(cb));
     }
   ], cb);
 }
@@ -197,15 +197,15 @@ function detect(apps, cb) {
   l.reset();
   var i = 0;
   function iterator(app, cb) {
-    cb(0 === i++ % 2);
+    cb(null, 0 === i++ % 2);
   }
 
   async.series([
     function (cb) {
-      apps.detect(l.i(iterator), l.c(cb, 1));
+      apps.detect(l.i(iterator), l.c(cb));
     },
     function (cb) {
-      apps.detectSeries(l.i(iterator), l.c(cb, 1));
+      apps.detectSeries(l.i(iterator), l.c(cb));
     }
   ], cb);
 }
@@ -214,20 +214,20 @@ function some(apps, cb) {
   l.reset();
   var i = 0;
   function iterator(app, cb) {
-    cb(0 === i++ % 2);
+    cb(null, 0 === i++ % 2);
   }
 
-  apps.some(l.i(iterator), l.c(cb, 1));
+  apps.some(l.i(iterator), l.c(cb));
 }
 
 function every(apps, cb) {
   l.reset();
   var i = 0;
   function iterator(app, cb) {
-    cb(0 === i++ % 2);
+    cb(null, 0 === i++ % 2);
   }
 
-  apps.every(l.i(iterator), l.c(cb, 1));
+  apps.every(l.i(iterator), l.c(cb));
 }
 
 function sortBy(apps, cb) {

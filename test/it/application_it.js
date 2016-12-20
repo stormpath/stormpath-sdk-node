@@ -156,27 +156,28 @@ describe('Application',function(){
   describe('setDefaultAccountStore',function () {
 
     describe('with a href string property',function(){
-      var result;
+      var error;
+
       before(function(done){
         app.setDefaultAccountStore(directory.href,function(err){
-          result = err;
+          error = err;
           done();
         });
       });
       it('should not err',function(){
-        assert.equal(result,null);
+        assert.notOk(error);
       });
     });
     describe('with a directory object',function(){
-      var result;
+      var error;
       before(function(done){
         app.setDefaultAccountStore(directory,function(err){
-          result = err;
+          error = err;
           done();
         });
       });
       it('should not err',function(){
-        assert.equal(result,null);
+        assert.notOk(error);
       });
     });
   });
