@@ -40,7 +40,7 @@ describe('SamlIdpUrlBuilder', function () {
           var parsedUrl = url.parse(resultUrl, true);
 
           assert.ok(parsedUrl);
-          assert.equal(parsedUrl.host, 'api.stormpath.com');
+          assert.equal(parsedUrl.pathname, url.parse(application.href).pathname + '/saml/sso/idpRedirect');
           assert.isDefined(parsedUrl.query.accessToken);
 
           done();
