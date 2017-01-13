@@ -7,7 +7,6 @@ var helpers = require('./helpers');
 var assert = common.assert;
 
 describe('OAuthStormpathSocialAuthenticator', function () {
-  var account;
   var application;
   var validProviderId;
 
@@ -36,21 +35,7 @@ describe('OAuthStormpathSocialAuthenticator', function () {
           accountStore: {
             href: directory.href
           }
-        }, function (err) {
-          if (err) {
-            return done(err);
-          }
-
-          application.createAccount(helpers.fakeAccount(), function (err, newAccount) {
-            if (err) {
-              return done(err);
-            }
-
-            account = newAccount;
-
-            done();
-          });
-        });
+        }, done);
       });
     });
   });
@@ -178,8 +163,7 @@ describe('OAuthStormpathSocialAuthenticator', function () {
           assert.ok(err);
           assert.equal(err.name, 'ResourceError');
           assert.equal(err.status, 400); // Bad request
-          assert.equal(err.code, 2003); // The specified property value is unsupported.
-          assert.equal(err.developerMessage, 'account providerId is an unsupported value.');
+          assert.equal(err.code, 5201); // No directory found with this id
           assert.notOk(authenticationResult);
           done();
         });
@@ -202,7 +186,6 @@ describe('OAuthStormpathSocialAuthenticator', function () {
           assert.equal(err.name, 'ResourceError');
           assert.equal(err.status, 400); // Bad request
           assert.equal(err.code, 7200); // Stormpath was not able to complete the request to the Social Login site.
-          assert.include(err.developerMessage, 'Stormpath was not able to complete the request to Google');
           assert.notOk(authenticationResult);
           done();
         });
@@ -225,7 +208,6 @@ describe('OAuthStormpathSocialAuthenticator', function () {
           assert.equal(err.name, 'ResourceError');
           assert.equal(err.status, 400); // Bad request
           assert.equal(err.code, 7200); // Stormpath was not able to complete the request to the Social Login site.
-          assert.include(err.developerMessage, 'Stormpath was not able to complete the request to Google');
           assert.notOk(authenticationResult);
           done();
         });
