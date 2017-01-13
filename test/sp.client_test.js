@@ -67,10 +67,28 @@ describe('Client', function () {
       expect(client._currentTenant).to.be.null;
       /* jshint +W030 */
     });
-    it('should use the public api as the base url',function(){
-      expect(client._dataStore.requestExecutor.baseUrl).to.equal('https://api.stormpath.com/v1');
+    it('should use the public api as the default base url',function(done){
+      // temporarily unset any environment provided url
+      var oldValue = process.env.STORMPATH_CLIENT_BASEURL;
+      delete process.env.STORMPATH_CLIENT_BASEURL;
+      var client = makeTestClient({apiKey: apiKey});
+      client.on('error', function (err) {
+        throw err;
+      });
+
+      client.on('ready', function () {
+        expect(client._dataStore.requestExecutor.baseUrl).to.equal('https://api.stormpath.com/v1');
+        // restore environment value
+        process.env.STORMPATH_CLIENT_BASEURL = oldValue;
+        done();
+      });
+
     });
-    it('should allow me to change the base url',function(done){
+    it('should allow me to change the base url through the constructor',function(done){
+      // temporarily unset any environment provided url
+      var oldValue = process.env.STORMPATH_CLIENT_BASEURL;
+      delete process.env.STORMPATH_CLIENT_BASEURL;
+
       var url = 'http://api.example.com/';
       var client = makeTestClient({apiKey: apiKey, baseUrl: url});
 
@@ -80,6 +98,27 @@ describe('Client', function () {
 
       client.on('ready', function () {
         expect(client._dataStore.requestExecutor.baseUrl).to.equal(url);
+        // restore environment value
+        process.env.STORMPATH_CLIENT_BASEURL = oldValue;
+        done();
+      });
+    });
+
+    it('should allow me to change the base url through the environment',function(done){
+      // temporarily set a new environment provided url, save the old one if it exists
+      var oldValue = process.env.STORMPATH_CLIENT_BASEURL;
+      process.env.STORMPATH_CLIENT_BASEURL = 'https://foo/v1';
+
+      var client = makeTestClient({apiKey: apiKey });
+
+      client.on('error', function (err) {
+        throw err;
+      });
+
+      client.on('ready', function () {
+        expect(client._dataStore.requestExecutor.baseUrl).to.equal('https://foo/v1');
+        // restore environment value
+        process.env.STORMPATH_CLIENT_BASEURL = oldValue;
         done();
       });
     });
