@@ -1,5 +1,9 @@
 # Upgrade Guide
 
+### Version 0.19.0 -> Version 0.19.1
+
+No changes needed
+
 ### Version 0.18.5 -> Version 0.19.0
 
 No changes needed
