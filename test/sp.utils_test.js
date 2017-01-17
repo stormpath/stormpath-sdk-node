@@ -229,4 +229,83 @@ describe('util', function () {
       assert.isUndefined(Ctor.prototype.explode);
     });
   });
+
+  describe('extend', function() {
+    var objA;
+    var objB;
+    var objC;
+
+    beforeEach(function() {
+      objA = {
+        a: 1
+      };
+      objB = {
+        b: 2
+      };
+      objC = {
+        b: 3,
+        c: 4
+      };
+    });
+
+    it('should merge two objects', function() {
+      var merged = utils.extend({}, objA);
+      assert.notEqual(merged, objA); // Not the same ref
+      assert.deepEqual(merged, objA); // Equal in values
+    });
+
+    it('should merge more objects', function() {
+      var merged = utils.extend({}, objA, objB);
+      assert.deepEqual(merged, {
+        a: 1,
+        b: 2
+      });
+    });
+
+    it('should skip empty values if not the first value', function() {
+      var merged = utils.extend({}, objA, null, objB, null);
+      assert.deepEqual(merged, {
+        a: 1,
+        b: 2
+      });
+    });
+
+    it('should write over the first object', function() {
+      var target = {};
+      var merged = utils.extend(target, objA, objB);
+
+      assert.deepEqual(merged, {
+        a: 1,
+        b: 2
+      });
+
+      assert.equal(merged, target);
+    });
+
+
+    it('should overwrite keys using the later object\'s value', function() {
+      var merged = utils.extend({}, objA, objB, objC);
+
+      assert.deepEqual(merged, {
+        a: 1,
+        b: 3,
+        c: 4
+      });
+    });
+
+    it('should work with objects that have an empty prototype chain', function() {
+      var objX = Object.create(null);
+      objX.x = 7;
+
+      var merge = function() {
+        return utils.extend({}, objA, objX);
+      };
+
+      assert.doesNotThrow(merge);
+      assert.deepEqual(merge(), {
+        a: 1,
+        x: 7
+      });
+    });
+  });
 });
