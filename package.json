@@ -53,7 +53,8 @@
     "stormpath-config": "0.0.27",
     "underscore": "~1.5.2",
     "underscore.string": "~3.2.3",
-    "uuid": "^3.0.0"
+    "uuid": "^3.0.0",
+    "xtend": "^4.0.1"
   },
   "devDependencies": {
     "benchmark": "^2.0.0",
