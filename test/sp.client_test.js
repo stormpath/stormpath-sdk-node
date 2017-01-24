@@ -7,6 +7,7 @@ var expect = common.expect;
 
 var Account = require('../lib/resource/Account');
 var Application = require('../lib/resource/Application');
+var ApiKey = require('../lib/resource/ApiKey');
 var Challenge = require('../lib/resource/Challenge');
 var Client = require('../lib/Client');
 var DataStore = require('../lib/ds/DataStore');
@@ -79,7 +80,11 @@ describe('Client', function () {
       client.on('ready', function () {
         expect(client._dataStore.requestExecutor.baseUrl).to.equal('https://api.stormpath.com/v1');
         // restore environment value
-        process.env.STORMPATH_CLIENT_BASEURL = oldValue;
+        if (oldValue) {
+          process.env.STORMPATH_CLIENT_BASEURL = oldValue;
+        } else {
+          delete process.env.STORMPATH_CLIENT_BASEURL;
+        }
         done();
       });
 
@@ -99,7 +104,11 @@ describe('Client', function () {
       client.on('ready', function () {
         expect(client._dataStore.requestExecutor.baseUrl).to.equal(url);
         // restore environment value
-        process.env.STORMPATH_CLIENT_BASEURL = oldValue;
+        if (oldValue) {
+          process.env.STORMPATH_CLIENT_BASEURL = oldValue;
+        } else {
+          delete process.env.STORMPATH_CLIENT_BASEURL;
+        }
         done();
       });
     });
@@ -107,6 +116,7 @@ describe('Client', function () {
     it('should allow me to change the base url through the environment',function(done){
       // temporarily set a new environment provided url, save the old one if it exists
       var oldValue = process.env.STORMPATH_CLIENT_BASEURL;
+
       process.env.STORMPATH_CLIENT_BASEURL = 'https://foo/v1';
 
       var client = makeTestClient({apiKey: apiKey });
@@ -118,7 +128,11 @@ describe('Client', function () {
       client.on('ready', function () {
         expect(client._dataStore.requestExecutor.baseUrl).to.equal('https://foo/v1');
         // restore environment value
-        process.env.STORMPATH_CLIENT_BASEURL = oldValue;
+        if (oldValue) {
+          process.env.STORMPATH_CLIENT_BASEURL = oldValue;
+        } else {
+          delete process.env.STORMPATH_CLIENT_BASEURL;
+        }
         done();
       });
     });
@@ -1024,6 +1038,41 @@ describe('Client', function () {
       // call with optional param
       getResourceStub.should.have.been
         .calledWith(href, opt, Account, cbSpy);
+    });
+  });
+
+  describe('call to get ApiKeyById', function () {
+    var sandbox, client, getResourceStub, cbSpy, href;
+
+    before(function (done) {
+      sandbox = sinon.sandbox.create();
+      cbSpy = sandbox.spy();
+      href = 'https://api.stormpath.com/v1/apiKeys/foo';
+
+      client = makeTestClient();
+
+      client.on('error', function (err) {
+        throw err;
+      });
+
+      client.on('ready', function () {
+        getResourceStub = sandbox.stub(client._dataStore, 'getResource', function (href, options, ctor, cb) {
+          cb();
+        });
+
+        client.getApiKeyById('foo', null, cbSpy);
+
+        done();
+      });
+    });
+
+    after(function () {
+      sandbox.restore();
+    });
+
+    it('should get account', function () {
+      getResourceStub.should.have.been
+        .calledWith(href, null, ApiKey, cbSpy);
     });
   });
 
