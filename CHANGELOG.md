@@ -1,5 +1,11 @@
 # stormpath-sdk-node Change Log
 
+### 0.19.2
+
+**Released January 24, 2017**
+
+* Patched an issue where the `utils.extend` implementation would fail when the object did not have a prototype pointing to Object.  Fixes #590.
+
 ### 0.19.1
 
 **Released January 16, 2017**
