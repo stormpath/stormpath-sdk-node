@@ -1,5 +1,12 @@
 # stormpath-sdk-node Change Log
 
+### 0.20.0
+
+**Released January 24, 2017**
+
+* Added a new authenticator class, `StormpathAccessTokenAuthenticator`.  This can be used to authenticate any access token that has been issued by an application in your Tenant.  You an optionally specify an application as an authorization check, using `stormpathAccessTokenAuthenticator.forApplication(application)`, doing so will cause authentication to fail if the access token is not issued by the specified application.  This decoupled application check allows you to decide if the issuing application should be checked as an authorization check, e.g. this would not be necessary if you are building a Single-Sign-On solution between multiple Stormpath applications.
+* The `JwtAuthenticator` has been deprecated in favor of `StormpathAccessTokenAuthenticator`.
+
 ### 0.19.2
 
 **Released January 24, 2017**
