@@ -46,14 +46,15 @@
     "jwt-simple": "~0.4.0",
     "memcached": "~2.2.2",
     "moment": "^2.15.2",
-    "njwt": "^0.3.1",
+    "njwt": "^0.4.0",
     "properties-parser": "~0.3.1",
     "redis": "~2.6.2",
     "request": "~2.74.0",
     "stormpath-config": "0.0.27",
     "underscore": "~1.5.2",
     "underscore.string": "~3.2.3",
-    "uuid": "^3.0.0"
+    "uuid": "^3.0.0",
+    "xtend": "^4.0.1"
   },
   "devDependencies": {
     "benchmark": "^2.0.0",
