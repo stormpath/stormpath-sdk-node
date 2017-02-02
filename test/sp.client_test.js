@@ -1047,7 +1047,7 @@ describe('Client', function () {
     before(function (done) {
       sandbox = sinon.sandbox.create();
       cbSpy = sandbox.spy();
-      href = 'https://api.stormpath.com/v1/apiKeys/foo';
+      href = '/apiKeys/foo';
 
       client = makeTestClient();
 
@@ -1072,7 +1072,7 @@ describe('Client', function () {
 
     it('should get account', function () {
       getResourceStub.should.have.been
-        .calledWith(href, null, ApiKey, cbSpy);
+        .calledWith(client._dataStore.requestExecutor.baseUrl + href, null, ApiKey, cbSpy);
     });
   });
 
