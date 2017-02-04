@@ -1,5 +1,9 @@
 # Upgrade Guide
 
+### Version 0.20.0 -> Version 0.20.1
+
+No changes needed
+
 ### Version 0.19.2 -> Version 0.20.0
 
 The authenticator class `JwtAuthenticator` has been deprecated, please use `StormpathAccessTokenAuthenticator` instead.

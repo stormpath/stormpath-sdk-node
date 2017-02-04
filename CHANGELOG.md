@@ -1,5 +1,12 @@
 # stormpath-sdk-node Change Log
 
+### 0.20.1
+
+**Released February 3, 2017**
+
+* Updated usage of the `crypto` library to avoid deprecated use of `pbkdf2`.
+* Several documentation updates.
+
 ### 0.20.0
 
 **Released January 24, 2017**
