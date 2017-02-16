@@ -9,7 +9,6 @@ var _ = common._;
 var errorMessages = require('../lib/error/messages');
 var utils = require('../lib/utils');
 var Account = require('../lib/resource/Account');
-var CollectionResource = require('../lib/resource/CollectionResource');
 var Group = require('../lib/resource/Group');
 var Tenant = require('../lib/resource/Tenant');
 var Directory = require('../lib/resource/Directory');
