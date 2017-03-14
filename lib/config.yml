@@ -1,10 +1,8 @@
 ---
 # 'apiKey' might feel redundant since 'client.apiKey' is what is being used.
 # But for backward-compability we need to have this here.
-apiKey:
-  file: null
-  id: null
-  secret: null
+apiToken: null
+org: null
 client:
   apiKey:
     file: null
@@ -26,5 +24,4 @@ client:
     username: null
     password: null
 application:
-  name: null
-  href: null
+  id: null
