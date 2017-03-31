@@ -43,6 +43,7 @@
   "dependencies": {
     "async": "~1.5.2",
     "deep-extend": "^0.4.1",
+    "dot-object": "^1.5.4",
     "jwt-simple": "~0.4.0",
     "memcached": "~2.2.2",
     "moment": "^2.15.2",
