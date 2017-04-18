@@ -754,10 +754,10 @@ describe('Resources: ', function () {
 
           // call without optional param
           createResourceStub.should.have.been
-            .calledWith(app.accounts.href, null, acc, Account, cbSpy);
+            .calledWith(app.accounts.href, null, acc, Account);
           // call with optional param
           createResourceStub.should.have.been
-            .calledWith(app.accounts.href, opt, acc, Account, cbSpy);
+            .calledWith(app.accounts.href, opt, acc, Account);
         });
       });
     });
