@@ -1,5 +1,11 @@
 # stormpath-sdk-node Change Log
 
+### 1.0.0-rc2
+
+This is a major version RC to support the migration of the [express-stormpath](https://github.com/stormpath/express-stormpath) library to the Okta platform.  This RC is unstable and should not be used except as a dependency of express-stormpath@4.0.0-rc1.
+
+We will provide a detailed changelog in a future RC as we stabilize this library.  Thank you for understanding!
+
 ### 1.0.0-rc1
 
 This is a major version RC to support the migration of the [express-stormpath](https://github.com/stormpath/express-stormpath) library to the Okta platform.  This RC is unstable and should not be used except as a dependency of express-stormpath@4.0.0-rc1.
