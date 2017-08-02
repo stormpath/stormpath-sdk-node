@@ -1061,6 +1061,114 @@ describe('Resources: ', function () {
       });
     });
 
+    describe('get directories', function () {
+      var appObj;
+      var asmsObj;
+      var app;
+
+      before(function () {
+        asmsObj = {
+          href: '/account/store/mappings/href',
+          limit: 25,
+          size: 3,
+          offset: 0,
+          items: [
+            {
+              href: '/directories/1',
+              accountStore: {
+                href: '/directories/1',
+                name: 'Directory 1'
+              }
+            },
+            {
+              href: '/directories/2',
+              accountStore: {
+                href: '/directories/2',
+                name: 'Directory 2'
+              }
+            },
+            {
+              href: '/organizations/1',
+              accountStore: {
+                href: '/organizations/1',
+                name: 'Organization 1'
+              }
+            }
+          ]
+        };
+
+        appObj = {href: 'application/href', accountStoreMappings: {href: asmsObj.href}};
+        app = new Application(appObj, dataStore);
+      });
+
+      describe('without errors', function () {
+        beforeEach(function () {
+          nock(u.BASE_URL).get(u.v1(asmsObj.href + '?expand=accountStore')).reply(200, asmsObj);
+        });
+
+        it('should return a list of directories', function (done) {
+          app.getDirectories(function (err, dirs) {
+            if (err) {
+              return done(err);
+            }
+
+            assert.instanceOf(dirs, Array);
+            assert.isOk(dirs[0]);
+            assert.instanceOf(dirs[0], Directory);
+            done();
+          });
+        });
+
+        it('should not wrap non-directories into Directories', function (done) {
+          app.getDirectories(function (err, dirs) {
+            if (err) {
+              return done(err);
+            }
+
+            assert.lengthOf(dirs, 2);
+
+            var directoryAsmsData = asmsObj.items.slice(0, 2).map(function (asm) {
+              return asm.accountStore;
+            });
+            var directoriesBareData = dirs.map(function (dir) {
+              return {
+                href: dir.href,
+                name: dir.name
+              };
+            });
+            assert.deepEqual(directoriesBareData, directoryAsmsData);
+            done();
+          });
+        });
+      });
+
+      describe('with errors', function () {
+        var cbSpy;
+        var errorData;
+
+        beforeEach(function () {
+          cbSpy = sinon.spy();
+          errorData = {
+            developerMessage: 'explosions',
+            status: '400'
+          };
+
+          nock(u.BASE_URL).get(u.v1(asmsObj.href + '?expand=accountStore')).reply(400, errorData);
+        });
+
+        it('should return the error in the callback if one exists', function (done) {
+          app.getDirectories(function (err, data) {
+            assert.isOk(err);
+            assert.isNotOk(data);
+            assert.equal(err.developerMessage, errorData.developerMessage);
+            assert.equal(err.status, errorData.status);
+
+            done();
+          });
+        });
+      });
+    });
+
     describe('get default group store', function () {
       function getDefaultGroupStore(data) {
         return function () {
