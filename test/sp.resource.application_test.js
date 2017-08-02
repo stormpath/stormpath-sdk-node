@@ -19,6 +19,7 @@ var ApiKey = require('../lib/resource/ApiKey');
 var DataStore = require('../lib/ds/DataStore');
 var PasswordResetToken = require('../lib/resource/PasswordResetToken');
 var AccountLinkingPolicy = require('../lib/resource/AccountLinkingPolicy');
+var WebConfig = require('../lib/resource/WebConfig');
 var nJwt = require('njwt');
 var nJwtProperties = require('njwt/properties');
 var uuid = require('uuid');
@@ -1498,6 +1499,40 @@ describe('Resources: ', function () {
         it('should return a not found error',function(){
           assert.equal(result[0].message,'ApiKey not found');
         });
+      });
+    });
+
+    describe('get web config', function () {
+      var sandbox, application, getResourceStub, cbSpy, app;
+      before(function () {
+        sandbox = sinon.sandbox.create();
+        app = {
+          webConfig: {
+            href: 'boom!'
+          }
+        };
+
+        application = new Application(app, dataStore);
+        getResourceStub = sandbox.stub(dataStore, 'getResource', function (href, options, ctor, cb) {
+          cb();
+        });
+        cbSpy = sandbox.spy();
+
+        application.getWebConfig(cbSpy);
+      });
+
+      after(function () {
+        sandbox.restore();
+      });
+
+      it('should get the web config', function () {
+        /* jshint -W030 */
+        getResourceStub.should.have.been.calledOnce;
+        cbSpy.should.have.been.calledOnce;
+        /* jshint +W030 */
+
+        getResourceStub.should.have.been
+          .calledWith(app.webConfig.href, null, WebConfig, cbSpy);
       });
     });
 
