@@ -467,6 +467,50 @@ describe('Client', function () {
     });
   });
 
+  describe('call to delete resource', function () {
+    var sandbox;
+    var client;
+    var deleteResourceStub;
+    var cbSpy;
+    var resource;
+
+    before(function (done) {
+      resource = {href: '/boom!'};
+      sandbox = sinon.sandbox.create();
+      client = makeTestClient({apiKey: apiKey});
+
+      client.on('error', function (err) {
+        throw err;
+      });
+
+      client.on('ready', function () {
+        deleteResourceStub = sandbox.stub(client._dataStore, 'deleteResource', function (resource, cb) {
+          cb();
+        });
+
+        cbSpy = sandbox.spy();
+
+        done();
+      });
+    });
+
+    after(function () {
+      sandbox.restore();
+    });
+
+    it('should call dataStore#deleteResource', function () {
+      client.deleteResource(resource, cbSpy);
+
+      deleteResourceStub.should.have.been
+        .calledWith(resource, cbSpy);
+
+      /* jshint -W030 */
+      deleteResourceStub.should.have.been.calledOnce;
+      cbSpy.should.have.been.calledOnce;
+      /* jshint +W030 */
+    });
+  });
+
   describe('call to get accounts', function() {
     var cbSpy, client, err, sandbox, tenant;
     var getCurrentTenantStub, getTenantAccounts;
