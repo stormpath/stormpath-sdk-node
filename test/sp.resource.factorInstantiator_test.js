@@ -4,7 +4,7 @@ var common = require('./common');
 var assert = common.assert;
 var sinon = common.sinon;
 
-var InstanceResource = require('../lib/resource/InstanceResource');
+var Resource = require('../lib/resource/Resource');
 var FactorInstantiator = require('../lib/resource/FactorInstantiator');
 var FactorConstructor = FactorInstantiator.Constructor;
 var Factor = require('../lib/resource/Factor');
@@ -22,8 +22,8 @@ describe('FactorInstantiator#Constructor', function() {
     sandbox.restore();
   });
 
-  it('should inherit from InstanceResource', function() {
-    assert.equal(FactorConstructor.super_, InstanceResource);
+  it('should inherit from Resource', function() {
+    assert.equal(FactorConstructor.super_, Resource);
   });
 
   it('should construct an SmsFactor if type is SMS', function() {
